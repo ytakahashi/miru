@@ -26,6 +26,13 @@ export class UserSettingService {
     this.githubAccessor = newGitHubAccessor(this.githubApiEndpoint, pat)
   }
 
+  getGithubPersonalAccessToken (): string {
+    if (this.githubPersonalAccessToken === undefined) {
+      throw new Error('pat not provided')
+    }
+    return this.githubPersonalAccessToken
+  }
+
   async getUser (): Promise<GitHubUser|undefined> {
     const user = this.localStorageAccessor.getUser()
     if (user !== undefined) {
