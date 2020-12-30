@@ -26,7 +26,7 @@ type DataType = {
 }
 
 export default defineComponent({
-  name: 'HelloWorld',
+  name: 'UserSetting',
   data (): DataType {
     return {
       pat: '',
