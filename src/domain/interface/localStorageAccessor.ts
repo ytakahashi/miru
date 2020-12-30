@@ -1,4 +1,4 @@
-import { GitHubUser } from '@/model/github'
+import { GitHubUser } from '@/model/githubUser'
 
 export interface LocalStorageAccessor {
   setPersonalAccessToken (pat: string): void;

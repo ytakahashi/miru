@@ -1,7 +1,7 @@
 export type GitHubUser = {
-    avatarUrl: string;
-    login: string;
-    url: string;
+  avatarUrl: string;
+  login: string;
+  url: string;
 }
 
 export type Viewer = {
