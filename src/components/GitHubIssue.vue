@@ -1,15 +1,14 @@
 <template>
-  <UserSetting />
+  <h3>{{ repositoryUrl }}</h3>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import UserSetting from '@/components/UserSetting.vue'
 
 export default defineComponent({
-  name: 'Home',
-  components: {
-    UserSetting
+  name: 'GitHubIssue',
+  props: {
+    repositoryUrl: String
   }
 })
 </script>

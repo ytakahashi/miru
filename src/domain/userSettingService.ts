@@ -20,7 +20,7 @@ export class UserSettingService {
     }
   }
 
-  updatePat (pat: string): void {
+  updatePersonalAccessToken (pat: string): void {
     this.githubPersonalAccessToken = pat
     this.localStorageAccessor.setPersonalAccessToken(pat)
     this.githubAccessor = newGitHubAccessor(this.githubApiEndpoint, pat)
@@ -31,6 +31,20 @@ export class UserSettingService {
       throw new Error('pat not provided')
     }
     return this.githubPersonalAccessToken
+  }
+
+  setRepositoryUrls (urls: Array<string>): void {
+    const current = this.localStorageAccessor.getGitHubRepositoryUrls()
+    const next = current.length ? new Set([...current, ...urls]) : new Set(urls)
+    this.localStorageAccessor.setGitHubRepositoryUrls(Array.from(next))
+  }
+
+  getRepositoryUrls (): Array<string> {
+    return this.localStorageAccessor.getGitHubRepositoryUrls()
+  }
+
+  clearRepositoryUrls (): void {
+    this.localStorageAccessor.deleteGitHubRepositoryUrls()
   }
 
   async getUser (): Promise<GitHubUser|undefined> {
