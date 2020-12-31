@@ -5,7 +5,7 @@ import { GitHubUser } from '@/model/githubUser'
 type StoreType = {
   personalAccessToken?: string;
   user?: GitHubUser;
-  repositoryUrls?: Array<string>;
+  githubRepositoryUrls?: Array<string>;
 }
 
 const store = new Store<StoreType>()
@@ -25,5 +25,18 @@ export class ElectronStoreWrapper implements LocalStorageAccessor {
 
   getUser (): GitHubUser | undefined {
     return store.get('user')
+  }
+
+  setGitHubRepositoryUrls (urls: Array<string>): void {
+    store.set('githubRepositoryUrls', urls)
+  }
+
+  getGitHubRepositoryUrls (): Array<string> {
+    const urls = store.get('githubRepositoryUrls')
+    return urls === undefined ? [] : urls
+  }
+
+  deleteGitHubRepositoryUrls (): void {
+    store.delete('githubRepositoryUrls')
   }
 }

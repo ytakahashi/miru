@@ -1,13 +1,15 @@
 <template>
-  <div class="hello">
-    <input v-model="pat" placeholder="personal access token">
-    <p>Access Token: {{ pat }}</p>
-    <button v-on:click="setPat()">store</button>
+  <input v-model="personalAccessToken" placeholder="personal access token">
+  <p>Access Token: {{ personalAccessToken }}</p>
+  <button v-on:click="setGitHubPersonalAccessToken()">store</button>
 
-    <p v-if="userName">Hello, {{ userName }}</p>
-    <p v-if="profileUrl">profile: {{ profileUrl }}</p>
-    <button v-if="githubRepositoryService" v-on:click="getIssues()">get issues</button>
-  </div>
+  <p v-if="userName">Hello, {{ userName }}</p>
+  <p v-if="profileUrl">profile: {{ profileUrl }}</p>
+
+  <input v-model="githubRepositoryUrl" placeholder="GitHub Repository URL">
+  <p>Repositoies: {{ githubRepositoryUrls }}</p>
+  <button v-on:click="setGitHubRepository()">add reposotory</button>
+  <button v-on:click="clearGitHubRepository()">clear</button>
 </template>
 
 <script lang="ts">
@@ -18,9 +20,11 @@ import { GitHubRepositoryService } from '@/domain/githubRepositoryService'
 const apiEndpoint = 'https://api.github.com/graphql'
 
 type DataType = {
-  pat: string;
+  personalAccessToken: string;
   userName: string;
   profileUrl: string;
+  githubRepositoryUrl: string;
+  githubRepositoryUrls: Array<string>;
   userSettingService: UserSettingService;
   githubRepositoryService?: GitHubRepositoryService;
 }
@@ -29,20 +33,36 @@ export default defineComponent({
   name: 'UserSetting',
   data (): DataType {
     return {
-      pat: '',
+      personalAccessToken: '',
       userName: '',
       profileUrl: '',
+      githubRepositoryUrl: '',
+      githubRepositoryUrls: [],
       userSettingService: new UserSettingService(apiEndpoint),
       githubRepositoryService: undefined
     }
   },
   methods: {
-    setPat () {
-      this.userSettingService.updatePat(this.pat)
+    setGitHubPersonalAccessToken () {
+      this.userSettingService.updatePersonalAccessToken(this.personalAccessToken)
       this.updateProfile()
     },
-    async getIssues () {
-      // todo
+    setGitHubRepository () {
+      if (this.userSettingService === undefined) {
+        return
+      }
+      this.userSettingService.setRepositoryUrls([this.githubRepositoryUrl])
+      this.githubRepositoryUrls = this.userSettingService.getRepositoryUrls()
+
+      console.log('this.githubRepositoryUrls => ', this.githubRepositoryUrls)
+    },
+    clearGitHubRepository () {
+      if (this.userSettingService === undefined) {
+        return
+      }
+      this.userSettingService.clearRepositoryUrls()
+      this.githubRepositoryUrl = ''
+      this.githubRepositoryUrls = []
     },
     async updateProfile () {
       try {
@@ -58,7 +78,10 @@ export default defineComponent({
     }
   },
   async mounted () {
-    this.updateProfile()
+    await this.updateProfile()
+    if (this.userSettingService !== undefined) {
+      this.githubRepositoryUrls = this.userSettingService.getRepositoryUrls()
+    }
   }
 })
 </script>
