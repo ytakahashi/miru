@@ -8,6 +8,7 @@
 
   <input v-model="githubRepositoryUrl" placeholder="GitHub Repository URL">
   <p>Repositoies: {{ githubRepositoryUrls }}</p>
+  <p v-if="!isValidRepositoryUrl">Invalid URL: {{ githubRepositoryUrl }}</p>
   <button v-on:click="setGitHubRepository()">add reposotory</button>
   <button v-on:click="clearGitHubRepository()">clear</button>
 </template>
@@ -16,6 +17,7 @@
 import { defineComponent } from 'vue'
 import { UserSettingService } from '@/domain/userSettingService'
 import { GitHubRepositoryService } from '@/domain/githubRepositoryService'
+import { RepositoryUrl } from '@/model/githubRepository'
 
 const apiEndpoint = 'https://api.github.com/graphql'
 
@@ -23,6 +25,7 @@ type DataType = {
   personalAccessToken: string;
   userName: string;
   profileUrl: string;
+  isValidRepositoryUrl: boolean;
   githubRepositoryUrl: string;
   githubRepositoryUrls: Array<string>;
   userSettingService: UserSettingService;
@@ -36,6 +39,7 @@ export default defineComponent({
       personalAccessToken: '',
       userName: '',
       profileUrl: '',
+      isValidRepositoryUrl: true,
       githubRepositoryUrl: '',
       githubRepositoryUrls: [],
       userSettingService: new UserSettingService(apiEndpoint),
@@ -51,10 +55,14 @@ export default defineComponent({
       if (this.userSettingService === undefined) {
         return
       }
+      const url = new RepositoryUrl(this.githubRepositoryUrl)
+      if (!url.isValid()) {
+        this.isValidRepositoryUrl = false
+        return
+      }
+      this.isValidRepositoryUrl = true
       this.userSettingService.setRepositoryUrls([this.githubRepositoryUrl])
       this.githubRepositoryUrls = this.userSettingService.getRepositoryUrls()
-
-      console.log('this.githubRepositoryUrls => ', this.githubRepositoryUrls)
     },
     clearGitHubRepository () {
       if (this.userSettingService === undefined) {
