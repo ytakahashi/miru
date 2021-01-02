@@ -1,7 +1,7 @@
 import { LocalStorageAccessor } from '@/domain/interface/localStorageAccessor'
 import { GitHubAccessor } from '@/domain/interface/githubAccessor'
 import { newGitHubAccessor, newLocalStorageAccessor } from '@/domain/interface/factory'
-import { GitHubUser } from '@/model/githubUser'
+import { GitHubUser } from '@/model/dto/githubApi'
 
 export class UserSettingService {
   private githubApiEndpoint: string
