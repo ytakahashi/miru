@@ -1,6 +1,6 @@
 import Store from 'electron-store'
 import { LocalStorageAccessor } from '@/domain/interface/localStorageAccessor'
-import { GitHubUser } from '@/model/githubUser'
+import { GitHubUser } from '@/model/dto/githubApi'
 
 type StoreType = {
   personalAccessToken?: string;

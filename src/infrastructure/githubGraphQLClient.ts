@@ -1,7 +1,6 @@
 import { GraphQLClient, gql } from 'graphql-request'
 import { GitHubAccessor } from '@/domain/interface/githubAccessor'
-import { Viewer } from '@/model/githubUser'
-import { Repository } from '@/model/githubRepository'
+import { Repository, Viewer } from '@/model/dto/githubApi'
 
 export class GitHubGraphQLClient implements GitHubAccessor {
   private graphQLClient: GraphQLClient

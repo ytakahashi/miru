@@ -1,7 +1,8 @@
 import { LocalStorageAccessor } from '@/domain/interface/localStorageAccessor'
 import { GitHubAccessor } from '@/domain/interface/githubAccessor'
 import { newGitHubAccessor, newLocalStorageAccessor } from '@/domain/interface/factory'
-import { Repository, RepositoryUrl } from '@/model/githubRepository'
+import { RepositoryUrl } from '@/model/githubRepository'
+import { Repository } from '@/model/dto/githubApi'
 
 type repository = {
   owner: string;
