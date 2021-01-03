@@ -1,42 +1,70 @@
 import Store from 'electron-store'
 import { LocalStorageAccessor } from '@/domain/interface/localStorageAccessor'
+import { ApplicationSetting } from '@/model/application'
 import { GitHubUser } from '@/model/dto/githubApi'
+import { GitHubAccount } from '@/model/dto/local'
 
 type StoreType = {
   personalAccessToken?: string;
   user?: GitHubUser;
+  account?: GitHubAccount;
   githubRepositoryUrls?: Array<string>;
+  applicationSettings?: Array<ApplicationSetting>;
 }
 
-const store = new Store<StoreType>()
-
 export class ElectronStoreWrapper implements LocalStorageAccessor {
-  setPersonalAccessToken (pat: string): void {
-    store.set('personalAccessToken', pat)
+  #store: Store<StoreType>
+
+  constructor (namePostfix?: string) {
+    const name = namePostfix === undefined ? 'config' : `config_${namePostfix}`
+    this.#store = new Store<StoreType>({
+      name: name
+    })
   }
 
-  getPersonalAccessToken (): string | undefined {
-    return store.get('personalAccessToken')
+  setApplicationSettings = (settings: Array<ApplicationSetting>): void => {
+    this.#store.set('applicationSettings', settings)
   }
 
-  setUser (user: GitHubUser): void {
-    store.set('user', user)
+  getApplicationSettings = (): Array<ApplicationSetting> => {
+    const s = this.#store.get('applicationSettings')
+    return s === undefined ? [] : s
   }
 
-  getUser (): GitHubUser | undefined {
-    return store.get('user')
+  setPersonalAccessToken = (pat: string): void => {
+    this.#store.set('personalAccessToken', pat)
   }
 
-  setGitHubRepositoryUrls (urls: Array<string>): void {
-    store.set('githubRepositoryUrls', urls)
+  getPersonalAccessToken = (): string | undefined => {
+    return this.#store.get('personalAccessToken')
   }
 
-  getGitHubRepositoryUrls (): Array<string> {
-    const urls = store.get('githubRepositoryUrls')
+  setUser = (user: GitHubUser): void => {
+    this.#store.set('user', user)
+  }
+
+  getUser = (): GitHubUser | undefined => {
+    return this.#store.get('user')
+  }
+
+  setGitHubAccount = (account: GitHubAccount): void => {
+    this.#store.set('account', account)
+  }
+
+  getGitHubAccount = (): GitHubAccount | undefined => {
+    return this.#store.get('account')
+  }
+
+  setGitHubRepositoryUrls = (urls: Array<string>): void => {
+    this.#store.set('githubRepositoryUrls', urls)
+  }
+
+  getGitHubRepositoryUrls = (): Array<string> => {
+    const urls = this.#store.get('githubRepositoryUrls')
     return urls === undefined ? [] : urls
   }
 
-  deleteGitHubRepositoryUrls (): void {
-    store.delete('githubRepositoryUrls')
+  deleteGitHubRepositoryUrls = (): void => {
+    this.#store.delete('githubRepositoryUrls')
   }
 }

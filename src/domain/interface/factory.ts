@@ -7,6 +7,6 @@ export const newGitHubAccessor = (apiEndpoint: string, pat: string): GitHubAcces
   return new GitHubGraphQLClient(apiEndpoint, pat)
 }
 
-export const newLocalStorageAccessor = (): LocalStorageAccessor => {
-  return new ElectronStoreWrapper()
+export const newLocalStorageAccessor = (configPostfix?: string): LocalStorageAccessor => {
+  return new ElectronStoreWrapper(configPostfix)
 }
