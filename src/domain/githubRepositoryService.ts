@@ -4,11 +4,6 @@ import { newGitHubAccessor, newLocalStorageAccessor } from '@/domain/interface/f
 import { RepositoryUrl } from '@/model/githubRepository'
 import { Repository } from '@/model/dto/githubApi'
 
-type repository = {
-  owner: string;
-  name: string;
-}
-
 export class GitHubRepositoryService {
   private githubAccessor?: GitHubAccessor
   private localStorageAccessor: LocalStorageAccessor
