@@ -56,10 +56,10 @@ export default defineComponent({
   mounted () {
     this.settings = this.applicationSettingService.getSettings()
     for (const s of this.settings) {
-      const la = newLocalStorageAccessor(s.configPostfix)
-      const act = la.getGitHubAccount()
-      if (act !== undefined) {
-        this.accounts.push(act)
+      const store = newLocalStorageAccessor(s.configPostfix)
+      const account = store.getGitHubAccount()
+      if (account !== undefined) {
+        this.accounts.push(account)
       }
     }
   }

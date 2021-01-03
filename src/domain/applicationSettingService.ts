@@ -9,7 +9,7 @@ export class ApplicationSettingService {
     return this.#localStorageAccessor.getApplicationSettings()
   }
 
-  addSetting = (setting: ApplicationSetting) => {
+  addSetting = (setting: ApplicationSetting): void => {
     const current = this.#localStorageAccessor.getApplicationSettings()
     const next = current.concat(setting)
     this.#localStorageAccessor.setApplicationSettings(next)

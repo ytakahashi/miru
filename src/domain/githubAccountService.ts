@@ -9,8 +9,8 @@ export class GitHubAccountService {
     this.#githubUrl = githubUrl
   }
 
-  resolvePersonalAccessToken = async (pat: string): Promise<GitHubAccount|undefined> => {
-    const githubAccessor = newGitHubAccessor(this.#githubUrl.apiEndpoint, pat)
+  resolvePersonalAccessToken = async (personalAccessToken: string): Promise<GitHubAccount|undefined> => {
+    const githubAccessor = newGitHubAccessor(this.#githubUrl.apiEndpoint, personalAccessToken)
     const viewer = await githubAccessor.getViewer().catch(e => console.error(e))
     if (viewer === undefined) {
       return undefined
@@ -21,7 +21,7 @@ export class GitHubAccountService {
       avatarUrl: viewer.viewer.avatarUrl,
       githubUrl: this.#githubUrl.url,
       githubApiEndpoint: this.#githubUrl.apiEndpoint,
-      personalAccessToken: pat
+      personalAccessToken: personalAccessToken
     }
 
     const store = newLocalStorageAccessor(account.personalAccessToken)
