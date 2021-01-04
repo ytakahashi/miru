@@ -1,6 +1,5 @@
-import { newGitHubAccessor, newLocalStorageAccessor } from '@/domain/interface/factory'
-import { GitHubUrl } from '@/model/github'
-import { GitHubAccount } from '@/model/dto/local'
+import { newGitHubAccessor } from '@/domain/interface/factory'
+import { Account, GitHubUrl } from '@/model/github'
 
 export class GitHubAccountService {
   #githubUrl: GitHubUrl
@@ -9,23 +8,18 @@ export class GitHubAccountService {
     this.#githubUrl = githubUrl
   }
 
-  resolvePersonalAccessToken = async (personalAccessToken: string): Promise<GitHubAccount|undefined> => {
-    const githubAccessor = newGitHubAccessor(this.#githubUrl.apiEndpoint, personalAccessToken)
-    const viewer = await githubAccessor.getViewer().catch(e => console.error(e))
+  resolvePersonalAccessToken = async (personalAccessToken: string): Promise<Account|undefined> => {
+    const githubAccessor = newGitHubAccessor(this.#githubUrl)
+    const viewer = await githubAccessor.getViewer(personalAccessToken).catch(e => console.error(e))
     if (viewer === undefined) {
       return undefined
     }
-    const account: GitHubAccount = {
-      userName: viewer.viewer.login,
-      profileUrl: viewer.viewer.url,
-      avatarUrl: viewer.viewer.avatarUrl,
-      githubUrl: this.#githubUrl.url,
-      githubApiEndpoint: this.#githubUrl.apiEndpoint,
-      personalAccessToken: personalAccessToken
-    }
-
-    const store = newLocalStorageAccessor(account.personalAccessToken)
-    store.setGitHubAccount(account)
-    return account
+    return new Account(
+      viewer.viewer.login,
+      viewer.viewer.url,
+      viewer.viewer.avatarUrl,
+      new GitHubUrl(this.#githubUrl.url, this.#githubUrl.apiEndpoint),
+      personalAccessToken
+    )
   }
 }
