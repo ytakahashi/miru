@@ -26,7 +26,7 @@ type DataType = {
 }
 
 export default defineComponent({
-  name: 'GitHubIssues',
+  name: 'IssuesView',
   components: {
     GitHubIssue
   },

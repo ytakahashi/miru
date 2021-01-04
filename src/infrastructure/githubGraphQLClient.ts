@@ -10,9 +10,9 @@ export class GitHubGraphQLClient implements GitHubAccessor {
     this.#graphQLClient = new GraphQLClient(gitHubUrl.apiEndpoint)
   }
 
-  public getViewer = async (personalApiToken: string): Promise<Viewer> => {
+  public getViewer = async (personalAccessToken: string): Promise<Viewer> => {
     const requestHeaders = {
-      authorization: `Bearer ${personalApiToken}`
+      authorization: `Bearer ${personalAccessToken}`
     }
     const query = gql`{
       viewer {
@@ -24,9 +24,9 @@ export class GitHubGraphQLClient implements GitHubAccessor {
     return this.#graphQLClient.request<Viewer>(query, {}, requestHeaders)
   }
 
-  public getIssues = async (personalApiToken: string, owner: string, name: string): Promise<Repository> => {
+  public getIssues = async (personalAccessToken: string, owner: string, name: string): Promise<Repository> => {
     const requestHeaders = {
-      authorization: `Bearer ${personalApiToken}`
+      authorization: `Bearer ${personalAccessToken}`
     }
     const query = gql`
       query getIssues($owner: String!, $name: String!, $firstIssueNumber: Int!) {
