@@ -1,19 +1,19 @@
 import { GraphQLClient, gql } from 'graphql-request'
 import { GitHubAccessor } from '@/domain/interface/githubAccessor'
 import { Repository, Viewer } from '@/model/dto/githubApi'
+import { GitHubUrl } from '@/model/github'
 
 export class GitHubGraphQLClient implements GitHubAccessor {
-  private graphQLClient: GraphQLClient
+  #graphQLClient: GraphQLClient
 
-  constructor (endpoint: string, token: string) {
-    this.graphQLClient = new GraphQLClient(endpoint, {
-      headers: {
-        authorization: `Bearer ${token}`
-      }
-    })
+  constructor (gitHubUrl: GitHubUrl) {
+    this.#graphQLClient = new GraphQLClient(gitHubUrl.apiEndpoint)
   }
 
-  public async getViewer (): Promise<Viewer> {
+  public getViewer = async (personalApiToken: string): Promise<Viewer> => {
+    const requestHeaders = {
+      authorization: `Bearer ${personalApiToken}`
+    }
     const query = gql`{
       viewer {
         avatarUrl
@@ -21,10 +21,13 @@ export class GitHubGraphQLClient implements GitHubAccessor {
         url
       }
     }`
-    return this.graphQLClient.request<Viewer>(query)
+    return this.#graphQLClient.request<Viewer>(query, {}, requestHeaders)
   }
 
-  public async getIssues (owner: string, name: string): Promise<Repository> {
+  public getIssues = async (personalApiToken: string, owner: string, name: string): Promise<Repository> => {
+    const requestHeaders = {
+      authorization: `Bearer ${personalApiToken}`
+    }
     const query = gql`
       query getIssues($owner: String!, $name: String!, $firstIssueNumber: Int!) {
         repository(owner:$owner, name:$name) {
@@ -54,6 +57,6 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       firstIssueNumber: 3
     }
 
-    return this.graphQLClient.request<Repository>(query, variables)
+    return this.#graphQLClient.request<Repository>(query, variables, requestHeaders)
   }
 }

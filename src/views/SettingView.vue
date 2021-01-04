@@ -1,6 +1,6 @@
 <template>
-  <div v-if="settings">
-    accounts: {{ accounts }}
+  <div v-for="(accountSetting, index) in accountSettings" :key="index">
+    <AccountSetting :account="accountSetting.account" :setting="accountSetting.setting" />
   </div>
 
   <input v-model="githubUrlInput" placeholder="GitHub URL (default: https://github.com)">
@@ -11,56 +11,67 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import AccountSetting from '@/components/AccountSetting.vue'
+import { AccountSettingService } from '@/domain/accountSettingService'
 import { ApplicationSettingService } from '@/domain/applicationSettingService'
 import { GitHubAccountService } from '@/domain/githubAccountService'
 import { ApplicationSetting } from '@/model/application'
-import { GitHubUrl } from '@/model/github'
-import { GitHubAccount } from '@/model/dto/local'
-import { newLocalStorageAccessor } from '@/domain/interface/factory'
+import { Account, GitHubUrl } from '@/model/github'
+
+type AccountSettingTuple = {
+  account: Account;
+  setting: ApplicationSetting;
+}
 
 type DataType = {
   githubUrlInput: string;
   personalAccessTokenInput: string
-  accounts: Array<GitHubAccount>;
-  settings: Array<ApplicationSetting>;
+  accountSettings: Array<AccountSettingTuple>;
   applicationSettingService: ApplicationSettingService;
 }
 
 export default defineComponent({
   name: 'SettingView',
+  components: {
+    AccountSetting
+  },
   data (): DataType {
     return {
       githubUrlInput: '',
       personalAccessTokenInput: '',
-      accounts: [],
-      settings: [],
+      accountSettings: [],
       applicationSettingService: new ApplicationSettingService()
     }
   },
   methods: {
     async addSetting () {
       // TODO: check duplicate
-      const url = new GitHubUrl(this.githubUrlInput === undefined ? 'https://github.com' : this.githubUrlInput)
+      const url = new GitHubUrl(this.githubUrlInput === '' ? 'https://github.com' : this.githubUrlInput)
       const github = new GitHubAccountService(url)
-      const account = await github.resolvePersonalAccessToken(this.personalAccessTokenInput)
-      if (account !== undefined) {
+      const resolved = await github.resolvePersonalAccessToken(this.personalAccessTokenInput)
+      if (resolved !== undefined) {
         const setting = {
-          configPostfix: account.personalAccessToken
+          configPostfix: resolved.personalAccessToken
         }
-        this.settings.push()
-        this.accounts.push(account)
+        this.accountSettings.push({
+          account: resolved,
+          setting: setting
+        })
         this.applicationSettingService.addSetting(setting)
+        const accountSettingService = new AccountSettingService(setting.configPostfix)
+        accountSettingService.setAccount(resolved)
       }
     }
   },
   mounted () {
-    this.settings = this.applicationSettingService.getSettings()
-    for (const s of this.settings) {
-      const store = newLocalStorageAccessor(s.configPostfix)
-      const account = store.getGitHubAccount()
-      if (account !== undefined) {
-        this.accounts.push(account)
-      }
+    const settings = this.applicationSettingService.getSettings()
+    for (const setting of settings) {
+      const accountSettingService = new AccountSettingService(setting.configPostfix)
+      const account = accountSettingService.getAccount()
+      this.accountSettings.push({
+        account: account,
+        setting: setting
+      })
     }
   }
 })

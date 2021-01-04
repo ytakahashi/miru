@@ -1,24 +1,24 @@
-import { LocalStorageAccessor } from '@/domain/interface/localStorageAccessor'
 import { GitHubAccessor } from '@/domain/interface/githubAccessor'
-import { newGitHubAccessor, newLocalStorageAccessor } from '@/domain/interface/factory'
+import { newGitHubAccessor } from '@/domain/interface/factory'
+import { GitHubUrl } from '@/model/github'
 import { RepositoryUrl } from '@/model/githubRepository'
 import { Repository } from '@/model/dto/githubApi'
 
 export class GitHubRepositoryService {
-  private githubAccessor?: GitHubAccessor
-  private localStorageAccessor: LocalStorageAccessor
+  #githubAccessor: GitHubAccessor
+  #personalAccessToken: string
 
-  constructor (apiEndpoint: string, githubPersonalAccessToken: string) {
-    this.githubAccessor = newGitHubAccessor(apiEndpoint, githubPersonalAccessToken)
-    this.localStorageAccessor = newLocalStorageAccessor()
+  constructor (githubUrl: GitHubUrl, personalAccessToken: string) {
+    this.#githubAccessor = newGitHubAccessor(githubUrl)
+    this.#personalAccessToken = personalAccessToken
   }
 
-  async getIssues (url: RepositoryUrl): Promise<Repository|undefined> {
-    if (this.githubAccessor === undefined || !url.isValid()) {
+  getIssues = async (url: RepositoryUrl): Promise<Repository|undefined> => {
+    if (this.#githubAccessor === undefined || !url.isValid()) {
       return undefined
     }
 
-    const issues = await this.githubAccessor.getIssues(url.getOwner(), url.getName())
+    const issues = await this.#githubAccessor.getIssues(this.#personalAccessToken, url.getOwner(), url.getName())
     return issues
   }
 }

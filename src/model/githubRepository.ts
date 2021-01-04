@@ -13,22 +13,22 @@ export class RepositoryUrl {
     }
   }
 
-  public isValid (): boolean {
+  public isValid = (): boolean => {
     return this.name !== undefined && this.owner !== undefined
   }
 
-  public getUrl (): string {
+  public getUrl = (): string => {
     return this.url
   }
 
-  public getOwner (): string {
+  public getOwner = (): string => {
     if (this.owner === undefined) {
       throw new Error('Invalid URL')
     }
     return this.owner
   }
 
-  public getName (): string {
+  public getName = (): string => {
     if (this.name === undefined) {
       throw new Error('Invalid URL')
     }
