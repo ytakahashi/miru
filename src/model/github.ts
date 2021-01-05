@@ -19,6 +19,9 @@ export class GitHubUrl {
     if (url === githubEndpoint) {
       return githubApiEndpoint
     }
+    if (apiEndpoint !== undefined) {
+      return apiEndpoint
+    }
     return `${url}/api/graphql`
   }
 
