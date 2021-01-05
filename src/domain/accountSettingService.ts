@@ -2,6 +2,7 @@ import { unlinkSync } from 'fs'
 import { LocalStorageAccessor } from '@/domain/interface/localStorageAccessor'
 import { newLocalStorageAccessor } from '@/domain/interface/factory'
 import { Account, GitHubUrl } from '@/model/github'
+import { RepositoryUrl } from '@/model/githubRepository'
 import { GitHubAccount } from '@/model/dto/local'
 
 export class AccountSettingService {
@@ -11,14 +12,15 @@ export class AccountSettingService {
     this.#localStorageAccessor = newLocalStorageAccessor(configPostfix)
   }
 
-  setRepositoryUrls = (urls: Array<string>): void => {
+  addRepositoryUrls = (url: RepositoryUrl): void => {
     const current = this.#localStorageAccessor.getGitHubRepositoryUrls()
-    const next = current.length ? new Set([...current, ...urls]) : new Set(urls)
+    const next = current.length ? new Set([...current, url.getUrl()]) : new Set(url.getUrl())
     this.#localStorageAccessor.setGitHubRepositoryUrls(Array.from(next))
   }
 
-  getRepositoryUrls = (): Array<string> => {
-    return this.#localStorageAccessor.getGitHubRepositoryUrls()
+  getRepositoryUrls = (): Array<RepositoryUrl> => {
+    const urls = this.#localStorageAccessor.getGitHubRepositoryUrls()
+    return urls.map(v => new RepositoryUrl(v))
   }
 
   clearRepositoryUrls = (): void => {

@@ -1,17 +1,21 @@
 <template>
   <p>Account: {{ account }}</p>
-  <p>Respositories: {{ githubRepositoryUrls }}</p>
+  <p>Respositories:</p>
+  <div v-for="url in githubRepositoryUrls" :key="url.getUrl()">
+    <GitHubRepository :repositoryUrl="url" />
+  </div>
   <br />
-  <input v-model="githubRepositoryUrl" placeholder="GitHub Repository URL">
-  <p v-if="!isValidRepositoryUrl">Invalid URL: {{ githubRepositoryUrl }}</p>
-  <button v-on:click="setGitHubRepository()">add reposotory</button>
-  <button v-on:click="clearGitHubRepository()">clear</button>
+  <input v-model="githubRepositoryUrlInput" placeholder="GitHub Repository URL">
+  <p v-if="!isValidRepositoryUrl">Invalid URL: {{ githubRepositoryUrlInput }}</p>
+  <button v-on:click="addGitHubRepository()">add repository</button>
+  <button v-on:click="clearGitHubRepositories()">clear</button>
   <br />
   <button v-on:click="deleteSetting()">delete this setting</button>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
+import GitHubRepository from '@/components/GitHubRepository.vue'
 import { AccountSettingService } from '@/domain/accountSettingService'
 import { ApplicationSettingService } from '@/domain/applicationSettingService'
 import { ApplicationSetting } from '@/model/application'
@@ -20,17 +24,20 @@ import { RepositoryUrl } from '@/model/githubRepository'
 
 type DataType = {
   isValidRepositoryUrl: boolean;
-  githubRepositoryUrl: string;
-  githubRepositoryUrls: Array<string>;
+  githubRepositoryUrlInput: string;
+  githubRepositoryUrls: Array<RepositoryUrl>;
   accountSettingService: AccountSettingService;
 }
 
 export default defineComponent({
   name: 'AccountSetting',
+  components: {
+    GitHubRepository
+  },
   data (): DataType {
     return {
       isValidRepositoryUrl: true,
-      githubRepositoryUrl: '',
+      githubRepositoryUrlInput: '',
       githubRepositoryUrls: [],
       accountSettingService: new AccountSettingService(this.setting.configPostfix)
     }
@@ -49,22 +56,20 @@ export default defineComponent({
     }
   },
   methods: {
-    setGitHubRepository (): void {
-      const url = new RepositoryUrl(this.githubRepositoryUrl)
+    addGitHubRepository (): void {
+      const url = new RepositoryUrl(this.githubRepositoryUrlInput)
       if (!url.isValid()) {
         this.isValidRepositoryUrl = false
         return
       }
       this.isValidRepositoryUrl = true
-      this.accountSettingService.setRepositoryUrls([this.githubRepositoryUrl])
+      this.accountSettingService.addRepositoryUrls(url)
       this.githubRepositoryUrls = this.accountSettingService.getRepositoryUrls()
+      this.githubRepositoryUrlInput = ''
     },
-    clearGitHubRepository (): void {
-      if (this.accountSettingService === undefined) {
-        return
-      }
+    clearGitHubRepositories (): void {
       this.accountSettingService.clearRepositoryUrls()
-      this.githubRepositoryUrl = ''
+      this.githubRepositoryUrlInput = ''
       this.githubRepositoryUrls = []
     },
     deleteSetting (): void {
@@ -72,6 +77,11 @@ export default defineComponent({
       applicationSettingService.removeSetting(this.setting)
       this.accountSettingService.deleteSetting()
       this.$emit('accountDeleted')
+    }
+  },
+  watch: {
+    githubRepositoryUrlInput: function () {
+      this.isValidRepositoryUrl = true
     }
   },
   mounted () {

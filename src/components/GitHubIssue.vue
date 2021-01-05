@@ -1,5 +1,5 @@
 <template>
-  <h3>{{ displayUrl }}</h3>
+  <h3>{{ repositoryUrl.asString() }}</h3>
   <button v-on:click="getIssues()">list issues</button>
 
   <div v-for="issue in issues" :key="issue.url">
@@ -11,7 +11,7 @@
   </div>
 
   <div v-if="isFailed">
-    Failed to list issues of {{ repositoryUrl.url }}
+    Failed to list issues of {{ repositoryUrl.getUrl() }}
   </div>
 </template>
 
@@ -62,11 +62,6 @@ export default defineComponent({
         this.issues = issues
         this.isEmpty = issues.length === 0
       }
-    }
-  },
-  computed: {
-    displayUrl (): string {
-      return `${this.repositoryUrl.getOwner()}/${this.repositoryUrl.getName()} (${this.repositoryUrl.getUrl()})`
     }
   }
 })

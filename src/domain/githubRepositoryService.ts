@@ -18,7 +18,6 @@ export class GitHubRepositoryService {
       return undefined
     }
 
-    const issues = await this.#githubAccessor.getIssues(this.#personalAccessToken, url.getOwner(), url.getName())
-    return issues
+    return this.#githubAccessor.getIssues(this.#personalAccessToken, url.getOwner(), url.getRepositoryName())
   }
 }
