@@ -3,6 +3,7 @@ import { GitHubUser } from '@/model/dto/githubApi'
 import { GitHubAccount } from '@/model/dto/local'
 
 export interface LocalStorageAccessor {
+  getPath (): string;
   setApplicationSettings (settings: Array<ApplicationSetting>): void;
   getApplicationSettings (): Array<ApplicationSetting>;
   setPersonalAccessToken (pat: string): void;

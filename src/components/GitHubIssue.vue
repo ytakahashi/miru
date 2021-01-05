@@ -5,6 +5,14 @@
   <div v-for="issue in issues" :key="issue.url">
     <IssueContent :issue="issue" />
   </div>
+
+  <div v-if="isEmpty">
+    No issues.
+  </div>
+
+  <div v-if="isFailed">
+    Failed to list issues of {{ repositoryUrl.url }}
+  </div>
 </template>
 
 <script lang="ts">
@@ -15,6 +23,8 @@ import { RepositoryUrl } from '@/model/githubRepository'
 
 type DataType = {
   issues: Array<Issue>;
+  isFailed: boolean;
+  isEmpty: boolean;
 }
 
 export default defineComponent({
@@ -24,7 +34,9 @@ export default defineComponent({
   },
   data (): DataType {
     return {
-      issues: []
+      issues: [],
+      isFailed: false,
+      isEmpty: false
     }
   },
   props: {
@@ -39,14 +51,17 @@ export default defineComponent({
   },
   methods: {
     async getIssues () {
-      const issues = await this.githubRepositoryService.getIssues(this.repositoryUrl)
-      if (issues === undefined) {
-        return
-      }
-      console.log('issues: ', issues)
-      this.issues = issues.repository.issues.edges
+      const response = await this.githubRepositoryService.getIssues(this.repositoryUrl)
+      const issues = response?.repository?.issues.edges
         .map(v => v.node)
         .map(v => new Issue(v.title, v.url, v.createdAt, v.updatedAt, v.labels.edges.map(l => new Label(l.node.name, l.node.color))))
+      if (issues === undefined) {
+        this.isFailed = true
+      } else {
+        this.isFailed = false
+        this.issues = issues
+        this.isEmpty = issues.length === 0
+      }
     }
   },
   computed: {

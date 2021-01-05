@@ -1,3 +1,4 @@
+import { unlinkSync } from 'fs'
 import { LocalStorageAccessor } from '@/domain/interface/localStorageAccessor'
 import { newLocalStorageAccessor } from '@/domain/interface/factory'
 import { Account, GitHubUrl } from '@/model/github'
@@ -48,5 +49,14 @@ export class AccountSettingService {
       new GitHubUrl(stored.githubUrl, stored.githubApiEndpoint),
       stored.personalAccessToken
     )
+  }
+
+  deleteSetting = (): void => {
+    const path = this.#localStorageAccessor.getPath()
+    try {
+      unlinkSync(path)
+    } catch (err) {
+      console.error('delete failed. ', err)
+    }
   }
 }
