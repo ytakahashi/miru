@@ -1,10 +1,13 @@
 <template>
   <p>Account: {{ account }}</p>
-  <p>Respositories: {{ githubRepositoryUrls }}</p>
+  <p>Respositories:</p>
+  <div v-for="url in githubRepositoryUrls" :key="url.getUrl()">
+    <GitHubRepository :repositoryUrl="url" />
+  </div>
   <br />
   <input v-model="githubRepositoryUrl" placeholder="GitHub Repository URL">
   <p v-if="!isValidRepositoryUrl">Invalid URL: {{ githubRepositoryUrl }}</p>
-  <button v-on:click="setGitHubRepository()">add reposotory</button>
+  <button v-on:click="addGitHubRepository()">add reposotory</button>
   <button v-on:click="clearGitHubRepository()">clear</button>
   <br />
   <button v-on:click="deleteSetting()">delete this setting</button>
@@ -12,6 +15,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
+import GitHubRepository from '@/components/GitHubRepository.vue'
 import { AccountSettingService } from '@/domain/accountSettingService'
 import { ApplicationSettingService } from '@/domain/applicationSettingService'
 import { ApplicationSetting } from '@/model/application'
@@ -21,12 +25,15 @@ import { RepositoryUrl } from '@/model/githubRepository'
 type DataType = {
   isValidRepositoryUrl: boolean;
   githubRepositoryUrl: string;
-  githubRepositoryUrls: Array<string>;
+  githubRepositoryUrls: Array<RepositoryUrl>;
   accountSettingService: AccountSettingService;
 }
 
 export default defineComponent({
   name: 'AccountSetting',
+  components: {
+    GitHubRepository
+  },
   data (): DataType {
     return {
       isValidRepositoryUrl: true,
@@ -49,15 +56,16 @@ export default defineComponent({
     }
   },
   methods: {
-    setGitHubRepository (): void {
+    addGitHubRepository (): void {
       const url = new RepositoryUrl(this.githubRepositoryUrl)
       if (!url.isValid()) {
         this.isValidRepositoryUrl = false
         return
       }
       this.isValidRepositoryUrl = true
-      this.accountSettingService.setRepositoryUrls([this.githubRepositoryUrl])
+      this.accountSettingService.addRepositoryUrls(url)
       this.githubRepositoryUrls = this.accountSettingService.getRepositoryUrls()
+      this.githubRepositoryUrl = ''
     },
     clearGitHubRepository (): void {
       if (this.accountSettingService === undefined) {

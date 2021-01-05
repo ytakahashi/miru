@@ -1,37 +1,43 @@
 export class RepositoryUrl {
-  private urlRegex = /^https:\/\/(?<origin>[^/]+)\/(?<owner>[^/]+)\/(?<name>.+)$/
-  private readonly url: string;
-  private readonly owner?: string;
-  private readonly name?: string;
+  readonly #urlRegex = /^https:\/\/(?<origin>[^/]+)\/(?<owner>[^/]+)\/(?<name>.+)$/
+  readonly #url: string;
+  readonly #origin?: string;
+  readonly #owner?: string;
+  readonly #repositoryName?: string;
 
   constructor (url: string) {
-    this.url = url
-    const result = url.match(this.urlRegex)
+    this.#url = url
+    const result = url.match(this.#urlRegex)
     if (result?.groups !== undefined) {
-      this.owner = result.groups.owner
-      this.name = result.groups.name
+      this.#origin = result.groups.origin
+      this.#owner = result.groups.owner
+      this.#repositoryName = result.groups.name
     }
   }
 
   public isValid = (): boolean => {
-    return this.name !== undefined && this.owner !== undefined
+    return this.#repositoryName !== undefined && this.#owner !== undefined
   }
 
   public getUrl = (): string => {
-    return this.url
+    return this.#url
   }
 
   public getOwner = (): string => {
-    if (this.owner === undefined) {
+    if (this.#owner === undefined) {
       throw new Error('Invalid URL')
     }
-    return this.owner
+    return this.#owner
   }
 
-  public getName = (): string => {
-    if (this.name === undefined) {
+  public getRepositoryName = (): string => {
+    if (this.#repositoryName === undefined) {
       throw new Error('Invalid URL')
     }
-    return this.name
+    return this.#repositoryName
+  }
+
+  public asString = (): string => {
+    return `${this.#origin}/${this.#owner}/${this.#repositoryName}`
   }
 }

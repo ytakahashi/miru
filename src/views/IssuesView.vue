@@ -41,10 +41,7 @@ export default defineComponent({
     for (const s of settings) {
       const accountSettingService = new AccountSettingService(s.configPostfix)
       const account = accountSettingService.getAccount()
-      const repositories = accountSettingService.getRepositoryUrls()
-      const repositoryUrls = repositories
-        .map(url => new RepositoryUrl(url))
-        .filter(v => v.isValid())
+      const repositoryUrls = accountSettingService.getRepositoryUrls()
       this.tuples.push({
         gitHubRepositoryService: new GitHubRepositoryService(account.githubUrl, account.personalAccessToken),
         repositories: repositoryUrls
