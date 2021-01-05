@@ -3,16 +3,28 @@ import { newLocalStorageAccessor } from '@/domain/interface/factory'
 import { ApplicationSetting } from '@/model/application'
 
 export class ApplicationSettingService {
-  #localStorageAccessor: LocalStorageAccessor = newLocalStorageAccessor()
+  #localStorageAccessor: LocalStorageAccessor
+
+  constructor (localStorageAccessor?: LocalStorageAccessor) {
+    this.#localStorageAccessor =
+      localStorageAccessor === undefined
+        ? newLocalStorageAccessor()
+        : localStorageAccessor
+  }
 
   getSettings = (): Array<ApplicationSetting> => {
     return this.#localStorageAccessor.getApplicationSettings()
   }
 
-  addSetting = (setting: ApplicationSetting): void => {
+  addSetting = (setting: ApplicationSetting): boolean => {
     const current = this.#localStorageAccessor.getApplicationSettings()
+    const exists = current.some(s => s.equals(setting))
+    if (exists) {
+      return false
+    }
     const next = current.concat(setting)
     this.#localStorageAccessor.setApplicationSettings(next)
+    return true
   }
 
   removeSetting = (setting: ApplicationSetting): void => {

@@ -10,7 +10,8 @@
   <input v-model="githubUrlInput" placeholder="GitHub URL (default: https://github.com)">
   <input v-model="personalAccessTokenInput" placeholder="GitHub Personal Access Token">
   <button v-on:click="addSetting()">add setting</button>
-
+  <div v-if="isDuplicated">duplicated personal access token: {{ personalAccessTokenInput }}</div>
+  <div v-if="isInvalidAccessToken">invalid input: {{ githubUrlInput }}, {{ personalAccessTokenInput }}</div>
 </template>
 
 <script lang="ts">
@@ -32,6 +33,8 @@ type DataType = {
   personalAccessTokenInput: string
   accountSettings: Array<AccountSettingTuple>;
   applicationSettingService: ApplicationSettingService;
+  isDuplicated: boolean;
+  isInvalidAccessToken: boolean;
 }
 
 export default defineComponent({
@@ -44,27 +47,40 @@ export default defineComponent({
       githubUrlInput: '',
       personalAccessTokenInput: '',
       accountSettings: [],
-      applicationSettingService: new ApplicationSettingService()
+      applicationSettingService: new ApplicationSettingService(),
+      isDuplicated: false,
+      isInvalidAccessToken: false
     }
   },
   methods: {
     async addSetting () {
-      // TODO: check duplicate
       const url = this.githubUrlInput === '' ? new GitHubUrl() : new GitHubUrl(this.githubUrlInput)
       const github = new GitHubAccountService(url)
-      const resolved = await github.resolvePersonalAccessToken(this.personalAccessTokenInput)
-      if (resolved !== undefined) {
-        const setting = {
-          configPostfix: resolved.personalAccessToken
-        }
-        this.accountSettings.push({
-          account: resolved,
-          setting: setting
-        })
-        this.applicationSettingService.addSetting(setting)
+      github.resolvePersonalAccessToken(this.personalAccessTokenInput)
+        .then(r => this.onSuccess(r))
+        .catch(e => this.onFailure(e))
+    },
+    onSuccess (resolved: Account|undefined) {
+      if (resolved === undefined) {
+        this.isInvalidAccessToken = true
+        return
+      }
+      const setting = new ApplicationSetting(resolved.personalAccessToken)
+      this.accountSettings.push({
+        account: resolved,
+        setting: setting
+      })
+      const isAdded = this.applicationSettingService.addSetting(setting)
+      if (isAdded) {
         const accountSettingService = new AccountSettingService(setting.configPostfix)
         accountSettingService.setAccount(resolved)
+      } else {
+        this.isDuplicated = true
       }
+    },
+    onFailure (err: Error) {
+      console.error(JSON.stringify(err, undefined, 2))
+      this.isInvalidAccessToken = true
     },
     refreshAccounts () {
       this.accountSettings.splice(0)

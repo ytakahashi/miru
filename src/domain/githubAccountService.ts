@@ -10,7 +10,7 @@ export class GitHubAccountService {
 
   resolvePersonalAccessToken = async (personalAccessToken: string): Promise<Account|undefined> => {
     const githubAccessor = newGitHubAccessor(this.#githubUrl)
-    const viewer = await githubAccessor.getViewer(personalAccessToken).catch(e => console.error(e))
+    const viewer = await githubAccessor.getViewer(personalAccessToken)
     if (viewer === undefined) {
       return undefined
     }
