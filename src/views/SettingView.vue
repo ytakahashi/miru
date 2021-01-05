@@ -1,6 +1,10 @@
 <template>
   <div v-for="(accountSetting, index) in accountSettings" :key="index">
-    <AccountSetting :account="accountSetting.account" :setting="accountSetting.setting" />
+    <AccountSetting
+      :account="accountSetting.account"
+      :setting="accountSetting.setting"
+      @account-deleted="refreshAccounts"
+    />
   </div>
 
   <input v-model="githubUrlInput" placeholder="GitHub URL (default: https://github.com)">
@@ -46,7 +50,7 @@ export default defineComponent({
   methods: {
     async addSetting () {
       // TODO: check duplicate
-      const url = new GitHubUrl(this.githubUrlInput === '' ? 'https://github.com' : this.githubUrlInput)
+      const url = this.githubUrlInput === '' ? new GitHubUrl() : new GitHubUrl(this.githubUrlInput)
       const github = new GitHubAccountService(url)
       const resolved = await github.resolvePersonalAccessToken(this.personalAccessTokenInput)
       if (resolved !== undefined) {
@@ -61,18 +65,22 @@ export default defineComponent({
         const accountSettingService = new AccountSettingService(setting.configPostfix)
         accountSettingService.setAccount(resolved)
       }
+    },
+    refreshAccounts () {
+      this.accountSettings.splice(0)
+      const settings = this.applicationSettingService.getSettings()
+      for (const setting of settings) {
+        const accountSettingService = new AccountSettingService(setting.configPostfix)
+        const account = accountSettingService.getAccount()
+        this.accountSettings.push({
+          account: account,
+          setting: setting
+        })
+      }
     }
   },
   mounted () {
-    const settings = this.applicationSettingService.getSettings()
-    for (const setting of settings) {
-      const accountSettingService = new AccountSettingService(setting.configPostfix)
-      const account = accountSettingService.getAccount()
-      this.accountSettings.push({
-        account: account,
-        setting: setting
-      })
-    }
+    this.refreshAccounts()
   }
 })
 </script>

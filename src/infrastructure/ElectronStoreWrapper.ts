@@ -22,6 +22,10 @@ export class ElectronStoreWrapper implements LocalStorageAccessor {
     })
   }
 
+  getPath = (): string => {
+    return this.#store.path
+  }
+
   setApplicationSettings = (settings: Array<ApplicationSetting>): void => {
     this.#store.set('applicationSettings', settings)
   }

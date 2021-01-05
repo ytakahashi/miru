@@ -1,13 +1,28 @@
+const githubEndpoint = 'https://github.com'
 const githubApiEndpoint = 'https://api.github.com/graphql'
 
 export class GitHubUrl {
   #url: string;
   #apiEndpoint: string;
 
-  constructor (url: string, apiEndpoint?: string) {
-    this.#url = url
-    // TODO: initialize/validation
-    this.#apiEndpoint = apiEndpoint === undefined ? githubApiEndpoint : apiEndpoint
+  constructor (url?: string, apiEndpoint?: string) {
+    // TODO: validation
+    this.#url = this.initUrl(url)
+    this.#apiEndpoint = this.initApiEndpoint(this.#url, apiEndpoint)
+  }
+
+  private initUrl (url?: string): string {
+    return url === undefined ? githubEndpoint : url
+  }
+
+  private initApiEndpoint (url: string, apiEndpoint?: string): string {
+    if (url === githubEndpoint) {
+      return githubApiEndpoint
+    }
+    if (apiEndpoint !== undefined) {
+      return apiEndpoint
+    }
+    return `${url}/api/graphql`
   }
 
   get url (): string {

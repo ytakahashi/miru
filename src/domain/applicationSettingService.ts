@@ -14,4 +14,10 @@ export class ApplicationSettingService {
     const next = current.concat(setting)
     this.#localStorageAccessor.setApplicationSettings(next)
   }
+
+  removeSetting = (setting: ApplicationSetting): void => {
+    const current = this.#localStorageAccessor.getApplicationSettings()
+    const next = current.filter(v => v.configPostfix !== setting.configPostfix)
+    this.#localStorageAccessor.setApplicationSettings(next)
+  }
 }
