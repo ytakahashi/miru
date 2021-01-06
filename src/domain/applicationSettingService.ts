@@ -12,19 +12,19 @@ export class ApplicationSettingService {
         : localStorageAccessor
   }
 
+  hasSetting = (setting: ApplicationSetting): boolean => {
+    const current = this.#localStorageAccessor.getApplicationSettings()
+    return current.some(s => setting.equals(s))
+  }
+
   getSettings = (): Array<ApplicationSetting> => {
     return this.#localStorageAccessor.getApplicationSettings()
   }
 
-  addSetting = (setting: ApplicationSetting): boolean => {
+  addSetting = (setting: ApplicationSetting): void => {
     const current = this.#localStorageAccessor.getApplicationSettings()
-    const exists = current.some(s => s.equals(setting))
-    if (exists) {
-      return false
-    }
     const next = current.concat(setting)
     this.#localStorageAccessor.setApplicationSettings(next)
-    return true
   }
 
   removeSetting = (setting: ApplicationSetting): void => {
