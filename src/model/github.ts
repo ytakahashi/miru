@@ -37,6 +37,10 @@ export class GitHubUrl {
     // TODO
     return this.#url.substring(8)
   }
+
+  isEnterprise = (): boolean => {
+    return this.#url !== githubEndpoint
+  }
 }
 
 export class Account {

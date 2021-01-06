@@ -1,12 +1,14 @@
 <template>
   <div class="profile">
-    <div class="profile-img" v-on:click="openProfile()">
+    <div v-if="!account.githubUrl.isEnterprise()" class="profile-img" v-on:click="openProfile()">
       <img :src="account.avatarUrl" />
     </div>
-    <span class="profile-name">{{ profile }}</span>
-    <button type="button" v-on:click="deleteSetting()">
-      <i class="fas fa-trash-alt"></i>
-    </button>
+    <div class="profile-header">
+      <span class="profile-name" v-on:click="openProfile()">{{ profile }}</span>
+      <button type="button" v-on:click="deleteSetting()">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </div>
     <p>Respositories:</p>
     <div v-for="url in githubRepositoryUrls" :key="url.getUrl()">
       <GitHubRepository :repositoryUrl="url" />
@@ -133,8 +135,12 @@ img {
 }
 
 .profile-name {
+  cursor: pointer;
   font-weight: bold;
   padding: 0.3em;
-  margin: 0;
+}
+
+.profile-header {
+  margin-top: 0.7em;
 }
 </style>
