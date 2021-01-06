@@ -32,6 +32,15 @@ export class GitHubUrl {
   get apiEndpoint (): string {
     return this.#apiEndpoint
   }
+
+  getDomain = (): string => {
+    // TODO
+    return this.#url.substring(8)
+  }
+
+  isEnterprise = (): boolean => {
+    return this.#url !== githubEndpoint
+  }
 }
 
 export class Account {
