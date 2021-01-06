@@ -36,7 +36,7 @@ export default defineComponent({
   cursor: pointer;
   padding: 1em;
   margin: 1em 0;
-  background-color:#fffbfb;
+  background-color: #fffbfb;
   border-left: solid 10px #ffb5b5;
 }
 
