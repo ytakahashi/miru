@@ -1,7 +1,6 @@
 export class RepositoryUrl {
   readonly #urlRegex = /^https:\/\/(?<origin>[^/]+)\/(?<owner>[^/]+)\/(?<name>.+)$/
   readonly #url: string;
-  readonly #origin?: string;
   readonly #owner?: string;
   readonly #repositoryName?: string;
 
@@ -9,7 +8,6 @@ export class RepositoryUrl {
     this.#url = url
     const result = url.match(this.#urlRegex)
     if (result?.groups !== undefined) {
-      this.#origin = result.groups.origin
       this.#owner = result.groups.owner
       this.#repositoryName = result.groups.name
     }
@@ -38,6 +36,6 @@ export class RepositoryUrl {
   }
 
   public asString = (): string => {
-    return `${this.#origin}/${this.#owner}/${this.#repositoryName}`
+    return `${this.#owner}/${this.#repositoryName}`
   }
 }
