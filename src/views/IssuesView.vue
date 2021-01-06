@@ -1,5 +1,4 @@
 <template>
-  <h1>View issues.</h1>
   <div v-for="(t, index) in tuples" :key="index">
     <div v-for="(repo, index) in t.repositories" :key="index">
       <GitHubIssue :repositoryUrl="repo" :githubRepositoryService="t.gitHubRepositoryService"></GitHubIssue>

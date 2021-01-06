@@ -64,3 +64,34 @@ export class Account {
     this.personalAccessToken = personalAccessToken
   }
 }
+
+export class IssueLabel {
+  public readonly name: string;
+  public readonly color: string;
+  constructor (name: string, color: string) {
+    this.name = name
+    this.color = color
+  }
+}
+
+export class Issue {
+  public readonly title: string;
+  public readonly url: string;
+  public readonly createdAt: string;
+  public readonly updatedAt: string;
+  public readonly labels: Array<IssueLabel>;
+
+  constructor (
+    title: string,
+    url: string,
+    createdAt: string,
+    updatedAt: string,
+    labels: Array<IssueLabel>
+  ) {
+    this.title = title
+    this.url = url
+    this.createdAt = createdAt
+    this.updatedAt = updatedAt
+    this.labels = labels
+  }
+}
