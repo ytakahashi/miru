@@ -61,7 +61,7 @@ export default defineComponent({
         .catch(e => this.onFailure(e))
     },
     onSuccess (resolved: Account): void {
-      const setting = new ApplicationSetting(resolved.personalAccessToken)
+      const setting = new ApplicationSetting(resolved.getId())
       if (this.applicationSettingService.hasSetting(setting)) {
         this.isDuplicated = true
       } else {

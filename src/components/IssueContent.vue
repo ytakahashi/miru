@@ -1,8 +1,11 @@
 <template>
   <div class="issue" v-on:click="openIssue()">
+    <div class="issue-update">
+      <i class="fas fa-chart-line"></i>
+      {{ issue.getUpdatedRelativeDate() }}
+    </div>
     <span class="issue-title">{{ issue.title }}</span><br />
-    <!-- TODO: local time -->
-    createdAt: {{ issue.createdAt }}, updatedAt: {{ issue.updatedAt }}
+    created: {{ issue.getCreatedRelativeDate() }}
     <br />
     <span v-for="(label, index) in issue.labels" :key="index">
       <span class="issue-label" v-bind:style="{ backgroundColor: `#${label.color}`}">{{ label.name }}</span>
@@ -34,10 +37,16 @@ export default defineComponent({
 <style scoped lang="scss">
 .issue {
   cursor: pointer;
-  padding: 1em;
+  padding: 0.4em 1em;
   margin: 1em 0;
   background-color: #fffbfb;
   border-left: solid 10px #ffb5b5;
+}
+
+.issue-update {
+  padding-bottom: 0.5em;
+  font-size: 0.8em;
+  text-align: left;
 }
 
 .issue-title {
