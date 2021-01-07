@@ -78,24 +78,36 @@ export class IssueLabel {
 }
 
 export class Issue {
+  public readonly authorName: string;
+  public readonly issueNumber: number;
   public readonly title: string;
   public readonly url: string;
   public readonly createdAt: string;
   public readonly updatedAt: string;
   public readonly labels: Array<IssueLabel>;
+  public readonly numberOfComments: number;
+  public readonly numberOfParticipants: number;
 
   constructor (
+    authorName: string,
+    issueNumber: number,
     title: string,
     url: string,
     createdAt: string,
     updatedAt: string,
-    labels: Array<IssueLabel>
+    labels: Array<IssueLabel>,
+    numberOfComments: number,
+    numberOfParticipants: number
   ) {
+    this.authorName = authorName
+    this.issueNumber = issueNumber
     this.title = title
     this.url = url
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this.labels = labels
+    this.numberOfComments = numberOfComments
+    this.numberOfParticipants = numberOfParticipants
   }
 
   getCreatedRelativeDate = (): string => {

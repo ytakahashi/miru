@@ -34,11 +34,15 @@ export class GitHubRepositoryService {
       return r.issues.edges
         .map(v => v.node)
         .map(v => new Issue(
+          v.author.login,
+          v.number,
           v.title,
           v.url,
           v.createdAt,
           v.updatedAt,
-          v.labels.edges.map(l => new IssueLabel(l.node.name, l.node.color))
+          v.labels.edges.map(l => new IssueLabel(l.node.name, l.node.color)),
+          v.comments.totalCount,
+          v.participants.totalCount
         ))
     }
 
