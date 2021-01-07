@@ -7,7 +7,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
   #graphQLClient: GraphQLClient
 
   constructor (gitHubUrl: GitHubUrl) {
-    this.#graphQLClient = new GraphQLClient(gitHubUrl.apiEndpoint)
+    this.#graphQLClient = new GraphQLClient(gitHubUrl.getApiEndpoint())
   }
 
   public getViewer = async (personalAccessToken: string): Promise<Viewer> => {

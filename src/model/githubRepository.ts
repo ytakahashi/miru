@@ -1,24 +1,25 @@
+const urlRegex = /^https:\/\/(?<origin>[^/]+)\/(?<owner>[^/]+)\/(?<name>[^/]+)\/?$/
+
 export class RepositoryUrl {
-  readonly #urlRegex = /^https:\/\/(?<origin>[^/]+)\/(?<owner>[^/]+)\/(?<name>.+)$/
-  readonly #url: string;
+  readonly #origin?: string;
   readonly #owner?: string;
   readonly #repositoryName?: string;
 
   constructor (url: string) {
-    this.#url = url
-    const result = url.match(this.#urlRegex)
+    const result = url.match(urlRegex)
     if (result?.groups !== undefined) {
+      this.#origin = result.groups.origin
       this.#owner = result.groups.owner
       this.#repositoryName = result.groups.name
     }
   }
 
   public isValid = (): boolean => {
-    return this.#repositoryName !== undefined && this.#owner !== undefined
+    return this.#origin !== undefined && this.#repositoryName !== undefined && this.#owner !== undefined
   }
 
   public getUrl = (): string => {
-    return this.#url
+    return `https://${this.#origin}/${this.#owner}/${this.#repositoryName}`
   }
 
   public getOwner = (): string => {
