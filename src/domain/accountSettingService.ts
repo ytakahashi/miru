@@ -32,8 +32,8 @@ export class AccountSettingService {
       userName: account.userName,
       profileUrl: account.profileUrl,
       avatarUrl: account.avatarUrl,
-      githubUrl: account.githubUrl.url,
-      githubApiEndpoint: account.githubUrl.apiEndpoint,
+      githubUrl: account.githubUrl.getUrl(),
+      githubApiEndpoint: account.githubUrl.getApiEndpoint(),
       personalAccessToken: account.personalAccessToken
     }
     this.#localStorageAccessor.setGitHubAccount(gitHubAccount)

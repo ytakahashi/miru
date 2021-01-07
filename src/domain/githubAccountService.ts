@@ -18,7 +18,7 @@ export class GitHubAccountService {
       viewer.viewer.login,
       viewer.viewer.url,
       viewer.viewer.avatarUrl,
-      new GitHubUrl(this.#githubUrl.url, this.#githubUrl.apiEndpoint),
+      new GitHubUrl(this.#githubUrl.getUrl(), this.#githubUrl.getApiEndpoint()),
       personalAccessToken
     )
   }

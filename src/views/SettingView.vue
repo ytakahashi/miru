@@ -11,7 +11,8 @@
   <input v-model="personalAccessTokenInput" placeholder="GitHub Personal Access Token">
   <button v-on:click="addSetting()">add setting</button>
   <div v-if="isDuplicated">duplicated personal access token: {{ personalAccessTokenInput }}</div>
-  <div v-if="isInvalidAccessToken">invalid input: <span v-if="githubUrlInput">{{ githubUrlInput }}, </span> {{ personalAccessTokenInput }}</div>
+  <div v-if="isInvalidAccessToken">invalid access token: <span v-if="githubUrlInput">{{ githubUrlInput }}, </span> {{ personalAccessTokenInput }}</div>
+  <div v-if="isInvalidUrl">invalid url: {{ githubUrlInput }}</div>
 </template>
 
 <script lang="ts">
@@ -35,6 +36,7 @@ type DataType = {
   applicationSettingService: ApplicationSettingService;
   isDuplicated: boolean;
   isInvalidAccessToken: boolean;
+  isInvalidUrl: boolean;
 }
 
 export default defineComponent({
@@ -49,12 +51,17 @@ export default defineComponent({
       accountSettings: [],
       applicationSettingService: new ApplicationSettingService(),
       isDuplicated: false,
-      isInvalidAccessToken: false
+      isInvalidAccessToken: false,
+      isInvalidUrl: false
     }
   },
   methods: {
     addSetting (): void {
-      const url = this.githubUrlInput === '' ? new GitHubUrl() : new GitHubUrl(this.githubUrlInput)
+      const url = GitHubUrl.from(this.githubUrlInput)
+      if (url === undefined) {
+        this.isInvalidUrl = true
+        return
+      }
       const github = new GitHubAccountService(url)
       github.resolvePersonalAccessToken(this.personalAccessTokenInput)
         .then(r => this.onSuccess(r))
@@ -95,6 +102,7 @@ export default defineComponent({
     githubUrlInput: function () {
       this.isDuplicated = false
       this.isInvalidAccessToken = false
+      this.isInvalidUrl = false
     },
     personalAccessTokenInput: function () {
       this.isDuplicated = false

@@ -7,44 +7,38 @@ const githubEndpoint = 'https://github.com'
 const githubApiEndpoint = 'https://api.github.com/graphql'
 
 export class GitHubUrl {
-  #url: string;
+  #url: URL;
   #apiEndpoint: string;
 
-  constructor (url?: string, apiEndpoint?: string) {
-    // TODO: validation
-    this.#url = this.initUrl(url)
-    this.#apiEndpoint = this.initApiEndpoint(this.#url, apiEndpoint)
-  }
-
-  private initUrl (url?: string): string {
-    return url === undefined ? githubEndpoint : url
-  }
-
-  private initApiEndpoint (url: string, apiEndpoint?: string): string {
-    if (url === githubEndpoint) {
-      return githubApiEndpoint
+  static from = (url?: string): GitHubUrl|undefined => {
+    try {
+      const urlObject = url ? new URL(url) : new URL(githubEndpoint)
+      const apiEndpoint = urlObject.origin === githubEndpoint ? githubApiEndpoint : `${urlObject.origin}/api/graphql`
+      return new GitHubUrl(urlObject.origin, apiEndpoint)
+    } catch (e) {
+      return undefined
     }
-    if (apiEndpoint !== undefined) {
-      return apiEndpoint
-    }
-    return `${url}/api/graphql`
   }
 
-  get url (): string {
-    return this.#url
+  constructor (url: string, apiEndpoint: string) {
+    this.#url = new URL(url)
+    this.#apiEndpoint = apiEndpoint
   }
 
-  get apiEndpoint (): string {
+  getUrl = (): string => {
+    return this.#url.origin
+  }
+
+  getApiEndpoint = (): string => {
     return this.#apiEndpoint
   }
 
   getDomain = (): string => {
-    // TODO
-    return this.#url.substring(8)
+    return this.#url.host
   }
 
   isEnterprise = (): boolean => {
-    return this.#url !== githubEndpoint
+    return this.#url.origin !== githubEndpoint
   }
 }
 
