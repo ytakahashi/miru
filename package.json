@@ -16,6 +16,7 @@
   "main": "background.js",
   "dependencies": {
     "core-js": "^3.8.1",
+    "dayjs": "^1.10.2",
     "electron-store": "^6.0.1",
     "graphql": "^15.4.0",
     "graphql-request": "^3.4.0",

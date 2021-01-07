@@ -1,3 +1,8 @@
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+
+dayjs.extend(relativeTime)
+
 const githubEndpoint = 'https://github.com'
 const githubApiEndpoint = 'https://api.github.com/graphql'
 
@@ -63,6 +68,10 @@ export class Account {
     this.githubUrl = githubUrl
     this.personalAccessToken = personalAccessToken
   }
+
+  getId = (): string => {
+    return `${this.userName}.${this.githubUrl.getDomain()}`
+  }
 }
 
 export class IssueLabel {
@@ -93,5 +102,13 @@ export class Issue {
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this.labels = labels
+  }
+
+  getCreatedRelativeDate = (): string => {
+    return dayjs(this.createdAt).fromNow()
+  }
+
+  getUpdatedRelativeDate = (): string => {
+    return dayjs(this.updatedAt).fromNow()
   }
 }
