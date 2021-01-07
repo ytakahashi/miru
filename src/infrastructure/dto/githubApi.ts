@@ -1,3 +1,13 @@
+export type GitHubUser = {
+  avatarUrl: string;
+  login: string;
+  url: string;
+}
+
+export type Viewer = {
+  viewer: GitHubUser;
+}
+
 export type IssueLabel = {
   name: string;
   color: string;
@@ -12,12 +22,24 @@ export type IssueLabelEdge = {
   edges: Array<IssueLabelNode>;
 }
 
+export type IssueCommentConnection = {
+  totalCount: number;
+}
+
+export type UserConnection = {
+  totalCount: number;
+}
+
 export type Issue = {
+  author: GitHubUser;
   title: string;
   url: string;
+  comments: IssueCommentConnection;
   createdAt: string;
   updatedAt: string;
   labels: IssueLabelEdge;
+  number: number;
+  participants: UserConnection;
 }
 
 export type IssueNode = {
@@ -35,14 +57,4 @@ export type GithubRepository = {
 
 export type Repository = {
   repository?: GithubRepository;
-}
-
-export type GitHubUser = {
-  avatarUrl: string;
-  login: string;
-  url: string;
-}
-
-export type Viewer = {
-  viewer: GitHubUser;
 }

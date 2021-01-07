@@ -34,6 +34,14 @@ export class GitHubGraphQLClient implements GitHubAccessor {
           issues(first:$firstIssueNumber, states:OPEN, orderBy:{field: UPDATED_AT, direction: DESC}) {
             edges {
               node {
+                author {
+                  avatarUrl
+                  login
+                  url
+                }
+                comments {
+                  totalCount
+                }
                 title
                 url
                 createdAt
@@ -45,6 +53,10 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                       color
                     }
                   }
+                }
+                number
+                participants {
+                  totalCount
                 }
               }
             }

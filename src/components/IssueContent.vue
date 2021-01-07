@@ -1,12 +1,17 @@
 <template>
   <div class="issue" v-on:click="openIssue()">
     <div class="issue-update">
-      <i class="fas fa-chart-line"></i>
+      <i class="far fa-clock"></i>
       {{ issue.getUpdatedRelativeDate() }}
     </div>
-    <span class="issue-title">{{ issue.title }}</span><br />
-    created: {{ issue.getCreatedRelativeDate() }}
-    <br />
+    <span class="issue-title">{{ issue.title }}</span>
+    <div class="issue-description">
+      {{ issue.authorName }} created {{ issue.getCreatedRelativeDate() }}
+      <span class="issue-info">
+        <i class="far fa-comments"></i> {{ issue.numberOfComments }}
+        <i class="far fa-user"></i>{{ issue.numberOfParticipants }}
+      </span>
+    </div>
     <span v-for="(label, index) in issue.labels" :key="index">
       <span class="issue-label" v-bind:style="{ backgroundColor: `#${label.color}`}">{{ label.name }}</span>
     </span>
@@ -52,6 +57,15 @@ export default defineComponent({
 .issue-title {
   font-size: 1.1em;
   font-weight: bold;
+}
+
+.issue-description {
+  font-size: 0.9em;
+}
+
+.issue-info {
+  font-size: 0.9em;
+  padding-left: 0.7em;
 }
 
 .issue-label {
