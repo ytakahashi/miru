@@ -73,7 +73,7 @@ export default defineComponent({
         this.isDuplicated = true
       } else {
         this.applicationSettingService.addSetting(setting)
-        const accountSettingService = new AccountSettingService(setting.configPostfix)
+        const accountSettingService = AccountSettingService.init(setting.configPostfix)
         accountSettingService.setAccount(resolved)
         this.accountSettings.push({
           account: resolved,
@@ -89,7 +89,7 @@ export default defineComponent({
       this.accountSettings.splice(0)
       const settings = this.applicationSettingService.getSettings()
       for (const setting of settings) {
-        const accountSettingService = new AccountSettingService(setting.configPostfix)
+        const accountSettingService = AccountSettingService.init(setting.configPostfix)
         const account = accountSettingService.getAccount()
         this.accountSettings.push({
           account: account,

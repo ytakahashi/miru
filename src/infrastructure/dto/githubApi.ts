@@ -34,7 +34,7 @@ export type GithubRepository = {
 }
 
 export type Repository = {
-  repository: GithubRepository;
+  repository?: GithubRepository;
 }
 
 export type GitHubUser = {

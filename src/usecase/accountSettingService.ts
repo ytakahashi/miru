@@ -8,8 +8,12 @@ import { GitHubAccount } from '@/infrastructure/dto/local'
 export class AccountSettingService {
   #localStorageAccessor: LocalStorageAccessor
 
-  constructor (configPostfix: string) {
-    this.#localStorageAccessor = newLocalStorageAccessor(configPostfix)
+  static init (configPostfix: string): AccountSettingService {
+    return new AccountSettingService(newLocalStorageAccessor(configPostfix))
+  }
+
+  constructor (localStorageAccessor: LocalStorageAccessor) {
+    this.#localStorageAccessor = localStorageAccessor
   }
 
   addRepositoryUrls = (url: RepositoryUrl): void => {

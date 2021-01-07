@@ -49,7 +49,7 @@ export default defineComponent({
       isValidRepositoryUrl: true,
       githubRepositoryUrlInput: '',
       githubRepositoryUrls: [],
-      accountSettingService: new AccountSettingService(this.setting.configPostfix)
+      accountSettingService: AccountSettingService.init(this.setting.configPostfix)
     }
   },
   emits: {

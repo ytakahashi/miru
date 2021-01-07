@@ -38,11 +38,11 @@ export default defineComponent({
   mounted () {
     const settings = this.applicationSettingService.getSettings()
     for (const s of settings) {
-      const accountSettingService = new AccountSettingService(s.configPostfix)
+      const accountSettingService = AccountSettingService.init(s.configPostfix)
       const account = accountSettingService.getAccount()
       const repositoryUrls = accountSettingService.getRepositoryUrls()
       this.tuples.push({
-        gitHubRepositoryService: new GitHubRepositoryService(account.githubUrl, account.personalAccessToken),
+        gitHubRepositoryService: GitHubRepositoryService.init(account.githubUrl, account.personalAccessToken),
         repositories: repositoryUrls
       })
     }
