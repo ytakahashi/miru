@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { RepositoryUrl } from '@/model/githubRepository'
+import { RepositoryUrl } from '@/domain/model/githubRepository'
 
 export default defineComponent({
   name: 'GitHubRepository',

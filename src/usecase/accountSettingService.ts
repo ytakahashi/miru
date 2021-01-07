@@ -1,9 +1,9 @@
 import { unlinkSync } from 'fs'
 import { LocalStorageAccessor } from '@/domain/interface/localStorageAccessor'
 import { newLocalStorageAccessor } from '@/domain/interface/factory'
-import { Account, GitHubUrl } from '@/model/github'
-import { RepositoryUrl } from '@/model/githubRepository'
-import { GitHubAccount } from '@/model/dto/local'
+import { Account, GitHubUrl } from '@/domain/model/github'
+import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { GitHubAccount } from '@/infrastructure/dto/local'
 
 export class AccountSettingService {
   #localStorageAccessor: LocalStorageAccessor

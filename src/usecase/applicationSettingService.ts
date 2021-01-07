@@ -1,6 +1,6 @@
 import { LocalStorageAccessor } from '@/domain/interface/localStorageAccessor'
 import { newLocalStorageAccessor } from '@/domain/interface/factory'
-import { ApplicationSetting } from '@/model/application'
+import { ApplicationSetting } from '@/domain/model/application'
 
 export class ApplicationSettingService {
   #localStorageAccessor: LocalStorageAccessor

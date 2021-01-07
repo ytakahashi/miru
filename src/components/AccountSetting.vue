@@ -26,11 +26,11 @@
 import { defineComponent, PropType } from 'vue'
 import { shell } from 'electron'
 import GitHubRepository from '@/components/GitHubRepository.vue'
-import { AccountSettingService } from '@/domain/accountSettingService'
-import { ApplicationSettingService } from '@/domain/applicationSettingService'
-import { ApplicationSetting } from '@/model/application'
-import { Account } from '@/model/github'
-import { RepositoryUrl } from '@/model/githubRepository'
+import { ApplicationSetting } from '@/domain/model/application'
+import { Account } from '@/domain/model/github'
+import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { AccountSettingService } from '@/usecase/accountSettingService'
+import { ApplicationSettingService } from '@/usecase/applicationSettingService'
 
 type DataType = {
   isValidRepositoryUrl: boolean;

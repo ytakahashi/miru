@@ -1,4 +1,4 @@
-import { Repository, Viewer } from '@/model/dto/githubApi'
+import { Repository, Viewer } from '@/infrastructure/dto/githubApi'
 
 export interface GitHubAccessor {
   getViewer (personalAccessToken: string): Promise<Viewer>;

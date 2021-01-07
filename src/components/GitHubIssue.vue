@@ -25,9 +25,9 @@
 import { defineComponent } from 'vue'
 import { shell } from 'electron'
 import IssueContent from '@/components/IssueContent.vue'
-import { GitHubRepositoryService } from '@/domain/githubRepositoryService'
-import { Issue, IssueLabel } from '@/model/github'
-import { RepositoryUrl } from '@/model/githubRepository'
+import { Issue, IssueLabel } from '@/domain/model/github'
+import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { GitHubRepositoryService } from '@/usecase/githubRepositoryService'
 
 type DataType = {
   issues: Array<Issue>;

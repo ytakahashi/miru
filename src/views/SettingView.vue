@@ -18,11 +18,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import AccountSetting from '@/components/AccountSetting.vue'
-import { AccountSettingService } from '@/domain/accountSettingService'
-import { ApplicationSettingService } from '@/domain/applicationSettingService'
-import { GitHubAccountService } from '@/domain/githubAccountService'
-import { ApplicationSetting } from '@/model/application'
-import { Account, GitHubUrl } from '@/model/github'
+import { ApplicationSetting } from '@/domain/model/application'
+import { Account, GitHubUrl } from '@/domain/model/github'
+import { AccountSettingService } from '@/usecase/accountSettingService'
+import { ApplicationSettingService } from '@/usecase/applicationSettingService'
+import { GitHubAccountService } from '@/usecase/githubAccountService'
 
 type AccountSettingTuple = {
   account: Account;

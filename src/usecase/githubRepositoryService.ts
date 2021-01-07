@@ -1,8 +1,8 @@
-import { GitHubAccessor } from '@/domain/interface/githubAccessor'
 import { newGitHubAccessor } from '@/domain/interface/factory'
-import { GitHubUrl } from '@/model/github'
-import { RepositoryUrl } from '@/model/githubRepository'
-import { Repository } from '@/model/dto/githubApi'
+import { GitHubAccessor } from '@/domain/interface/githubAccessor'
+import { Repository } from '@/infrastructure/dto/githubApi'
+import { GitHubUrl } from '@/domain/model/github'
+import { RepositoryUrl } from '@/domain/model/githubRepository'
 
 export class GitHubRepositoryService {
   #githubAccessor: GitHubAccessor

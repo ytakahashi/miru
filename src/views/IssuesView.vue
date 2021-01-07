@@ -8,11 +8,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { AccountSettingService } from '@/domain/accountSettingService'
-import { ApplicationSettingService } from '@/domain/applicationSettingService'
-import { GitHubRepositoryService } from '@/domain/githubRepositoryService'
 import GitHubIssue from '@/components/GitHubIssue.vue'
-import { RepositoryUrl } from '@/model/githubRepository'
+import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { AccountSettingService } from '@/usecase/accountSettingService'
+import { ApplicationSettingService } from '@/usecase/applicationSettingService'
+import { GitHubRepositoryService } from '@/usecase/githubRepositoryService'
 
 type RepositoryTuple = {
   gitHubRepositoryService: GitHubRepositoryService;
