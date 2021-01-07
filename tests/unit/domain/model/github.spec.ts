@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { GitHubUrl, Issue } from '@/model/github'
+import { GitHubUrl, Issue } from '@/domain/model/github'
 
 describe('GitHubUrl', () => {
   it('can initialize (empty)', () => {

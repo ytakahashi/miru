@@ -1,6 +1,6 @@
-import { ApplicationSetting } from '@/model/application'
-import { GitHubUser } from '@/model/dto/githubApi'
-import { GitHubAccount } from '@/model/dto/local'
+import { ApplicationSetting } from '@/domain/model/application'
+import { GitHubUser } from '@/infrastructure/dto/githubApi'
+import { GitHubAccount } from '@/infrastructure/dto/local'
 
 export interface LocalStorageAccessor {
   getPath (): string;

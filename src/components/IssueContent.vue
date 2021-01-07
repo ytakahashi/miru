@@ -16,7 +16,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { shell } from 'electron'
-import { Issue } from '@/model/github'
+import { Issue } from '@/domain/model/github'
 
 export default defineComponent({
   name: 'IssueContent',

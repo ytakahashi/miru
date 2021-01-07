@@ -15,8 +15,9 @@
       No issues.
     </div>
 
-    <div v-if="isFailed" class="clickable" v-on:click="openIssues()">
-      Failed to list issues of {{ repositoryUrl.getUrl() }}.
+    <div v-if="isFailed">
+      Failed to list issues of <span class="clickable" v-on:click="openIssues()">{{ repositoryUrl.getUrl() }}</span>.<br />
+      The repository does not exist or not visible with provided pesonal access token.
     </div>
   </div>
 </template>
@@ -25,9 +26,9 @@
 import { defineComponent } from 'vue'
 import { shell } from 'electron'
 import IssueContent from '@/components/IssueContent.vue'
-import { GitHubRepositoryService } from '@/domain/githubRepositoryService'
-import { Issue, IssueLabel } from '@/model/github'
-import { RepositoryUrl } from '@/model/githubRepository'
+import { Issue } from '@/domain/model/github'
+import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { GitHubRepositoryService } from '@/usecase/githubRepositoryService'
 
 type DataType = {
   issues: Array<Issue>;
@@ -58,18 +59,19 @@ export default defineComponent({
     }
   },
   methods: {
-    async getIssues () {
-      const response = await this.githubRepositoryService.getIssues(this.repositoryUrl)
-      const issues = response?.repository?.issues.edges
-        .map(v => v.node)
-        .map(v => new Issue(v.title, v.url, v.createdAt, v.updatedAt, v.labels.edges.map(l => new IssueLabel(l.node.name, l.node.color))))
-      if (issues === undefined) {
-        this.isFailed = true
-      } else {
+    getIssues () {
+      const onSuccess = (i: Array<Issue>) => {
         this.isFailed = false
-        this.issues = issues
-        this.isEmpty = issues.length === 0
+        this.issues = i
+        this.isEmpty = i.length === 0
       }
+      const onFailure = (e: Error) => {
+        console.error(e)
+        this.isFailed = true
+      }
+      this.githubRepositoryService.getIssues(this.repositoryUrl)
+        .then(onSuccess)
+        .catch(onFailure)
     },
     openRepository (): void {
       shell.openExternal(this.repositoryUrl.getUrl())

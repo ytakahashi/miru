@@ -1,5 +1,5 @@
 import { newGitHubAccessor } from '@/domain/interface/factory'
-import { Account, GitHubUrl } from '@/model/github'
+import { Account, GitHubUrl } from '@/domain/model/github'
 
 export class GitHubAccountService {
   #githubUrl: GitHubUrl

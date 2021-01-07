@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { ApplicationSetting } from '@/model/application'
+import { ApplicationSetting } from '@/domain/model/application'
 
 describe('ApplicationSetting', () => {
   it('equals', () => {

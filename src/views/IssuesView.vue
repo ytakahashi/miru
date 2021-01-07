@@ -8,11 +8,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { AccountSettingService } from '@/domain/accountSettingService'
-import { ApplicationSettingService } from '@/domain/applicationSettingService'
-import { GitHubRepositoryService } from '@/domain/githubRepositoryService'
 import GitHubIssue from '@/components/GitHubIssue.vue'
-import { RepositoryUrl } from '@/model/githubRepository'
+import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { AccountSettingService } from '@/usecase/accountSettingService'
+import { ApplicationSettingService } from '@/usecase/applicationSettingService'
+import { GitHubRepositoryService } from '@/usecase/githubRepositoryService'
 
 type RepositoryTuple = {
   gitHubRepositoryService: GitHubRepositoryService;
@@ -38,11 +38,11 @@ export default defineComponent({
   mounted () {
     const settings = this.applicationSettingService.getSettings()
     for (const s of settings) {
-      const accountSettingService = new AccountSettingService(s.configPostfix)
+      const accountSettingService = AccountSettingService.init(s.configPostfix)
       const account = accountSettingService.getAccount()
       const repositoryUrls = accountSettingService.getRepositoryUrls()
       this.tuples.push({
-        gitHubRepositoryService: new GitHubRepositoryService(account.githubUrl, account.personalAccessToken),
+        gitHubRepositoryService: GitHubRepositoryService.init(account.githubUrl, account.personalAccessToken),
         repositories: repositoryUrls
       })
     }
