@@ -42,17 +42,47 @@ export type Issue = {
   participants: UserConnection;
 }
 
-export type IssueNode = {
+export type IssueEdge = {
+  cursor?: string;
   node: Issue;
 }
 
-export type IssueEdge = {
+export type IssueConnection = {
   cursor?: string;
-  edges: Array<IssueNode>;
+  totalCount?: number;
+  edges: Array<IssueEdge>;
+}
+
+export type PullRequest = {
+  author: GitHubUser;
+  title: string;
+  url: string;
+  comments: IssueCommentConnection;
+  createdAt: string;
+  updatedAt: string;
+  labels: IssueLabelEdge;
+  number: number;
+  participants: UserConnection;
+  additions: number;
+  deletions: number;
+  changedFiles: number;
+  isDraft: boolean;
+}
+
+export type PullRequestEdge = {
+  cursor?: string;
+  node: PullRequest;
+}
+
+export type PullRequestConnection = {
+  cursor?: string;
+  totalCount?: number;
+  edges: Array<PullRequestEdge>;
 }
 
 export type GithubRepository = {
-  issues: IssueEdge;
+  issues?: IssueConnection;
+  pullRequests?: PullRequestConnection;
 }
 
 export type Repository = {

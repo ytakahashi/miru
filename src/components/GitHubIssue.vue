@@ -26,7 +26,7 @@
 import { defineComponent } from 'vue'
 import { shell } from 'electron'
 import IssueContent from '@/components/IssueContent.vue'
-import { Issue } from '@/domain/model/github'
+import { Issue, Issues } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { GitHubRepositoryService } from '@/usecase/githubRepositoryService'
 
@@ -60,10 +60,10 @@ export default defineComponent({
   },
   methods: {
     getIssues () {
-      const onSuccess = (i: Array<Issue>) => {
+      const onSuccess = (i: Issues) => {
         this.isFailed = false
-        this.issues = i
-        this.isEmpty = i.length === 0
+        this.issues = i.issues
+        this.isEmpty = i.issues.length === 0
       }
       const onFailure = (e: Error) => {
         console.error(e)
