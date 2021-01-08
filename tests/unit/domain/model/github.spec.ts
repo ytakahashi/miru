@@ -46,11 +46,15 @@ describe('GitHubUrl', () => {
 describe('Issue', () => {
   it('holds parameters', () => {
     const actual = new Issue(
+      'author',
+      123,
       'issue title',
       'issue url',
       '2020-12-15T21:23:56Z',
       '2021-01-02T23:44:14Z',
-      []
+      [],
+      2,
+      3
     )
 
     expect(actual.title).to.equal('issue title')
