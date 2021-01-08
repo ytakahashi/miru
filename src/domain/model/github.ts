@@ -68,7 +68,7 @@ export class Account {
   }
 }
 
-export class IssueLabel {
+export class Label {
   public readonly name: string;
   public readonly color: string;
   constructor (name: string, color: string) {
@@ -84,7 +84,7 @@ export class Issue {
   public readonly url: string;
   public readonly createdAt: string;
   public readonly updatedAt: string;
-  public readonly labels: Array<IssueLabel>;
+  public readonly labels: Array<Label>;
   public readonly numberOfComments: number;
   public readonly numberOfParticipants: number;
 
@@ -95,7 +95,7 @@ export class Issue {
     url: string,
     createdAt: string,
     updatedAt: string,
-    labels: Array<IssueLabel>,
+    labels: Array<Label>,
     numberOfComments: number,
     numberOfParticipants: number
   ) {
@@ -116,5 +116,74 @@ export class Issue {
 
   getUpdatedRelativeDate = (): string => {
     return dayjs(this.updatedAt).fromNow()
+  }
+}
+
+export class Issues {
+  readonly #lastUpdatedAt: number
+  public readonly issues: Array<Issue>;
+  public readonly totalCount?: number;
+
+  constructor (
+    issues: Array<Issue>,
+    totalCount?: number
+  ) {
+    this.#lastUpdatedAt = dayjs().unix()
+    this.issues = issues
+    this.totalCount = totalCount
+  }
+}
+
+export class PullRequest extends Issue {
+  public readonly additions: number;
+  public readonly deletions: number;
+  public readonly changedFiles: number;
+  public readonly isDraft: boolean;
+
+  constructor (
+    authorName: string,
+    issueNumber: number,
+    title: string,
+    url: string,
+    createdAt: string,
+    updatedAt: string,
+    labels: Array<Label>,
+    numberOfComments: number,
+    numberOfParticipants: number,
+    additions: number,
+    deletions: number,
+    changedFiles: number,
+    isDraft: boolean
+  ) {
+    super(
+      authorName,
+      issueNumber,
+      title,
+      url,
+      createdAt,
+      updatedAt,
+      labels,
+      numberOfComments,
+      numberOfParticipants
+    )
+    this.additions = additions
+    this.deletions = deletions
+    this.changedFiles = changedFiles
+    this.isDraft = isDraft
+  }
+}
+
+export class PullRequests {
+  readonly #lastUpdatedAt: number
+  public readonly pullRequests: Array<PullRequest>;
+  public readonly totalCount?: number;
+
+  constructor (
+    pullRequests: Array<PullRequest>,
+    totalCount?: number
+  ) {
+    this.#lastUpdatedAt = dayjs().unix()
+    this.pullRequests = pullRequests
+    this.totalCount = totalCount
   }
 }

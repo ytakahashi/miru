@@ -1,0 +1,30 @@
+{
+  "totalCount": 7,
+  "edges": [
+    {
+      "node": {
+        "author": {
+          "login": "ytakahashi"
+        },
+        "title": "pull request title",
+        "url": "https://github.com/ytakahashi/miru/pull/7775",
+        "comments": {
+          "totalCount": 4
+        },
+        "createdAt": "2021-01-01T09:58:25Z",
+        "updatedAt": "2021-01-08T02:03:10Z",
+        "labels": {
+          "edges": []
+        },
+        "number": 7775,
+        "participants": {
+          "totalCount": 6
+        },
+        "additions": 374,
+        "deletions": 42,
+        "changedFiles": 6,
+        "isDraft": false
+      }
+    }
+  ]
+}
