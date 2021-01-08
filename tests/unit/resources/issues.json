@@ -1,0 +1,43 @@
+{
+  "repository": {
+    "issues": {
+      "totalCount": 16,
+      "edges": [
+        {
+          "node": {
+            "author": {
+              "login": "ytakahashi"
+            },
+            "title": "Issue Title",
+            "url": "https://github.com/ytakahashi/miru/issues/1294",
+            "comments": {
+              "totalCount": 16
+            },
+            "createdAt": "2020-12-12T19:04:12Z",
+            "updatedAt": "2021-01-07T07:44:22Z",
+            "labels": {
+              "edges": [
+                {
+                  "node": {
+                    "name": "foo",
+                    "color": "99CC00"
+                  }
+                },
+                {
+                  "node": {
+                    "name": "bar",
+                    "color": "17c6a0"
+                  }
+                }
+              ]
+            },
+            "number": 1294,
+            "participants": {
+              "totalCount": 5
+            }
+          }
+        }
+      ]
+    }
+  }
+}
