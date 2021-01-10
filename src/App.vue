@@ -1,7 +1,8 @@
 <template>
   <div id="nav">
     <router-link to="/">Settings</router-link> |
-    <router-link to="/issues">Issues</router-link>
+    <router-link to="/issues">Issues</router-link> |
+    <router-link to="/pulls">Pull Requests</router-link>
   </div>
   <router-view/>
 </template>
