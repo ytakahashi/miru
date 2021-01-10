@@ -1,45 +1,44 @@
-import { expect } from 'chai'
 import { GitHubUrl, Issue } from '@/domain/model/github'
 
 describe('GitHubUrl', () => {
   it('can initialize (empty)', () => {
     const actual = GitHubUrl.from('')
     if (actual === undefined) {
-      expect.fail()
+      throw new Error('failed')
     }
-    expect(actual).to.not.be.an('undefined')
-    expect(actual.getUrl()).to.equal('https://github.com')
-    expect(actual.getApiEndpoint()).to.equal('https://api.github.com/graphql')
-    expect(actual.getDomain()).to.equal('github.com')
-    expect(actual.isEnterprise()).to.equal(false)
+    expect(actual).not.toBeUndefined()
+    expect(actual.getUrl()).toBe('https://github.com')
+    expect(actual.getApiEndpoint()).toBe('https://api.github.com/graphql')
+    expect(actual.getDomain()).toBe('github.com')
+    expect(actual.isEnterprise()).toBeFalsy()
   })
 
   it('can initialize (undefined)', () => {
     const actual = GitHubUrl.from()
     if (actual === undefined) {
-      expect.fail()
+      throw new Error('failed')
     }
-    expect(actual).to.not.be.an('undefined')
-    expect(actual.getUrl()).to.equal('https://github.com')
-    expect(actual.getApiEndpoint()).to.equal('https://api.github.com/graphql')
-    expect(actual.getDomain()).to.equal('github.com')
-    expect(actual.isEnterprise()).to.equal(false)
+    expect(actual).not.toBeUndefined()
+    expect(actual.getUrl()).toBe('https://github.com')
+    expect(actual.getApiEndpoint()).toBe('https://api.github.com/graphql')
+    expect(actual.getDomain()).toBe('github.com')
+    expect(actual.isEnterprise()).toBeFalsy()
   })
 
   it('cant initialize', () => {
     const actual = GitHubUrl.from('a')
-    expect(actual).to.equal(undefined)
+    expect(actual).toBeUndefined()
   })
 
   it('can initialize enterprize url', () => {
     const actual = GitHubUrl.from('https://github.test.enterprise.com/')
     if (actual === undefined) {
-      expect.fail()
+      throw new Error('failed')
     }
-    expect(actual.getUrl()).to.equal('https://github.test.enterprise.com')
-    expect(actual.getApiEndpoint()).to.equal('https://github.test.enterprise.com/api/graphql')
-    expect(actual.getDomain()).to.equal('github.test.enterprise.com')
-    expect(actual.isEnterprise()).to.equal(true)
+    expect(actual.getUrl()).toBe('https://github.test.enterprise.com')
+    expect(actual.getApiEndpoint()).toBe('https://github.test.enterprise.com/api/graphql')
+    expect(actual.getDomain()).toBe('github.test.enterprise.com')
+    expect(actual.isEnterprise()).toBeTruthy()
   })
 })
 
@@ -57,10 +56,10 @@ describe('Issue', () => {
       3
     )
 
-    expect(actual.title).to.equal('issue title')
-    expect(actual.url).to.equal('issue url')
-    expect(actual.getCreatedRelativeDate()).to.match(/ago$/)
-    expect(actual.getUpdatedRelativeDate()).to.match(/ago$/)
-    expect(actual.labels).to.have.lengthOf(0)
+    expect(actual.title).toBe('issue title')
+    expect(actual.url).toBe('issue url')
+    expect(actual.getCreatedRelativeDate()).toMatch(/ago$/)
+    expect(actual.getUpdatedRelativeDate()).toMatch(/ago$/)
+    expect(actual.labels).toHaveLength(0)
   })
 })
