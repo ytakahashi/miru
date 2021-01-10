@@ -5,27 +5,30 @@
     </div>
     <div class="profile-header">
       <span class="profile-name" v-on:click="openProfile()">{{ profile }}</span>
-      <button type="button" v-on:click="deleteSetting()">
-        <i class="fas fa-trash-alt"></i>
-      </button>
+      <i class="fas fa-trash-alt" v-on:click="deleteSetting()"></i>
     </div>
-    <p>Respositories:</p>
-    <div v-for="url in githubRepositoryUrls" :key="url.getUrl()">
-      <GitHubRepository :repositoryUrl="url" />
+
+    <div class="repositories">
+      <GitHubRepositories
+        :repositoryUrls="githubRepositoryUrls"
+        :editable="isEditing"
+        @edit="editHandler"
+        @delete-repository="deleteRepository"
+      />
     </div>
-    <br />
-    <input v-model="githubRepositoryUrlInput" placeholder="GitHub Repository URL">
-    <p v-if="!isValidRepositoryUrl">Invalid URL: {{ githubRepositoryUrlInput }}</p>
-    <button v-on:click="addGitHubRepository()">add repository</button>
-    <button v-on:click="clearGitHubRepositories()">clear</button>
-    <br />
+
+    <div v-if="isEditing" class="repositry-input">
+      <input v-model="githubRepositoryUrlInput" placeholder="GitHub Repository URL">
+      <button v-on:click="addGitHubRepository()" class="add-button"><i class="fas fa-plus"></i></button>
+      <p v-if="!isValidRepositoryUrl">Invalid URL: {{ githubRepositoryUrlInput }}</p>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { shell } from 'electron'
-import GitHubRepository from '@/components/GitHubRepository.vue'
+import GitHubRepositories from '@/components/GitHubRepositories.vue'
 import { ApplicationSetting } from '@/domain/model/application'
 import { Account } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
@@ -37,19 +40,21 @@ type DataType = {
   githubRepositoryUrlInput: string;
   githubRepositoryUrls: Array<RepositoryUrl>;
   accountSettingService: AccountSettingService;
+  isEditing: boolean;
 }
 
 export default defineComponent({
   name: 'AccountSetting',
   components: {
-    GitHubRepository
+    GitHubRepositories
   },
   data (): DataType {
     return {
       isValidRepositoryUrl: true,
       githubRepositoryUrlInput: '',
       githubRepositoryUrls: [],
-      accountSettingService: AccountSettingService.init(this.setting.configPostfix)
+      accountSettingService: AccountSettingService.init(this.setting.configPostfix),
+      isEditing: false
     }
   },
   emits: {
@@ -73,7 +78,7 @@ export default defineComponent({
         return
       }
       this.isValidRepositoryUrl = true
-      this.accountSettingService.addRepositoryUrls(url)
+      this.accountSettingService.addRepositoryUrl(url)
       this.githubRepositoryUrls = this.accountSettingService.getRepositoryUrls()
       this.githubRepositoryUrlInput = ''
     },
@@ -90,6 +95,14 @@ export default defineComponent({
     },
     openProfile (): void {
       shell.openExternal(this.account.profileUrl)
+    },
+    editHandler (b: boolean): void {
+      this.isEditing = b
+    },
+    deleteRepository (url: RepositoryUrl): void {
+      console.log('deleteRepository parent', url)
+      this.accountSettingService.deleteRepositoryUrl(url)
+      this.githubRepositoryUrls = this.accountSettingService.getRepositoryUrls()
     }
   },
   watch: {
@@ -118,6 +131,8 @@ img {
 .profile {
   width: 30em;
   margin: 0 auto;
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
   border: 1px solid #c0c0c0;
   border-radius: $card-border-radius;
   transition: 0.4s;
@@ -142,5 +157,20 @@ img {
 
 .profile-header {
   margin-top: 0.7em;
+}
+
+.repositories {
+  margin-top: 0.7em;
+}
+
+.repositry-input {
+  margin-top: 1em;
+}
+
+.add-button {
+  margin-left: 0.5em;
+  background-color: transparent;
+  border-radius: 40%;
+  outline: none;
 }
 </style>

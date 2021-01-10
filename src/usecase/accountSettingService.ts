@@ -16,9 +16,15 @@ export class AccountSettingService {
     this.#localStorageAccessor = localStorageAccessor
   }
 
-  addRepositoryUrls = (url: RepositoryUrl): void => {
+  addRepositoryUrl = (url: RepositoryUrl): void => {
     const current = this.#localStorageAccessor.getGitHubRepositoryUrls()
     const next = current.length ? new Set([...current, url.getUrl()]) : new Set([url.getUrl()])
+    this.#localStorageAccessor.setGitHubRepositoryUrls(Array.from(next))
+  }
+
+  deleteRepositoryUrl = (url: RepositoryUrl): void => {
+    const current = this.#localStorageAccessor.getGitHubRepositoryUrls()
+    const next = current.filter(r => r !== url.getUrl())
     this.#localStorageAccessor.setGitHubRepositoryUrls(Array.from(next))
   }
 
