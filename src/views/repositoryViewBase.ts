@@ -1,34 +1,46 @@
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
-import { AccountSettingService } from '@/usecase/accountSettingService'
-import { ApplicationSettingService } from '@/usecase/applicationSettingService'
-import { GitHubRepositoryService } from '@/usecase/githubRepositoryService'
+import { AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
+import { ApplicationSettingUseCase } from '@/usecase/applicationSetting'
+import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory } from '@/usecase/githubRepository'
 
 type RepositoryTuple = {
-  gitHubRepositoryService: GitHubRepositoryService;
+  githubRepositoryUseCase: GitHubRepositoryUseCase;
   repositories: Array<RepositoryUrl>;
 }
 
 type DataType = {
-  applicationSettingService: ApplicationSettingService;
   tuples: Array<RepositoryTuple>;
 }
 
 export default defineComponent({
+  props: {
+    accountSettingUseCaseFactory: {
+      type: Object as PropType<AccountSettingUseCaseFactory>,
+      required: true
+    },
+    applicationSettingUseCase: {
+      type: Object as PropType<ApplicationSettingUseCase>,
+      required: true
+    },
+    gitHubRepositoryUseCaseFactory: {
+      type: Object as PropType<GitHubRepositoryUseCaseFactory>,
+      required: true
+    }
+  },
   data (): DataType {
     return {
-      applicationSettingService: new ApplicationSettingService(),
       tuples: []
     }
   },
   mounted () {
-    const settings = this.applicationSettingService.getSettings()
+    const settings = this.applicationSettingUseCase.getSettings()
     for (const s of settings) {
-      const accountSettingService = AccountSettingService.init(s.configPostfix)
-      const account = accountSettingService.getAccount()
-      const repositoryUrls = accountSettingService.getRepositoryUrls()
+      const accountSettingUseCase = this.accountSettingUseCaseFactory.newAccountSettingUseCase(s)
+      const account = accountSettingUseCase.getAccount()
+      const repositoryUrls = accountSettingUseCase.getRepositoryUrls()
       this.tuples.push({
-        gitHubRepositoryService: GitHubRepositoryService.init(account.githubUrl, account.personalAccessToken),
+        githubRepositoryUseCase: this.gitHubRepositoryUseCaseFactory.newGitHubRepositoryUseCase(account.githubUrl, account.personalAccessToken),
         repositories: repositoryUrls
       })
     }

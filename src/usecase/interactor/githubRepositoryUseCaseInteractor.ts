@@ -1,16 +1,12 @@
-import { newGitHubAccessor } from '@/domain/interface/factory'
 import { GitHubAccessor } from '@/domain/interface/githubAccessor'
-import { GitHubUrl, Issues, Issue, Label, PullRequest, PullRequests } from '@/domain/model/github'
+import { Issues, Issue, Label, PullRequest, PullRequests } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { IssueConnection, PullRequestConnection } from '@/infrastructure/dto/githubApi'
+import { GitHubRepositoryUseCase } from '@/usecase/githubRepository'
 
-export class GitHubRepositoryService {
+export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCase {
   #githubAccessor: GitHubAccessor
   #personalAccessToken: string
-
-  static init (githubUrl: GitHubUrl, personalAccessToken: string): GitHubRepositoryService {
-    return new GitHubRepositoryService(newGitHubAccessor(githubUrl), personalAccessToken)
-  }
 
   constructor (githubAccessor: GitHubAccessor, personalAccessToken: string) {
     this.#githubAccessor = githubAccessor

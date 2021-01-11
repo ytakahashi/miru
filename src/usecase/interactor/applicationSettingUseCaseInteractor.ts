@@ -1,15 +1,12 @@
 import { LocalStorageAccessor } from '@/domain/interface/localStorageAccessor'
-import { newLocalStorageAccessor } from '@/domain/interface/factory'
 import { ApplicationSetting } from '@/domain/model/application'
+import { ApplicationSettingUseCase } from '@/usecase/applicationSetting'
 
-export class ApplicationSettingService {
+export class ApplicationSettingUseCaseInteractor implements ApplicationSettingUseCase {
   #localStorageAccessor: LocalStorageAccessor
 
-  constructor (localStorageAccessor?: LocalStorageAccessor) {
-    this.#localStorageAccessor =
-      localStorageAccessor === undefined
-        ? newLocalStorageAccessor()
-        : localStorageAccessor
+  constructor (localStorageAccessor: LocalStorageAccessor) {
+    this.#localStorageAccessor = localStorageAccessor
   }
 
   hasSetting = (setting: ApplicationSetting): boolean => {

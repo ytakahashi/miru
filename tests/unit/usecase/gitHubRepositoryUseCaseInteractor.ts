@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { GitHubAccessor } from '@/domain/interface/githubAccessor'
-import { GitHubRepositoryService } from '@/usecase/githubRepositoryService'
+import { GitHubRepositoryUseCaseInteractor } from '@/usecase/interactor/githubRepositoryUseCaseInteractor'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { IssueConnection, PullRequestConnection, Viewer } from '@/infrastructure/dto/githubApi'
 
@@ -25,7 +25,7 @@ describe('GitHubRepositoryService class', () => {
 
   describe('getIssues method', () => {
     it('returns issues', async () => {
-      const sut = new GitHubRepositoryService(mock, 'pat')
+      const sut = new GitHubRepositoryUseCaseInteractor(mock, 'pat')
       const actual = await sut.getIssues(new RepositoryUrl('https://github.com/ytakahashi/miru'))
       expect(actual.totalCount).toBe(16)
       expect(actual.issues).toHaveLength(1)
@@ -45,7 +45,7 @@ describe('GitHubRepositoryService class', () => {
 
   describe('getPullRequests method', () => {
     it('returns pull requests', async () => {
-      const sut = new GitHubRepositoryService(mock, 'pat')
+      const sut = new GitHubRepositoryUseCaseInteractor(mock, 'pat')
       const actual = await sut.getPullRequests(new RepositoryUrl('https://github.com/ytakahashi/miru'))
       expect(actual.totalCount).toBe(7)
       expect(actual.pullRequests).toHaveLength(1)

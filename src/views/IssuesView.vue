@@ -1,7 +1,7 @@
 <template>
   <div v-for="(t, index) in tuples" :key="index">
     <div v-for="(repo, index) in t.repositories" :key="index">
-      <GitHubIssue :repositoryUrl="repo" :githubRepositoryService="t.gitHubRepositoryService"></GitHubIssue>
+      <GitHubIssue :repositoryUrl="repo" :githubRepositoryUseCase="t.githubRepositoryUseCase"></GitHubIssue>
     </div>
   </div>
 </template>

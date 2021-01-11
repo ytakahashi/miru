@@ -1,9 +1,10 @@
 <template>
   <div v-for="(t, index) in tuples" :key="index">
     <div v-for="(repo, index) in t.repositories" :key="index">
-      <GitHubPullRequest :repositoryUrl="repo" :githubRepositoryService="t.gitHubRepositoryService"></GitHubPullRequest>
+      <GitHubPullRequest :repositoryUrl="repo" :githubRepositoryUseCase="t.githubRepositoryUseCase"></GitHubPullRequest>
     </div>
   </div>
+  <div v-if="tuples.length === 0">Account is not configured.</div>
 </template>
 
 <script lang="ts">

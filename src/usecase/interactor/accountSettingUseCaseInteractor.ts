@@ -1,16 +1,12 @@
 import { unlinkSync } from 'fs'
 import { LocalStorageAccessor } from '@/domain/interface/localStorageAccessor'
-import { newLocalStorageAccessor } from '@/domain/interface/factory'
 import { Account, GitHubUrl } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { GitHubAccount } from '@/infrastructure/dto/local'
+import { AccountSettingUseCase } from '@/usecase/accountSetting'
 
-export class AccountSettingService {
+export class AccountSettingUseCaseInteractor implements AccountSettingUseCase {
   #localStorageAccessor: LocalStorageAccessor
-
-  static init (configPostfix: string): AccountSettingService {
-    return new AccountSettingService(newLocalStorageAccessor(configPostfix))
-  }
 
   constructor (localStorageAccessor: LocalStorageAccessor) {
     this.#localStorageAccessor = localStorageAccessor
