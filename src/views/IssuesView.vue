@@ -9,7 +9,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import GitHubIssue from '@/components/GitHubIssue.vue'
-import RepositoryViewBase from '@/views/RepositoryViewBase'
+import RepositoryViewBase from '@/views/repositoryViewBase'
 
 export default defineComponent({
   extends: RepositoryViewBase,
