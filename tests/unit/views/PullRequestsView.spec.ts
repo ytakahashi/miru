@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { shallowMount } from '@vue/test-utils'
 import GitHubPullRequest from '@/components/GitHubPullRequest.vue'
