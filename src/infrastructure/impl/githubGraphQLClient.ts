@@ -135,7 +135,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       if (r.repository?.pullRequests) {
         return r.repository.pullRequests
       } else {
-        throw Error(`Failed to get issues: ${url.getUrl()}.`)
+        throw Error(`Failed to get PRs: ${url.getUrl()}.`)
       }
     }
     return this.#graphQLClient.request<Repository>(query, variables, requestHeaders).then(takePullRequests)

@@ -2,21 +2,21 @@
   <div class="issue-list">
     <div class="issue-list-header">
       <span class="repository-name clickable" v-on:click="openRepository()">{{ repositoryUrl.asString() }}</span>
-      <button type="button" v-on:click="getIssues()">
+      <button type="button" v-on:click="getPullRequests()">
         <i class="fas fa-sync-alt"></i>
       </button>
     </div>
 
-    <div v-for="issue in issues" :key="issue.url">
-      <IssueContent :issue="issue" />
+    <div v-for="pr in pullRequests" :key="pr.url">
+      <PullRequestContent :pullRequest="pr" />
     </div>
 
-    <div v-if="isEmpty" class="clickable" v-on:click="openIssues()">
-      There aren’t any open issues.
+    <div v-if="isEmpty" class="clickable" v-on:click="openPRs()">
+      There aren’t any open pull requests.
     </div>
 
     <div v-if="isFailed">
-      Failed to list issues of <span class="clickable" v-on:click="openIssues()">{{ repositoryUrl.getUrl() }}</span>.<br />
+      Failed to list pull requests of <span class="clickable" v-on:click="openPRs()">{{ repositoryUrl.getUrl() }}</span>.<br />
       The repository does not exist or not visible with provided pesonal access token.
     </div>
   </div>
@@ -25,25 +25,25 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { shell } from 'electron'
-import IssueContent from '@/components/IssueContent.vue'
-import { Issue, Issues } from '@/domain/model/github'
+import PullRequestContent from '@/components/PullRequestContent.vue'
+import { PullRequest, PullRequests } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { GitHubRepositoryService } from '@/usecase/githubRepositoryService'
 
 type DataType = {
-  issues: Array<Issue>;
+  pullRequests: Array<PullRequest>;
   isFailed: boolean;
   isEmpty: boolean;
 }
 
 export default defineComponent({
-  name: 'GitHubIssue',
+  name: 'GitHubPullRequest',
   components: {
-    IssueContent
+    PullRequestContent
   },
   data (): DataType {
     return {
-      issues: [],
+      pullRequests: [],
       isFailed: false,
       isEmpty: false
     }
@@ -59,25 +59,25 @@ export default defineComponent({
     }
   },
   methods: {
-    getIssues (): void {
-      const onSuccess = (i: Issues) => {
+    getPullRequests (): void {
+      const onSuccess = (prs: PullRequests) => {
         this.isFailed = false
-        this.issues = i.issues
-        this.isEmpty = i.issues.length === 0
+        this.pullRequests = prs.pullRequests
+        this.isEmpty = prs.pullRequests.length === 0
       }
       const onFailure = (e: Error) => {
         console.error(e)
         this.isFailed = true
       }
-      this.githubRepositoryService.getIssues(this.repositoryUrl)
+      this.githubRepositoryService.getPullRequests(this.repositoryUrl)
         .then(onSuccess)
         .catch(onFailure)
     },
     openRepository (): void {
       shell.openExternal(this.repositoryUrl.getUrl())
     },
-    openIssues (): void {
-      shell.openExternal(`${this.repositoryUrl.getUrl()}/issues`)
+    openPRs (): void {
+      shell.openExternal(`${this.repositoryUrl.getUrl()}/pulls`)
     }
   }
 })

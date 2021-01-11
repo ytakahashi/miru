@@ -40,41 +40,5 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.issue {
-  cursor: pointer;
-  padding: 0.4em 1em;
-  margin: 1em 0;
-  background-color: #fffbfb;
-  border-left: solid 10px #ffb5b5;
-}
-
-.issue-update {
-  padding-bottom: 0.5em;
-  font-size: 0.8em;
-  text-align: left;
-}
-
-.issue-title {
-  font-size: 1.1em;
-  font-weight: bold;
-}
-
-.issue-description {
-  font-size: 0.9em;
-}
-
-.issue-info {
-  font-size: 0.9em;
-  padding-left: 0.7em;
-}
-
-.issue-label {
-  border: 1px solid;
-  border-radius: 7px;
-  padding: 1px 8px;
-  margin: 0 3px;
-  font-size: 0.8em;
-  font-weight: bold;
-  color: #fcfcfc;
-}
+@import '@/assets/app.scss';
 </style>
