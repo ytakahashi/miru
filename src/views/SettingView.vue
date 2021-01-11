@@ -3,7 +3,8 @@
     <AccountSetting
       :account="accountSetting.account"
       :setting="accountSetting.setting"
-      @account-deleted="refreshAccounts"
+      :accountSettingUseCase="accountSetting.useCase"
+      @account-deleted="deleteAccount"
     />
   </div>
 
@@ -22,24 +23,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import AccountSetting from '@/components/AccountSetting.vue'
 import { ApplicationSetting } from '@/domain/model/application'
 import { Account, GitHubUrl } from '@/domain/model/github'
-import { AccountSettingService } from '@/usecase/accountSettingService'
-import { ApplicationSettingService } from '@/usecase/applicationSettingService'
-import { GitHubAccountService } from '@/usecase/githubAccountService'
+import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
+import { ApplicationSettingUseCase } from '@/usecase/applicationSetting'
+import { GitHubAccountUseCaseFactory } from '@/usecase/githubAccount'
 
-type AccountSettingTuple = {
+type AccountSettingTriple = {
   account: Account;
   setting: ApplicationSetting;
+  useCase: AccountSettingUseCase;
 }
 
 type DataType = {
   githubUrlInput: string;
   personalAccessTokenInput: string
-  accountSettings: Array<AccountSettingTuple>;
-  applicationSettingService: ApplicationSettingService;
+  accountSettings: Array<AccountSettingTriple>;
   isDuplicated: boolean;
   isInvalidAccessToken: boolean;
   isInvalidUrl: boolean;
@@ -51,12 +52,25 @@ export default defineComponent({
   components: {
     AccountSetting
   },
+  props: {
+    accountSettingUseCaseFactory: {
+      type: Object as PropType<AccountSettingUseCaseFactory>,
+      required: true
+    },
+    applicationSettingUseCase: {
+      type: Object as PropType<ApplicationSettingUseCase>,
+      required: true
+    },
+    gitHubAccountUseCaseFactory: {
+      type: Object as PropType<GitHubAccountUseCaseFactory>,
+      required: true
+    }
+  },
   data (): DataType {
     return {
       githubUrlInput: '',
       personalAccessTokenInput: '',
       accountSettings: [],
-      applicationSettingService: new ApplicationSettingService(),
       isDuplicated: false,
       isInvalidAccessToken: false,
       isInvalidUrl: false,
@@ -73,23 +87,24 @@ export default defineComponent({
         this.isInvalidUrl = true
         return
       }
-      const github = new GitHubAccountService(url)
+      const github = this.gitHubAccountUseCaseFactory.newGitHubAccountUseCase(url)
       github.resolvePersonalAccessToken(this.personalAccessTokenInput)
         .then(r => this.onSuccess(r))
         .catch(e => this.onFailure(e))
     },
     onSuccess (resolved: Account): void {
       const setting = new ApplicationSetting(resolved.getId())
-      if (this.applicationSettingService.hasSetting(setting)) {
+      if (this.applicationSettingUseCase.hasSetting(setting)) {
         this.isDuplicated = true
         this.isEditing = false
       } else {
-        this.applicationSettingService.addSetting(setting)
-        const accountSettingService = AccountSettingService.init(setting.configPostfix)
-        accountSettingService.setAccount(resolved)
+        this.applicationSettingUseCase.addSetting(setting)
+        const accountSettingUseCase = this.accountSettingUseCaseFactory.newAccountSettingUseCase(setting)
+        accountSettingUseCase.setAccount(resolved)
         this.accountSettings.push({
           account: resolved,
-          setting: setting
+          setting: setting,
+          useCase: accountSettingUseCase
         })
       }
     },
@@ -97,15 +112,20 @@ export default defineComponent({
       console.error(err)
       this.isInvalidAccessToken = true
     },
+    deleteAccount (setting: ApplicationSetting): void {
+      this.applicationSettingUseCase.removeSetting(setting)
+      this.refreshAccounts()
+    },
     refreshAccounts (): void {
       this.accountSettings.splice(0)
-      const settings = this.applicationSettingService.getSettings()
+      const settings = this.applicationSettingUseCase.getSettings()
       for (const setting of settings) {
-        const accountSettingService = AccountSettingService.init(setting.configPostfix)
-        const account = accountSettingService.getAccount()
+        const accountSettingUseCase = this.accountSettingUseCaseFactory.newAccountSettingUseCase(setting)
+        const account = accountSettingUseCase.getAccount()
         this.accountSettings.push({
           account: account,
-          setting: setting
+          setting: setting,
+          useCase: accountSettingUseCase
         })
       }
     }

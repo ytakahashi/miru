@@ -32,14 +32,12 @@ import GitHubRepositories from '@/components/GitHubRepositories.vue'
 import { ApplicationSetting } from '@/domain/model/application'
 import { Account } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
-import { AccountSettingService } from '@/usecase/accountSettingService'
-import { ApplicationSettingService } from '@/usecase/applicationSettingService'
+import { AccountSettingUseCase } from '@/usecase/accountSetting'
 
 type DataType = {
   isValidRepositoryUrl: boolean;
   githubRepositoryUrlInput: string;
   githubRepositoryUrls: Array<RepositoryUrl>;
-  accountSettingService: AccountSettingService;
   isEditing: boolean;
 }
 
@@ -53,7 +51,6 @@ export default defineComponent({
       isValidRepositoryUrl: true,
       githubRepositoryUrlInput: '',
       githubRepositoryUrls: [],
-      accountSettingService: AccountSettingService.init(this.setting.configPostfix),
       isEditing: false
     }
   },
@@ -68,6 +65,10 @@ export default defineComponent({
     setting: {
       type: Object as PropType<ApplicationSetting>,
       required: true
+    },
+    accountSettingUseCase: {
+      type: Object as PropType<AccountSettingUseCase>,
+      required: true
     }
   },
   methods: {
@@ -78,20 +79,18 @@ export default defineComponent({
         return
       }
       this.isValidRepositoryUrl = true
-      this.accountSettingService.addRepositoryUrl(url)
-      this.githubRepositoryUrls = this.accountSettingService.getRepositoryUrls()
+      this.accountSettingUseCase.addRepositoryUrl(url)
+      this.githubRepositoryUrls = this.accountSettingUseCase.getRepositoryUrls()
       this.githubRepositoryUrlInput = ''
     },
     clearGitHubRepositories (): void {
-      this.accountSettingService.clearRepositoryUrls()
+      this.accountSettingUseCase.clearRepositoryUrls()
       this.githubRepositoryUrlInput = ''
       this.githubRepositoryUrls = []
     },
     deleteSetting (): void {
-      const applicationSettingService = new ApplicationSettingService()
-      applicationSettingService.removeSetting(this.setting)
-      this.accountSettingService.deleteSetting()
-      this.$emit('accountDeleted')
+      this.accountSettingUseCase.deleteSetting()
+      this.$emit('accountDeleted', this.setting)
     },
     openProfile (): void {
       shell.openExternal(this.account.profileUrl)
@@ -100,9 +99,8 @@ export default defineComponent({
       this.isEditing = b
     },
     deleteRepository (url: RepositoryUrl): void {
-      console.log('deleteRepository parent', url)
-      this.accountSettingService.deleteRepositoryUrl(url)
-      this.githubRepositoryUrls = this.accountSettingService.getRepositoryUrls()
+      this.accountSettingUseCase.deleteRepositoryUrl(url)
+      this.githubRepositoryUrls = this.accountSettingUseCase.getRepositoryUrls()
     }
   },
   watch: {
@@ -116,7 +114,7 @@ export default defineComponent({
     }
   },
   mounted () {
-    this.githubRepositoryUrls = this.accountSettingService.getRepositoryUrls()
+    this.githubRepositoryUrls = this.accountSettingUseCase.getRepositoryUrls()
   }
 })
 </script>

@@ -23,12 +23,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { shell } from 'electron'
 import IssueContent from '@/components/IssueContent.vue'
 import { Issue, Issues } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
-import { GitHubRepositoryService } from '@/usecase/githubRepositoryService'
+import { GitHubRepositoryUseCase } from '@/usecase/githubRepository'
 
 type DataType = {
   issues: Array<Issue>;
@@ -53,8 +53,8 @@ export default defineComponent({
       type: RepositoryUrl,
       required: true
     },
-    githubRepositoryService: {
-      type: GitHubRepositoryService,
+    githubRepositoryUseCase: {
+      type: Object as PropType<GitHubRepositoryUseCase>,
       required: true
     }
   },
@@ -69,7 +69,7 @@ export default defineComponent({
         console.error(e)
         this.isFailed = true
       }
-      this.githubRepositoryService.getIssues(this.repositoryUrl)
+      this.githubRepositoryUseCase.getIssues(this.repositoryUrl)
         .then(onSuccess)
         .catch(onFailure)
     },

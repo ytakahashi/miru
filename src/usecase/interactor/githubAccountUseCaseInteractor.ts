@@ -1,7 +1,8 @@
 import { newGitHubAccessor } from '@/domain/interface/factory'
 import { Account, GitHubUrl } from '@/domain/model/github'
+import { GitHubAccountUseCase } from '@/usecase/githubAccount'
 
-export class GitHubAccountService {
+export class GitHubAccountUseCaseInteractor implements GitHubAccountUseCase {
   #githubUrl: GitHubUrl
 
   constructor (githubUrl: GitHubUrl) {
