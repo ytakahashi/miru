@@ -1,4 +1,4 @@
-import { GitHubUrl, Issue, Issues, PullRequest } from '@/domain/model/github'
+import { GitHubUrl, Issue, Issues } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 
 describe('GitHubUrl', () => {
