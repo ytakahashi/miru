@@ -39,4 +39,8 @@ export class RepositoryUrl {
   public asString = (): string => {
     return `${this.#owner}/${this.#repositoryName}`
   }
+
+  public equals = (other: RepositoryUrl): boolean => {
+    return this.getUrl() === other.getUrl()
+  }
 }

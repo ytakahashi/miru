@@ -8,5 +8,7 @@ describe('RepositoryUrl', () => {
     expect(actual.getOwner()).toBe('ytakahashi')
     expect(actual.getRepositoryName()).toBe('test-123_456')
     expect(actual.asString()).toBe('ytakahashi/test-123_456')
+    expect(actual.equals(new RepositoryUrl('https://github.com/ytakahashi/test-123_456/'))).toBeTruthy()
+    expect(actual.equals(new RepositoryUrl('https://github.com/ytakahashi/test-123_45/'))).toBeFalsy()
   })
 })

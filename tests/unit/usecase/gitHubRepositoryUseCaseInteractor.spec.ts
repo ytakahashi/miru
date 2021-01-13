@@ -26,11 +26,15 @@ describe('GitHubRepositoryService class', () => {
   describe('getIssues method', () => {
     it('returns issues', async () => {
       const sut = new GitHubRepositoryUseCaseInteractor(mock, 'pat')
-      const actual = await sut.getIssues(new RepositoryUrl('https://github.com/ytakahashi/miru'))
+      const target = new RepositoryUrl('https://github.com/ytakahashi/miru')
+      const actual = await sut.getIssues(target)
       expect(actual.totalCount).toBe(16)
-      expect(actual.issues).toHaveLength(1)
+      expect(actual.results).toHaveLength(1)
+      expect(actual.belongsTo(target)).toBeTruthy()
+      expect(actual.hasContents()).toBeTruthy()
+      expect(actual.fetchedAtDate()).not.toBeUndefined()
 
-      const actualIssue = actual.issues[0]
+      const actualIssue = actual.results[0]
       expect(actualIssue.authorName).toBe('ytakahashi')
       expect(actualIssue.issueNumber).toBe(1294)
       expect(actualIssue.title).toBe('Issue Title')
@@ -46,11 +50,15 @@ describe('GitHubRepositoryService class', () => {
   describe('getPullRequests method', () => {
     it('returns pull requests', async () => {
       const sut = new GitHubRepositoryUseCaseInteractor(mock, 'pat')
-      const actual = await sut.getPullRequests(new RepositoryUrl('https://github.com/ytakahashi/miru'))
+      const target = new RepositoryUrl('https://github.com/ytakahashi/miru')
+      const actual = await sut.getPullRequests(target)
       expect(actual.totalCount).toBe(7)
-      expect(actual.pullRequests).toHaveLength(1)
+      expect(actual.results).toHaveLength(1)
+      expect(actual.belongsTo(target)).toBeTruthy()
+      expect(actual.hasContents()).toBeTruthy()
+      expect(actual.fetchedAtDate()).not.toBeUndefined()
 
-      const actualPullRequest = actual.pullRequests[0]
+      const actualPullRequest = actual.results[0]
       expect(actualPullRequest.issueNumber).toBe(7775)
       expect(actualPullRequest.authorName).toBe('ytakahashi')
       expect(actualPullRequest.title).toBe('pull request title')
