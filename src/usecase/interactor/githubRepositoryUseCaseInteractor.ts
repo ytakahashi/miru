@@ -32,7 +32,7 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
           v.comments.totalCount,
           v.participants.totalCount
         ))
-      return new Issues(issues, i.totalCount)
+      return new Issues(url, issues, i.totalCount)
     }
 
     return this.#githubAccessor.getIssues(this.#personalAccessToken, url)
@@ -63,7 +63,7 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
           v.changedFiles,
           v.isDraft
         ))
-      return new PullRequests(prs, v.totalCount)
+      return new PullRequests(url, prs, v.totalCount)
     }
 
     return this.#githubAccessor.getPullRequests(this.#personalAccessToken, url)

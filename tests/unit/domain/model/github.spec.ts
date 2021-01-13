@@ -1,4 +1,5 @@
-import { GitHubUrl, Issue } from '@/domain/model/github'
+import { GitHubUrl, Issue, Issues, PullRequest } from '@/domain/model/github'
+import { RepositoryUrl } from '@/domain/model/githubRepository'
 
 describe('GitHubUrl', () => {
   it('can initialize (empty)', () => {
@@ -61,5 +62,20 @@ describe('Issue', () => {
     expect(actual.getCreatedRelativeDate()).toMatch(/ago$/)
     expect(actual.getUpdatedRelativeDate()).toMatch(/ago$/)
     expect(actual.labels).toHaveLength(0)
+  })
+})
+
+describe('Issues', () => {
+  it('holds parameters and all methods work', () => {
+    const url = new RepositoryUrl('https://github.com/facebook/jest')
+    const actual = new Issues(url, [], 0)
+
+    expect(actual.repositoryUrl).toStrictEqual(url)
+    expect(actual.results).toHaveLength(0)
+    expect(actual.totalCount).toEqual(0)
+    expect(actual.fetchedAtDate()).toMatch(/^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d$/)
+    expect(actual.belongsTo(url)).toBeTruthy()
+    expect(actual.belongsTo(new RepositoryUrl('https://github.com/foo/bar'))).toBeFalsy()
+    expect(actual.hasContents()).toBeFalsy()
   })
 })

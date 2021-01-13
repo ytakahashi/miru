@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { RepositoryUrl } from '@/domain/model/githubRepository'
 
 dayjs.extend(relativeTime)
 
@@ -77,7 +78,7 @@ export class Label {
   }
 }
 
-export class Issue {
+export class IssueBase {
   public readonly authorName: string;
   public readonly issueNumber: number;
   public readonly title: string;
@@ -119,22 +120,10 @@ export class Issue {
   }
 }
 
-export class Issues {
-  readonly #lastUpdatedAt: number
-  public readonly issues: Array<Issue>;
-  public readonly totalCount?: number;
-
-  constructor (
-    issues: Array<Issue>,
-    totalCount?: number
-  ) {
-    this.#lastUpdatedAt = dayjs().unix()
-    this.issues = issues
-    this.totalCount = totalCount
-  }
+export class Issue extends IssueBase {
 }
 
-export class PullRequest extends Issue {
+export class PullRequest extends IssueBase {
   public readonly additions: number;
   public readonly deletions: number;
   public readonly changedFiles: number;
@@ -173,17 +162,38 @@ export class PullRequest extends Issue {
   }
 }
 
-export class PullRequests {
-  readonly #lastUpdatedAt: number
-  public readonly pullRequests: Array<PullRequest>;
+class ResultListHolder<T extends IssueBase> {
+  readonly fetchedAt: number
+  public readonly repositoryUrl: RepositoryUrl;
+  public readonly results: Array<T>;
   public readonly totalCount?: number;
 
   constructor (
-    pullRequests: Array<PullRequest>,
+    repositoryUrl: RepositoryUrl,
+    results: Array<T>,
     totalCount?: number
   ) {
-    this.#lastUpdatedAt = dayjs().unix()
-    this.pullRequests = pullRequests
+    this.fetchedAt = dayjs().unix()
+    this.repositoryUrl = repositoryUrl
+    this.results = results
     this.totalCount = totalCount
   }
+
+  fetchedAtDate = (): string => {
+    return dayjs.unix(this.fetchedAt).format('YYYY-MM-DD HH:mm:ss')
+  }
+
+  belongsTo = (url: RepositoryUrl): boolean => {
+    return this.repositoryUrl.equals(url)
+  }
+
+  hasContents = (): boolean => {
+    return this.results.length !== 0
+  }
+}
+
+export class Issues extends ResultListHolder<Issue> {
+}
+
+export class PullRequests extends ResultListHolder<PullRequest> {
 }

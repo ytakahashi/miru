@@ -7,12 +7,15 @@
       </button>
     </div>
 
-    <div v-for="issue in issues" :key="issue.url">
-      <IssueContent :issue="issue" />
-    </div>
+    <div v-if="issues">
+      <div>Last fetched: {{ issues.fetchedAtDate() }}</div>
+      <div v-for="issue in issues.results" :key="issue.url">
+        <IssueContent :issue="issue" />
+      </div>
 
-    <div v-if="isEmpty" class="clickable" v-on:click="openIssues()">
-      There aren’t any open issues.
+      <div v-if="!issues.hasContents()" class="clickable" v-on:click="openPRs()">
+        There aren’t any open issues.
+      </div>
     </div>
 
     <div v-if="isFailed">
@@ -26,14 +29,13 @@
 import { defineComponent, PropType } from 'vue'
 import { shell } from 'electron'
 import IssueContent from '@/components/IssueContent.vue'
-import { Issue, Issues } from '@/domain/model/github'
+import { Issues } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { getters, mutations } from '@/store/issues'
 import { GitHubRepositoryUseCase } from '@/usecase/githubRepository'
 
 type DataType = {
-  issues: Array<Issue>;
   isFailed: boolean;
-  isEmpty: boolean;
 }
 
 export default defineComponent({
@@ -43,9 +45,7 @@ export default defineComponent({
   },
   data (): DataType {
     return {
-      issues: [],
-      isFailed: false,
-      isEmpty: false
+      isFailed: false
     }
   },
   props: {
@@ -62,8 +62,7 @@ export default defineComponent({
     getIssues (): void {
       const onSuccess = (i: Issues) => {
         this.isFailed = false
-        this.issues = i.issues
-        this.isEmpty = i.issues.length === 0
+        mutations.replace(i)
       }
       const onFailure = (e: Error) => {
         console.error(e)
@@ -78,6 +77,11 @@ export default defineComponent({
     },
     openIssues (): void {
       shell.openExternal(`${this.repositoryUrl.getUrl()}/issues`)
+    }
+  },
+  computed: {
+    issues (): Issues|undefined {
+      return getters.of(this.repositoryUrl)
     }
   }
 })

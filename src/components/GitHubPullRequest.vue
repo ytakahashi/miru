@@ -7,12 +7,15 @@
       </button>
     </div>
 
-    <div v-for="pr in pullRequests" :key="pr.url">
-      <PullRequestContent :pullRequest="pr" />
-    </div>
+    <div v-if="pullRequests">
+      <div>Last fetched: {{ pullRequests.fetchedAtDate() }}</div>
+      <div v-for="pr in pullRequests.results" :key="pr.url">
+        <PullRequestContent :pullRequest="pr" />
+      </div>
 
-    <div v-if="isEmpty" class="clickable" v-on:click="openPRs()">
-      There aren’t any open pull requests.
+      <div v-if="!pullRequests.hasContents()" class="clickable" v-on:click="openPRs()">
+        There aren’t any open pull requests.
+      </div>
     </div>
 
     <div v-if="isFailed">
@@ -26,14 +29,13 @@
 import { defineComponent, PropType } from 'vue'
 import { shell } from 'electron'
 import PullRequestContent from '@/components/PullRequestContent.vue'
-import { PullRequest, PullRequests } from '@/domain/model/github'
+import { PullRequests } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { getters, mutations } from '@/store/pullRequests'
 import { GitHubRepositoryUseCase } from '@/usecase/githubRepository'
 
 type DataType = {
-  pullRequests: Array<PullRequest>;
   isFailed: boolean;
-  isEmpty: boolean;
 }
 
 export default defineComponent({
@@ -43,9 +45,7 @@ export default defineComponent({
   },
   data (): DataType {
     return {
-      pullRequests: [],
-      isFailed: false,
-      isEmpty: false
+      isFailed: false
     }
   },
   props: {
@@ -62,8 +62,7 @@ export default defineComponent({
     getPullRequests (): void {
       const onSuccess = (prs: PullRequests) => {
         this.isFailed = false
-        this.pullRequests = prs.pullRequests
-        this.isEmpty = prs.pullRequests.length === 0
+        mutations.replace(prs)
       }
       const onFailure = (e: Error) => {
         console.error(e)
@@ -78,6 +77,11 @@ export default defineComponent({
     },
     openPRs (): void {
       shell.openExternal(`${this.repositoryUrl.getUrl()}/pulls`)
+    }
+  },
+  computed: {
+    pullRequests (): PullRequests|undefined {
+      return getters.of(this.repositoryUrl)
     }
   }
 })
