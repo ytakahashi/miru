@@ -8,7 +8,7 @@
     </div>
 
     <div v-if="pullRequests">
-      <div>Last fetched: {{ pullRequests.fetchedAtDate() }}</div>
+      <div class="last-fetched-date">Last fetched: {{ pullRequests.fetchedAtDate() }}</div>
       <div v-for="pr in pullRequests.results" :key="pr.url">
         <PullRequestContent :pullRequest="pr" />
       </div>
@@ -32,7 +32,7 @@ import PullRequestContent from '@/components/PullRequestContent.vue'
 import { PullRequests } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { getters, mutations } from '@/store/pullRequests'
-import { GitHubRepositoryUseCase } from '@/usecase/githubRepository'
+import { GitHubRepositoryUseCase, Option } from '@/usecase/githubRepository'
 
 type DataType = {
   isFailed: boolean;
@@ -56,6 +56,10 @@ export default defineComponent({
     githubRepositoryUseCase: {
       type: Object as PropType<GitHubRepositoryUseCase>,
       required: true
+    },
+    option: {
+      type: Object as PropType<Option>,
+      required: true
     }
   },
   methods: {
@@ -68,7 +72,7 @@ export default defineComponent({
         console.error(e)
         this.isFailed = true
       }
-      this.githubRepositoryUseCase.getPullRequests(this.repositoryUrl)
+      this.githubRepositoryUseCase.getPullRequests(this.repositoryUrl, this.option)
         .then(onSuccess)
         .catch(onFailure)
     },

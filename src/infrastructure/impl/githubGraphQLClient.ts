@@ -1,6 +1,6 @@
 import { GraphQLClient, gql } from 'graphql-request'
 import { GitHubUrl } from '@/domain/model/github'
-import { GitHubAccessor } from '@/domain/interface/githubAccessor'
+import { GitHubAccessor, Option } from '@/domain/interface/githubAccessor'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { IssueConnection, PullRequestConnection, Repository, Viewer } from '@/infrastructure/dto/githubApi'
 
@@ -25,14 +25,14 @@ export class GitHubGraphQLClient implements GitHubAccessor {
     return this.#graphQLClient.request<Viewer>(query, {}, requestHeaders)
   }
 
-  public getIssues = async (personalAccessToken: string, url: RepositoryUrl): Promise<IssueConnection> => {
+  public getIssues = async (personalAccessToken: string, url: RepositoryUrl, opts?: Option): Promise<IssueConnection> => {
     const requestHeaders = {
       authorization: `Bearer ${personalAccessToken}`
     }
     const query = gql`
-      query getIssues($owner: String!, $name: String!, $firstIssueNumber: Int!) {
+      query getIssues($owner: String!, $name: String!, $firstIssueNumber: Int!, $sortField: String!, $sortDirection: String!) {
         repository(owner:$owner, name:$name) {
-          issues(first:$firstIssueNumber, states:OPEN, orderBy:{field: UPDATED_AT, direction: DESC}) {
+          issues(first:$firstIssueNumber, states:OPEN, orderBy:{field: $sortField, direction: $sortDirection}) {
             totalCount
             edges {
               node {
@@ -66,12 +66,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
         }
       }`
 
-    const variables = {
-      owner: url.getOwner(),
-      name: url.getRepositoryName(),
-      firstIssueNumber: 3
-    }
-
+    const variables = buildVariables(url, opts)
     const takeIssues = (r: Repository): IssueConnection => {
       if (r.repository?.issues) {
         return r.repository.issues
@@ -82,14 +77,14 @@ export class GitHubGraphQLClient implements GitHubAccessor {
     return this.#graphQLClient.request<Repository>(query, variables, requestHeaders).then(takeIssues)
   }
 
-  public getPullRequests = async (personalAccessToken: string, url: RepositoryUrl): Promise<PullRequestConnection> => {
+  public getPullRequests = async (personalAccessToken: string, url: RepositoryUrl, opts?: Option): Promise<PullRequestConnection> => {
     const requestHeaders = {
       authorization: `Bearer ${personalAccessToken}`
     }
     const query = gql`
-      query getPRs($owner: String!, $name: String!, $firstIssueNumber: Int!) {
+      query getPRs($owner: String!, $name: String!, $firstIssueNumber: Int!, $sortField: String!, $sortDirection: String!) {
         repository(owner:$owner, name:$name) {
-          pullRequests(first:$firstIssueNumber, states:OPEN, orderBy:{field: UPDATED_AT, direction: DESC}) {
+          pullRequests(first:$firstIssueNumber, states:OPEN, orderBy:{field: $sortField, direction: $sortDirection}) {
             totalCount
             edges {
               node {
@@ -118,19 +113,13 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                 additions
                 deletions
                 changedFiles
-                isDraft
               }
             }
           }
         }
       }`
 
-    const variables = {
-      owner: url.getOwner(),
-      name: url.getRepositoryName(),
-      firstIssueNumber: 3
-    }
-
+    const variables = buildVariables(url, opts)
     const takePullRequests = (r: Repository): PullRequestConnection => {
       if (r.repository?.pullRequests) {
         return r.repository.pullRequests
@@ -139,5 +128,26 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       }
     }
     return this.#graphQLClient.request<Repository>(query, variables, requestHeaders).then(takePullRequests)
+  }
+}
+
+type RequestVariable = {
+    owner: string;
+    name: string;
+    firstIssueNumber: number;
+    sortField: string;
+    sortDirection: string;
+}
+
+const buildVariables = (url: RepositoryUrl, opts?: Option): RequestVariable => {
+  const cnt = opts?.count
+  const field = opts?.sortField
+  const direction = opts?.sortDirection
+  return {
+    owner: url.getOwner(),
+    name: url.getRepositoryName(),
+    firstIssueNumber: cnt !== undefined ? cnt : 10,
+    sortField: field !== undefined ? field : 'UPDATED_AT',
+    sortDirection: direction !== undefined ? direction : 'DESC'
   }
 }

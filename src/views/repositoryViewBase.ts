@@ -1,8 +1,9 @@
 import { defineComponent, PropType } from 'vue'
+import ListOption from '@/components/ListOption.vue'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
 import { ApplicationSettingUseCase } from '@/usecase/applicationSetting'
-import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory } from '@/usecase/githubRepository'
+import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory, Option } from '@/usecase/githubRepository'
 
 type RepositoryTuple = {
   githubRepositoryUseCase: GitHubRepositoryUseCase;
@@ -10,10 +11,14 @@ type RepositoryTuple = {
 }
 
 type DataType = {
+  option: Option;
   tuples: Array<RepositoryTuple>;
 }
 
 export default defineComponent({
+  components: {
+    ListOption
+  },
   props: {
     accountSettingUseCaseFactory: {
       type: Object as PropType<AccountSettingUseCaseFactory>,
@@ -30,7 +35,13 @@ export default defineComponent({
   },
   data (): DataType {
     return {
+      option: {},
       tuples: []
+    }
+  },
+  methods: {
+    updateOption (): void {
+      this.option = (this.$refs.listOption as typeof ListOption).getOptions()
     }
   },
   mounted () {

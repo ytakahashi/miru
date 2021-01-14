@@ -1,7 +1,12 @@
 <template>
+  <ListOption ref="listOption" :listType="'pull requests'" @updated="updateOption" />
   <div v-for="(t, index) in tuples" :key="index">
     <div v-for="(repo, index) in t.repositories" :key="index">
-      <GitHubPullRequest :repositoryUrl="repo" :githubRepositoryUseCase="t.githubRepositoryUseCase"></GitHubPullRequest>
+      <GitHubPullRequest
+        :repositoryUrl="repo"
+        :githubRepositoryUseCase="t.githubRepositoryUseCase"
+        :option="option"
+      />
     </div>
   </div>
   <div v-if="tuples.length === 0">Account is not configured.</div>

@@ -1,4 +1,4 @@
-import { GitHubAccessor } from '@/domain/interface/githubAccessor'
+import { GitHubAccessor, Option } from '@/domain/interface/githubAccessor'
 import { Issues, Issue, Label, PullRequest, PullRequests } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { IssueConnection, PullRequestConnection } from '@/infrastructure/dto/githubApi'
@@ -13,7 +13,7 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
     this.#personalAccessToken = personalAccessToken
   }
 
-  getIssues = async (url: RepositoryUrl): Promise<Issues> => {
+  getIssues = async (url: RepositoryUrl, opts?: Option): Promise<Issues> => {
     if (!url.isValid()) {
       throw new Error('Invalid GitHub URL.')
     }
@@ -35,12 +35,12 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
       return new Issues(url, issues, i.totalCount)
     }
 
-    return this.#githubAccessor.getIssues(this.#personalAccessToken, url)
+    return this.#githubAccessor.getIssues(this.#personalAccessToken, url, opts)
       .then(mapToIssues)
       .catch(e => { throw e })
   }
 
-  getPullRequests = async (url: RepositoryUrl): Promise<PullRequests> => {
+  getPullRequests = async (url: RepositoryUrl, opts?: Option): Promise<PullRequests> => {
     if (!url.isValid()) {
       throw new Error('Invalid GitHub URL.')
     }
@@ -60,13 +60,12 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
           v.participants.totalCount,
           v.additions,
           v.deletions,
-          v.changedFiles,
-          v.isDraft
+          v.changedFiles
         ))
       return new PullRequests(url, prs, v.totalCount)
     }
 
-    return this.#githubAccessor.getPullRequests(this.#personalAccessToken, url)
+    return this.#githubAccessor.getPullRequests(this.#personalAccessToken, url, opts)
       .then(mapToPullRequests)
       .catch(e => { throw e })
   }
