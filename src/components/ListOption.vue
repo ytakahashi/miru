@@ -10,9 +10,9 @@
       <span class="option-title">Number of {{ listType }}:</span>
       <select v-model.number="numberOfItems">
         <option>1</option>
-        <option selected>3</option>
+        <option>3</option>
         <option>5</option>
-        <option>10</option>
+        <option selected>10</option>
         <option>20</option>
       </select>
     </div>
@@ -61,7 +61,7 @@ export default defineComponent({
   name: 'ListOption',
   data (): DataType {
     return {
-      numberOfItems: 3,
+      numberOfItems: 10,
       sortNames: ['Newest', 'Oldest', 'Most commented', 'Least commented', 'Recently updated', 'Least recently updated'],
       selectedValue: 'Recently updated',
       open: false
@@ -126,7 +126,7 @@ export default defineComponent({
 
 .close-button {
   position: absolute;
-  top: 80px;
+  top: 76px;
   right: 15%;
   background: #ffffff;
 }

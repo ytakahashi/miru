@@ -10,7 +10,7 @@ describe('ListOption.vue', () => {
     })
     const sut = wrapper.vm as typeof ListOption
     expect(sut.getOptions()).toEqual({
-      count: 3,
+      count: 10,
       sortField: 'UPDATED_AT',
       sortDirection: 'DESC'
     })
@@ -19,17 +19,17 @@ describe('ListOption.vue', () => {
       selectedValue: 'Newest'
     })
     expect(sut.getOptions()).toEqual({
-      count: 3,
+      count: 10,
       sortField: 'CREATED_AT',
       sortDirection: 'DESC'
     })
 
     wrapper.setData({
-      numberOfItems: 10,
+      numberOfItems: 5,
       selectedValue: 'Least commented'
     })
     expect(sut.getOptions()).toEqual({
-      count: 10,
+      count: 5,
       sortField: 'COMMENTS',
       sortDirection: 'ASC'
     })
