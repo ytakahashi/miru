@@ -8,7 +8,7 @@
     </div>
 
     <div v-if="pullRequests">
-      <div>Last fetched: {{ pullRequests.fetchedAtDate() }}</div>
+      <div class="last-fetched-date">Last fetched: {{ pullRequests.fetchedAtDate() }}</div>
       <div v-for="pr in pullRequests.results" :key="pr.url">
         <PullRequestContent :pullRequest="pr" />
       </div>

@@ -8,7 +8,7 @@
     </div>
 
     <div v-if="issues">
-      <div>Last fetched: {{ issues.fetchedAtDate() }}</div>
+      <div class="last-fetched-date">Last fetched: {{ issues.fetchedAtDate() }}</div>
       <div v-for="issue in issues.results" :key="issue.url">
         <IssueContent :issue="issue" />
       </div>

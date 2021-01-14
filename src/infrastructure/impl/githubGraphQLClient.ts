@@ -146,7 +146,7 @@ const buildVariables = (url: RepositoryUrl, opts?: Option): RequestVariable => {
   return {
     owner: url.getOwner(),
     name: url.getRepositoryName(),
-    firstIssueNumber: cnt !== undefined ? cnt : 3,
+    firstIssueNumber: cnt !== undefined ? cnt : 10,
     sortField: field !== undefined ? field : 'UPDATED_AT',
     sortDirection: direction !== undefined ? direction : 'DESC'
   }
