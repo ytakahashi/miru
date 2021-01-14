@@ -23,7 +23,8 @@ describe('GitHubIssue.vue', () => {
     const wrapper = shallowMount(GitHubIssue, {
       props: {
         repositoryUrl: url,
-        githubRepositoryUseCase: new MockedGitHubRepositoryUseCase(issues)
+        githubRepositoryUseCase: new MockedGitHubRepositoryUseCase(issues),
+        option: {}
       }
     })
     await wrapper.find('button').trigger('click')
@@ -61,7 +62,8 @@ describe('GitHubIssue.vue', () => {
     const wrapper = shallowMount(GitHubIssue, {
       props: {
         repositoryUrl: url,
-        githubRepositoryUseCase: new MockedGitHubRepositoryUseCase(issues)
+        githubRepositoryUseCase: new MockedGitHubRepositoryUseCase(issues),
+        option: {}
       }
     })
     await wrapper.find('button').trigger('click')

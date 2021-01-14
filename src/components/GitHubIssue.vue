@@ -32,7 +32,7 @@ import IssueContent from '@/components/IssueContent.vue'
 import { Issues } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { getters, mutations } from '@/store/issues'
-import { GitHubRepositoryUseCase } from '@/usecase/githubRepository'
+import { GitHubRepositoryUseCase, Option } from '@/usecase/githubRepository'
 
 type DataType = {
   isFailed: boolean;
@@ -56,6 +56,10 @@ export default defineComponent({
     githubRepositoryUseCase: {
       type: Object as PropType<GitHubRepositoryUseCase>,
       required: true
+    },
+    option: {
+      type: Object as PropType<Option>,
+      required: true
     }
   },
   methods: {
@@ -68,7 +72,7 @@ export default defineComponent({
         console.error(e)
         this.isFailed = true
       }
-      this.githubRepositoryUseCase.getIssues(this.repositoryUrl)
+      this.githubRepositoryUseCase.getIssues(this.repositoryUrl, this.option)
         .then(onSuccess)
         .catch(onFailure)
     },

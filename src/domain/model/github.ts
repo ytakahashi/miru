@@ -141,8 +141,7 @@ export class PullRequest extends IssueBase {
     numberOfParticipants: number,
     additions: number,
     deletions: number,
-    changedFiles: number,
-    isDraft: boolean
+    changedFiles: number
   ) {
     super(
       authorName,
@@ -158,7 +157,8 @@ export class PullRequest extends IssueBase {
     this.additions = additions
     this.deletions = deletions
     this.changedFiles = changedFiles
-    this.isDraft = isDraft
+    // TODO: set from response
+    this.isDraft = false
   }
 }
 

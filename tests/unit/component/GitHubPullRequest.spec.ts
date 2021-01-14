@@ -23,7 +23,8 @@ describe('GitHubPullRequest.vue', () => {
     const wrapper = shallowMount(GitHubPullRequest, {
       props: {
         repositoryUrl: url,
-        githubRepositoryUseCase: new MockedGitHubRepositoryUseCase(pullRequests)
+        githubRepositoryUseCase: new MockedGitHubRepositoryUseCase(pullRequests),
+        option: {}
       }
     })
     await wrapper.find('button').trigger('click')
@@ -47,8 +48,7 @@ describe('GitHubPullRequest.vue', () => {
       3,
       123,
       456,
-      7,
-      true
+      7
     )
     const pr2 = new PullRequest(
       'author 2',
@@ -62,14 +62,14 @@ describe('GitHubPullRequest.vue', () => {
       3,
       234,
       567,
-      8,
-      true
+      8
     )
     const pullRequests = new PullRequests(url, [pr1, pr2], 2)
     const wrapper = shallowMount(GitHubPullRequest, {
       props: {
         repositoryUrl: url,
-        githubRepositoryUseCase: new MockedGitHubRepositoryUseCase(pullRequests)
+        githubRepositoryUseCase: new MockedGitHubRepositoryUseCase(pullRequests),
+        option: {}
       }
     })
     await wrapper.find('button').trigger('click')
