@@ -29,6 +29,10 @@ export class AccountSettingUseCaseInteractor implements AccountSettingUseCase {
     return urls.map(v => new RepositoryUrl(v))
   }
 
+  setRepositoryUrls = (urls: Array<RepositoryUrl>): void => {
+    this.#localStorageAccessor.setGitHubRepositoryUrls(urls.map(v => v.getUrl()))
+  }
+
   clearRepositoryUrls = (): void => {
     this.#localStorageAccessor.deleteGitHubRepositoryUrls()
   }

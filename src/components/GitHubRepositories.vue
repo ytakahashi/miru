@@ -1,25 +1,41 @@
 <template>
-  <span>Respositories
-    <i v-if="!editable" class="far fa-edit" v-on:click="editRepositories()"></i>
-    <i v-if="editable" class="far fa-check-square" v-on:click="doneEdit()"></i>
+  <span>
+    <span class="repositories">Respositories</span>
+    <i v-if="!editing" class="far fa-edit clickable" v-on:click="emitEdit(true)"></i>
+    <i v-if="editing" class="far fa-check-square clickable" v-on:click="emitEdit(false)"></i>
   </span>
 
-  <div v-for="url in repositoryUrls" :key="url.getUrl()">
-    <i class="fas fa-times" v-if="editable" v-on:click="deleteRepository(url)"></i>
-    <span class="clickable" v-on:click="openRepository(url)">{{ url.asString() }}</span>
-  </div>
+  <draggable
+    :list="repositoryUrls"
+    :disabled="!editing"
+    :item-key="key => key.asString()"
+    ghost-class="ghost"
+  >
+    <template #item="{ element }">
+      <div>
+        <i class="fas fa-times delete-button" v-if="editing" v-on:click="deleteRepository(element)"></i>
+        <span :class="editing ? 'draggable' : 'clickable'" v-on:click="openRepository(element)">
+          {{ element.asString() }}
+        </span>
+      </div>
+    </template>
+  </draggable>
 </template>
 
 <script lang="ts">
 import { shell } from 'electron'
 import { defineComponent, PropType } from 'vue'
+import draggable from 'vuedraggable'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 
 export default defineComponent({
   name: 'GitHubRepositories',
+  components: {
+    draggable
+  },
   emits: ['edit', 'deleteRepository'],
   props: {
-    editable: {
+    editing: {
       type: Boolean,
       requred: true
     },
@@ -29,16 +45,16 @@ export default defineComponent({
     }
   },
   methods: {
-    editRepositories (): void {
-      this.$emit('edit', true)
-    },
-    doneEdit (): void {
-      this.$emit('edit', false)
+    emitEdit (editing: boolean): void {
+      this.$emit('edit', editing)
     },
     deleteRepository (url: RepositoryUrl): void {
       this.$emit('deleteRepository', url)
     },
     openRepository (url: RepositoryUrl): void {
+      if (this.editing) {
+        return
+      }
       shell.openExternal(url.getUrl())
     }
   }
@@ -48,5 +64,23 @@ export default defineComponent({
 <style scoped lang="scss">
 .clickable {
   cursor: pointer;
+}
+
+.draggable {
+  cursor: grab;
+}
+
+.delete-button {
+  margin-right: 5px;
+}
+
+.ghost {
+  opacity: 0.5;
+  background: #c8ebfb;
+}
+
+.repositories {
+  font-weight: bold;
+  margin-right: 7px;
 }
 </style>

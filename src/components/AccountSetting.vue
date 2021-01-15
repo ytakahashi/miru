@@ -11,7 +11,7 @@
     <div class="repositories">
       <GitHubRepositories
         :repositoryUrls="githubRepositoryUrls"
-        :editable="isEditing"
+        :editing="isEditing"
         @edit="editHandler"
         @delete-repository="deleteRepository"
       />
@@ -97,6 +97,9 @@ export default defineComponent({
     },
     editHandler (b: boolean): void {
       this.isEditing = b
+      if (!this.isEditing) {
+        this.accountSettingUseCase.setRepositoryUrls(this.githubRepositoryUrls)
+      }
     },
     deleteRepository (url: RepositoryUrl): void {
       this.accountSettingUseCase.deleteRepositoryUrl(url)

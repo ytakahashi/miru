@@ -21,7 +21,8 @@
     "graphql": "^15.4.0",
     "graphql-request": "^3.4.0",
     "vue": "^3.0.5",
-    "vue-router": "^4.0.2"
+    "vue-router": "^4.0.2",
+    "vuedraggable": "^4.0.1"
   },
   "devDependencies": {
     "@types/electron-devtools-installer": "^2.2.0",

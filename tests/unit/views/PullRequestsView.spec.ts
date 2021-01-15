@@ -30,6 +30,7 @@ MockedAccountSettingUseCase.mockImplementation((arr: Array<RepositoryUrl>): Acco
     addRepositoryUrl (url: RepositoryUrl): void {},
     deleteRepositoryUrl (url: RepositoryUrl): void {},
     getRepositoryUrls (): Array<RepositoryUrl> { return arr },
+    setRepositoryUrls (urls: Array<RepositoryUrl>): void {},
     clearRepositoryUrls (): void {},
     setAccount (account: Account): void {},
     getAccount (): Account { return new MockedAccount() },
