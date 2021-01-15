@@ -6,6 +6,7 @@ export interface AccountSettingUseCase {
   addRepositoryUrl (url: RepositoryUrl): void
   deleteRepositoryUrl (url: RepositoryUrl): void
   getRepositoryUrls (): Array<RepositoryUrl>
+  setRepositoryUrls (urls: Array<RepositoryUrl>): void
   clearRepositoryUrls (): void
   setAccount (account: Account): void
   getAccount (): Account
