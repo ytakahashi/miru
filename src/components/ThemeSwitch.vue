@@ -11,6 +11,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { getTheme, mutations } from '@/store/theme'
 
 type DataType = {
   isDark: boolean;
@@ -20,13 +21,19 @@ export default defineComponent({
   name: 'ThemeSwitch',
   data (): DataType {
     return {
-      isDark: false
+      isDark: true
     }
+  },
+  mounted () {
+    const theme = getTheme()
+    document.documentElement.setAttribute('app-theme', theme)
+    this.isDark = theme === 'dark'
   },
   watch: {
     isDark: function (val: boolean) {
       const theme = val ? 'dark' : 'light'
       document.documentElement.setAttribute('app-theme', theme)
+      mutations.set(theme)
     }
   }
 })
