@@ -20,11 +20,14 @@
     <div v-if="isInvalidAccessToken">invalid access token: <span v-if="githubUrlInput">{{ githubUrlInput }}, </span> {{ personalAccessTokenInput }}</div>
     <div v-if="isInvalidUrl">invalid url: {{ githubUrlInput }}</div>
   </div>
+
+  <ThemeSwitch />
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import AccountSetting from '@/components/AccountSetting.vue'
+import ThemeSwitch from '@/components/ThemeSwitch.vue'
 import { ApplicationSetting } from '@/domain/model/application'
 import { Account, GitHubUrl } from '@/domain/model/github'
 import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
@@ -50,7 +53,8 @@ type DataType = {
 export default defineComponent({
   name: 'SettingView',
   components: {
-    AccountSetting
+    AccountSetting,
+    ThemeSwitch
   },
   props: {
     accountSettingUseCaseFactory: {
@@ -152,6 +156,8 @@ export default defineComponent({
   font-size: 1.1em;
   background-color: transparent;
   border-radius: 50%;
+  color: var(--main-font-color);
+  border-color: var(--border-color);
   outline: none;
 }
 

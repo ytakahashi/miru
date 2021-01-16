@@ -99,12 +99,11 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .list-options {
-  justify-content: center;
   width: 240px;
   text-align: left;
   padding: 1em;
   margin: 0 13% 20px auto;
-  border: 1px solid #a9a9a9;
+  border: 1px solid var(--border-color);
   border-radius: 0.5em;
 }
 
@@ -114,7 +113,7 @@ export default defineComponent({
 
 .app-button {
   padding: 6px;
-  border: 1px solid #a9a9a9;
+  border: 1px solid var(--border-color);
   border-radius: 40%;
   cursor: pointer;
 }
@@ -125,9 +124,8 @@ export default defineComponent({
 }
 
 .close-button {
-  position: absolute;
-  top: 76px;
-  right: 15%;
-  background: #ffffff;
+  margin: -10px 0 0 auto;
+  width: 18px;
+  background: var(--main-background-color);
 }
 </style>

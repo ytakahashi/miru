@@ -8,24 +8,31 @@
 </template>
 
 <style>
+@import './assets/theme.scss';
+
+body {
+  background-color: var(--main-background-color);
+  color: var(--main-font-color);
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: var(--main-font-color);
 }
 
 #nav {
-  padding: 30px;
+  padding: 20px;
 }
 
 #nav a {
   font-weight: bold;
-  color: #2c3e50;
+  color: var(--link-color);
 }
 
 #nav a.router-link-exact-active {
-  color: #42b983;
+  color: var(--link-color-active);
 }
 </style>
