@@ -142,7 +142,7 @@ img {
 .profile-img {
   cursor: pointer;
   padding: 0.3em;
-  background: #fff0f0;
+  background-color: var(--sub-background-color);
   border-radius: $card-border-radius;
 
   :hover {
@@ -170,8 +170,10 @@ img {
 
 .add-button {
   margin-left: 0.5em;
-  background-color: transparent;
-  border-radius: 40%;
+  color: var(--main-font-color);
+  background-color: var(--main-background-color);
+  border-color: var(--border-color);
+  border-radius: 50%;
   outline: none;
 }
 </style>
