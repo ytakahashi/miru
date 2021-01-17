@@ -19,7 +19,7 @@
 
     <div v-if="isEditing" class="repositry-input">
       <input v-model="githubRepositoryUrlInput" placeholder="GitHub Repository URL">
-      <button v-on:click="addGitHubRepository()" class="add-button"><i class="fas fa-plus"></i></button>
+      <button v-on:click="addGitHubRepository()" class="app-font-button"><i class="fas fa-plus"></i></button>
       <p v-if="!isValidRepositoryUrl">Invalid URL: {{ githubRepositoryUrlInput }}</p>
     </div>
   </div>
@@ -123,6 +123,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/form.scss';
+
 $card-border-radius: 7px;
 
 img {
@@ -166,14 +168,5 @@ img {
 
 .repositry-input {
   margin-top: 1em;
-}
-
-.add-button {
-  margin-left: 0.5em;
-  color: var(--main-font-color);
-  background-color: var(--main-background-color);
-  border-color: var(--border-color);
-  border-radius: 50%;
-  outline: none;
 }
 </style>

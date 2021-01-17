@@ -2,7 +2,7 @@
   <div class="issue-list">
     <div class="issue-list-header">
       <span class="repository-name clickable" v-on:click="openRepository()">{{ repositoryUrl.asString() }}</span>
-      <button type="button" v-on:click="getPullRequests()">
+      <button type="button" class="app-input-button" v-on:click="getPullRequests()">
         <i class="fas fa-sync-alt"></i>
       </button>
     </div>
@@ -93,4 +93,5 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @import '@/assets/app.scss';
+@import '@/assets/form.scss';
 </style>

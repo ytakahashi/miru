@@ -8,17 +8,24 @@
     />
   </div>
 
-  <button v-if="!isEditing" v-on:click="isEditing = !isEditing" class="add-button"><i class="fas fa-plus"></i></button>
+  <button v-if="!isEditing" v-on:click="isEditing = !isEditing" class="add-button app-font-button"><i class="fas fa-plus"></i></button>
 
   <div v-if="isEditing">
-    <input class="input" v-model="githubUrlInput" placeholder="GitHub URL (default: https://github.com)">
-    <br />
-    <input class="input" v-model="personalAccessTokenInput" placeholder="GitHub Personal Access Token">
-    <br />
-    <button v-on:click="addSetting()">add setting</button>
-    <div v-if="isDuplicated">duplicated personal access token: {{ personalAccessTokenInput }}</div>
-    <div v-if="isInvalidAccessToken">invalid access token: <span v-if="githubUrlInput">{{ githubUrlInput }}, </span> {{ personalAccessTokenInput }}</div>
-    <div v-if="isInvalidUrl">invalid url: {{ githubUrlInput }}</div>
+    <div class="input-form-block">
+      <label class="input-label" for="url-input">GitHub URL (default: https://github.com)</label>
+      <input class="app-input-form setting-input" v-model="githubUrlInput" id="url-input">
+      <div class="input-invalid" v-if="isInvalidUrl">invalid url: {{ githubUrlInput }}</div>
+    </div>
+    <div class="input-form-block">
+      <label class="input-label" for="pat-input">GitHub Personal Access Token
+        <i v-if="!isPatVisible" class="fas fa-eye" v-on:click="viewPersonalAccessToken()"></i>
+        <i v-if="isPatVisible" class="fas fa-eye-slash" v-on:click="viewPersonalAccessToken()"></i>
+      </label>
+      <input class="app-input-form setting-input" :type="isPatVisible ? 'text' : 'password'" v-model="personalAccessTokenInput" id="pat-input">
+      <div class="input-invalid" v-if="isInvalidAccessToken">invalid access token: {{ personalAccessTokenInput }}</div>
+      <div class="input-invalid" v-if="isDuplicated">duplicated personal access token: {{ personalAccessTokenInput }}</div>
+    </div>
+    <button v-on:click="addSetting()" class="add-buton">Add Account</button>
   </div>
 
   <ThemeSwitch />
@@ -48,6 +55,7 @@ type DataType = {
   isInvalidAccessToken: boolean;
   isInvalidUrl: boolean;
   isEditing: boolean;
+  isPatVisible: boolean;
 }
 
 export default defineComponent({
@@ -72,18 +80,20 @@ export default defineComponent({
   },
   data (): DataType {
     return {
-      githubUrlInput: '',
+      githubUrlInput: 'https://github.com',
       personalAccessTokenInput: '',
       accountSettings: [],
       isDuplicated: false,
       isInvalidAccessToken: false,
       isInvalidUrl: false,
-      isEditing: false
+      isEditing: false,
+      isPatVisible: false
     }
   },
   methods: {
     addSetting (): void {
       if (!this.personalAccessTokenInput) {
+        this.isInvalidAccessToken = true
         return
       }
       const url = GitHubUrl.from(this.githubUrlInput)
@@ -132,6 +142,9 @@ export default defineComponent({
           useCase: accountSettingUseCase
         })
       }
+    },
+    viewPersonalAccessToken (): void {
+      this.isPatVisible = !this.isPatVisible
     }
   },
   watch: {
@@ -152,13 +165,42 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/form.scss';
+
+.add-buton {
+  padding: 5px;
+  border: solid 1px var(--border-color);
+  background-color: var(--main-background-color);
+  color: var(--main-text-color);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--sub-background-color);
+  }
+}
+
+.input-form-block {
+  width: 350px;
+  margin: 15px auto;
+}
+
+.input-label {
+  display: block;
+  text-align: left;
+}
+
+.setting-input {
+  width: inherit;
+}
+
+.input-invalid {
+  color: var(--warning-color);
+  text-align: left;
+  font-size: 0.9em;
+}
+
 .add-button {
   font-size: 1.1em;
-  background-color: transparent;
-  border-radius: 50%;
-  color: var(--main-font-color);
-  border-color: var(--border-color);
-  outline: none;
 }
 
 .input {

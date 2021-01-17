@@ -1,9 +1,14 @@
 :root {
   --color-black: #2e2d2d;
+  --color-dark-gray: #504f4f;
   --color-gray: #606060;
   --color-light-gray: #c2c0c0;
+  --color-bright-gray: #dfdfdf;
   --color-white: #fdfdfd;
   --color-dark-red: #c02739;
+  --color-red: #ff3e55;
+  --color-blue: #108fd8;
+  --color-light-blue: #38f8bf;
 
   /* [app-theme="light"] */
   --main-font-color: var(--color-black);
@@ -13,6 +18,9 @@
   --link-color: var(--color-gray);
   --link-color-active: var(--color-dark-red);
 
+  --warning-color: var(--color-dark-red);
+  --focused-color: var(--color-light-blue);
+  --hover-color: var(--color-bright-gray);
   --border-color: var(--color-gray);
 }
 
@@ -24,5 +32,8 @@
   --link-color: var(--color-light-gray);
   --link-color-active: var(--color-dark-red);
 
+  --warning-color: var(--color-red);
+  --focused-color: var(--color-light-blue);
+  --hover-color: var(--color-gray);
   --border-color: var(--color-light-gray);
 }
