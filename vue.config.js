@@ -11,6 +11,9 @@ module.exports = {
         copyright: 'Copyright © 2020 ytakahashi',
         mac: {
           icon: 'public/icon.icns'
+        },
+        win: {
+          icon: 'public/icon.png'
         }
       }
     }
