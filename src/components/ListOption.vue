@@ -1,14 +1,14 @@
 <template>
-  <div v-if="!open" class="open-button">
+  <div v-if="!open" class="open-button app-font-button">
     <i class="fas fa-cog app-button" v-on:click="open = true"></i>
   </div>
   <div v-if="open" class="list-options">
-    <div class="close-button">
+    <div class="close-button app-font-button">
       <i class="fas fa-times app-button" v-on:click="open = false"></i>
     </div>
     <div>
       <span class="option-title">Number of {{ listType }}:</span>
-      <select v-model.number="numberOfItems">
+      <select v-model.number="numberOfItems" class="app-input-form">
         <option>1</option>
         <option>3</option>
         <option>5</option>
@@ -18,7 +18,7 @@
     </div>
     <div>
       <span class="option-title">Sort:</span>
-      <select v-model="selectedValue">
+      <select v-model="selectedValue" class="app-input-form">
         <option v-for="option in sortNames" v-bind:key="option" :selected="option === 'Recently updated'">
           {{ option }}
         </option>
@@ -98,6 +98,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/form.scss';
+
 .list-options {
   width: 240px;
   text-align: left;
@@ -126,6 +128,5 @@ export default defineComponent({
 .close-button {
   margin: -10px 0 0 auto;
   width: 18px;
-  background: var(--main-background-color);
 }
 </style>
