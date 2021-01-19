@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { shallowMount } from '@vue/test-utils'
 import GitHubPullRequest from '@/components/GitHubPullRequest.vue'
 import PullRequestContent from '@/components/PullRequestContent.vue'
-import { Issues, PullRequest, PullRequests } from '@/domain/model/github'
+import { GitHubRepositoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
+import { Account, GitHubUrl, Issues, PullRequest, PullRequests } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
-import { GitHubRepositoryUseCase } from '@/usecase/githubRepository'
+import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory } from '@/usecase/githubRepository'
+import { WebBrowserUserCase } from '@/usecase/webBrowser'
 
 const MockedIssues = jest.fn<Issues, []>()
 
@@ -14,16 +18,41 @@ MockedGitHubRepositoryUseCase.mockImplementation((pr: PullRequests): GitHubRepos
     getPullRequests: async (): Promise<PullRequests> => pr
   }
 })
+const createMock = (func: () => GitHubRepositoryUseCase): GitHubRepositoryUseCaseFactory => {
+  return {
+    newGitHubRepositoryUseCase: (githubUrl: GitHubUrl, personalAccessToken: string) => func()
+  }
+}
 
+const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
+const openUrlMock = jest.fn()
+MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
+  return {
+    openUrl: (url: string) => openUrlMock(url)
+  }
+})
+const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
+
+const account = new Account('name', 'profile', 'avatar', jest.fn<GitHubUrl, []>()(), 'pat')
 const url = new RepositoryUrl('https://github.com/ytakahashi/miru')
 
 describe('GitHubPullRequest.vue', () => {
+  beforeEach(() => {
+    openUrlMock.mockClear()
+  })
+
   it('renders when open PR does not exist', async () => {
     const pullRequests = new PullRequests(url, [], 0)
     const wrapper = shallowMount(GitHubPullRequest, {
+      global: {
+        provide: {
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(pullRequests)),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
+        }
+      },
       props: {
+        account: account,
         repositoryUrl: url,
-        githubRepositoryUseCase: new MockedGitHubRepositoryUseCase(pullRequests),
         option: {}
       }
     })
@@ -66,9 +95,15 @@ describe('GitHubPullRequest.vue', () => {
     )
     const pullRequests = new PullRequests(url, [pr1, pr2], 2)
     const wrapper = shallowMount(GitHubPullRequest, {
+      global: {
+        provide: {
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(pullRequests)),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
+        }
+      },
       props: {
+        account: account,
         repositoryUrl: url,
-        githubRepositoryUseCase: new MockedGitHubRepositoryUseCase(pullRequests),
         option: {}
       }
     })
@@ -78,5 +113,46 @@ describe('GitHubPullRequest.vue', () => {
     expect(wrapper.text()).toContain('ytakahashi/miru')
     expect(wrapper.text()).not.toContain('There aren’t any open pull requests.')
     expect(wrapper.findAllComponents(PullRequestContent)).toHaveLength(2)
+  })
+
+  it('opens repository url', async () => {
+    const pullRequests = new PullRequests(url, [], 0)
+    const wrapper = shallowMount(GitHubPullRequest, {
+      global: {
+        provide: {
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(pullRequests)),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
+        }
+      },
+      props: {
+        account: account,
+        repositoryUrl: url,
+        option: {}
+      }
+    })
+    await wrapper.find('span.repository-name').trigger('click')
+    expect(openUrlMock).toHaveBeenCalledWith(url.getUrl())
+  })
+
+  it('opens pill requests url', async () => {
+    const pullRequests = new PullRequests(url, [], 0)
+    const wrapper = shallowMount(GitHubPullRequest, {
+      global: {
+        provide: {
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(pullRequests)),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
+        }
+      },
+      props: {
+        account: account,
+        repositoryUrl: url,
+        option: {}
+      }
+    })
+
+    await wrapper.find('button').trigger('click')
+    await wrapper.vm.$nextTick()
+    await wrapper.find('div.clickable').trigger('click')
+    expect(openUrlMock).toHaveBeenCalledWith(`${url.getUrl()}/pulls`)
   })
 })

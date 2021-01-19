@@ -3,8 +3,8 @@
   <div v-for="(t, index) in tuples" :key="index">
     <div v-for="(repo, index) in t.repositories" :key="index">
       <GitHubIssue
+        :account="t.account"
         :repositoryUrl="repo"
-        :githubRepositoryUseCase="t.githubRepositoryUseCase"
         :option="option"
       />
     </div>

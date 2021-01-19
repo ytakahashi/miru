@@ -3,10 +3,11 @@ import ListOption from '@/components/ListOption.vue'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
 import { ApplicationSettingUseCase } from '@/usecase/applicationSetting'
-import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory, Option } from '@/usecase/githubRepository'
+import { Option } from '@/usecase/githubRepository'
+import { Account } from '@/domain/model/github'
 
 type RepositoryTuple = {
-  githubRepositoryUseCase: GitHubRepositoryUseCase;
+  account: Account;
   repositories: Array<RepositoryUrl>;
 }
 
@@ -26,10 +27,6 @@ export default defineComponent({
     },
     applicationSettingUseCase: {
       type: Object as PropType<ApplicationSettingUseCase>,
-      required: true
-    },
-    gitHubRepositoryUseCaseFactory: {
-      type: Object as PropType<GitHubRepositoryUseCaseFactory>,
       required: true
     }
   },
@@ -51,7 +48,7 @@ export default defineComponent({
       const account = accountSettingUseCase.getAccount()
       const repositoryUrls = accountSettingUseCase.getRepositoryUrls()
       this.tuples.push({
-        githubRepositoryUseCase: this.gitHubRepositoryUseCaseFactory.newGitHubRepositoryUseCase(account.githubUrl, account.personalAccessToken),
+        account: account,
         repositories: repositoryUrls
       })
     }
