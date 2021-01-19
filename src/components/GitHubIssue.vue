@@ -1,7 +1,7 @@
 <template>
   <div class="issue-list">
     <div class="issue-list-header">
-      <span class="repository-name clickable" v-on:click="openRepository()">{{ repositoryUrl.asString() }}</span>
+      <span class="repository-name clickable" v-on:click="openRepositoryUrl(repositoryUrl)">{{ repositoryUrl.asString() }}</span>
       <button type="button" class="app-input-button" v-on:click="getIssues()">
         <i class="fas fa-sync-alt"></i>
       </button>
@@ -13,29 +13,31 @@
         <IssueContent :issue="issue" />
       </div>
 
-      <div v-if="!issues.hasContents()" class="clickable" v-on:click="openPRs()">
+      <div v-if="!issues.hasContents()" class="clickable" v-on:click="openIssueUrl(repositoryUrl)">
         There aren’t any open issues.
       </div>
     </div>
 
     <div v-if="isFailed">
-      Failed to list issues of <span class="clickable" v-on:click="openIssues()">{{ repositoryUrl.getUrl() }}</span>.<br />
+      Failed to list issues of <span class="clickable" v-on:click="openIssueUrl(repositoryUrl)">{{ repositoryUrl.getUrl() }}</span>.<br />
       The repository does not exist or not visible with provided pesonal access token.
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
-import { shell } from 'electron'
+import { defineComponent, inject, readonly, ref, PropType } from 'vue'
 import IssueContent from '@/components/IssueContent.vue'
-import { Issues } from '@/domain/model/github'
+import { WebBrowserUserCaseKey, GitHubRepositoryUseCaseFactoryKey } from '@/di/types'
+import { Account, Issues, GitHubUrl } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { getters, mutations } from '@/store/issues'
-import { GitHubRepositoryUseCase, Option } from '@/usecase/githubRepository'
+import { Option } from '@/usecase/githubRepository'
 
-type DataType = {
-  isFailed: boolean;
+type PropsType = {
+  account: Account;
+  repositoryUrl: RepositoryUrl;
+  option: Option;
 }
 
 export default defineComponent({
@@ -43,18 +45,13 @@ export default defineComponent({
   components: {
     IssueContent
   },
-  data (): DataType {
-    return {
-      isFailed: false
-    }
-  },
   props: {
-    repositoryUrl: {
-      type: RepositoryUrl,
+    account: {
+      type: Account,
       required: true
     },
-    githubRepositoryUseCase: {
-      type: Object as PropType<GitHubRepositoryUseCase>,
+    repositoryUrl: {
+      type: RepositoryUrl,
       required: true
     },
     option: {
@@ -62,25 +59,38 @@ export default defineComponent({
       required: true
     }
   },
-  methods: {
-    getIssues (): void {
-      const onSuccess = (i: Issues) => {
-        this.isFailed = false
-        mutations.replace(i)
-      }
-      const onFailure = (e: Error) => {
-        console.error(e)
-        this.isFailed = true
-      }
-      this.githubRepositoryUseCase.getIssues(this.repositoryUrl, this.option)
+  setup (props: PropsType) {
+    const webBrowserUserCase = inject(WebBrowserUserCaseKey)
+    const openRepositoryUrl = (val: RepositoryUrl) => webBrowserUserCase?.openUrl(val.getUrl())
+    const openIssueUrl = (val: RepositoryUrl) => webBrowserUserCase?.openUrl(`${val.getUrl()}/issues`)
+
+    const account = readonly(props.account)
+    const githubUrl = account.githubUrl as GitHubUrl
+    const accessToken = account.personalAccessToken
+    const githubRepositoryUseCase = inject(GitHubRepositoryUseCaseFactoryKey)?.newGitHubRepositoryUseCase(githubUrl, accessToken)
+
+    const isFailed = ref(false)
+    const onSuccess = (i: Issues) => {
+      isFailed.value = false
+      mutations.replace(i)
+    }
+    const onFailure = (e: Error) => {
+      // TODO: log
+      console.error(e)
+      isFailed.value = true
+    }
+    const getIssues = (): void => {
+      const { repositoryUrl, option } = props
+      githubRepositoryUseCase?.getIssues(repositoryUrl, option)
         .then(onSuccess)
         .catch(onFailure)
-    },
-    openRepository (): void {
-      shell.openExternal(this.repositoryUrl.getUrl())
-    },
-    openIssues (): void {
-      shell.openExternal(`${this.repositoryUrl.getUrl()}/issues`)
+    }
+
+    return {
+      getIssues,
+      isFailed,
+      openRepositoryUrl,
+      openIssueUrl
     }
   },
   computed: {

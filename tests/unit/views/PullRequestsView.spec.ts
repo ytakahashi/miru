@@ -8,13 +8,11 @@ import { ApplicationSetting } from '@/domain/model/application'
 import { Account, GitHubUrl } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
-import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory } from '@/usecase/githubRepository'
 import { ApplicationSettingUseCase } from '@/usecase/applicationSetting'
 
-const MockedAccount = jest.fn<Account, []>()
+const account = new Account('name', 'profile', 'avatar', jest.fn<GitHubUrl, []>()(), 'pat')
 const MockedApplicationSettingUseCase = jest.fn<ApplicationSettingUseCase, [Array<ApplicationSetting>]>()
 const MockedAccountSettingUseCase = jest.fn<AccountSettingUseCase, [Array<RepositoryUrl>]>()
-const MockedGitHubRepositoryUseCase = jest.fn<GitHubRepositoryUseCase, []>()
 
 MockedApplicationSettingUseCase.mockImplementation((arr: Array<ApplicationSetting>): ApplicationSettingUseCase => {
   return {
@@ -33,16 +31,10 @@ MockedAccountSettingUseCase.mockImplementation((arr: Array<RepositoryUrl>): Acco
     setRepositoryUrls (urls: Array<RepositoryUrl>): void {},
     clearRepositoryUrls (): void {},
     setAccount (account: Account): void {},
-    getAccount (): Account { return new MockedAccount() },
+    getAccount (): Account { return account },
     deleteSetting (): void {}
   }
 })
-
-const mockedGitHubRepositoryUseCaseFactory: GitHubRepositoryUseCaseFactory = {
-  newGitHubRepositoryUseCase (githubUrl: GitHubUrl, personalAccessToken: string): GitHubRepositoryUseCase {
-    return new MockedGitHubRepositoryUseCase()
-  }
-}
 
 describe('PullRequestView.vue', () => {
   it('renders when account is not configured', async () => {
@@ -55,8 +47,7 @@ describe('PullRequestView.vue', () => {
     const wrapper = shallowMount(PullRequestView, {
       props: {
         accountSettingUseCaseFactory: mockedAccountSettingUseCaseFactory,
-        applicationSettingUseCase: new MockedApplicationSettingUseCase([]),
-        gitHubRepositoryUseCaseFactory: mockedGitHubRepositoryUseCaseFactory
+        applicationSettingUseCase: new MockedApplicationSettingUseCase([])
       }
     })
     await wrapper.vm.$nextTick()
@@ -73,8 +64,7 @@ describe('PullRequestView.vue', () => {
     const wrapper = shallowMount(PullRequestView, {
       props: {
         accountSettingUseCaseFactory: mockedAccountSettingUseCaseFactory,
-        applicationSettingUseCase: new MockedApplicationSettingUseCase([new ApplicationSetting('foo')]),
-        gitHubRepositoryUseCaseFactory: mockedGitHubRepositoryUseCaseFactory
+        applicationSettingUseCase: new MockedApplicationSettingUseCase([new ApplicationSetting('foo')])
       }
     })
     await wrapper.vm.$nextTick()
