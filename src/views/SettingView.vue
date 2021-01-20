@@ -1,9 +1,7 @@
 <template>
   <div v-for="(accountSetting, index) in accountSettings" :key="index">
     <AccountSetting
-      :account="accountSetting.account"
-      :setting="accountSetting.setting"
-      :accountSettingUseCase="accountSetting.useCase"
+      :setting="accountSetting"
       @account-deleted="deleteAccount"
     />
   </div>
@@ -25,38 +23,19 @@
       <div class="input-invalid" v-if="isInvalidAccessToken">invalid access token: {{ personalAccessTokenInput }}</div>
       <div class="input-invalid" v-if="isDuplicated">duplicated personal access token: {{ personalAccessTokenInput }}</div>
     </div>
-    <button v-on:click="addSetting()" class="add-buton">Add Account</button>
+    <button v-on:click="addAccount()" class="add-account-button">Add Account</button>
   </div>
 
   <ThemeSwitch />
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, inject, onMounted, ref, watch, Ref } from 'vue'
 import AccountSetting from '@/components/AccountSetting.vue'
 import ThemeSwitch from '@/components/ThemeSwitch.vue'
+import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, GitHubAccountUseCaseFactoryKey } from '@/di/types'
 import { ApplicationSetting } from '@/domain/model/application'
 import { Account, GitHubUrl } from '@/domain/model/github'
-import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
-import { ApplicationSettingUseCase } from '@/usecase/applicationSetting'
-import { GitHubAccountUseCaseFactory } from '@/usecase/githubAccount'
-
-type AccountSettingTriple = {
-  account: Account;
-  setting: ApplicationSetting;
-  useCase: AccountSettingUseCase;
-}
-
-type DataType = {
-  githubUrlInput: string;
-  personalAccessTokenInput: string
-  accountSettings: Array<AccountSettingTriple>;
-  isDuplicated: boolean;
-  isInvalidAccessToken: boolean;
-  isInvalidUrl: boolean;
-  isEditing: boolean;
-  isPatVisible: boolean;
-}
 
 export default defineComponent({
   name: 'SettingView',
@@ -64,102 +43,102 @@ export default defineComponent({
     AccountSetting,
     ThemeSwitch
   },
-  props: {
-    accountSettingUseCaseFactory: {
-      type: Object as PropType<AccountSettingUseCaseFactory>,
-      required: true
-    },
-    applicationSettingUseCase: {
-      type: Object as PropType<ApplicationSettingUseCase>,
-      required: true
-    },
-    gitHubAccountUseCaseFactory: {
-      type: Object as PropType<GitHubAccountUseCaseFactory>,
-      required: true
+  setup () {
+    const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)
+    const applicationSettingUseCase = inject(ApplicationSettingUseCaseKey)
+    const githubAccountUseCaseFactory = inject(GitHubAccountUseCaseFactoryKey)
+    if (accountSettingUseCaseFactory === undefined ||
+      applicationSettingUseCase === undefined ||
+      githubAccountUseCaseFactory === undefined) {
+      throw new Error('Unexpected')
     }
-  },
-  data (): DataType {
-    return {
-      githubUrlInput: 'https://github.com',
-      personalAccessTokenInput: '',
-      accountSettings: [],
-      isDuplicated: false,
-      isInvalidAccessToken: false,
-      isInvalidUrl: false,
-      isEditing: false,
-      isPatVisible: false
-    }
-  },
-  methods: {
-    addSetting (): void {
-      if (!this.personalAccessTokenInput) {
-        this.isInvalidAccessToken = true
-        return
-      }
-      const url = GitHubUrl.from(this.githubUrlInput)
-      if (url === undefined) {
-        this.isInvalidUrl = true
-        return
-      }
-      const github = this.gitHubAccountUseCaseFactory.newGitHubAccountUseCase(url)
-      github.resolvePersonalAccessToken(this.personalAccessTokenInput)
-        .then(r => this.onSuccess(r))
-        .catch(e => this.onFailure(e))
-    },
-    onSuccess (resolved: Account): void {
+
+    const githubUrlInput = ref('https://github.com')
+    const personalAccessTokenInput = ref('')
+    const accountSettings: Ref<Array<ApplicationSetting>> = ref([])
+    const isDuplicated = ref(false)
+    const isInvalidAccessToken = ref(false)
+    const isInvalidUrl = ref(false)
+    const isEditing = ref(false)
+    const isPatVisible = ref(false)
+
+    const onSuccess = (resolved: Account) => {
       const setting = new ApplicationSetting(resolved.getId())
-      if (this.applicationSettingUseCase.hasSetting(setting)) {
-        this.isDuplicated = true
-        this.isEditing = false
+      if (applicationSettingUseCase.hasSetting(setting)) {
+        isDuplicated.value = true
       } else {
-        this.applicationSettingUseCase.addSetting(setting)
-        const accountSettingUseCase = this.accountSettingUseCaseFactory.newAccountSettingUseCase(setting)
+        applicationSettingUseCase.addSetting(setting)
+        const accountSettingUseCase = accountSettingUseCaseFactory.newAccountSettingUseCase(setting)
         accountSettingUseCase.setAccount(resolved)
-        this.accountSettings.push({
-          account: resolved,
-          setting: setting,
-          useCase: accountSettingUseCase
-        })
+        accountSettings.value.push(setting)
       }
-    },
-    onFailure (err: Error): void {
+      isEditing.value = false
+    }
+    const onFailure = (err: Error) => {
+      // TODO: log
       console.error(err)
-      this.isInvalidAccessToken = true
-    },
-    deleteAccount (setting: ApplicationSetting): void {
-      this.applicationSettingUseCase.removeSetting(setting)
-      this.refreshAccounts()
-    },
-    refreshAccounts (): void {
-      this.accountSettings.splice(0)
-      const settings = this.applicationSettingUseCase.getSettings()
-      for (const setting of settings) {
-        const accountSettingUseCase = this.accountSettingUseCaseFactory.newAccountSettingUseCase(setting)
-        const account = accountSettingUseCase.getAccount()
-        this.accountSettings.push({
-          account: account,
-          setting: setting,
-          useCase: accountSettingUseCase
-        })
+      isInvalidAccessToken.value = true
+    }
+    const addAccount = () => {
+      if (!personalAccessTokenInput.value) {
+        isInvalidAccessToken.value = true
+        return
       }
-    },
-    viewPersonalAccessToken (): void {
-      this.isPatVisible = !this.isPatVisible
+      const url = GitHubUrl.from(githubUrlInput.value)
+      if (url === undefined) {
+        isInvalidUrl.value = true
+        return
+      }
+      const github = githubAccountUseCaseFactory.newGitHubAccountUseCase(url)
+      github.resolvePersonalAccessToken(personalAccessTokenInput.value)
+        .then(r => onSuccess(r))
+        .catch(e => onFailure(e))
     }
-  },
-  watch: {
-    githubUrlInput: function () {
-      this.isDuplicated = false
-      this.isInvalidAccessToken = false
-      this.isInvalidUrl = false
-    },
-    personalAccessTokenInput: function () {
-      this.isDuplicated = false
-      this.isInvalidAccessToken = false
+
+    const refreshAccounts = () => {
+      accountSettings.value.splice(0)
+      const settings = applicationSettingUseCase.getSettings()
+      for (const setting of settings) {
+        accountSettings.value.push(setting)
+      }
     }
-  },
-  mounted () {
-    this.refreshAccounts()
+
+    const deleteAccount = (setting: ApplicationSetting) => {
+      applicationSettingUseCase.removeSetting(setting)
+      refreshAccounts()
+    }
+
+    const viewPersonalAccessToken = () => {
+      isPatVisible.value = !isPatVisible.value
+    }
+
+    watch(githubUrlInput, () => {
+      isDuplicated.value = false
+      isInvalidAccessToken.value = false
+      isInvalidUrl.value = false
+    })
+
+    watch(personalAccessTokenInput, () => {
+      isDuplicated.value = false
+      isInvalidAccessToken.value = false
+    })
+
+    onMounted(() => refreshAccounts())
+
+    return {
+      githubUrlInput,
+      personalAccessTokenInput,
+      accountSettings,
+      isDuplicated,
+      isInvalidAccessToken,
+      isInvalidUrl,
+      isEditing,
+      isPatVisible,
+
+      addAccount,
+      deleteAccount,
+      viewPersonalAccessToken
+    }
   }
 })
 </script>
@@ -167,7 +146,7 @@ export default defineComponent({
 <style scoped lang="scss">
 @import '@/assets/form.scss';
 
-.add-buton {
+.add-account-button {
   padding: 5px;
   border: solid 1px var(--border-color);
   background-color: var(--main-background-color);
@@ -197,13 +176,5 @@ export default defineComponent({
   color: var(--warning-color);
   text-align: left;
   font-size: 0.9em;
-}
-
-.add-button {
-  font-size: 1.1em;
-}
-
-.input {
-  width: 75%;
 }
 </style>

@@ -5,7 +5,7 @@
     </div>
     <div class="block">
       <span class="profile-url" v-on:click="openProfile()">{{ profile }}</span>
-      <i class="fas fa-trash-alt" v-on:click="deleteSetting()"></i>
+      <i class="fas fa-trash-alt clickable" v-on:click="deleteSetting()"></i>
     </div>
 
     <div class="block" v-if="githubRepositoryUrls.length > 0">
