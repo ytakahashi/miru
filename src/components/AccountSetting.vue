@@ -3,12 +3,12 @@
     <div v-if="!account.githubUrl.isEnterprise()" class="profile-img" v-on:click="openProfile()">
       <img :src="account.avatarUrl" />
     </div>
-    <div class="profile-header">
-      <span class="profile-name" v-on:click="openProfile()">{{ profile }}</span>
+    <div class="block">
+      <span class="profile-url" v-on:click="openProfile()">{{ profile }}</span>
       <i class="fas fa-trash-alt" v-on:click="deleteSetting()"></i>
     </div>
 
-    <div class="repositories">
+    <div class="block" v-if="githubRepositoryUrls.length > 0">
       <GitHubRepositories
         :repositoryUrls="githubRepositoryUrls"
         :editing="isEditing"
@@ -17,8 +17,8 @@
       />
     </div>
 
-    <div v-if="isEditing" class="repositry-input">
-      <input v-model="githubRepositoryUrlInput" placeholder="GitHub Repository URL">
+    <div v-if="isEditing" class="block">
+      <input class="app-input-form url-input" v-model="githubRepositoryUrlInput" placeholder="GitHub Repository URL">
       <button v-on:click="addGitHubRepository()" class="app-font-button"><i class="fas fa-plus"></i></button>
       <p v-if="!isValidRepositoryUrl">Invalid URL: {{ githubRepositoryUrlInput }}</p>
     </div>
@@ -26,19 +26,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
-import { shell } from 'electron'
+import { computed, defineComponent, inject, onMounted, ref, watch, PropType, Ref, SetupContext } from 'vue'
 import GitHubRepositories from '@/components/GitHubRepositories.vue'
+import { AccountSettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
 import { ApplicationSetting } from '@/domain/model/application'
-import { Account } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
-import { AccountSettingUseCase } from '@/usecase/accountSetting'
 
-type DataType = {
-  isValidRepositoryUrl: boolean;
-  githubRepositoryUrlInput: string;
-  githubRepositoryUrls: Array<RepositoryUrl>;
-  isEditing: boolean;
+type PropsType = {
+  setting: ApplicationSetting
 }
 
 export default defineComponent({
@@ -46,78 +41,86 @@ export default defineComponent({
   components: {
     GitHubRepositories
   },
-  data (): DataType {
-    return {
-      isValidRepositoryUrl: true,
-      githubRepositoryUrlInput: '',
-      githubRepositoryUrls: [],
-      isEditing: false
-    }
-  },
   emits: {
     accountDeleted: null
   },
   props: {
-    account: {
-      type: Object as PropType<Account>,
-      required: true
-    },
     setting: {
       type: Object as PropType<ApplicationSetting>,
       required: true
-    },
-    accountSettingUseCase: {
-      type: Object as PropType<AccountSettingUseCase>,
-      required: true
     }
   },
-  methods: {
-    addGitHubRepository (): void {
-      const url = new RepositoryUrl(this.githubRepositoryUrlInput)
-      if (!url.isValid()) {
-        this.isValidRepositoryUrl = false
+  setup (props: PropsType, context: SetupContext) {
+    const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)
+    const webBrowserUserCase = inject(WebBrowserUserCaseKey)
+
+    const accountSettingUseCase = accountSettingUseCaseFactory?.newAccountSettingUseCase(props.setting)
+    if (accountSettingUseCase === undefined) {
+      throw new Error('Unexpected: accountSettingUseCase should be defined')
+    }
+    const account = accountSettingUseCase.getAccount()
+    const profile = computed(() => `${account.userName}@${account.githubUrl.getDomain()}`)
+
+    const githubRepositoryUrlInput = ref('')
+    const githubRepositoryUrls: Ref<Array<RepositoryUrl>> = ref([])
+    const isValidRepositoryUrl = ref(true)
+    const isEditing = ref(false)
+
+    const addGitHubRepository = () => {
+      if (githubRepositoryUrlInput.value === '') {
         return
       }
-      this.isValidRepositoryUrl = true
-      this.accountSettingUseCase.addRepositoryUrl(url)
-      this.githubRepositoryUrls = this.accountSettingUseCase.getRepositoryUrls()
-      this.githubRepositoryUrlInput = ''
-    },
-    clearGitHubRepositories (): void {
-      this.accountSettingUseCase.clearRepositoryUrls()
-      this.githubRepositoryUrlInput = ''
-      this.githubRepositoryUrls = []
-    },
-    deleteSetting (): void {
-      this.accountSettingUseCase.deleteSetting()
-      this.$emit('accountDeleted', this.setting)
-    },
-    openProfile (): void {
-      shell.openExternal(this.account.profileUrl)
-    },
-    editHandler (b: boolean): void {
-      this.isEditing = b
-      if (!this.isEditing) {
-        this.accountSettingUseCase.setRepositoryUrls(this.githubRepositoryUrls)
+      const url = new RepositoryUrl(githubRepositoryUrlInput.value)
+      if (!url.isValid()) {
+        isValidRepositoryUrl.value = false
+        return
       }
-    },
-    deleteRepository (url: RepositoryUrl): void {
-      this.accountSettingUseCase.deleteRepositoryUrl(url)
-      this.githubRepositoryUrls = this.accountSettingUseCase.getRepositoryUrls()
+      accountSettingUseCase.addRepositoryUrl(url)
+      githubRepositoryUrls.value = accountSettingUseCase.getRepositoryUrls()
+      isValidRepositoryUrl.value = true
+      githubRepositoryUrlInput.value = ''
     }
-  },
-  watch: {
-    githubRepositoryUrlInput: function () {
-      this.isValidRepositoryUrl = true
+
+    const deleteRepository = (url: RepositoryUrl) => {
+      accountSettingUseCase.deleteRepositoryUrl(url)
+      githubRepositoryUrls.value = accountSettingUseCase.getRepositoryUrls()
     }
-  },
-  computed: {
-    profile (): string {
-      return `${this.account.userName}@${this.account.githubUrl.getDomain()}`
+
+    const deleteSetting = () => {
+      accountSettingUseCase.deleteSetting()
+      context.emit('accountDeleted', props.setting)
     }
-  },
-  mounted () {
-    this.githubRepositoryUrls = this.accountSettingUseCase.getRepositoryUrls()
+
+    const editHandler = (b: boolean) => {
+      isEditing.value = b
+      if (!isEditing.value) {
+        accountSettingUseCase.setRepositoryUrls(githubRepositoryUrls.value)
+      }
+    }
+
+    const openProfile = () => webBrowserUserCase?.openUrl(account.profileUrl)
+
+    watch(githubRepositoryUrlInput, () => {
+      isValidRepositoryUrl.value = true
+    })
+
+    onMounted(() => {
+      githubRepositoryUrls.value = accountSettingUseCase.getRepositoryUrls()
+    })
+
+    return {
+      account,
+      githubRepositoryUrlInput,
+      githubRepositoryUrls,
+      isValidRepositoryUrl,
+      isEditing,
+      openProfile,
+      addGitHubRepository,
+      deleteRepository,
+      deleteSetting,
+      editHandler,
+      profile
+    }
   }
 })
 </script>
@@ -152,21 +155,19 @@ img {
   }
 }
 
-.profile-name {
+.profile-url {
   cursor: pointer;
   font-weight: bold;
   padding: 0.3em;
 }
 
-.profile-header {
-  margin-top: 0.7em;
+.block {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
-.repositories {
-  margin-top: 0.7em;
-}
-
-.repositry-input {
-  margin-top: 1em;
+.url-input {
+  width: 250px;
+  margin-right: 10px;
 }
 </style>
