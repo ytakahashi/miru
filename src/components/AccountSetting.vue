@@ -8,7 +8,7 @@
       <i class="fas fa-trash-alt clickable" v-on:click="deleteSetting()"></i>
     </div>
 
-    <div class="block" v-if="githubRepositoryUrls.length > 0">
+    <div class="block">
       <GitHubRepositories
         :repositoryUrls="githubRepositoryUrls"
         :editing="isEditing"
@@ -127,6 +127,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @import '@/assets/form.scss';
+@import '@/assets/app.scss';
 
 $card-border-radius: 7px;
 

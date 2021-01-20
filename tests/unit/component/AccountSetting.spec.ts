@@ -59,31 +59,11 @@ describe('AccountSetting.vue', () => {
     openUrlMock.mockClear()
   })
 
-  it('renders when repositories are not configured', async () => {
+  it('renders', async () => {
     const wrapper = shallowMount(AccountSetting, {
       global: {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: createMock(() => new MockedAccountSettingUseCase([])),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
-      },
-      props: {
-        setting: setting
-      }
-    })
-
-    await wrapper.vm.$nextTick()
-    expect(wrapper.findAllComponents(GitHubRepositories)).toHaveLength(0)
-  })
-
-  it('renders when repositories are configured', async () => {
-    const repo1 = new RepositoryUrl('https://github.com/a/b')
-    const repo2 = new RepositoryUrl('https://github.com/c/d')
-    const repos = [repo1, repo2]
-    const wrapper = shallowMount(AccountSetting, {
-      global: {
-        provide: {
-          [AccountSettingUseCaseFactoryKey as symbol]: createMock(() => new MockedAccountSettingUseCase(repos)),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
