@@ -164,7 +164,7 @@ export class PullRequest extends IssueBase {
 
 class ResultListHolder<T extends IssueBase> {
   readonly fetchedAt: number
-  public readonly repositoryUrl: RepositoryUrl;
+  public readonly repositoryUrl: string;
   public readonly results: Array<T>;
   public readonly totalCount?: number;
 
@@ -174,7 +174,7 @@ class ResultListHolder<T extends IssueBase> {
     totalCount?: number
   ) {
     this.fetchedAt = dayjs().unix()
-    this.repositoryUrl = repositoryUrl
+    this.repositoryUrl = repositoryUrl.getUrl()
     this.results = results
     this.totalCount = totalCount
   }
@@ -183,8 +183,8 @@ class ResultListHolder<T extends IssueBase> {
     return dayjs.unix(this.fetchedAt).format('YYYY-MM-DD HH:mm:ss')
   }
 
-  belongsTo = (url: RepositoryUrl): boolean => {
-    return this.repositoryUrl.equals(url)
+  belongsTo = (url: string): boolean => {
+    return this.repositoryUrl === url
   }
 
   hasContents = (): boolean => {

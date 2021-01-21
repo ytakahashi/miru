@@ -6,7 +6,7 @@ const store = reactive<Array<Issues>>([])
 
 export const getters = {
   of (url: RepositoryUrl): Issues | undefined {
-    return store.find(s => s.belongsTo(url))
+    return store.find(s => s.belongsTo(url.getUrl()))
   }
 }
 

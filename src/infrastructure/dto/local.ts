@@ -6,3 +6,9 @@ export type GitHubAccount = {
   githubApiEndpoint: string;
   personalAccessToken: string;
 }
+
+export type RepositorySetting = {
+  url: string;
+  showsIssues: boolean;
+  showsPullRequests: boolean;
+}

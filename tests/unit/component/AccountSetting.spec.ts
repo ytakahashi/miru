@@ -4,12 +4,13 @@
 import { shallowMount } from '@vue/test-utils'
 import AccountSetting from '@/components/AccountSetting.vue'
 import GitHubRepositories from '@/components/GitHubRepositories.vue'
-import { AccountSettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
+import { AccountSettingUseCaseFactoryKey, RepositorySettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
 import { ApplicationSetting } from '@/domain/model/application'
 import { Account, GitHubUrl } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { WebBrowserUserCase } from '@/usecase/webBrowser'
 import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
+import { RepositorySettingUseCase, RepositorySettingUseCaseFactory } from '@/usecase/repositorySetting'
 
 const url = new GitHubUrl('https://github.com', 'https://api.github.com/graphql')
 const account = new Account('name', 'https://github.com/ytakahashi', 'avatar', url, 'pat')
@@ -30,14 +31,9 @@ const addRepositoryUrlMock = jest.fn()
 const deleteRepositoryUrlMock = jest.fn()
 const setRepositoryUrlsMock = jest.fn()
 const deleteSettingMock = jest.fn()
-const MockedAccountSettingUseCase = jest.fn<AccountSettingUseCase, [Array<RepositoryUrl>]>()
-MockedAccountSettingUseCase.mockImplementation((arr: Array<RepositoryUrl>): AccountSettingUseCase => {
+const MockedAccountSettingUseCase = jest.fn<AccountSettingUseCase, []>()
+MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
   return {
-    addRepositoryUrl: (url: RepositoryUrl) => addRepositoryUrlMock(),
-    deleteRepositoryUrl: (url: RepositoryUrl) => deleteRepositoryUrlMock(),
-    getRepositoryUrls: () => arr,
-    setRepositoryUrls: (urls: Array<RepositoryUrl>) => setRepositoryUrlsMock(),
-    clearRepositoryUrls: () => {},
     setAccount: (account: Account) => {},
     getAccount: () => account,
     deleteSetting: () => deleteSettingMock()
@@ -45,9 +41,24 @@ MockedAccountSettingUseCase.mockImplementation((arr: Array<RepositoryUrl>): Acco
 })
 
 // AccountSettingUseCaseFactory mock
-const createMock = (func: () => AccountSettingUseCase): AccountSettingUseCaseFactory => {
+const createAccountSettingMock = (func: () => AccountSettingUseCase): AccountSettingUseCaseFactory => {
   return {
     newAccountSettingUseCase: (setting: ApplicationSetting) => func()
+  }
+}
+
+const MockedRepositorySettingUseCase = jest.fn<RepositorySettingUseCase, [Array<RepositoryUrl>]>()
+MockedRepositorySettingUseCase.mockImplementation((arr: Array<RepositoryUrl>): RepositorySettingUseCase => {
+  return {
+    addRepositoryUrl: (url: RepositoryUrl) => addRepositoryUrlMock(),
+    deleteRepositoryUrl: (url: RepositoryUrl) => deleteRepositoryUrlMock(),
+    getRepositoryUrls: () => arr,
+    setRepositoryUrls: (urls: Array<RepositoryUrl>) => setRepositoryUrlsMock()
+  }
+})
+const createRepositorySettingMock = (func: () => RepositorySettingUseCase): RepositorySettingUseCaseFactory => {
+  return {
+    newRepositorySettingUseCase: (setting: ApplicationSetting) => func()
   }
 }
 
@@ -63,7 +74,8 @@ describe('AccountSetting.vue', () => {
     const wrapper = shallowMount(AccountSetting, {
       global: {
         provide: {
-          [AccountSettingUseCaseFactoryKey as symbol]: createMock(() => new MockedAccountSettingUseCase([])),
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase([])),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
@@ -83,7 +95,8 @@ describe('AccountSetting.vue', () => {
     const wrapper = shallowMount(AccountSetting, {
       global: {
         provide: {
-          [AccountSettingUseCaseFactoryKey as symbol]: createMock(() => new MockedAccountSettingUseCase(repos)),
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase(repos)),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         },
         stubs: {
@@ -115,7 +128,8 @@ describe('AccountSetting.vue', () => {
     const wrapper = shallowMount(AccountSetting, {
       global: {
         provide: {
-          [AccountSettingUseCaseFactoryKey as symbol]: createMock(() => new MockedAccountSettingUseCase(repos)),
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase(repos)),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         },
         stubs: {
@@ -153,7 +167,8 @@ describe('AccountSetting.vue', () => {
     const wrapper = shallowMount(AccountSetting, {
       global: {
         provide: {
-          [AccountSettingUseCaseFactoryKey as symbol]: createMock(() => new MockedAccountSettingUseCase([])),
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase([])),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
@@ -169,7 +184,8 @@ describe('AccountSetting.vue', () => {
     const wrapper = shallowMount(AccountSetting, {
       global: {
         provide: {
-          [AccountSettingUseCaseFactoryKey as symbol]: createMock(() => new MockedAccountSettingUseCase([])),
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase([])),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },

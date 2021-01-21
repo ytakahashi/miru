@@ -6,12 +6,12 @@ const MockedPullRequests = jest.fn<PullRequests, [RepositoryUrl]>()
 MockedPullRequests.mockImplementation((url: RepositoryUrl): PullRequests => {
   return {
     fetchedAt: 1,
-    repositoryUrl: url,
+    repositoryUrl: url.getUrl(),
     results: [],
     totalCount: 1,
     fetchedAtDate: () => '',
-    belongsTo: (r: RepositoryUrl): boolean => {
-      return url.equals(r)
+    belongsTo: (r: string): boolean => {
+      return url.getUrl() === r
     },
     hasContents: (): boolean => true
   }
