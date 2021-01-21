@@ -1,11 +1,11 @@
 import { ApplicationSetting } from '@/domain/model/application'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 
 export interface RepositorySettingUseCase {
-  addRepositoryUrl (url: RepositoryUrl): void
-  deleteRepositoryUrl (url: RepositoryUrl): void
-  getRepositoryUrls (): Array<RepositoryUrl>
-  setRepositoryUrls (urls: Array<RepositoryUrl>): void
+  addRepositorySetting (url: RepositorySetting): void
+  deleteRepositorySetting (url: RepositorySetting): void
+  getRepositorySettings (): Array<RepositorySetting>
+  setRepositorySettings (urls: Array<RepositorySetting>): void
 }
 
 export interface RepositorySettingUseCaseFactory {

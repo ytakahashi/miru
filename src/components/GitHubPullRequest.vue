@@ -1,7 +1,7 @@
 <template>
   <div class="issue-list">
     <div class="issue-list-header">
-      <span class="repository-name clickable" v-on:click="openRepositoryUrl(repositoryUrl)">{{ repositoryUrl.asString() }}</span>
+      <span class="repository-name clickable" v-on:click="openRepositorySetting(repositorySetting)">{{ repositorySetting.asString() }}</span>
       <button type="button" class="app-input-button" v-on:click="getPullRequests()">
         <i class="fas fa-sync-alt"></i>
       </button>
@@ -13,13 +13,13 @@
         <PullRequestContent :pullRequest="pr" />
       </div>
 
-      <div v-if="!pullRequests.hasContents()" class="clickable" v-on:click="openPullRequestUrl(repositoryUrl)">
+      <div v-if="!pullRequests.hasContents()" class="clickable" v-on:click="openPullRequestUrl(repositorySetting)">
         There aren’t any open pull requests.
       </div>
     </div>
 
     <div v-if="isFailed">
-      Failed to list pull requests of <span class="clickable" v-on:click="openPullRequestUrl(repositoryUrl)">{{ repositoryUrl.getUrl() }}</span>.<br />
+      Failed to list pull requests of <span class="clickable" v-on:click="openPullRequestUrl(repositorySetting)">{{ repositorySetting.getUrl() }}</span>.<br />
       The repository does not exist or not visible with provided pesonal access token.
     </div>
   </div>
@@ -31,13 +31,13 @@ import PullRequestContent from '@/components/PullRequestContent.vue'
 import { inject } from '@/di/injector'
 import { WebBrowserUserCaseKey, GitHubRepositoryUseCaseFactoryKey } from '@/di/types'
 import { Account, PullRequests, GitHubUrl } from '@/domain/model/github'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 import { getters, mutations } from '@/store/pullRequests'
 import { Option } from '@/usecase/githubRepository'
 
 type PropsType = {
   account: Account;
-  repositoryUrl: RepositoryUrl;
+  repositorySetting: RepositorySetting;
   option: Option;
 }
 
@@ -51,8 +51,8 @@ export default defineComponent({
       type: Account,
       required: true
     },
-    repositoryUrl: {
-      type: RepositoryUrl,
+    repositorySetting: {
+      type: RepositorySetting,
       required: true
     },
     option: {
@@ -64,8 +64,8 @@ export default defineComponent({
     const githubRepositoryUseCaseFactory = inject(GitHubRepositoryUseCaseFactoryKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
-    const openRepositoryUrl = (val: RepositoryUrl) => webBrowserUserCase.openUrl(val.getUrl())
-    const openPullRequestUrl = (val: RepositoryUrl) => webBrowserUserCase.openUrl(`${val.getUrl()}/pulls`)
+    const openRepositorySetting = (val: RepositorySetting) => webBrowserUserCase.openUrl(val.getUrl())
+    const openPullRequestUrl = (val: RepositorySetting) => webBrowserUserCase.openUrl(`${val.getUrl()}/pulls`)
 
     const account = readonly(props.account)
     const githubUrl = account.githubUrl as GitHubUrl
@@ -83,8 +83,8 @@ export default defineComponent({
       isFailed.value = true
     }
     const getPullRequests = (): void => {
-      const { repositoryUrl, option } = props
-      githubRepositoryUseCase.getPullRequests(repositoryUrl, option)
+      const { repositorySetting, option } = props
+      githubRepositoryUseCase.getPullRequests(repositorySetting, option)
         .then(onSuccess)
         .catch(onFailure)
     }
@@ -92,13 +92,13 @@ export default defineComponent({
     return {
       getPullRequests,
       isFailed,
-      openRepositoryUrl,
+      openRepositorySetting,
       openPullRequestUrl
     }
   },
   computed: {
     pullRequests (): PullRequests|undefined {
-      return getters.of(this.repositoryUrl)
+      return getters.of(this.repositorySetting)
     }
   }
 })

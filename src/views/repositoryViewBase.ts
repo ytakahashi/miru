@@ -1,6 +1,6 @@
 import { defineComponent, PropType } from 'vue'
 import ListOption from '@/components/ListOption.vue'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 import { AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
 import { ApplicationSettingUseCase } from '@/usecase/applicationSetting'
 import { RepositorySettingUseCaseFactory } from '@/usecase/repositorySetting'
@@ -9,7 +9,7 @@ import { Account } from '@/domain/model/github'
 
 type RepositoryTuple = {
   account: Account;
-  repositories: Array<RepositoryUrl>;
+  repositorySettings: Array<RepositorySetting>;
 }
 
 type DataType = {
@@ -52,10 +52,10 @@ export default defineComponent({
       const accountSettingUseCase = this.accountSettingUseCaseFactory.newAccountSettingUseCase(s)
       const repositorySettingUseCase = this.repositorySettingUseCaseFactory.newRepositorySettingUseCase(s)
       const account = accountSettingUseCase.getAccount()
-      const repositoryUrls = repositorySettingUseCase.getRepositoryUrls()
+      const repositorySettings = repositorySettingUseCase.getRepositorySettings()
       this.tuples.push({
         account: account,
-        repositories: repositoryUrls
+        repositorySettings: repositorySettings
       })
     }
   }

@@ -1,5 +1,5 @@
 import { LocalStorageAccessor } from '@/domain/interface/localStorageAccessor'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 import { RepositorySettingUseCase } from '@/usecase/repositorySetting'
 
 export class RepositorySettingUseCaseInteractor implements RepositorySettingUseCase {
@@ -9,7 +9,7 @@ export class RepositorySettingUseCaseInteractor implements RepositorySettingUseC
     this.#localStorageAccessor = localStorageAccessor
   }
 
-  addRepositoryUrl (url: RepositoryUrl): void {
+  addRepositorySetting (url: RepositorySetting): void {
     const current = this.#localStorageAccessor.getRepositorySettings()
     const added = {
       url: url.getUrl(),
@@ -20,15 +20,15 @@ export class RepositorySettingUseCaseInteractor implements RepositorySettingUseC
     this.#localStorageAccessor.setRepositorySettings(Array.from(next))
   }
 
-  deleteRepositoryUrl (url: RepositoryUrl): void {
+  deleteRepositorySetting (url: RepositorySetting): void {
     const current = this.#localStorageAccessor.getRepositorySettings()
     const next = current.filter(r => r.url !== url.getUrl())
     this.#localStorageAccessor.setRepositorySettings(Array.from(next))
   }
 
-  getRepositoryUrls (): Array<RepositoryUrl> {
+  getRepositorySettings (): Array<RepositorySetting> {
     const current = this.#localStorageAccessor.getRepositorySettings()
-    return current.map(v => new RepositoryUrl(
+    return current.map(v => new RepositorySetting(
       v.url,
       {
         showsIssues: v.showsPullRequests,
@@ -37,7 +37,7 @@ export class RepositorySettingUseCaseInteractor implements RepositorySettingUseC
     ))
   }
 
-  setRepositoryUrls (urls: Array<RepositoryUrl>): void {
+  setRepositorySettings (urls: Array<RepositorySetting>): void {
     const stored = urls.map(url => {
       return {
         url: url.getUrl(),

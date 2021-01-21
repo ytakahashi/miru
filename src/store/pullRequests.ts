@@ -1,11 +1,11 @@
 import { reactive } from 'vue'
 import { PullRequests } from '@/domain/model/github'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 
 const store = reactive<Array<PullRequests>>([])
 
 export const getters = {
-  of (url: RepositoryUrl): PullRequests | undefined {
+  of (url: RepositorySetting): PullRequests | undefined {
     return store.find(s => s.belongsTo(url.getUrl()))
   }
 }

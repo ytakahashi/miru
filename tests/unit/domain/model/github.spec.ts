@@ -1,5 +1,5 @@
 import { GitHubUrl, Issue, Issues } from '@/domain/model/github'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 
 describe('GitHubUrl', () => {
   it('can initialize (empty)', () => {
@@ -67,8 +67,8 @@ describe('Issue', () => {
 
 describe('Issues', () => {
   it('holds parameters and all methods work', () => {
-    const url = new RepositoryUrl('https://github.com/facebook/jest')
-    const actual = new Issues(url, [], 0)
+    const setting = new RepositorySetting('https://github.com/facebook/jest')
+    const actual = new Issues(setting, [], 0)
 
     expect(actual.repositoryUrl).toBe('https://github.com/facebook/jest')
     expect(actual.results).toHaveLength(0)

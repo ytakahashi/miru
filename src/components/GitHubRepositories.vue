@@ -6,7 +6,7 @@
   </span>
 
   <draggable
-    :list="repositoryUrls"
+    :list="repositorySettings"
     :disabled="!editing"
     :item-key="key => key.asString()"
     ghost-class="ghost"
@@ -26,7 +26,7 @@
 import { shell } from 'electron'
 import { defineComponent, PropType } from 'vue'
 import draggable from 'vuedraggable'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 
 export default defineComponent({
   name: 'GitHubRepositories',
@@ -39,8 +39,8 @@ export default defineComponent({
       type: Boolean,
       requred: true
     },
-    repositoryUrls: {
-      type: Array as PropType<RepositoryUrl[]>,
+    repositorySettings: {
+      type: Array as PropType<RepositorySetting[]>,
       required: true
     }
   },
@@ -48,10 +48,10 @@ export default defineComponent({
     emitEdit (editing: boolean): void {
       this.$emit('edit', editing)
     },
-    deleteRepository (url: RepositoryUrl): void {
+    deleteRepository (url: RepositorySetting): void {
       this.$emit('deleteRepository', url)
     },
-    openRepository (url: RepositoryUrl): void {
+    openRepository (url: RepositorySetting): void {
       if (this.editing) {
         return
       }

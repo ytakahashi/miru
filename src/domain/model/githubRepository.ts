@@ -4,7 +4,7 @@ type Preference = {
   showsIssues: boolean;
   showsPullRequests: boolean;
 }
-export class RepositoryUrl {
+export class RepositorySetting {
   readonly #origin?: string;
   readonly #owner?: string;
   readonly #repositoryName?: string;
@@ -67,7 +67,7 @@ export class RepositoryUrl {
     return this.#preference.showsPullRequests
   }
 
-  public equals = (other: RepositoryUrl): boolean => {
+  public equals = (other: RepositorySetting): boolean => {
     return this.getUrl() === other.getUrl()
   }
 }

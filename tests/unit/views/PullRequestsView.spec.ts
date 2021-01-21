@@ -6,7 +6,7 @@ import GitHubPullRequest from '@/components/GitHubPullRequest.vue'
 import PullRequestView from '@/views/PullRequestsView.vue'
 import { ApplicationSetting } from '@/domain/model/application'
 import { Account, GitHubUrl } from '@/domain/model/github'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
 import { ApplicationSettingUseCase } from '@/usecase/applicationSetting'
 import { RepositorySettingUseCase, RepositorySettingUseCaseFactory } from '@/usecase/repositorySetting'
@@ -32,13 +32,13 @@ MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
   }
 })
 
-const MockedRepositorySettingUseCase = jest.fn<RepositorySettingUseCase, [Array<RepositoryUrl>]>()
-MockedRepositorySettingUseCase.mockImplementation((arr: Array<RepositoryUrl>): RepositorySettingUseCase => {
+const MockedRepositorySettingUseCase = jest.fn<RepositorySettingUseCase, [Array<RepositorySetting>]>()
+MockedRepositorySettingUseCase.mockImplementation((arr: Array<RepositorySetting>): RepositorySettingUseCase => {
   return {
-    addRepositoryUrl: (url: RepositoryUrl) => {},
-    deleteRepositoryUrl: (url: RepositoryUrl) => {},
-    getRepositoryUrls: () => arr,
-    setRepositoryUrls: (urls: Array<RepositoryUrl>) => {}
+    addRepositorySetting: (s: RepositorySetting) => {},
+    deleteRepositorySetting: (s: RepositorySetting) => {},
+    getRepositorySettings: () => arr,
+    setRepositorySettings: (s: Array<RepositorySetting>) => {}
   }
 })
 
@@ -74,7 +74,7 @@ describe('PullRequestView.vue', () => {
     const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
       newRepositorySettingUseCase: (setting: ApplicationSetting) =>
         new MockedRepositorySettingUseCase(
-          [new RepositoryUrl('https://github.com/a/b'), new RepositoryUrl('https://github.com/c/d')]
+          [new RepositorySetting('https://github.com/a/b'), new RepositorySetting('https://github.com/c/d')]
         )
     }
 

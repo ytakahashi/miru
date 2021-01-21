@@ -1,6 +1,6 @@
 import { GitHubAccessor, Option } from '@/domain/interface/githubAccessor'
 import { Issues, Issue, Label, PullRequest, PullRequests } from '@/domain/model/github'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 import { IssueConnection, PullRequestConnection } from '@/infrastructure/dto/githubApi'
 import { GitHubRepositoryUseCase } from '@/usecase/githubRepository'
 
@@ -13,8 +13,8 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
     this.#personalAccessToken = personalAccessToken
   }
 
-  getIssues = async (url: RepositoryUrl, opts?: Option): Promise<Issues> => {
-    if (!url.isValid()) {
+  getIssues = async (setting: RepositorySetting, opts?: Option): Promise<Issues> => {
+    if (!setting.isValid()) {
       throw new Error('Invalid GitHub URL.')
     }
 
@@ -32,16 +32,16 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
           v.comments.totalCount,
           v.participants.totalCount
         ))
-      return new Issues(url, issues, i.totalCount)
+      return new Issues(setting, issues, i.totalCount)
     }
 
-    return this.#githubAccessor.getIssues(this.#personalAccessToken, url, opts)
+    return this.#githubAccessor.getIssues(this.#personalAccessToken, setting, opts)
       .then(mapToIssues)
       .catch(e => { throw e })
   }
 
-  getPullRequests = async (url: RepositoryUrl, opts?: Option): Promise<PullRequests> => {
-    if (!url.isValid()) {
+  getPullRequests = async (setting: RepositorySetting, opts?: Option): Promise<PullRequests> => {
+    if (!setting.isValid()) {
       throw new Error('Invalid GitHub URL.')
     }
 
@@ -62,10 +62,10 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
           v.deletions,
           v.changedFiles
         ))
-      return new PullRequests(url, prs, v.totalCount)
+      return new PullRequests(setting, prs, v.totalCount)
     }
 
-    return this.#githubAccessor.getPullRequests(this.#personalAccessToken, url, opts)
+    return this.#githubAccessor.getPullRequests(this.#personalAccessToken, setting, opts)
       .then(mapToPullRequests)
       .catch(e => { throw e })
   }
