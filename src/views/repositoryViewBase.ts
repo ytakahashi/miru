@@ -3,6 +3,7 @@ import ListOption from '@/components/ListOption.vue'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
 import { ApplicationSettingUseCase } from '@/usecase/applicationSetting'
+import { RepositorySettingUseCaseFactory } from '@/usecase/repositorySetting'
 import { Option } from '@/usecase/githubRepository'
 import { Account } from '@/domain/model/github'
 
@@ -28,6 +29,10 @@ export default defineComponent({
     applicationSettingUseCase: {
       type: Object as PropType<ApplicationSettingUseCase>,
       required: true
+    },
+    repositorySettingUseCaseFactory: {
+      type: Object as PropType<RepositorySettingUseCaseFactory>,
+      required: true
     }
   },
   data (): DataType {
@@ -45,8 +50,9 @@ export default defineComponent({
     const settings = this.applicationSettingUseCase.getSettings()
     for (const s of settings) {
       const accountSettingUseCase = this.accountSettingUseCaseFactory.newAccountSettingUseCase(s)
+      const repositorySettingUseCase = this.repositorySettingUseCaseFactory.newRepositorySettingUseCase(s)
       const account = accountSettingUseCase.getAccount()
-      const repositoryUrls = accountSettingUseCase.getRepositoryUrls()
+      const repositoryUrls = repositorySettingUseCase.getRepositoryUrls()
       this.tuples.push({
         account: account,
         repositories: repositoryUrls

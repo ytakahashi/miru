@@ -4,13 +4,15 @@ import {
   ApplicationSettingUseCaseKey,
   GitHubAccountUseCaseFactoryKey,
   GitHubRepositoryUseCaseFactoryKey,
+  RepositorySettingUseCaseFactoryKey,
   WebBrowserUserCaseKey
 } from '@/di/types'
 import {
   AccountSettingUseCaseFactoryImpl,
   ApplicationSettingUseCaseFactoryImpl,
   GitHubAccountUseCaseFactoryImpl,
-  GitHubRepositoryUseCaseFactoryImpl
+  GitHubRepositoryUseCaseFactoryImpl,
+  RepositorySettingUseCaseFactoryImpl
 } from '@/usecase/factory/useCaseFactory'
 import { WebBrowserUserCaseInteractor } from '@/usecase/interactor/WebBrowserUserCaseInteractor'
 
@@ -20,6 +22,7 @@ const webBrowserUserCaseInteractor = new WebBrowserUserCaseInteractor()
 
 const applicationSettingUseCase = new ApplicationSettingUseCaseFactoryImpl().newApplicationSettingUseCase()
 const gitHubAccountUseCaseFactory = new GitHubAccountUseCaseFactoryImpl()
+const repositorySettingUseCaseFactory = new RepositorySettingUseCaseFactoryImpl()
 
 export default {
   install (app: App): void {
@@ -28,5 +31,6 @@ export default {
     app.provide(GitHubAccountUseCaseFactoryKey, gitHubAccountUseCaseFactory)
     app.provide(GitHubRepositoryUseCaseFactoryKey, githubRepositoryUseCaseFactory)
     app.provide(WebBrowserUserCaseKey, webBrowserUserCaseInteractor)
+    app.provide(RepositorySettingUseCaseFactoryKey, repositorySettingUseCaseFactory)
   }
 }

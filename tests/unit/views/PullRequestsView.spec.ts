@@ -9,11 +9,11 @@ import { Account, GitHubUrl } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
 import { ApplicationSettingUseCase } from '@/usecase/applicationSetting'
+import { RepositorySettingUseCase, RepositorySettingUseCaseFactory } from '@/usecase/repositorySetting'
 
 const account = new Account('name', 'profile', 'avatar', jest.fn<GitHubUrl, []>()(), 'pat')
-const MockedApplicationSettingUseCase = jest.fn<ApplicationSettingUseCase, [Array<ApplicationSetting>]>()
-const MockedAccountSettingUseCase = jest.fn<AccountSettingUseCase, [Array<RepositoryUrl>]>()
 
+const MockedApplicationSettingUseCase = jest.fn<ApplicationSettingUseCase, [Array<ApplicationSetting>]>()
 MockedApplicationSettingUseCase.mockImplementation((arr: Array<ApplicationSetting>): ApplicationSettingUseCase => {
   return {
     hasSetting: (setting: ApplicationSetting) => true,
@@ -23,16 +23,22 @@ MockedApplicationSettingUseCase.mockImplementation((arr: Array<ApplicationSettin
   }
 })
 
-MockedAccountSettingUseCase.mockImplementation((arr: Array<RepositoryUrl>): AccountSettingUseCase => {
+const MockedAccountSettingUseCase = jest.fn<AccountSettingUseCase, []>()
+MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
   return {
-    addRepositoryUrl (url: RepositoryUrl): void {},
-    deleteRepositoryUrl (url: RepositoryUrl): void {},
-    getRepositoryUrls (): Array<RepositoryUrl> { return arr },
-    setRepositoryUrls (urls: Array<RepositoryUrl>): void {},
-    clearRepositoryUrls (): void {},
     setAccount (account: Account): void {},
     getAccount (): Account { return account },
     deleteSetting (): void {}
+  }
+})
+
+const MockedRepositorySettingUseCase = jest.fn<RepositorySettingUseCase, [Array<RepositoryUrl>]>()
+MockedRepositorySettingUseCase.mockImplementation((arr: Array<RepositoryUrl>): RepositorySettingUseCase => {
+  return {
+    addRepositoryUrl: (url: RepositoryUrl) => {},
+    deleteRepositoryUrl: (url: RepositoryUrl) => {},
+    getRepositoryUrls: () => arr,
+    setRepositoryUrls: (urls: Array<RepositoryUrl>) => {}
   }
 })
 
@@ -40,14 +46,18 @@ describe('PullRequestView.vue', () => {
   it('renders when account is not configured', async () => {
     const mockedAccountSettingUseCaseFactory: AccountSettingUseCaseFactory = {
       newAccountSettingUseCase: (setting: ApplicationSetting): AccountSettingUseCase => {
-        return new MockedAccountSettingUseCase([])
+        return new MockedAccountSettingUseCase()
       }
+    }
+    const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
+      newRepositorySettingUseCase: (setting: ApplicationSetting) => new MockedRepositorySettingUseCase([])
     }
 
     const wrapper = shallowMount(PullRequestView, {
       props: {
         accountSettingUseCaseFactory: mockedAccountSettingUseCaseFactory,
-        applicationSettingUseCase: new MockedApplicationSettingUseCase([])
+        applicationSettingUseCase: new MockedApplicationSettingUseCase([]),
+        repositorySettingUseCaseFactory: repositorySettingUseCaseFactoryMock
       }
     })
     await wrapper.vm.$nextTick()
@@ -58,13 +68,21 @@ describe('PullRequestView.vue', () => {
   it('renders when two repositories are configured', async () => {
     const mockedAccountSettingUseCaseFactory: AccountSettingUseCaseFactory = {
       newAccountSettingUseCase: (setting: ApplicationSetting): AccountSettingUseCase => {
-        return new MockedAccountSettingUseCase([new RepositoryUrl('https://github.com/a/b'), new RepositoryUrl('https://github.com/c/d')])
+        return new MockedAccountSettingUseCase()
       }
     }
+    const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
+      newRepositorySettingUseCase: (setting: ApplicationSetting) =>
+        new MockedRepositorySettingUseCase(
+          [new RepositoryUrl('https://github.com/a/b'), new RepositoryUrl('https://github.com/c/d')]
+        )
+    }
+
     const wrapper = shallowMount(PullRequestView, {
       props: {
         accountSettingUseCaseFactory: mockedAccountSettingUseCaseFactory,
-        applicationSettingUseCase: new MockedApplicationSettingUseCase([new ApplicationSetting('foo')])
+        applicationSettingUseCase: new MockedApplicationSettingUseCase([new ApplicationSetting('foo')]),
+        repositorySettingUseCaseFactory: repositorySettingUseCaseFactoryMock
       }
     })
     await wrapper.vm.$nextTick()

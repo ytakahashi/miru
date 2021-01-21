@@ -6,7 +6,6 @@ import AccountSetting from '@/components/AccountSetting.vue'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, GitHubAccountUseCaseFactoryKey } from '@/di/types'
 import { ApplicationSetting } from '@/domain/model/application'
 import { Account, GitHubUrl } from '@/domain/model/github'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
 import { ApplicationSettingUseCase } from '@/usecase/applicationSetting'
 import { GitHubAccountUseCase, GitHubAccountUseCaseFactory } from '@/usecase/githubAccount'
@@ -20,11 +19,6 @@ const MockedAccountSettingUseCase = jest.fn<AccountSettingUseCase, []>()
 const newAccountSettingUseCaseMock = jest.fn()
 MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
   return {
-    addRepositoryUrl (url: RepositoryUrl): void {},
-    deleteRepositoryUrl (url: RepositoryUrl): void {},
-    getRepositoryUrls (): Array<RepositoryUrl> { return [] },
-    setRepositoryUrls (urls: Array<RepositoryUrl>): void {},
-    clearRepositoryUrls (): void {},
     setAccount (account: Account): void {},
     getAccount (): Account { return account },
     deleteSetting (): void {}

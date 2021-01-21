@@ -1,16 +1,27 @@
 const urlRegex = /^https:\/\/(?<origin>[^/]+)\/(?<owner>[^/]+)\/(?<name>[^/]+)\/?$/
 
+type Preference = {
+  showsIssues: boolean;
+  showsPullRequests: boolean;
+}
 export class RepositoryUrl {
   readonly #origin?: string;
   readonly #owner?: string;
   readonly #repositoryName?: string;
+  #preference: Preference = {
+    showsIssues: true,
+    showsPullRequests: true
+  }
 
-  constructor (url: string) {
+  constructor (url: string, preference?: Preference) {
     const result = url.match(urlRegex)
     if (result?.groups !== undefined) {
       this.#origin = result.groups.origin
       this.#owner = result.groups.owner
       this.#repositoryName = result.groups.name
+      if (preference !== undefined) {
+        this.#preference = preference
+      }
     }
   }
 
@@ -38,6 +49,22 @@ export class RepositoryUrl {
 
   public asString = (): string => {
     return `${this.#owner}/${this.#repositoryName}`
+  }
+
+  public setIssuePreference = (b: boolean): void => {
+    this.#preference.showsIssues = b
+  }
+
+  public setPullRequestPreference = (b: boolean): void => {
+    this.#preference.showsPullRequests = b
+  }
+
+  public showsIssues = (): boolean => {
+    return this.#preference.showsIssues
+  }
+
+  public showsPullRequests = (): boolean => {
+    return this.#preference.showsPullRequests
   }
 
   public equals = (other: RepositoryUrl): boolean => {

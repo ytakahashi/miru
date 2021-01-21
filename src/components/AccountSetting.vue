@@ -26,9 +26,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, onMounted, ref, watch, PropType, Ref, SetupContext } from 'vue'
+import { computed, defineComponent, onMounted, ref, watch, PropType, Ref, SetupContext } from 'vue'
 import GitHubRepositories from '@/components/GitHubRepositories.vue'
-import { AccountSettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
+import { inject } from '@/di/injector'
+import { AccountSettingUseCaseFactoryKey, RepositorySettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
 import { ApplicationSetting } from '@/domain/model/application'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
 
@@ -52,12 +53,12 @@ export default defineComponent({
   },
   setup (props: PropsType, context: SetupContext) {
     const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)
+    const repositorySettingUseCaseFactory = inject(RepositorySettingUseCaseFactoryKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
-    const accountSettingUseCase = accountSettingUseCaseFactory?.newAccountSettingUseCase(props.setting)
-    if (accountSettingUseCase === undefined) {
-      throw new Error('Unexpected: accountSettingUseCase should be defined')
-    }
+    const accountSettingUseCase = accountSettingUseCaseFactory.newAccountSettingUseCase(props.setting)
+    const repositorySettingUseCase = repositorySettingUseCaseFactory.newRepositorySettingUseCase(props.setting)
+
     const account = accountSettingUseCase.getAccount()
     const profile = computed(() => `${account.userName}@${account.githubUrl.getDomain()}`)
 
@@ -75,15 +76,15 @@ export default defineComponent({
         isValidRepositoryUrl.value = false
         return
       }
-      accountSettingUseCase.addRepositoryUrl(url)
-      githubRepositoryUrls.value = accountSettingUseCase.getRepositoryUrls()
+      repositorySettingUseCase.addRepositoryUrl(url)
+      githubRepositoryUrls.value = repositorySettingUseCase.getRepositoryUrls()
       isValidRepositoryUrl.value = true
       githubRepositoryUrlInput.value = ''
     }
 
     const deleteRepository = (url: RepositoryUrl) => {
-      accountSettingUseCase.deleteRepositoryUrl(url)
-      githubRepositoryUrls.value = accountSettingUseCase.getRepositoryUrls()
+      repositorySettingUseCase.deleteRepositoryUrl(url)
+      githubRepositoryUrls.value = repositorySettingUseCase.getRepositoryUrls()
     }
 
     const deleteSetting = () => {
@@ -94,18 +95,18 @@ export default defineComponent({
     const editHandler = (b: boolean) => {
       isEditing.value = b
       if (!isEditing.value) {
-        accountSettingUseCase.setRepositoryUrls(githubRepositoryUrls.value)
+        repositorySettingUseCase.setRepositoryUrls(githubRepositoryUrls.value)
       }
     }
 
-    const openProfile = () => webBrowserUserCase?.openUrl(account.profileUrl)
+    const openProfile = () => webBrowserUserCase.openUrl(account.profileUrl)
 
     watch(githubRepositoryUrlInput, () => {
       isValidRepositoryUrl.value = true
     })
 
     onMounted(() => {
-      githubRepositoryUrls.value = accountSettingUseCase.getRepositoryUrls()
+      githubRepositoryUrls.value = repositorySettingUseCase.getRepositoryUrls()
     })
 
     return {

@@ -30,9 +30,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onMounted, ref, watch, Ref } from 'vue'
+import { defineComponent, onMounted, ref, watch, Ref } from 'vue'
 import AccountSetting from '@/components/AccountSetting.vue'
 import ThemeSwitch from '@/components/ThemeSwitch.vue'
+import { inject } from '@/di/injector'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, GitHubAccountUseCaseFactoryKey } from '@/di/types'
 import { ApplicationSetting } from '@/domain/model/application'
 import { Account, GitHubUrl } from '@/domain/model/github'
@@ -47,11 +48,6 @@ export default defineComponent({
     const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)
     const applicationSettingUseCase = inject(ApplicationSettingUseCaseKey)
     const githubAccountUseCaseFactory = inject(GitHubAccountUseCaseFactoryKey)
-    if (accountSettingUseCaseFactory === undefined ||
-      applicationSettingUseCase === undefined ||
-      githubAccountUseCaseFactory === undefined) {
-      throw new Error('Unexpected')
-    }
 
     const githubUrlInput = ref('https://github.com')
     const personalAccessTokenInput = ref('')

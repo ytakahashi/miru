@@ -1,5 +1,5 @@
 import Store from 'electron-store'
-import { LocalStorageAccessor } from '@/domain/interface/localStorageAccessor'
+import { LocalStorageAccessor, RepositorySetting } from '@/domain/interface/localStorageAccessor'
 import { ApplicationSetting } from '@/domain/model/application'
 import { GitHubUser } from '@/infrastructure/dto/githubApi'
 import { GitHubAccount } from '@/infrastructure/dto/local'
@@ -10,6 +10,7 @@ type StoreType = {
   account?: GitHubAccount;
   githubRepositoryUrls?: Array<string>;
   applicationSettings?: Array<ApplicationSetting>;
+  repositorySettings?: Array<RepositorySetting>;
 }
 
 export class ElectronStoreWrapper implements LocalStorageAccessor {
@@ -70,5 +71,18 @@ export class ElectronStoreWrapper implements LocalStorageAccessor {
 
   deleteGitHubRepositoryUrls = (): void => {
     this.#store.delete('githubRepositoryUrls')
+  }
+
+  setRepositorySettings = (settings: Array<RepositorySetting>): void => {
+    this.#store.set('repositorySettings', settings)
+  }
+
+  getRepositorySettings = (): Array<RepositorySetting> => {
+    const settings = this.#store.get('repositorySettings')
+    return settings === undefined ? [] : settings
+  }
+
+  deleteRepositorySettings = (): void => {
+    this.#store.delete('repositorySettings')
   }
 }

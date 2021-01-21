@@ -26,8 +26,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, readonly, ref, PropType } from 'vue'
+import { defineComponent, readonly, ref, PropType } from 'vue'
 import PullRequestContent from '@/components/PullRequestContent.vue'
+import { inject } from '@/di/injector'
 import { WebBrowserUserCaseKey, GitHubRepositoryUseCaseFactoryKey } from '@/di/types'
 import { Account, PullRequests, GitHubUrl } from '@/domain/model/github'
 import { RepositoryUrl } from '@/domain/model/githubRepository'
@@ -60,14 +61,16 @@ export default defineComponent({
     }
   },
   setup (props: PropsType) {
+    const githubRepositoryUseCaseFactory = inject(GitHubRepositoryUseCaseFactoryKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
-    const openRepositoryUrl = (val: RepositoryUrl) => webBrowserUserCase?.openUrl(val.getUrl())
-    const openPullRequestUrl = (val: RepositoryUrl) => webBrowserUserCase?.openUrl(`${val.getUrl()}/pulls`)
+
+    const openRepositoryUrl = (val: RepositoryUrl) => webBrowserUserCase.openUrl(val.getUrl())
+    const openPullRequestUrl = (val: RepositoryUrl) => webBrowserUserCase.openUrl(`${val.getUrl()}/pulls`)
 
     const account = readonly(props.account)
     const githubUrl = account.githubUrl as GitHubUrl
     const accessToken = account.personalAccessToken
-    const githubRepositoryUseCase = inject(GitHubRepositoryUseCaseFactoryKey)?.newGitHubRepositoryUseCase(githubUrl, accessToken)
+    const githubRepositoryUseCase = githubRepositoryUseCaseFactory.newGitHubRepositoryUseCase(githubUrl, accessToken)
 
     const isFailed = ref(false)
     const onSuccess = (prs: PullRequests) => {
@@ -81,7 +84,7 @@ export default defineComponent({
     }
     const getPullRequests = (): void => {
       const { repositoryUrl, option } = props
-      githubRepositoryUseCase?.getPullRequests(repositoryUrl, option)
+      githubRepositoryUseCase.getPullRequests(repositoryUrl, option)
         .then(onSuccess)
         .catch(onFailure)
     }

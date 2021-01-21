@@ -1,7 +1,6 @@
 import { unlinkSync } from 'fs'
 import { LocalStorageAccessor } from '@/domain/interface/localStorageAccessor'
 import { Account, GitHubUrl } from '@/domain/model/github'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
 import { GitHubAccount } from '@/infrastructure/dto/local'
 import { AccountSettingUseCase } from '@/usecase/accountSetting'
 
@@ -10,31 +9,6 @@ export class AccountSettingUseCaseInteractor implements AccountSettingUseCase {
 
   constructor (localStorageAccessor: LocalStorageAccessor) {
     this.#localStorageAccessor = localStorageAccessor
-  }
-
-  addRepositoryUrl = (url: RepositoryUrl): void => {
-    const current = this.#localStorageAccessor.getGitHubRepositoryUrls()
-    const next = current.length ? new Set([...current, url.getUrl()]) : new Set([url.getUrl()])
-    this.#localStorageAccessor.setGitHubRepositoryUrls(Array.from(next))
-  }
-
-  deleteRepositoryUrl = (url: RepositoryUrl): void => {
-    const current = this.#localStorageAccessor.getGitHubRepositoryUrls()
-    const next = current.filter(r => r !== url.getUrl())
-    this.#localStorageAccessor.setGitHubRepositoryUrls(Array.from(next))
-  }
-
-  getRepositoryUrls = (): Array<RepositoryUrl> => {
-    const urls = this.#localStorageAccessor.getGitHubRepositoryUrls()
-    return urls.map(v => new RepositoryUrl(v))
-  }
-
-  setRepositoryUrls = (urls: Array<RepositoryUrl>): void => {
-    this.#localStorageAccessor.setGitHubRepositoryUrls(urls.map(v => v.getUrl()))
-  }
-
-  clearRepositoryUrls = (): void => {
-    this.#localStorageAccessor.deleteGitHubRepositoryUrls()
   }
 
   setAccount = (account: Account): void => {
