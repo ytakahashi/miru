@@ -6,7 +6,7 @@ const store = reactive<Array<PullRequests>>([])
 
 export const getters = {
   of (url: RepositoryUrl): PullRequests | undefined {
-    return store.find(s => s.belongsTo(url))
+    return store.find(s => s.belongsTo(url.getUrl()))
   }
 }
 

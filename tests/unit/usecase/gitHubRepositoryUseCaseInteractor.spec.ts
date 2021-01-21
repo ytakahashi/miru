@@ -30,7 +30,7 @@ describe('GitHubRepositoryService class', () => {
       const actual = await sut.getIssues(target)
       expect(actual.totalCount).toBe(16)
       expect(actual.results).toHaveLength(1)
-      expect(actual.belongsTo(target)).toBeTruthy()
+      expect(actual.belongsTo('https://github.com/ytakahashi/miru')).toBe(true)
       expect(actual.hasContents()).toBeTruthy()
       expect(actual.fetchedAtDate()).not.toBeUndefined()
 
@@ -54,7 +54,7 @@ describe('GitHubRepositoryService class', () => {
       const actual = await sut.getPullRequests(target)
       expect(actual.totalCount).toBe(7)
       expect(actual.results).toHaveLength(1)
-      expect(actual.belongsTo(target)).toBeTruthy()
+      expect(actual.belongsTo('https://github.com/ytakahashi/miru')).toBe(true)
       expect(actual.hasContents()).toBeTruthy()
       expect(actual.fetchedAtDate()).not.toBeUndefined()
 

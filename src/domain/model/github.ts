@@ -183,11 +183,8 @@ class ResultListHolder<T extends IssueBase> {
     return dayjs.unix(this.fetchedAt).format('YYYY-MM-DD HH:mm:ss')
   }
 
-  belongsTo = (url: RepositoryUrl|string): boolean => {
-    if (typeof url === 'string') {
-      return this.repositoryUrl === url
-    }
-    return this.repositoryUrl === url.getUrl()
+  belongsTo = (url: string): boolean => {
+    return this.repositoryUrl === url
   }
 
   hasContents = (): boolean => {

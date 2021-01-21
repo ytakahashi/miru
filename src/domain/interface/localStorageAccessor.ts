@@ -1,11 +1,5 @@
 import { ApplicationSetting } from '@/domain/model/application'
-import { GitHubAccount } from '@/infrastructure/dto/local'
-
-export type RepositorySetting = {
-  url: string;
-  showsIssues: boolean;
-  showsPullRequests: boolean;
-}
+import { GitHubAccount, RepositorySetting } from '@/infrastructure/dto/local'
 
 export interface LocalStorageAccessor {
   getPath (): string;
