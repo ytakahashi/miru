@@ -7,7 +7,7 @@ import GitHubRepositories from '@/components/GitHubRepositories.vue'
 import { AccountSettingUseCaseFactoryKey, RepositorySettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
 import { ApplicationSetting } from '@/domain/model/application'
 import { Account, GitHubUrl } from '@/domain/model/github'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 import { WebBrowserUserCase } from '@/usecase/webBrowser'
 import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
 import { RepositorySettingUseCase, RepositorySettingUseCaseFactory } from '@/usecase/repositorySetting'
@@ -27,9 +27,9 @@ MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 
 // AccountSettingUseCase mock
-const addRepositoryUrlMock = jest.fn()
-const deleteRepositoryUrlMock = jest.fn()
-const setRepositoryUrlsMock = jest.fn()
+const addRepositorySettingMock = jest.fn()
+const deleteRepositorySettingMock = jest.fn()
+const setRepositorySettingsMock = jest.fn()
 const deleteSettingMock = jest.fn()
 const MockedAccountSettingUseCase = jest.fn<AccountSettingUseCase, []>()
 MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
@@ -47,13 +47,13 @@ const createAccountSettingMock = (func: () => AccountSettingUseCase): AccountSet
   }
 }
 
-const MockedRepositorySettingUseCase = jest.fn<RepositorySettingUseCase, [Array<RepositoryUrl>]>()
-MockedRepositorySettingUseCase.mockImplementation((arr: Array<RepositoryUrl>): RepositorySettingUseCase => {
+const MockedRepositorySettingUseCase = jest.fn<RepositorySettingUseCase, [Array<RepositorySetting>]>()
+MockedRepositorySettingUseCase.mockImplementation((arr: Array<RepositorySetting>): RepositorySettingUseCase => {
   return {
-    addRepositoryUrl: (url: RepositoryUrl) => addRepositoryUrlMock(),
-    deleteRepositoryUrl: (url: RepositoryUrl) => deleteRepositoryUrlMock(),
-    getRepositoryUrls: () => arr,
-    setRepositoryUrls: (urls: Array<RepositoryUrl>) => setRepositoryUrlsMock()
+    addRepositorySetting: (s: RepositorySetting) => addRepositorySettingMock(),
+    deleteRepositorySetting: (s: RepositorySetting) => deleteRepositorySettingMock(),
+    getRepositorySettings: () => arr,
+    setRepositorySettings: (s: Array<RepositorySetting>) => setRepositorySettingsMock()
   }
 })
 const createRepositorySettingMock = (func: () => RepositorySettingUseCase): RepositorySettingUseCaseFactory => {
@@ -64,8 +64,8 @@ const createRepositorySettingMock = (func: () => RepositorySettingUseCase): Repo
 
 describe('AccountSetting.vue', () => {
   beforeEach(() => {
-    addRepositoryUrlMock.mockClear()
-    setRepositoryUrlsMock.mockClear()
+    addRepositorySettingMock.mockClear()
+    setRepositorySettingsMock.mockClear()
     deleteSettingMock.mockClear()
     openUrlMock.mockClear()
   })
@@ -89,8 +89,8 @@ describe('AccountSetting.vue', () => {
   })
 
   it('input form appears/disappears after child component emits edit event', async () => {
-    const repo1 = new RepositoryUrl('https://github.com/a/b')
-    const repo2 = new RepositoryUrl('https://github.com/c/d')
+    const repo1 = new RepositorySetting('https://github.com/a/b')
+    const repo2 = new RepositorySetting('https://github.com/c/d')
     const repos = [repo1, repo2]
     const wrapper = shallowMount(AccountSetting, {
       global: {
@@ -113,17 +113,17 @@ describe('AccountSetting.vue', () => {
     await repositoriesStub.vm.$emit('edit', true)
     await wrapper.vm.$nextTick()
     expect(wrapper.find('input').exists()).toBe(true)
-    expect(setRepositoryUrlsMock).not.toHaveBeenCalled()
+    expect(setRepositorySettingsMock).not.toHaveBeenCalled()
 
     await repositoriesStub.vm.$emit('edit', false)
     await wrapper.vm.$nextTick()
     expect(wrapper.find('input').exists()).toBe(false)
-    expect(setRepositoryUrlsMock).toHaveBeenCalled()
+    expect(setRepositorySettingsMock).toHaveBeenCalled()
   })
 
   it('validates input', async () => {
-    const repo1 = new RepositoryUrl('https://github.com/a/b')
-    const repo2 = new RepositoryUrl('https://github.com/c/d')
+    const repo1 = new RepositorySetting('https://github.com/a/b')
+    const repo2 = new RepositorySetting('https://github.com/c/d')
     const repos = [repo1, repo2]
     const wrapper = shallowMount(AccountSetting, {
       global: {
@@ -160,7 +160,7 @@ describe('AccountSetting.vue', () => {
     addButton.trigger('click')
     await wrapper.vm.$nextTick()
     expect(wrapper.text()).not.toContain('Invalid URL')
-    expect(addRepositoryUrlMock).toHaveBeenCalledTimes(1)
+    expect(addRepositorySettingMock).toHaveBeenCalledTimes(1)
   })
 
   it('can open profile url', async () => {

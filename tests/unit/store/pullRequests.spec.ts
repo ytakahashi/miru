@@ -1,9 +1,9 @@
 import { PullRequests } from '@/domain/model/github'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 import { getters, mutations } from '@/store/pullRequests'
 
-const MockedPullRequests = jest.fn<PullRequests, [RepositoryUrl]>()
-MockedPullRequests.mockImplementation((url: RepositoryUrl): PullRequests => {
+const MockedPullRequests = jest.fn<PullRequests, [RepositorySetting]>()
+MockedPullRequests.mockImplementation((url: RepositorySetting): PullRequests => {
   return {
     fetchedAt: 1,
     repositoryUrl: url.getUrl(),
@@ -17,13 +17,13 @@ MockedPullRequests.mockImplementation((url: RepositoryUrl): PullRequests => {
   }
 })
 
-const url1 = new RepositoryUrl('https://github.com/foo/test1')
-const url2 = new RepositoryUrl('https://github.com/foo/test2')
-const url3 = new RepositoryUrl('https://github.com/foo/test3')
+const setting1 = new RepositorySetting('https://github.com/foo/test1')
+const setting2 = new RepositorySetting('https://github.com/foo/test2')
+const setting3 = new RepositorySetting('https://github.com/foo/test3')
 
-const pr1 = new MockedPullRequests(url1)
-const pr2 = new MockedPullRequests(url2)
-const pr3 = new MockedPullRequests(url3)
+const pr1 = new MockedPullRequests(setting1)
+const pr2 = new MockedPullRequests(setting2)
+const pr3 = new MockedPullRequests(setting3)
 
 beforeAll(() => {
   mutations.add([pr1, pr2, pr3])
@@ -36,17 +36,17 @@ afterAll(() => {
 describe('PullRequests store', () => {
   describe('getters', () => {
     it('returns pull requests', () => {
-      const actual = getters.of(url1)
+      const actual = getters.of(setting1)
       expect(actual).toStrictEqual(pr1)
     })
   })
 
   describe('mutations', () => {
     it('replaces pull requests', () => {
-      const newPR1 = new MockedPullRequests(url1)
+      const newPR1 = new MockedPullRequests(setting1)
       mutations.replace(newPR1)
 
-      const actual = getters.of(url1)
+      const actual = getters.of(setting1)
       expect(actual).not.toStrictEqual(pr1)
       expect(actual).toStrictEqual(newPR1)
     })

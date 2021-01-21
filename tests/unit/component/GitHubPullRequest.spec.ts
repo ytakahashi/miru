@@ -5,7 +5,7 @@ import GitHubPullRequest from '@/components/GitHubPullRequest.vue'
 import PullRequestContent from '@/components/PullRequestContent.vue'
 import { GitHubRepositoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
 import { Account, GitHubUrl, Issues, PullRequest, PullRequests } from '@/domain/model/github'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory } from '@/usecase/githubRepository'
 import { WebBrowserUserCase } from '@/usecase/webBrowser'
 
@@ -34,7 +34,7 @@ MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 
 const account = new Account('name', 'profile', 'avatar', jest.fn<GitHubUrl, []>()(), 'pat')
-const url = new RepositoryUrl('https://github.com/ytakahashi/miru')
+const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
 
 describe('GitHubPullRequest.vue', () => {
   beforeEach(() => {
@@ -42,7 +42,7 @@ describe('GitHubPullRequest.vue', () => {
   })
 
   it('renders when open PR does not exist', async () => {
-    const pullRequests = new PullRequests(url, [], 0)
+    const pullRequests = new PullRequests(setting, [], 0)
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {
         provide: {
@@ -52,7 +52,7 @@ describe('GitHubPullRequest.vue', () => {
       },
       props: {
         account: account,
-        repositoryUrl: url,
+        repositorySetting: setting,
         option: {}
       }
     })
@@ -93,7 +93,7 @@ describe('GitHubPullRequest.vue', () => {
       567,
       8
     )
-    const pullRequests = new PullRequests(url, [pr1, pr2], 2)
+    const pullRequests = new PullRequests(setting, [pr1, pr2], 2)
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {
         provide: {
@@ -103,7 +103,7 @@ describe('GitHubPullRequest.vue', () => {
       },
       props: {
         account: account,
-        repositoryUrl: url,
+        repositorySetting: setting,
         option: {}
       }
     })
@@ -116,7 +116,7 @@ describe('GitHubPullRequest.vue', () => {
   })
 
   it('opens repository url', async () => {
-    const pullRequests = new PullRequests(url, [], 0)
+    const pullRequests = new PullRequests(setting, [], 0)
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {
         provide: {
@@ -126,16 +126,16 @@ describe('GitHubPullRequest.vue', () => {
       },
       props: {
         account: account,
-        repositoryUrl: url,
+        repositorySetting: setting,
         option: {}
       }
     })
     await wrapper.find('span.repository-name').trigger('click')
-    expect(openUrlMock).toHaveBeenCalledWith(url.getUrl())
+    expect(openUrlMock).toHaveBeenCalledWith(setting.getUrl())
   })
 
   it('opens pill requests url', async () => {
-    const pullRequests = new PullRequests(url, [], 0)
+    const pullRequests = new PullRequests(setting, [], 0)
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {
         provide: {
@@ -145,7 +145,7 @@ describe('GitHubPullRequest.vue', () => {
       },
       props: {
         account: account,
-        repositoryUrl: url,
+        repositorySetting: setting,
         option: {}
       }
     })
@@ -153,6 +153,6 @@ describe('GitHubPullRequest.vue', () => {
     await wrapper.find('button').trigger('click')
     await wrapper.vm.$nextTick()
     await wrapper.find('div.clickable').trigger('click')
-    expect(openUrlMock).toHaveBeenCalledWith(`${url.getUrl()}/pulls`)
+    expect(openUrlMock).toHaveBeenCalledWith(`${setting.getUrl()}/pulls`)
   })
 })

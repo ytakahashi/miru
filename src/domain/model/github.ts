@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 
 dayjs.extend(relativeTime)
 
@@ -169,12 +169,12 @@ class ResultListHolder<T extends IssueBase> {
   public readonly totalCount?: number;
 
   constructor (
-    repositoryUrl: RepositoryUrl,
+    repositorySetting: RepositorySetting,
     results: Array<T>,
     totalCount?: number
   ) {
     this.fetchedAt = dayjs().unix()
-    this.repositoryUrl = repositoryUrl.getUrl()
+    this.repositoryUrl = repositorySetting.getUrl()
     this.results = results
     this.totalCount = totalCount
   }

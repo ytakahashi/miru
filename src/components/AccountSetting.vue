@@ -10,7 +10,7 @@
 
     <div class="block">
       <GitHubRepositories
-        :repositoryUrls="githubRepositoryUrls"
+        :repositorySettings="githubRepositorySettings"
         :editing="isEditing"
         @edit="editHandler"
         @delete-repository="deleteRepository"
@@ -18,9 +18,9 @@
     </div>
 
     <div v-if="isEditing" class="block">
-      <input class="app-input-form url-input" v-model="githubRepositoryUrlInput" placeholder="GitHub Repository URL">
+      <input class="app-input-form url-input" v-model="githubRepositorySettingInput" placeholder="GitHub Repository URL">
       <button v-on:click="addGitHubRepository()" class="app-font-button"><i class="fas fa-plus"></i></button>
-      <p v-if="!isValidRepositoryUrl">Invalid URL: {{ githubRepositoryUrlInput }}</p>
+      <p v-if="!isValidRepositorySetting">Invalid URL: {{ githubRepositorySettingInput }}</p>
     </div>
   </div>
 </template>
@@ -31,7 +31,7 @@ import GitHubRepositories from '@/components/GitHubRepositories.vue'
 import { inject } from '@/di/injector'
 import { AccountSettingUseCaseFactoryKey, RepositorySettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
 import { ApplicationSetting } from '@/domain/model/application'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 
 type PropsType = {
   setting: ApplicationSetting
@@ -62,29 +62,29 @@ export default defineComponent({
     const account = accountSettingUseCase.getAccount()
     const profile = computed(() => `${account.userName}@${account.githubUrl.getDomain()}`)
 
-    const githubRepositoryUrlInput = ref('')
-    const githubRepositoryUrls: Ref<Array<RepositoryUrl>> = ref([])
-    const isValidRepositoryUrl = ref(true)
+    const githubRepositorySettingInput = ref('')
+    const githubRepositorySettings: Ref<Array<RepositorySetting>> = ref([])
+    const isValidRepositorySetting = ref(true)
     const isEditing = ref(false)
 
     const addGitHubRepository = () => {
-      if (githubRepositoryUrlInput.value === '') {
+      if (githubRepositorySettingInput.value === '') {
         return
       }
-      const url = new RepositoryUrl(githubRepositoryUrlInput.value)
+      const url = new RepositorySetting(githubRepositorySettingInput.value)
       if (!url.isValid()) {
-        isValidRepositoryUrl.value = false
+        isValidRepositorySetting.value = false
         return
       }
-      repositorySettingUseCase.addRepositoryUrl(url)
-      githubRepositoryUrls.value = repositorySettingUseCase.getRepositoryUrls()
-      isValidRepositoryUrl.value = true
-      githubRepositoryUrlInput.value = ''
+      repositorySettingUseCase.addRepositorySetting(url)
+      githubRepositorySettings.value = repositorySettingUseCase.getRepositorySettings()
+      isValidRepositorySetting.value = true
+      githubRepositorySettingInput.value = ''
     }
 
-    const deleteRepository = (url: RepositoryUrl) => {
-      repositorySettingUseCase.deleteRepositoryUrl(url)
-      githubRepositoryUrls.value = repositorySettingUseCase.getRepositoryUrls()
+    const deleteRepository = (url: RepositorySetting) => {
+      repositorySettingUseCase.deleteRepositorySetting(url)
+      githubRepositorySettings.value = repositorySettingUseCase.getRepositorySettings()
     }
 
     const deleteSetting = () => {
@@ -95,25 +95,25 @@ export default defineComponent({
     const editHandler = (b: boolean) => {
       isEditing.value = b
       if (!isEditing.value) {
-        repositorySettingUseCase.setRepositoryUrls(githubRepositoryUrls.value)
+        repositorySettingUseCase.setRepositorySettings(githubRepositorySettings.value)
       }
     }
 
     const openProfile = () => webBrowserUserCase.openUrl(account.profileUrl)
 
-    watch(githubRepositoryUrlInput, () => {
-      isValidRepositoryUrl.value = true
+    watch(githubRepositorySettingInput, () => {
+      isValidRepositorySetting.value = true
     })
 
     onMounted(() => {
-      githubRepositoryUrls.value = repositorySettingUseCase.getRepositoryUrls()
+      githubRepositorySettings.value = repositorySettingUseCase.getRepositorySettings()
     })
 
     return {
       account,
-      githubRepositoryUrlInput,
-      githubRepositoryUrls,
-      isValidRepositoryUrl,
+      githubRepositorySettingInput,
+      githubRepositorySettings,
+      isValidRepositorySetting,
       isEditing,
       openProfile,
       addGitHubRepository,

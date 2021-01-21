@@ -5,7 +5,7 @@ import GitHubIssue from '@/components/GitHubIssue.vue'
 import IssueContent from '@/components/IssueContent.vue'
 import { GitHubRepositoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
 import { Account, GitHubUrl, Issue, Issues, PullRequests } from '@/domain/model/github'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory } from '@/usecase/githubRepository'
 import { WebBrowserUserCase } from '@/usecase/webBrowser'
 
@@ -32,7 +32,7 @@ MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 
 const account = new Account('name', 'profile', 'avatar', jest.fn<GitHubUrl, []>()(), 'pat')
-const url = new RepositoryUrl('https://github.com/ytakahashi/miru')
+const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
 
 describe('GitHubIssue.vue', () => {
   beforeEach(() => {
@@ -40,7 +40,7 @@ describe('GitHubIssue.vue', () => {
   })
 
   it('renders when open issue does not exist', async () => {
-    const issues = new Issues(url, [], 0)
+    const issues = new Issues(setting, [], 0)
     const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
@@ -50,7 +50,7 @@ describe('GitHubIssue.vue', () => {
       },
       props: {
         account: account,
-        repositoryUrl: url,
+        repositorySetting: setting,
         option: {}
       }
     })
@@ -86,7 +86,7 @@ describe('GitHubIssue.vue', () => {
       2,
       3
     )
-    const issues = new Issues(url, [issue1, issue2], 2)
+    const issues = new Issues(setting, [issue1, issue2], 2)
     const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
@@ -96,7 +96,7 @@ describe('GitHubIssue.vue', () => {
       },
       props: {
         account: account,
-        repositoryUrl: url,
+        repositorySetting: setting,
         option: {}
       }
     })
@@ -110,7 +110,7 @@ describe('GitHubIssue.vue', () => {
   })
 
   it('opens repository url', async () => {
-    const issues = new Issues(url, [], 0)
+    const issues = new Issues(setting, [], 0)
     const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
@@ -120,16 +120,16 @@ describe('GitHubIssue.vue', () => {
       },
       props: {
         account: account,
-        repositoryUrl: url,
+        repositorySetting: setting,
         option: {}
       }
     })
     await wrapper.find('span.repository-name').trigger('click')
-    expect(openUrlMock).toHaveBeenCalledWith(url.getUrl())
+    expect(openUrlMock).toHaveBeenCalledWith(setting.getUrl())
   })
 
   it('opens issues url', async () => {
-    const issues = new Issues(url, [], 0)
+    const issues = new Issues(setting, [], 0)
     const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
@@ -139,7 +139,7 @@ describe('GitHubIssue.vue', () => {
       },
       props: {
         account: account,
-        repositoryUrl: url,
+        repositorySetting: setting,
         option: {}
       }
     })
@@ -147,6 +147,6 @@ describe('GitHubIssue.vue', () => {
     await wrapper.find('button').trigger('click')
     await wrapper.vm.$nextTick()
     await wrapper.find('div.clickable').trigger('click')
-    expect(openUrlMock).toHaveBeenCalledWith(`${url.getUrl()}/issues`)
+    expect(openUrlMock).toHaveBeenCalledWith(`${setting.getUrl()}/issues`)
   })
 })

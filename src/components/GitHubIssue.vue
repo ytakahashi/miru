@@ -1,7 +1,7 @@
 <template>
   <div class="issue-list">
     <div class="issue-list-header">
-      <span class="repository-name clickable" v-on:click="openRepositoryUrl(repositoryUrl)">{{ repositoryUrl.asString() }}</span>
+      <span class="repository-name clickable" v-on:click="openRepositorySetting(repositorySetting)">{{ repositorySetting.asString() }}</span>
       <button type="button" class="app-input-button" v-on:click="getIssues()">
         <i class="fas fa-sync-alt"></i>
       </button>
@@ -13,13 +13,13 @@
         <IssueContent :issue="issue" />
       </div>
 
-      <div v-if="!issues.hasContents()" class="clickable" v-on:click="openIssueUrl(repositoryUrl)">
+      <div v-if="!issues.hasContents()" class="clickable" v-on:click="openIssueUrl(repositorySetting)">
         There aren’t any open issues.
       </div>
     </div>
 
     <div v-if="isFailed">
-      Failed to list issues of <span class="clickable" v-on:click="openIssueUrl(repositoryUrl)">{{ repositoryUrl.getUrl() }}</span>.<br />
+      Failed to list issues of <span class="clickable" v-on:click="openIssueUrl(repositorySetting)">{{ repositorySetting.getUrl() }}</span>.<br />
       The repository does not exist or not visible with provided pesonal access token.
     </div>
   </div>
@@ -31,13 +31,13 @@ import IssueContent from '@/components/IssueContent.vue'
 import { inject } from '@/di/injector'
 import { WebBrowserUserCaseKey, GitHubRepositoryUseCaseFactoryKey } from '@/di/types'
 import { Account, Issues, GitHubUrl } from '@/domain/model/github'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 import { getters, mutations } from '@/store/issues'
 import { Option } from '@/usecase/githubRepository'
 
 type PropsType = {
   account: Account;
-  repositoryUrl: RepositoryUrl;
+  repositorySetting: RepositorySetting;
   option: Option;
 }
 
@@ -51,8 +51,8 @@ export default defineComponent({
       type: Account,
       required: true
     },
-    repositoryUrl: {
-      type: RepositoryUrl,
+    repositorySetting: {
+      type: RepositorySetting,
       required: true
     },
     option: {
@@ -64,8 +64,8 @@ export default defineComponent({
     const githubRepositoryUseCaseFactory = inject(GitHubRepositoryUseCaseFactoryKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
-    const openRepositoryUrl = (val: RepositoryUrl) => webBrowserUserCase.openUrl(val.getUrl())
-    const openIssueUrl = (val: RepositoryUrl) => webBrowserUserCase.openUrl(`${val.getUrl()}/issues`)
+    const openRepositorySetting = (val: RepositorySetting) => webBrowserUserCase.openUrl(val.getUrl())
+    const openIssueUrl = (val: RepositorySetting) => webBrowserUserCase.openUrl(`${val.getUrl()}/issues`)
 
     const account = readonly(props.account)
     const githubUrl = account.githubUrl as GitHubUrl
@@ -83,8 +83,8 @@ export default defineComponent({
       isFailed.value = true
     }
     const getIssues = (): void => {
-      const { repositoryUrl, option } = props
-      githubRepositoryUseCase.getIssues(repositoryUrl, option)
+      const { repositorySetting, option } = props
+      githubRepositoryUseCase.getIssues(repositorySetting, option)
         .then(onSuccess)
         .catch(onFailure)
     }
@@ -92,13 +92,13 @@ export default defineComponent({
     return {
       getIssues,
       isFailed,
-      openRepositoryUrl,
+      openRepositorySetting,
       openIssueUrl
     }
   },
   computed: {
     issues (): Issues|undefined {
-      return getters.of(this.repositoryUrl)
+      return getters.of(this.repositorySetting)
     }
   }
 })

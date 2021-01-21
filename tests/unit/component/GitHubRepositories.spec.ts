@@ -1,15 +1,15 @@
 import { mount } from '@vue/test-utils'
 import GitHubRepositories from '@/components/GitHubRepositories.vue'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 
-const url = new RepositoryUrl('https://github.com/ytakahashi/miru')
+const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
 
 describe('GitHubRepositories.vue', () => {
   it('renders when not editing', () => {
     const wrapper = mount(GitHubRepositories, {
       props: {
         editing: false,
-        repositoryUrls: [url]
+        repositorySettings: [setting]
       }
     })
     expect(wrapper.find('i.fa-edit').exists()).toBe(true)
@@ -26,7 +26,7 @@ describe('GitHubRepositories.vue', () => {
     const wrapper = mount(GitHubRepositories, {
       props: {
         editing: true,
-        repositoryUrls: [url]
+        repositorySettings: [setting]
       }
     })
     expect(wrapper.find('i.fa-edit').exists()).toBe(false)
@@ -36,7 +36,7 @@ describe('GitHubRepositories.vue', () => {
     wrapper.find('i.delete-button').trigger('click')
     const deleteEvent = wrapper.emitted('deleteRepository')
     expect(deleteEvent).toHaveLength(1)
-    expect(deleteEvent[0]).toEqual([url])
+    expect(deleteEvent[0]).toEqual([setting])
 
     wrapper.find('i.fa-check-square').trigger('click')
     const editEvent = wrapper.emitted('edit')

@@ -3,7 +3,7 @@
 
 import { GitHubAccessor } from '@/domain/interface/githubAccessor'
 import { GitHubRepositoryUseCaseInteractor } from '@/usecase/interactor/githubRepositoryUseCaseInteractor'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 import { IssueConnection, PullRequestConnection, Viewer } from '@/infrastructure/dto/githubApi'
 
 describe('GitHubRepositoryService class', () => {
@@ -15,10 +15,10 @@ describe('GitHubRepositoryService class', () => {
     async getViewer (personalAccessToken: string): Promise<Viewer> {
       return viewer
     },
-    async getIssues (personalAccessToken: string, url: RepositoryUrl): Promise<IssueConnection> {
+    async getIssues (personalAccessToken: string, s: RepositorySetting): Promise<IssueConnection> {
       return issueConnection
     },
-    async getPullRequests (personalAccessToken: string, url: RepositoryUrl): Promise<PullRequestConnection> {
+    async getPullRequests (personalAccessToken: string, s: RepositorySetting): Promise<PullRequestConnection> {
       return pullRequestConnection
     }
   }
@@ -26,7 +26,7 @@ describe('GitHubRepositoryService class', () => {
   describe('getIssues method', () => {
     it('returns issues', async () => {
       const sut = new GitHubRepositoryUseCaseInteractor(mock, 'pat')
-      const target = new RepositoryUrl('https://github.com/ytakahashi/miru')
+      const target = new RepositorySetting('https://github.com/ytakahashi/miru')
       const actual = await sut.getIssues(target)
       expect(actual.totalCount).toBe(16)
       expect(actual.results).toHaveLength(1)
@@ -50,7 +50,7 @@ describe('GitHubRepositoryService class', () => {
   describe('getPullRequests method', () => {
     it('returns pull requests', async () => {
       const sut = new GitHubRepositoryUseCaseInteractor(mock, 'pat')
-      const target = new RepositoryUrl('https://github.com/ytakahashi/miru')
+      const target = new RepositorySetting('https://github.com/ytakahashi/miru')
       const actual = await sut.getPullRequests(target)
       expect(actual.totalCount).toBe(7)
       expect(actual.results).toHaveLength(1)

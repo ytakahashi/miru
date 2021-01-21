@@ -1,7 +1,7 @@
 import { GraphQLClient, gql } from 'graphql-request'
 import { GitHubUrl } from '@/domain/model/github'
 import { GitHubAccessor, Option } from '@/domain/interface/githubAccessor'
-import { RepositoryUrl } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/domain/model/githubRepository'
 import { IssueConnection, PullRequestConnection, Repository, Viewer } from '@/infrastructure/dto/githubApi'
 
 export class GitHubGraphQLClient implements GitHubAccessor {
@@ -25,7 +25,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
     return this.#graphQLClient.request<Viewer>(query, {}, requestHeaders)
   }
 
-  public getIssues = async (personalAccessToken: string, url: RepositoryUrl, opts?: Option): Promise<IssueConnection> => {
+  public getIssues = async (personalAccessToken: string, setting: RepositorySetting, opts?: Option): Promise<IssueConnection> => {
     const requestHeaders = {
       authorization: `Bearer ${personalAccessToken}`
     }
@@ -66,18 +66,18 @@ export class GitHubGraphQLClient implements GitHubAccessor {
         }
       }`
 
-    const variables = buildVariables(url, opts)
+    const variables = buildVariables(setting, opts)
     const takeIssues = (r: Repository): IssueConnection => {
       if (r.repository?.issues) {
         return r.repository.issues
       } else {
-        throw Error(`Failed to get issues: ${url.getUrl()}.`)
+        throw Error(`Failed to get issues: ${setting.getUrl()}.`)
       }
     }
     return this.#graphQLClient.request<Repository>(query, variables, requestHeaders).then(takeIssues)
   }
 
-  public getPullRequests = async (personalAccessToken: string, url: RepositoryUrl, opts?: Option): Promise<PullRequestConnection> => {
+  public getPullRequests = async (personalAccessToken: string, setting: RepositorySetting, opts?: Option): Promise<PullRequestConnection> => {
     const requestHeaders = {
       authorization: `Bearer ${personalAccessToken}`
     }
@@ -119,12 +119,12 @@ export class GitHubGraphQLClient implements GitHubAccessor {
         }
       }`
 
-    const variables = buildVariables(url, opts)
+    const variables = buildVariables(setting, opts)
     const takePullRequests = (r: Repository): PullRequestConnection => {
       if (r.repository?.pullRequests) {
         return r.repository.pullRequests
       } else {
-        throw Error(`Failed to get PRs: ${url.getUrl()}.`)
+        throw Error(`Failed to get PRs: ${setting.getUrl()}.`)
       }
     }
     return this.#graphQLClient.request<Repository>(query, variables, requestHeaders).then(takePullRequests)
@@ -139,13 +139,13 @@ type RequestVariable = {
     sortDirection: string;
 }
 
-const buildVariables = (url: RepositoryUrl, opts?: Option): RequestVariable => {
+const buildVariables = (setting: RepositorySetting, opts?: Option): RequestVariable => {
   const cnt = opts?.count
   const field = opts?.sortField
   const direction = opts?.sortDirection
   return {
-    owner: url.getOwner(),
-    name: url.getRepositoryName(),
+    owner: setting.getOwner(),
+    name: setting.getRepositoryName(),
     firstIssueNumber: cnt !== undefined ? cnt : 10,
     sortField: field !== undefined ? field : 'UPDATED_AT',
     sortDirection: direction !== undefined ? direction : 'DESC'
