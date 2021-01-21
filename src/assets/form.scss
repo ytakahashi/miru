@@ -3,6 +3,11 @@
   border: solid 1px var(--border-color);
   border-radius: 3px;
   color: var(--main-text-color);
+
+  &::placeholder {
+    color: var(--main-text-color);
+    text-align: center;
+  }
 }
 
 .app-input-button {
