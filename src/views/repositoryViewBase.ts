@@ -41,11 +41,6 @@ export default defineComponent({
       tuples: []
     }
   },
-  methods: {
-    updateOption (): void {
-      this.option = (this.$refs.listOption as typeof ListOption).getOptions()
-    }
-  },
   mounted () {
     const settings = this.applicationSettingUseCase.getSettings()
     for (const s of settings) {
