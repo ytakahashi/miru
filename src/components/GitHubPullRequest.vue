@@ -26,19 +26,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, readonly, ref, PropType } from 'vue'
+import { defineComponent, readonly, ref } from 'vue'
 import PullRequestContent from '@/components/PullRequestContent.vue'
 import { inject } from '@/di/injector'
 import { WebBrowserUserCaseKey, GitHubRepositoryUseCaseFactoryKey } from '@/di/types'
 import { Account, PullRequests, GitHubUrl } from '@/domain/model/github'
 import { RepositorySetting } from '@/domain/model/githubRepository'
 import { getters, mutations } from '@/store/pullRequests'
-import { Option } from '@/usecase/githubRepository'
+import { getters as queryOption } from '@/store/queryOption'
 
 type PropsType = {
   account: Account;
   repositorySetting: RepositorySetting;
-  option: Option;
 }
 
 export default defineComponent({
@@ -53,10 +52,6 @@ export default defineComponent({
     },
     repositorySetting: {
       type: RepositorySetting,
-      required: true
-    },
-    option: {
-      type: Object as PropType<Option>,
       required: true
     }
   },
@@ -83,7 +78,8 @@ export default defineComponent({
       isFailed.value = true
     }
     const getPullRequests = (): void => {
-      const { repositorySetting, option } = props
+      const { repositorySetting } = props
+      const option = queryOption.pullRequests()
       githubRepositoryUseCase.getPullRequests(repositorySetting, option)
         .then(onSuccess)
         .catch(onFailure)

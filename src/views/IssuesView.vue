@@ -1,11 +1,10 @@
 <template>
-  <ListOption ref="listOption" :listType="'issues'" @updated="updateOption" />
+  <ListOption :viewType="'issues'" />
   <div v-for="(t, index) in tuples" :key="index">
     <div v-for="repositorySetting in t.repositorySettings" :key="repositorySetting.getUrl()">
       <GitHubIssue
         :account="t.account"
         :repositorySetting="repositorySetting"
-        :option="option"
       />
     </div>
   </div>

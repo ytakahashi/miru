@@ -1,11 +1,10 @@
 <template>
-  <ListOption ref="listOption" :listType="'pull requests'" @updated="updateOption" />
+  <ListOption :viewType="'pullRequests'" />
   <div v-for="(t, index) in tuples" :key="index">
     <div v-for="repositorySetting in t.repositorySettings" :key="repositorySetting.getUrl()">
       <GitHubPullRequest
         :account="t.account"
         :repositorySetting="repositorySetting"
-        :option="option"
       />
     </div>
   </div>
