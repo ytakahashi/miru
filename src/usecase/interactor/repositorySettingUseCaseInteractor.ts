@@ -9,8 +9,12 @@ export class RepositorySettingUseCaseInteractor implements RepositorySettingUseC
     this.#localStorageAccessor = localStorageAccessor
   }
 
-  addRepositorySetting (url: RepositorySetting): void {
+  addRepositorySetting (url: RepositorySetting): boolean {
     const current = this.#localStorageAccessor.getRepositorySettings()
+    const included = current.map(v => v.url).includes(url.getUrl())
+    if (included) {
+      return false
+    }
     const added = {
       url: url.getUrl(),
       showsIssues: url.showsIssues(),
@@ -18,6 +22,7 @@ export class RepositorySettingUseCaseInteractor implements RepositorySettingUseC
     }
     const next = current.length ? new Set([...current, added]) : new Set([added])
     this.#localStorageAccessor.setRepositorySettings(Array.from(next))
+    return true
   }
 
   deleteRepositorySetting (url: RepositorySetting): void {
