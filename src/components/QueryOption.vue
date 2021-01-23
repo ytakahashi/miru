@@ -111,7 +111,7 @@ class OptionViewModel {
 }
 
 export default defineComponent({
-  name: 'ListOption',
+  name: 'QueryOption',
   props: {
     viewType: {
       type: String as PropType<ViewType>,

@@ -1,5 +1,5 @@
 <template>
-  <ListOption :viewType="'pullRequests'" />
+  <QueryOption :viewType="'pullRequests'" />
   <div v-for="(t, index) in tuples" :key="index">
     <div v-for="repositorySetting in t.repositorySettings" :key="repositorySetting.getUrl()">
       <GitHubPullRequest
@@ -15,7 +15,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, Ref } from 'vue'
 import GitHubPullRequest from '@/components/GitHubPullRequest.vue'
-import ListOption from '@/components/ListOption.vue'
+import QueryOption from '@/components/QueryOption.vue'
 import { inject } from '@/di/injector'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, RepositorySettingUseCaseFactoryKey } from '@/di/types'
 import { Account } from '@/domain/model/github'
@@ -30,7 +30,7 @@ export default defineComponent({
   name: 'PullRequestView',
   components: {
     GitHubPullRequest,
-    ListOption
+    QueryOption
   },
   setup () {
     const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)

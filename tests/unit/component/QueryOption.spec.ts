@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils'
-import ListOption from '@/components/ListOption.vue'
+import QueryOption from '@/components/QueryOption.vue'
 
-describe('ListOption.vue', () => {
+describe('QueryOption.vue', () => {
   it('shows/hides option', async () => {
-    const wrapper = shallowMount(ListOption, {
+    const wrapper = shallowMount(QueryOption, {
       props: {
         viewType: 'issues'
       }
@@ -31,7 +31,7 @@ describe('ListOption.vue', () => {
   })
 
   it('shows correct option values', async () => {
-    const wrapper = shallowMount(ListOption, {
+    const wrapper = shallowMount(QueryOption, {
       props: {
         viewType: 'issues'
       }

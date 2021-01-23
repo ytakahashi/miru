@@ -1,5 +1,5 @@
 <template>
-  <ListOption :viewType="'issues'" />
+  <QueryOption :viewType="'issues'" />
   <div v-for="(t, index) in tuples" :key="index">
     <div v-for="repositorySetting in t.repositorySettings" :key="repositorySetting.getUrl()">
       <GitHubIssue
@@ -15,7 +15,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, Ref } from 'vue'
 import GitHubIssue from '@/components/GitHubIssue.vue'
-import ListOption from '@/components/ListOption.vue'
+import QueryOption from '@/components/QueryOption.vue'
 import { inject } from '@/di/injector'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, RepositorySettingUseCaseFactoryKey } from '@/di/types'
 
@@ -31,7 +31,7 @@ export default defineComponent({
   name: 'IssuesView',
   components: {
     GitHubIssue,
-    ListOption
+    QueryOption
   },
   setup () {
     const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)
