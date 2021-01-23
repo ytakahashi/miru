@@ -36,7 +36,7 @@ MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
 const MockedRepositorySettingUseCase = jest.fn<RepositorySettingUseCase, [Array<RepositorySetting>]>()
 MockedRepositorySettingUseCase.mockImplementation((arr: Array<RepositorySetting>): RepositorySettingUseCase => {
   return {
-    addRepositorySetting: (s: RepositorySetting) => {},
+    addRepositorySetting: (s: RepositorySetting) => true,
     deleteRepositorySetting: (s: RepositorySetting) => {},
     getRepositorySettings: () => arr,
     setRepositorySettings: (s: Array<RepositorySetting>) => {}
