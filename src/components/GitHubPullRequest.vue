@@ -1,7 +1,7 @@
 <template>
   <div class="issue-list">
     <div class="issue-list-header">
-      <span class="repository-name clickable" v-on:click="openRepositorySetting(repositorySetting)">{{ repositorySetting.asString() }}</span>
+      <span class="repository-name clickable" v-on:click="openRepositorySetting(repositorySetting)">{{ repositorySetting.displayName() }}</span>
       <button type="button" class="app-input-button" v-on:click="getPullRequests()">
         <i class="fas fa-sync-alt"></i>
       </button>

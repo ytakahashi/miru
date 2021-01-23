@@ -47,8 +47,8 @@ export class RepositorySetting {
     return this.#repositoryName
   }
 
-  public asString = (): string => {
-    return `${this.#owner}/${this.#repositoryName}`
+  public displayName = (separator = '/'): string => {
+    return `${this.#owner}${separator}${this.#repositoryName}`
   }
 
   public setIssuePreference = (b: boolean): void => {

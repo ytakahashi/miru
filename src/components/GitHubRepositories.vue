@@ -8,14 +8,14 @@
   <draggable
     :list="repositorySettings"
     :disabled="!editing"
-    :item-key="key => key.asString()"
+    :item-key="key => key.displayName()"
     ghost-class="ghost"
   >
     <template #item="{ element }">
       <div>
         <i class="fas fa-times delete-button" v-if="editing" v-on:click="deleteRepository(element)"></i>
-        <span :class="editing ? 'draggable' : 'clickable'" v-on:click="openRepository(element)">
-          {{ element.asString() }}
+        <span>
+          <GitHubRepository :editing="editing" :repositorySetting="element" />
         </span>
       </div>
     </template>
@@ -23,15 +23,16 @@
 </template>
 
 <script lang="ts">
-import { shell } from 'electron'
 import { defineComponent, PropType } from 'vue'
 import draggable from 'vuedraggable'
+import GitHubRepository from '@/components/GitHubRepository.vue'
 import { RepositorySetting } from '@/domain/model/githubRepository'
 
 export default defineComponent({
   name: 'GitHubRepositories',
   components: {
-    draggable
+    draggable,
+    GitHubRepository
   },
   emits: ['edit', 'deleteRepository'],
   props: {
@@ -48,27 +49,15 @@ export default defineComponent({
     emitEdit (editing: boolean): void {
       this.$emit('edit', editing)
     },
-    deleteRepository (url: RepositorySetting): void {
-      this.$emit('deleteRepository', url)
-    },
-    openRepository (url: RepositorySetting): void {
-      if (this.editing) {
-        return
-      }
-      shell.openExternal(url.getUrl())
+    deleteRepository (repositorySetting: RepositorySetting): void {
+      this.$emit('deleteRepository', repositorySetting)
     }
   }
 })
 </script>
 
 <style scoped lang="scss">
-.clickable {
-  cursor: pointer;
-}
-
-.draggable {
-  cursor: grab;
-}
+@import '@/assets/app.scss';
 
 .delete-button {
   margin-right: 5px;

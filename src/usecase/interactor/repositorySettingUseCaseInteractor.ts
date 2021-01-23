@@ -31,7 +31,7 @@ export class RepositorySettingUseCaseInteractor implements RepositorySettingUseC
     return current.map(v => new RepositorySetting(
       v.url,
       {
-        showsIssues: v.showsPullRequests,
+        showsIssues: v.showsIssues,
         showsPullRequests: v.showsPullRequests
       }
     ))

@@ -10,6 +10,9 @@ describe('GitHubRepositories.vue', () => {
       props: {
         editing: false,
         repositorySettings: [setting]
+      },
+      global: {
+        stubs: ['GitHubRepository']
       }
     })
     expect(wrapper.find('i.fa-edit').exists()).toBe(true)
@@ -27,6 +30,9 @@ describe('GitHubRepositories.vue', () => {
       props: {
         editing: true,
         repositorySettings: [setting]
+      },
+      global: {
+        stubs: ['GitHubRepository']
       }
     })
     expect(wrapper.find('i.fa-edit').exists()).toBe(false)
