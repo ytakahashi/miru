@@ -20,7 +20,7 @@
     <div v-if="isEditing" class="block">
       <input class="app-input-form url-input" v-model="githubRepositorySettingInput" placeholder="GitHub Repository URL">
       <button v-on:click="addGitHubRepository()" class="app-font-button"><i class="fas fa-plus"></i></button>
-      <p v-if="!isValidRepositorySetting">Invalid URL: {{ githubRepositorySettingInput }}</p>
+      <p v-if="validationMessage !== ''">{{ validationMessage }} URL: {{ githubRepositorySettingInput }}</p>
     </div>
   </div>
 </template>
@@ -61,11 +61,12 @@ export default defineComponent({
 
     const account = accountSettingUseCase.getAccount()
     const profile = computed(() => `${account.userName}@${account.githubUrl.getDomain()}`)
+    const openProfile = () => webBrowserUserCase.openUrl(account.profileUrl)
 
     const githubRepositorySettingInput = ref('')
     const githubRepositorySettings: Ref<Array<RepositorySetting>> = ref([])
-    const isValidRepositorySetting = ref(true)
     const isEditing = ref(false)
+    const validationMessage = ref('')
 
     const addGitHubRepository = () => {
       if (githubRepositorySettingInput.value === '') {
@@ -73,13 +74,17 @@ export default defineComponent({
       }
       const url = new RepositorySetting(githubRepositorySettingInput.value)
       if (!url.isValid()) {
-        isValidRepositorySetting.value = false
+        validationMessage.value = 'Invalid'
         return
       }
-      repositorySettingUseCase.addRepositorySetting(url)
-      githubRepositorySettings.value = repositorySettingUseCase.getRepositorySettings()
-      isValidRepositorySetting.value = true
-      githubRepositorySettingInput.value = ''
+      const added = repositorySettingUseCase.addRepositorySetting(url)
+      if (added) {
+        githubRepositorySettings.value = repositorySettingUseCase.getRepositorySettings()
+        validationMessage.value = ''
+        githubRepositorySettingInput.value = ''
+      } else {
+        validationMessage.value = 'Duplicated'
+      }
     }
 
     const deleteRepository = (url: RepositorySetting) => {
@@ -99,28 +104,23 @@ export default defineComponent({
       }
     }
 
-    const openProfile = () => webBrowserUserCase.openUrl(account.profileUrl)
-
-    watch(githubRepositorySettingInput, () => {
-      isValidRepositorySetting.value = true
-    })
-
-    onMounted(() => {
-      githubRepositorySettings.value = repositorySettingUseCase.getRepositorySettings()
-    })
+    watch(githubRepositorySettingInput, () => (validationMessage.value = ''))
+    onMounted(() => (githubRepositorySettings.value = repositorySettingUseCase.getRepositorySettings()))
 
     return {
       account,
+      profile,
+      openProfile,
+
       githubRepositorySettingInput,
       githubRepositorySettings,
-      isValidRepositorySetting,
       isEditing,
-      openProfile,
+      validationMessage,
+
       addGitHubRepository,
       deleteRepository,
       deleteSetting,
-      editHandler,
-      profile
+      editHandler
     }
   }
 })
