@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { shallowMount } from '@vue/test-utils'
-import GitHubPullRequest from '@/components/GitHubPullRequest.vue'
-import PullRequestView from '@/views/PullRequestsView.vue'
+import GitHubIssue from '@/components/GitHubIssue.vue'
+import IssuesView from '@/views/IssuesView.vue'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, RepositorySettingUseCaseFactoryKey } from '@/di/types'
 import { ApplicationSetting } from '@/domain/model/application'
 import { Account, GitHubUrl } from '@/domain/model/github'
@@ -54,7 +54,7 @@ describe('PullRequestsView.vue', () => {
       newRepositorySettingUseCase: (setting: ApplicationSetting) => new MockedRepositorySettingUseCase([])
     }
 
-    const wrapper = shallowMount(PullRequestView, {
+    const wrapper = shallowMount(IssuesView, {
       global: {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
@@ -65,7 +65,7 @@ describe('PullRequestsView.vue', () => {
     })
     await wrapper.vm.$nextTick()
     expect(wrapper.text()).toBe('Account is not configured.')
-    expect(wrapper.findAllComponents(GitHubPullRequest)).toHaveLength(0)
+    expect(wrapper.findAllComponents(GitHubIssue)).toHaveLength(0)
   })
 
   it('renders when no repositories are configured', async () => {
@@ -73,7 +73,7 @@ describe('PullRequestsView.vue', () => {
       newRepositorySettingUseCase: (setting: ApplicationSetting) => new MockedRepositorySettingUseCase([])
     }
 
-    const wrapper = shallowMount(PullRequestView, {
+    const wrapper = shallowMount(IssuesView, {
       global: {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
@@ -84,7 +84,7 @@ describe('PullRequestsView.vue', () => {
     })
     await wrapper.vm.$nextTick()
     expect(wrapper.text()).toBe('No repositories are configured.')
-    expect(wrapper.findAllComponents(GitHubPullRequest)).toHaveLength(0)
+    expect(wrapper.findAllComponents(GitHubIssue)).toHaveLength(0)
   })
 
   it('renders when two repositories are configured', async () => {
@@ -95,7 +95,7 @@ describe('PullRequestsView.vue', () => {
         new MockedRepositorySettingUseCase([repository1, repository2])
     }
 
-    const wrapper = shallowMount(PullRequestView, {
+    const wrapper = shallowMount(IssuesView, {
       global: {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
@@ -106,19 +106,19 @@ describe('PullRequestsView.vue', () => {
     })
     await wrapper.vm.$nextTick()
     expect(wrapper.text()).toBe('')
-    expect(wrapper.findAllComponents(GitHubPullRequest)).toHaveLength(2)
+    expect(wrapper.findAllComponents(GitHubIssue)).toHaveLength(2)
   })
 
   it('renders when two repositories are configured, and one is disabled', async () => {
     const repository1 = new RepositorySetting('https://github.com/a/b')
     const repository2 = new RepositorySetting('https://github.com/c/d')
-    repository2.setPullRequestPreference(false)
+    repository2.setIssuePreference(false)
     const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
       newRepositorySettingUseCase: (setting: ApplicationSetting) =>
         new MockedRepositorySettingUseCase([repository1, repository2])
     }
 
-    const wrapper = shallowMount(PullRequestView, {
+    const wrapper = shallowMount(IssuesView, {
       global: {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
@@ -129,6 +129,6 @@ describe('PullRequestsView.vue', () => {
     })
     await wrapper.vm.$nextTick()
     expect(wrapper.text()).toBe('')
-    expect(wrapper.findAllComponents(GitHubPullRequest)).toHaveLength(1)
+    expect(wrapper.findAllComponents(GitHubIssue)).toHaveLength(1)
   })
 })
