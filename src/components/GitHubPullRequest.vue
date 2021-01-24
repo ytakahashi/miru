@@ -1,14 +1,14 @@
 <template>
-  <div class="issue-list">
-    <div class="issue-list-header">
-      <span class="repository-name clickable" v-on:click="openRepositorySetting(repositorySetting)">{{ repositorySetting.displayName() }}</span>
+  <div class="content-list">
+    <div class="content-list-header">
+      <span class="text-strong clickable" v-on:click="openRepositorySetting(repositorySetting)">{{ repositorySetting.displayName() }}</span>
       <button type="button" class="app-input-button" v-on:click="getPullRequests()">
         <i class="fas fa-sync-alt"></i>
       </button>
     </div>
 
     <div v-if="pullRequests">
-      <div class="last-fetched-date">Last fetched: {{ pullRequests.fetchedAtDate() }}</div>
+      <div class="text-tiny align-right">Last fetched: {{ pullRequests.fetchedAtDate() }}</div>
       <div v-for="pr in pullRequests.results" :key="pr.url">
         <PullRequestContent :pullRequest="pr" />
       </div>
@@ -102,5 +102,6 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @import '@/assets/app.scss';
+@import '@/assets/contents.scss';
 @import '@/assets/form.scss';
 </style>

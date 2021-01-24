@@ -1,6 +1,6 @@
 <template>
   <span>
-    <span class="repositories">Respositories</span>
+    <span class="text-strong">Respositories</span>
     <i v-if="!editing" class="far fa-edit clickable" v-on:click="emitEdit(true)"></i>
     <i v-if="editing" class="far fa-check-square clickable" v-on:click="emitEdit(false)"></i>
   </span>
@@ -65,11 +65,6 @@ export default defineComponent({
 
 .ghost {
   opacity: 0.5;
-  background: #c8ebfb;
-}
-
-.repositories {
-  font-weight: bold;
-  margin-right: 7px;
+  background: var(--focused-color);
 }
 </style>

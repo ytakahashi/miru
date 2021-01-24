@@ -7,11 +7,15 @@
   --color-white: #fdfdfd;
   --color-dark-red: #c02739;
   --color-red: #ff3e55;
+  --color-green-light1: #47a740;
+  --color-green-light: #4bc243;
+  --color-green-dark: #278120;
   --color-blue: #108fd8;
-  --color-light-blue: #38f8bf;
+  --color-light-blue: #c8ebfb;
 
   /* [app-theme="light"] */
   --main-font-color: var(--color-black);
+  --sub-font-color: var(--color-gray);
   --main-background-color: var(--color-white);
   --sub-background-color: var(--color-light-gray);
 
@@ -22,10 +26,13 @@
   --focused-color: var(--color-light-blue);
   --hover-color: var(--color-bright-gray);
   --border-color: var(--color-gray);
+
+  --color-open: var(--color-green-light);
 }
 
 [app-theme="dark"] {
   --main-font-color: var(--color-white);
+  --sub-font-color: var(--color-bright-gray);
   --main-background-color: var(--color-black);
   --sub-background-color: var(--color-gray);
 
@@ -36,4 +43,6 @@
   --focused-color: var(--color-light-blue);
   --hover-color: var(--color-gray);
   --border-color: var(--color-light-gray);
+
+  --color-open: var(--color-green-dark);
 }

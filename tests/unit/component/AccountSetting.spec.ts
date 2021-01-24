@@ -176,7 +176,7 @@ describe('AccountSetting.vue', () => {
         setting: setting
       }
     })
-    await wrapper.find('span.profile-url').trigger('click')
+    await wrapper.find('span.text-strong').trigger('click')
     expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi')
   })
 

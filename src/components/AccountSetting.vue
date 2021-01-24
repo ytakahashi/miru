@@ -4,7 +4,7 @@
       <img :src="account.avatarUrl" />
     </div>
     <div class="block">
-      <span class="profile-url" v-on:click="openProfile()">{{ profile }}</span>
+      <span class="text-strong clickable" v-on:click="openProfile()">{{ profile }}</span>
       <i class="fas fa-trash-alt clickable" v-on:click="deleteSetting()"></i>
     </div>
 
@@ -132,16 +132,11 @@ export default defineComponent({
 
 $card-border-radius: 7px;
 
-img {
-  width: 6em;
-}
-
 .profile {
-  width: 30em;
+  width: 70%;
   margin: 0 auto;
-  margin-bottom: 1em;
-  padding-bottom: 0.5em;
-  border: 1px solid #c0c0c0;
+  margin-bottom: 15px;
+  border: 1px solid var(--border-color);
   border-radius: $card-border-radius;
   transition: 0.4s;
 }
@@ -155,12 +150,10 @@ img {
   :hover {
     opacity: 0.5;
   }
-}
 
-.profile-url {
-  cursor: pointer;
-  font-weight: bold;
-  padding: 0.3em;
+  img {
+    width: 17%;
+  }
 }
 
 .block {
@@ -169,7 +162,7 @@ img {
 }
 
 .url-input {
-  width: 250px;
+  width: 50%;
   margin-right: 10px;
 }
 </style>
