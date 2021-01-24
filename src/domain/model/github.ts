@@ -78,37 +78,25 @@ export class Label {
   }
 }
 
-export class IssueBase {
+export class BaseContent {
   public readonly authorName: string;
-  public readonly issueNumber: number;
   public readonly title: string;
   public readonly url: string;
   public readonly createdAt: string;
   public readonly updatedAt: string;
-  public readonly labels: Array<Label>;
-  public readonly numberOfComments: number;
-  public readonly numberOfParticipants: number;
 
   constructor (
     authorName: string,
-    issueNumber: number,
     title: string,
     url: string,
     createdAt: string,
-    updatedAt: string,
-    labels: Array<Label>,
-    numberOfComments: number,
-    numberOfParticipants: number
+    updatedAt: string
   ) {
     this.authorName = authorName
-    this.issueNumber = issueNumber
     this.title = title
     this.url = url
     this.createdAt = createdAt
     this.updatedAt = updatedAt
-    this.labels = labels
-    this.numberOfComments = numberOfComments
-    this.numberOfParticipants = numberOfParticipants
   }
 
   getCreatedRelativeDate = (): string => {
@@ -120,10 +108,88 @@ export class IssueBase {
   }
 }
 
-export class Issue extends IssueBase {
+export class Issue extends BaseContent {
+  public readonly issueNumber: number;
+  public readonly labels: Array<Label>;
+  public readonly numberOfComments: number;
+  public readonly numberOfParticipants: number;
+
+  constructor (
+    authorName: string,
+    title: string,
+    url: string,
+    createdAt: string,
+    updatedAt: string,
+    issueNumber: number,
+    labels: Array<Label>,
+    numberOfComments: number,
+    numberOfParticipants: number
+  ) {
+    super(
+      authorName,
+      title,
+      url,
+      createdAt,
+      updatedAt
+    )
+    this.issueNumber = issueNumber
+    this.labels = labels
+    this.numberOfComments = numberOfComments
+    this.numberOfParticipants = numberOfParticipants
+  }
 }
 
-export class PullRequest extends IssueBase {
+export class TagReference {
+  public readonly abbreviatedObjectId: string;
+  public readonly commitUrl: string;
+
+  constructor (
+    abbreviatedObjectId: string,
+    commitUrl: string
+  ) {
+    this.abbreviatedObjectId = abbreviatedObjectId
+    this.commitUrl = commitUrl
+  }
+}
+export class Release extends BaseContent {
+  public readonly isDraft: boolean;
+  public readonly isPrerelease: boolean;
+  public readonly releaseAssetCount: number;
+  public readonly tagName?: string;
+  public readonly tag?: TagReference;
+
+  constructor (
+    authorName: string,
+    name: string,
+    url: string,
+    createdAt: string,
+    updatedAt: string,
+    isDraft: boolean,
+    isPrerelease: boolean,
+    releaseAssetCount: number,
+    tagName?: string,
+    tag?: TagReference
+  ) {
+    super(
+      authorName,
+      name,
+      url,
+      createdAt,
+      updatedAt
+    )
+    this.isDraft = isDraft
+    this.isPrerelease = isPrerelease
+    this.releaseAssetCount = releaseAssetCount
+    this.tagName = tagName
+    this.tag = tag
+  }
+}
+
+export class PullRequest extends BaseContent {
+  public readonly issueNumber: number;
+  public readonly labels: Array<Label>;
+  public readonly numberOfComments: number;
+  public readonly numberOfParticipants: number;
   public readonly additions: number;
   public readonly deletions: number;
   public readonly changedFiles: number;
@@ -131,11 +197,11 @@ export class PullRequest extends IssueBase {
 
   constructor (
     authorName: string,
-    issueNumber: number,
     title: string,
     url: string,
     createdAt: string,
     updatedAt: string,
+    issueNumber: number,
     labels: Array<Label>,
     numberOfComments: number,
     numberOfParticipants: number,
@@ -145,15 +211,16 @@ export class PullRequest extends IssueBase {
   ) {
     super(
       authorName,
-      issueNumber,
       title,
       url,
       createdAt,
-      updatedAt,
-      labels,
-      numberOfComments,
-      numberOfParticipants
+      updatedAt
     )
+    this.issueNumber = issueNumber
+    this.labels = labels
+    this.numberOfComments = numberOfComments
+    this.numberOfParticipants = numberOfParticipants
+
     this.additions = additions
     this.deletions = deletions
     this.changedFiles = changedFiles
@@ -162,7 +229,7 @@ export class PullRequest extends IssueBase {
   }
 }
 
-class ResultListHolder<T extends IssueBase> {
+class ResultListHolder<T extends BaseContent> {
   readonly fetchedAt: number
   public readonly repositoryUrl: string;
   public readonly results: Array<T>;
@@ -196,4 +263,7 @@ export class Issues extends ResultListHolder<Issue> {
 }
 
 export class PullRequests extends ResultListHolder<PullRequest> {
+}
+
+export class Releases extends ResultListHolder<Release> {
 }

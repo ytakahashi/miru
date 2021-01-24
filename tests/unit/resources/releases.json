@@ -1,0 +1,65 @@
+{
+  "totalCount": 2,
+  "edges": [
+    {
+      "node": {
+        "author": {
+          "login": "github-actions[bot]"
+        },
+        "createdAt": "2021-01-24T04:26:51Z",
+        "description": "v0.2.0",
+        "isDraft": false,
+        "isLatest": true,
+        "isPrerelease": false,
+        "name": "v0.2.0",
+        "publishedAt": "2021-01-24T04:41:25Z",
+        "releaseAssets": {
+          "totalCount": 4
+        },
+        "updatedAt": "2021-01-24T04:41:25Z",
+        "shortDescriptionHTML": "v0.2.0",
+        "tag": {
+          "name": "v0.2.0",
+          "target": {
+            "abbreviatedOid": "e6e7ac5",
+            "commitResourcePath": "/ytakahashi/miru/commit/893093edc0849de20763d1858d84a7bcb02ca07b",
+            "commitUrl": "https://github.com/ytakahashi/miru/commit/893093edc0849de20763d1858d84a7bcb02ca07b",
+            "oid": "e6e7ac547b3c3a1228a259a3ef6eb6d80ded78f6"
+          }
+        },
+        "tagName": "v0.2.0",
+        "url": "https://github.com/ytakahashi/miru/releases/tag/v0.2.0"
+      }
+    },
+    {
+      "node": {
+        "author": {
+          "login": "github-actions[bot]"
+        },
+        "createdAt": "2021-01-17T10:13:13Z",
+        "description": "0.1.0 release",
+        "isDraft": false,
+        "isLatest": false,
+        "isPrerelease": false,
+        "name": "Release v0.1.0",
+        "publishedAt": "2021-01-17T10:25:14Z",
+        "releaseAssets": {
+          "totalCount": 4
+        },
+        "updatedAt": "2021-01-17T10:25:14Z",
+        "shortDescriptionHTML": "0.1.0 release",
+        "tag": {
+          "name": "v0.1.0",
+          "target": {
+            "abbreviatedOid": "850f26e",
+            "commitResourcePath": "/ytakahashi/miru/commit/8d62a35ecdbc14e1a4f222418902b1c66aed9416",
+            "commitUrl": "https://github.com/ytakahashi/miru/commit/8d62a35ecdbc14e1a4f222418902b1c66aed9416",
+            "oid": "850f26e2b4fc608d4ed0faffe74294a1dfe9e67b"
+          }
+        },
+        "tagName": "v0.1.0",
+        "url": "https://github.com/ytakahashi/miru/releases/tag/v0.1.0"
+      }
+    }
+  ]
+}
