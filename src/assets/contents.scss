@@ -1,0 +1,38 @@
+.content-list {
+  width: 70%;
+  margin: 0 auto;
+  margin-bottom: 1.5em;
+  padding: 1em;
+  position: relative;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.content-list-header{
+  position: absolute;
+  top: -0.7em;
+  background-color: var(--main-background-color);
+}
+
+@mixin content-box($border-color) {
+  cursor: pointer;
+  padding: 0.4em 1em;
+  margin: 1em 0;
+  border-left: solid 10px $border-color;
+  border-bottom: solid 2px $border-color;
+}
+
+.content-box-open {
+  @include content-box(var(--color-open));
+}
+
+.github-label {
+  border: 1px solid;
+  border-radius: 7px;
+  padding: 1px 8px;
+  margin: 0 3px;
+  font-size: 0.8em;
+  font-weight: bold;
+  color: var(--main-font-color);
+  border-color: var(--border-color);
+}

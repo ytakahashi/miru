@@ -130,7 +130,7 @@ describe('GitHubPullRequest.vue', () => {
         option: {}
       }
     })
-    await wrapper.find('span.repository-name').trigger('click')
+    await wrapper.find('span.text-strong').trigger('click')
     expect(openUrlMock).toHaveBeenCalledWith(setting.getUrl())
   })
 
