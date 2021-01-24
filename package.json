@@ -1,7 +1,7 @@
 {
   "name": "miru",
   "description": "GitHub Issue/Pull Request viewer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "ytakahashi",
   "dependencies": {
     "core-js": "^3.8.2",
