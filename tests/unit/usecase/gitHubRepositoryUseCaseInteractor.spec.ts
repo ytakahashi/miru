@@ -4,12 +4,13 @@
 import { GitHubAccessor } from '@/domain/interface/githubAccessor'
 import { GitHubRepositoryUseCaseInteractor } from '@/usecase/interactor/githubRepositoryUseCaseInteractor'
 import { RepositorySetting } from '@/domain/model/githubRepository'
-import { IssueConnection, PullRequestConnection, Viewer } from '@/infrastructure/dto/githubApi'
+import { IssueConnection, PullRequestConnection, ReleaseConnection, Viewer } from '@/infrastructure/dto/githubApi'
 
-describe('GitHubRepositoryService class', () => {
+describe('GitHubRepositoryUseCaseInteractor class', () => {
   const viewer: Viewer = require('../resources/viewer.json')
   const issueConnection: IssueConnection = require('../resources/issues.json')
   const pullRequestConnection: PullRequestConnection = require('../resources/pull-requests.json')
+  const releaseConnection: ReleaseConnection = require('../resources/releases.json')
 
   const mock: GitHubAccessor = {
     async getViewer (personalAccessToken: string): Promise<Viewer> {
@@ -20,6 +21,9 @@ describe('GitHubRepositoryService class', () => {
     },
     async getPullRequests (personalAccessToken: string, s: RepositorySetting): Promise<PullRequestConnection> {
       return pullRequestConnection
+    },
+    async getReleases (personalAccessToken: string, s: RepositorySetting): Promise<ReleaseConnection> {
+      return releaseConnection
     }
   }
 
@@ -72,6 +76,33 @@ describe('GitHubRepositoryService class', () => {
       expect(actualPullRequest.deletions).toBe(42)
       expect(actualPullRequest.changedFiles).toBe(6)
       expect(actualPullRequest.isDraft).toBeFalsy()
+    })
+  })
+
+  describe('getReleases method', () => {
+    it('returns releases', async () => {
+      const sut = new GitHubRepositoryUseCaseInteractor(mock, 'pat')
+      const target = new RepositorySetting('https://github.com/ytakahashi/miru')
+      const actual = await sut.getReleases(target)
+      expect(actual.totalCount).toBe(2)
+      expect(actual.results).toHaveLength(2)
+      expect(actual.belongsTo('https://github.com/ytakahashi/miru')).toBe(true)
+      expect(actual.hasContents()).toBe(true)
+      expect(actual.fetchedAtDate()).not.toBeUndefined()
+
+      const actualRelease0 = actual.results[0]
+      expect(actualRelease0.authorName).toBe('github-actions[bot]')
+      expect(actualRelease0.title).toBe('v0.2.0')
+      expect(actualRelease0.url).toBe('https://github.com/ytakahashi/miru/releases/tag/v0.2.0')
+      expect(actualRelease0.createdAt).toBe('2021-01-24T04:41:25Z')
+      expect(actualRelease0.updatedAt).toBe('2021-01-24T04:41:25Z')
+      expect(actualRelease0.isDraft).toBe(false)
+      expect(actualRelease0.isPrerelease).toBe(false)
+      expect(actualRelease0.releaseAssetCount).toBe(4)
+      expect(actualRelease0.tagName).toBe('v0.2.0')
+      expect(actualRelease0.tag).toBeDefined()
+      expect(actualRelease0.tag?.abbreviatedObjectId).toBe('e6e7ac5')
+      expect(actualRelease0.tag?.commitUrl).toBe('https://github.com/ytakahashi/miru/commit/893093edc0849de20763d1858d84a7bcb02ca07b')
     })
   })
 })

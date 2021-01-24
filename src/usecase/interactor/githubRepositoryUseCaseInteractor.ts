@@ -1,7 +1,7 @@
 import { GitHubAccessor, Option } from '@/domain/interface/githubAccessor'
-import { Issues, Issue, Label, PullRequest, PullRequests } from '@/domain/model/github'
+import { Issues, Issue, Label, PullRequest, PullRequests, TagReference, Release, Releases } from '@/domain/model/github'
 import { RepositorySetting } from '@/domain/model/githubRepository'
-import { IssueConnection, PullRequestConnection } from '@/infrastructure/dto/githubApi'
+import { IssueConnection, PullRequestConnection, ReleaseConnection } from '@/infrastructure/dto/githubApi'
 import { GitHubRepositoryUseCase } from '@/usecase/githubRepository'
 
 export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCase {
@@ -23,11 +23,11 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
         .map(v => v.node)
         .map(v => new Issue(
           v.author.login,
-          v.number,
           v.title,
           v.url,
           v.createdAt,
           v.updatedAt,
+          v.number,
           v.labels.edges.map(l => new Label(l.node.name, l.node.color)),
           v.comments.totalCount,
           v.participants.totalCount
@@ -50,11 +50,11 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
         .map(v => v.node)
         .map(v => new PullRequest(
           v.author.login,
-          v.number,
           v.title,
           v.url,
           v.createdAt,
           v.updatedAt,
+          v.number,
           v.labels.edges.map(l => new Label(l.node.name, l.node.color)),
           v.comments.totalCount,
           v.participants.totalCount,
@@ -68,5 +68,34 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
     return this.#githubAccessor.getPullRequests(this.#personalAccessToken, setting, opts)
       .then(mapToPullRequests)
       .catch(e => { throw e })
+  }
+
+  getReleases = async (setting: RepositorySetting, opts?: Option): Promise<Releases> => {
+    if (!setting.isValid()) {
+      throw new Error('Invalid GitHub URL.')
+    }
+
+    const mapToReleases = (v: ReleaseConnection): Releases => {
+      const releases = v.edges
+        .map(v => v.node)
+        .map(v => new Release(
+          v.author.login,
+          v.name,
+          v.url,
+          v.publishedAt,
+          v.updatedAt,
+          v.isDraft,
+          v.isPrerelease,
+          v.releaseAssets.totalCount,
+          v.tag?.name,
+          v.tag?.target === undefined
+            ? undefined
+            : new TagReference(v.tag.target.abbreviatedOid, v.tag.target.commitUrl)
+        ))
+      return new Releases(setting, releases, v.totalCount)
+    }
+
+    return this.#githubAccessor.getReleases(this.#personalAccessToken, setting, opts)
+      .then(mapToReleases)
   }
 }

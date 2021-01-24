@@ -79,9 +79,49 @@ export type PullRequestConnection = {
   edges: Array<PullRequestEdge>;
 }
 
+export type GitObject = {
+  abbreviatedOid: string
+  commitUrl: string
+}
+
+export type Ref = {
+  name: string;
+  target?: GitObject;
+}
+
+export type ReleaseAssetConnection = {
+  totalCount: number;
+}
+
+export type Release = {
+  author: GitHubUser;
+  createdAt: string;
+  isDraft: boolean;
+  // isLatest: boolean;
+  isPrerelease: boolean;
+  name: string;
+  publishedAt: string;
+  releaseAssets: ReleaseAssetConnection;
+  tag?: Ref;
+  updatedAt: string;
+  url: string;
+}
+
+export type ReleaseEdge = {
+  cursor?: string;
+  node: Release;
+}
+
+export type ReleaseConnection = {
+  cursor?: string;
+  totalCount?: number;
+  edges: Array<ReleaseEdge>;
+}
+
 export type GithubRepository = {
   issues?: IssueConnection;
   pullRequests?: PullRequestConnection;
+  releases?: ReleaseConnection;
 }
 
 export type Repository = {

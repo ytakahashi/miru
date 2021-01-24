@@ -67,11 +67,11 @@ describe('GitHubPullRequest.vue', () => {
   it('renders when 2 open PRs exist', async () => {
     const pr1 = new PullRequest(
       'author 1',
-      123,
       'pr title 1',
       'pr url 1',
       '2020-12-15T21:23:56Z',
       '2021-01-02T23:44:14Z',
+      123,
       [],
       2,
       3,
@@ -81,11 +81,11 @@ describe('GitHubPullRequest.vue', () => {
     )
     const pr2 = new PullRequest(
       'author 2',
-      124,
       'pr title 2',
       'pr url 2',
       '2020-12-15T21:23:56Z',
       '2021-01-02T23:44:14Z',
+      124,
       [],
       2,
       3,

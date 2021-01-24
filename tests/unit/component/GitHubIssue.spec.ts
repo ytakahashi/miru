@@ -66,22 +66,22 @@ describe('GitHubIssue.vue', () => {
   it('renders when 2 open issues exist', async () => {
     const issue1 = new Issue(
       'author 1',
-      123,
       'issue title 1',
       'issue url 1',
       '2020-12-15T21:23:56Z',
       '2021-01-02T23:44:14Z',
+      123,
       [],
       2,
       3
     )
     const issue2 = new Issue(
       'author 2',
-      124,
       'issue title 2',
       'issue url 2',
       '2020-12-15T21:23:56Z',
       '2021-01-02T23:44:14Z',
+      124,
       [],
       2,
       3

@@ -4,7 +4,6 @@ import { shallowMount } from '@vue/test-utils'
 import IssueContent from '@/components/IssueContent.vue'
 import { WebBrowserUserCaseKey } from '@/di/types'
 import { Issue, Label } from '@/domain/model/github'
-import { RepositorySetting } from '@/domain/model/githubRepository'
 import { WebBrowserUserCase } from '@/usecase/webBrowser'
 
 const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
@@ -23,11 +22,11 @@ const label1 = new Label('label-1', 'a9ff6d')
 const label2 = new Label('label-2', '6d78ff')
 const issue = new Issue(
   author,
-  123,
   title,
   url,
   '2020-12-15T21:23:56Z',
   '2021-01-02T23:44:14Z',
+  123,
   [label1, label2],
   2,
   3
