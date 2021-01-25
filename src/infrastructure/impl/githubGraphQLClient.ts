@@ -149,7 +149,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
     const query = gql`
       query getReleases($owner: String!, $name: String!, $firstNumber: Int!, $sortField: String!, $sortDirection: String!) {
         repository(owner:$owner, name:$name) {
-          releases(first:$firstIssueNumber, states:OPEN, orderBy:{field: $sortField, direction: $sortDirection}) {
+          releases(first:$firstNumber, orderBy:{field: $sortField, direction: $sortDirection}) {
             totalCount
             edges {
               node {
@@ -157,7 +157,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                   login
                 }
                 createdAt
-                isLatest
+                isDraft
                 isPrerelease
                 name
                 publishedAt
@@ -185,7 +185,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
     const variables = {
       owner: setting.getOwner(),
       name: setting.getRepositoryName(),
-      firstIssueNumber: opts?.count !== undefined ? opts.count : 3,
+      firstNumber: opts?.count !== undefined ? opts.count : 3,
       sortField: opts?.sortField !== undefined ? opts.sortField : 'CREATED_AT',
       sortDirection: opts?.sortDirection !== undefined ? opts.sortDirection : 'DESC'
     }

@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { shallowMount } from '@vue/test-utils'
-import GitHubIssue from '@/components/GitHubIssue.vue'
-import IssuesView from '@/views/IssuesView.vue'
+import GitHubRelease from '@/components/GitHubRelease.vue'
+import ReleasesView from '@/views/ReleasesView.vue'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, RepositorySettingUseCaseFactoryKey } from '@/di/types'
 import { ApplicationSetting } from '@/domain/model/application'
 import { Account, GitHubUrl } from '@/domain/model/github'
@@ -48,13 +48,13 @@ const mockedAccountSettingUseCaseFactory: AccountSettingUseCaseFactory = {
   }
 }
 
-describe('IssuesView.vue', () => {
+describe('ReleasesView.vue', () => {
   it('renders when account is not configured', async () => {
     const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
       newRepositorySettingUseCase: (setting: ApplicationSetting) => new MockedRepositorySettingUseCase([])
     }
 
-    const wrapper = shallowMount(IssuesView, {
+    const wrapper = shallowMount(ReleasesView, {
       global: {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
@@ -65,7 +65,7 @@ describe('IssuesView.vue', () => {
     })
     await wrapper.vm.$nextTick()
     expect(wrapper.text()).toBe('Account is not configured.')
-    expect(wrapper.findAllComponents(GitHubIssue)).toHaveLength(0)
+    expect(wrapper.findAllComponents(GitHubRelease)).toHaveLength(0)
   })
 
   it('renders when no repositories are configured', async () => {
@@ -73,7 +73,7 @@ describe('IssuesView.vue', () => {
       newRepositorySettingUseCase: (setting: ApplicationSetting) => new MockedRepositorySettingUseCase([])
     }
 
-    const wrapper = shallowMount(IssuesView, {
+    const wrapper = shallowMount(ReleasesView, {
       global: {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
@@ -84,7 +84,7 @@ describe('IssuesView.vue', () => {
     })
     await wrapper.vm.$nextTick()
     expect(wrapper.text()).toBe('No repositories are configured.')
-    expect(wrapper.findAllComponents(GitHubIssue)).toHaveLength(0)
+    expect(wrapper.findAllComponents(GitHubRelease)).toHaveLength(0)
   })
 
   it('renders when two repositories are configured', async () => {
@@ -95,7 +95,7 @@ describe('IssuesView.vue', () => {
         new MockedRepositorySettingUseCase([repository1, repository2])
     }
 
-    const wrapper = shallowMount(IssuesView, {
+    const wrapper = shallowMount(ReleasesView, {
       global: {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
@@ -106,29 +106,6 @@ describe('IssuesView.vue', () => {
     })
     await wrapper.vm.$nextTick()
     expect(wrapper.text()).toBe('')
-    expect(wrapper.findAllComponents(GitHubIssue)).toHaveLength(2)
-  })
-
-  it('renders when two repositories are configured, and one is disabled', async () => {
-    const repository1 = new RepositorySetting('https://github.com/a/b')
-    const repository2 = new RepositorySetting('https://github.com/c/d')
-    repository2.setIssuePreference(false)
-    const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
-      newRepositorySettingUseCase: (setting: ApplicationSetting) =>
-        new MockedRepositorySettingUseCase([repository1, repository2])
-    }
-
-    const wrapper = shallowMount(IssuesView, {
-      global: {
-        provide: {
-          [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
-          [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([new ApplicationSetting('foo')]),
-          [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock
-        }
-      }
-    })
-    await wrapper.vm.$nextTick()
-    expect(wrapper.text()).toBe('')
-    expect(wrapper.findAllComponents(GitHubIssue)).toHaveLength(1)
+    expect(wrapper.findAllComponents(GitHubRelease)).toHaveLength(2)
   })
 })

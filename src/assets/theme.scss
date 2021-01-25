@@ -28,6 +28,7 @@
   --border-color: var(--color-gray);
 
   --color-open: var(--color-green-light);
+  --color-draft-release: var(--color-red);
 }
 
 [app-theme="dark"] {
@@ -45,4 +46,5 @@
   --border-color: var(--color-light-gray);
 
   --color-open: var(--color-green-dark);
+  --color-draft-release: var(--color-dark-red);
 }
