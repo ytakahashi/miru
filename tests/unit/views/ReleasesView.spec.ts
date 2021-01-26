@@ -108,4 +108,27 @@ describe('ReleasesView.vue', () => {
     expect(wrapper.text()).toBe('')
     expect(wrapper.findAllComponents(GitHubRelease)).toHaveLength(2)
   })
+
+  it('renders when two repositories are configured, and one is disabled', async () => {
+    const repository1 = new RepositorySetting('https://github.com/a/b')
+    const repository2 = new RepositorySetting('https://github.com/c/d')
+    repository2.setReleasePreference(false)
+    const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
+      newRepositorySettingUseCase: (setting: ApplicationSetting) =>
+        new MockedRepositorySettingUseCase([repository1, repository2])
+    }
+
+    const wrapper = shallowMount(ReleasesView, {
+      global: {
+        provide: {
+          [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
+          [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([new ApplicationSetting('foo')]),
+          [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock
+        }
+      }
+    })
+    await wrapper.vm.$nextTick()
+    expect(wrapper.text()).toBe('')
+    expect(wrapper.findAllComponents(GitHubRelease)).toHaveLength(1)
+  })
 })

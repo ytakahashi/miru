@@ -9,16 +9,17 @@ export class RepositorySettingUseCaseInteractor implements RepositorySettingUseC
     this.#localStorageAccessor = localStorageAccessor
   }
 
-  addRepositorySetting (url: RepositorySetting): boolean {
+  addRepositorySetting (setting: RepositorySetting): boolean {
     const current = this.#localStorageAccessor.getRepositorySettings()
-    const included = current.map(v => v.url).includes(url.getUrl())
+    const included = current.map(v => v.url).includes(setting.getUrl())
     if (included) {
       return false
     }
     const added = {
-      url: url.getUrl(),
-      showsIssues: url.showsIssues(),
-      showsPullRequests: url.showsPullRequests()
+      url: setting.getUrl(),
+      showsIssues: setting.showsIssues(),
+      showsPullRequests: setting.showsPullRequests(),
+      showsReleases: setting.showsReleases()
     }
     const next = current.length ? new Set([...current, added]) : new Set([added])
     this.#localStorageAccessor.setRepositorySettings(Array.from(next))
@@ -37,17 +38,19 @@ export class RepositorySettingUseCaseInteractor implements RepositorySettingUseC
       v.url,
       {
         showsIssues: v.showsIssues,
-        showsPullRequests: v.showsPullRequests
+        showsPullRequests: v.showsPullRequests,
+        showsReleases: v.showsReleases === undefined ? true : v.showsReleases
       }
     ))
   }
 
-  setRepositorySettings (urls: Array<RepositorySetting>): void {
-    const stored = urls.map(url => {
+  setRepositorySettings (settings: Array<RepositorySetting>): void {
+    const stored = settings.map(setting => {
       return {
-        url: url.getUrl(),
-        showsIssues: url.showsIssues(),
-        showsPullRequests: url.showsPullRequests()
+        url: setting.getUrl(),
+        showsIssues: setting.showsIssues(),
+        showsPullRequests: setting.showsPullRequests(),
+        showsReleases: setting.showsReleases()
       }
     })
     this.#localStorageAccessor.setRepositorySettings(Array.from(stored))

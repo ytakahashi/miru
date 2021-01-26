@@ -1,10 +1,11 @@
 <template>
+  <div class="spacer" />
   <span>
-    <span class="text-strong">Respositories</span>
-    <i v-if="!editing" class="far fa-edit clickable" v-on:click="emitEdit(true)"></i>
-    <i v-if="editing" class="far fa-check-square clickable" v-on:click="emitEdit(false)"></i>
+    <span class="text-strong">Repositories</span>
+    <i v-if="!editing" class="fas fa-edit clickable" v-on:click="emitEdit(true)"></i>
+    <i v-if="editing" class="fas fa-save clickable" v-on:click="emitEdit(false)"></i>
   </span>
-
+  <div class="spacer" />
   <draggable
     :list="repositorySettings"
     :disabled="!editing"
@@ -57,7 +58,11 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/app.scss';
+@use '@/assets/app';
+
+.spacer {
+  padding-bottom: 5px;
+}
 
 .delete-button {
   margin-right: 5px;

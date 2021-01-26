@@ -5,15 +5,21 @@
 
   <span v-if="editing" class="preference-input-block">
     <span class="preference-input clickable" v-on:click="toggleIssuePreference()">
-      <i class="far fa-square" v-if="!showsIssues"></i>
-      <i class="far fa-check-square" v-if="showsIssues"></i>
+      <i class="fas fa-square" v-if="!showsIssues"></i>
+      <i class="fas fa-check-square" v-if="showsIssues"></i>
       <span class="margin-left">Issue</span>
     </span>
 
     <span class="preference-input clickable" v-on:click="togglePullRequestPreference()">
-      <i class="far fa-square" v-if="!showsPullRequests"></i>
-      <i class="far fa-check-square" v-if="showsPullRequests"></i>
+      <i class="fas fa-square" v-if="!showsPullRequests"></i>
+      <i class="fas fa-check-square" v-if="showsPullRequests"></i>
       <span class="margin-left">PR</span>
+    </span>
+
+    <span class="preference-input clickable" v-on:click="toggleReleasePreference()">
+      <i class="fas fa-square" v-if="!showsReleases"></i>
+      <i class="fas fa-check-square" v-if="showsReleases"></i>
+      <span class="margin-left">Release</span>
     </span>
   </span>
 </template>
@@ -58,23 +64,29 @@ export default defineComponent({
     watch(showsPullRequests, (next: boolean) => props.repositorySetting.setPullRequestPreference(next))
     const togglePullRequestPreference = () => (showsPullRequests.value = !showsPullRequests.value)
 
+    const showsReleases = ref(props.repositorySetting.showsReleases())
+    watch(showsReleases, (next: boolean) => props.repositorySetting.setReleasePreference(next))
+    const toggleReleasePreference = () => (showsReleases.value = !showsReleases.value)
+
     return {
       openRepository,
       showsIssues,
       toggleIssuePreference,
       showsPullRequests,
-      togglePullRequestPreference
+      togglePullRequestPreference,
+      showsReleases,
+      toggleReleasePreference
     }
   }
 })
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/app.scss';
+@use '@/assets/app';
 
 .preference-input-block {
   display: block;
-  margin-bottom: 7px;
+  margin-bottom: 10px;
 }
 
 .preference-input {

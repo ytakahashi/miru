@@ -16,7 +16,7 @@ describe('GitHubRepositories.vue', () => {
       }
     })
     expect(wrapper.find('i.fa-edit').exists()).toBe(true)
-    expect(wrapper.find('i.fa-check-square').exists()).toBe(false)
+    expect(wrapper.find('i.fa-save').exists()).toBe(false)
     expect(wrapper.find('i.fa-times').exists()).toBe(false)
 
     wrapper.find('i.fa-edit').trigger('click')
@@ -36,7 +36,7 @@ describe('GitHubRepositories.vue', () => {
       }
     })
     expect(wrapper.find('i.fa-edit').exists()).toBe(false)
-    expect(wrapper.find('i.fa-check-square').exists()).toBe(true)
+    expect(wrapper.find('i.fa-save').exists()).toBe(true)
     expect(wrapper.find('i.fa-times').exists()).toBe(true)
 
     wrapper.find('i.delete-button').trigger('click')
@@ -44,7 +44,7 @@ describe('GitHubRepositories.vue', () => {
     expect(deleteEvent).toHaveLength(1)
     expect(deleteEvent[0]).toEqual([setting])
 
-    wrapper.find('i.fa-check-square').trigger('click')
+    wrapper.find('i.fa-save').trigger('click')
     const editEvent = wrapper.emitted('edit')
     expect(editEvent).toHaveLength(1)
     expect(editEvent[0]).toEqual([false])

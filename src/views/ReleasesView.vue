@@ -42,11 +42,10 @@ export default defineComponent({
         const accountSettingUseCase = accountSettingUseCaseFactory.newAccountSettingUseCase(s)
         const repositorySettingUseCase = repositorySettingUseCaseFactory.newRepositorySettingUseCase(s)
         const account = accountSettingUseCase.getAccount()
-        // TODO: filter
         const repositorySettings = repositorySettingUseCase.getRepositorySettings()
         tuples.value.push({
           account: account,
-          repositorySettings: repositorySettings
+          repositorySettings: repositorySettings.filter(s => s.showsReleases())
         })
       }
     }
