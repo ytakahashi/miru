@@ -1,4 +1,5 @@
 <template>
+  <QueryOption :viewType="'releases'" />
   <div v-for="(t, index) in tuples" :key="index">
     <div v-for="repositorySetting in t.repositorySettings" :key="repositorySetting.getUrl()">
       <GitHubRelease
@@ -14,6 +15,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, Ref } from 'vue'
 import GitHubRelease from '@/components/GitHubRelease.vue'
+import QueryOption from '@/components/QueryOption.vue'
 import { inject } from '@/di/injector'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, RepositorySettingUseCaseFactoryKey } from '@/di/types'
 import { Account } from '@/domain/model/github'
@@ -27,7 +29,8 @@ type RepositoryTuple = {
 export default defineComponent({
   name: 'ReleasesView',
   components: {
-    GitHubRelease
+    GitHubRelease,
+    QueryOption
   },
   setup () {
     const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)
@@ -42,11 +45,10 @@ export default defineComponent({
         const accountSettingUseCase = accountSettingUseCaseFactory.newAccountSettingUseCase(s)
         const repositorySettingUseCase = repositorySettingUseCaseFactory.newRepositorySettingUseCase(s)
         const account = accountSettingUseCase.getAccount()
-        // TODO: filter
         const repositorySettings = repositorySettingUseCase.getRepositorySettings()
         tuples.value.push({
           account: account,
-          repositorySettings: repositorySettings
+          repositorySettings: repositorySettings.filter(s => s.showsReleases())
         })
       }
     }

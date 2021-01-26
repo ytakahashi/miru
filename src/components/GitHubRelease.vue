@@ -32,6 +32,7 @@ import { inject } from '@/di/injector'
 import { WebBrowserUserCaseKey, GitHubRepositoryUseCaseFactoryKey } from '@/di/types'
 import { Account, GitHubUrl, Releases } from '@/domain/model/github'
 import { RepositorySetting } from '@/domain/model/githubRepository'
+import { getters as queryOption } from '@/store/queryOption'
 import { getters, mutations } from '@/store/releases'
 
 type PropsType = {
@@ -78,7 +79,8 @@ export default defineComponent({
     }
     const getReleases = (): void => {
       const { repositorySetting } = props
-      githubRepositoryUseCase.getReleases(repositorySetting, {})
+      const option = queryOption.releases()
+      githubRepositoryUseCase.getReleases(repositorySetting, option)
         .then(onSuccess)
         .catch(onFailure)
     }

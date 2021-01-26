@@ -11,4 +11,5 @@ export type RepositorySetting = {
   url: string;
   showsIssues: boolean;
   showsPullRequests: boolean;
+  showsReleases?: boolean;
 }
