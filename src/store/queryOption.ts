@@ -13,12 +13,21 @@ const prOption = reactive<Option>({
   sortDirection: 'DESC'
 })
 
+const releaseOption = reactive<Option>({
+  count: 3,
+  sortField: 'CREATED_AT',
+  sortDirection: 'DESC'
+})
+
 export const getters = {
   issues (): Option {
     return issueOption
   },
   pullRequests (): Option {
     return prOption
+  },
+  releases (): Option {
+    return releaseOption
   }
 }
 
@@ -32,5 +41,10 @@ export const mutations = {
     prOption.count = option.count
     prOption.sortField = option.sortField
     prOption.sortDirection = option.sortDirection
+  },
+  releases (option: Option): void {
+    releaseOption.count = option.count
+    releaseOption.sortField = option.sortField
+    releaseOption.sortDirection = option.sortDirection
   }
 }

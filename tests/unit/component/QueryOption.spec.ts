@@ -30,7 +30,64 @@ describe('QueryOption.vue', () => {
     expect(wrapper.find('.fa-times').exists()).toBe(false)
   })
 
-  it('shows correct option values', async () => {
+  it('shows correct option values for issues', async () => {
+    const wrapper = shallowMount(QueryOption, {
+      props: {
+        viewType: 'issues'
+      }
+    })
+    await wrapper.find('.fa-cog').trigger('click')
+    await wrapper.vm.$nextTick()
+    const text = wrapper.text()
+    expect(text).toContain('Newest')
+    expect(text).toContain('Oldest')
+    expect(text).toContain('Most commented')
+    expect(text).toContain('Least commented')
+    expect(text).toContain('Recently updated')
+    expect(text).toContain('Least recently updated')
+    expect(text).not.toContain('Alphabetical')
+    expect(text).not.toContain('Reverse alphabetical')
+  })
+
+  it('shows correct option values for pullRequests', async () => {
+    const wrapper = shallowMount(QueryOption, {
+      props: {
+        viewType: 'pullRequests'
+      }
+    })
+    await wrapper.find('.fa-cog').trigger('click')
+    await wrapper.vm.$nextTick()
+    const text = wrapper.text()
+    expect(text).toContain('Newest')
+    expect(text).toContain('Oldest')
+    expect(text).toContain('Most commented')
+    expect(text).toContain('Least commented')
+    expect(text).toContain('Recently updated')
+    expect(text).toContain('Least recently updated')
+    expect(text).not.toContain('Alphabetical')
+    expect(text).not.toContain('Reverse alphabetical')
+  })
+
+  it('shows correct option values for releases', async () => {
+    const wrapper = shallowMount(QueryOption, {
+      props: {
+        viewType: 'releases'
+      }
+    })
+    await wrapper.find('.fa-cog').trigger('click')
+    await wrapper.vm.$nextTick()
+    const text = wrapper.text()
+    expect(text).toContain('Newest')
+    expect(text).toContain('Oldest')
+    expect(text).not.toContain('Most commented')
+    expect(text).not.toContain('Least commented')
+    expect(text).not.toContain('Recently updated')
+    expect(text).not.toContain('Least recently updated')
+    expect(text).toContain('Alphabetical')
+    expect(text).toContain('Reverse alphabetical')
+  })
+
+  it('can update option values', async () => {
     const wrapper = shallowMount(QueryOption, {
       props: {
         viewType: 'issues'

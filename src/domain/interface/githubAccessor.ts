@@ -1,7 +1,7 @@
 import { IssueConnection, PullRequestConnection, ReleaseConnection, Viewer } from '@/infrastructure/dto/githubApi'
 import { RepositorySetting } from '@/domain/model/githubRepository'
 
-export type SortField = 'COMMENTS' | 'CREATED_AT' | 'UPDATED_AT'
+export type SortField = 'COMMENTS' | 'CREATED_AT' | 'UPDATED_AT' | 'NAME'
 export type SortDirection = 'ASC' | 'DESC'
 
 export type Option = {

@@ -30,7 +30,7 @@ import { defineComponent, onMounted, reactive, ref, watch, PropType, Ref } from 
 import { getters, mutations } from '@/store/queryOption'
 import { Option, SortDirection, SortField } from '@/usecase/githubRepository'
 
-type ViewType = 'issues' | 'pullRequests'
+type ViewType = 'issues' | 'pullRequests' | 'releases'
 
 type PropsType = {
   viewType: ViewType
@@ -43,7 +43,9 @@ const definedSorts = [
   'Most commented',
   'Least commented',
   'Recently updated',
-  'Least recently updated'
+  'Least recently updated',
+  'Alphabetical',
+  'Reverse alphabetical'
 ] as const
 
 type SortName = typeof definedSorts[number]
@@ -52,15 +54,18 @@ type NamedSort = {
   sortName: SortName;
   sortField: SortField;
   sortDirection: SortDirection;
+  supportedBy: ViewType[];
 }
 
 const namedSortList: Array<NamedSort> = [
-  { sortName: 'Newest', sortField: 'CREATED_AT', sortDirection: 'DESC' },
-  { sortName: 'Oldest', sortField: 'CREATED_AT', sortDirection: 'ASC' },
-  { sortName: 'Most commented', sortField: 'COMMENTS', sortDirection: 'DESC' },
-  { sortName: 'Least commented', sortField: 'COMMENTS', sortDirection: 'ASC' },
-  { sortName: 'Recently updated', sortField: 'UPDATED_AT', sortDirection: 'DESC' },
-  { sortName: 'Least recently updated', sortField: 'UPDATED_AT', sortDirection: 'ASC' }
+  { sortName: 'Newest', sortField: 'CREATED_AT', sortDirection: 'DESC', supportedBy: ['issues', 'pullRequests', 'releases'] },
+  { sortName: 'Oldest', sortField: 'CREATED_AT', sortDirection: 'ASC', supportedBy: ['issues', 'pullRequests', 'releases'] },
+  { sortName: 'Most commented', sortField: 'COMMENTS', sortDirection: 'DESC', supportedBy: ['issues', 'pullRequests'] },
+  { sortName: 'Least commented', sortField: 'COMMENTS', sortDirection: 'ASC', supportedBy: ['issues', 'pullRequests'] },
+  { sortName: 'Recently updated', sortField: 'UPDATED_AT', sortDirection: 'DESC', supportedBy: ['issues', 'pullRequests'] },
+  { sortName: 'Least recently updated', sortField: 'UPDATED_AT', sortDirection: 'ASC', supportedBy: ['issues', 'pullRequests'] },
+  { sortName: 'Alphabetical', sortField: 'NAME', sortDirection: 'ASC', supportedBy: ['releases'] },
+  { sortName: 'Reverse alphabetical', sortField: 'NAME', sortDirection: 'DESC', supportedBy: ['releases'] }
 ]
 
 class OptionViewModel {
@@ -72,7 +77,7 @@ class OptionViewModel {
   selectedValue: Ref<SortName>
 
   constructor () {
-    this.#defaultSort = namedSortList[4]
+    this.#defaultSort = namedSortList[0]
     this.sortField = ref(this.#defaultSort.sortField)
     this.sortDirection = ref(this.#defaultSort.sortDirection)
     this.selectedValue = ref(this.#defaultSort.sortName)
@@ -121,7 +126,7 @@ export default defineComponent({
   setup (props: PropsType) {
     const viewModel = reactive(new OptionViewModel())
     const itemCounts = ref(definedCounts)
-    const sortNames = ref(definedSorts)
+    const sortNames = ref(namedSortList.filter(v => v.supportedBy.includes(props.viewType)).map(v => v.sortName))
     const open = ref(false)
 
     const updateViewModel = () => {
@@ -151,7 +156,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/form.scss';
+@use '@/assets/form';
 
 .list-options {
   width: 220px;
