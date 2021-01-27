@@ -60,7 +60,8 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
           v.participants.totalCount,
           v.additions,
           v.deletions,
-          v.changedFiles
+          v.changedFiles,
+          v.isDraft
         ))
       return new PullRequests(setting, prs, v.totalCount)
     }

@@ -1,17 +1,22 @@
 <template>
-  <div class="content-box-open" v-on:click="openPullRequest()">
+  <div :class="boxStyle" v-on:click="openPullRequest()">
     <div class="text-tiny align-left padding-bottom">
-      <i class="far fa-clock"></i>
+      <i class="fas fa-clock"></i>
       {{ pullRequest.getUpdatedRelativeDate() }}
+      <span class="draft-mark" v-if="pullRequest.isDraft">draft</span>
     </div>
     <span class="text-strong">{{ pullRequest.title }}</span>
     <div class="text-small padding-bottom">
-      {{ pullRequest.authorName }} created {{ pullRequest.getCreatedRelativeDate() }}
+      {{ pullRequest.authorName }} opened {{ pullRequest.getCreatedRelativeDate() }}
       <span class="text-small">
-        <i class="far fa-comments"></i> {{ pullRequest.numberOfComments }}
-        <i class="far fa-user"></i>{{ pullRequest.numberOfParticipants }}
+        <span class="info-icon"><i class="fas fa-comments"></i> {{ pullRequest.numberOfComments }}</span>
+        <span class="info-icon"><i class="fas fa-user"></i> {{ pullRequest.numberOfParticipants }}</span>
+        <span class="info-icon"><i class="fas fa-file"></i> {{ pullRequest.changedFiles }}</span>
+        <span class="additions">+{{ pullRequest.additions }}</span>
+        <span class="deletions">-{{ pullRequest.deletions }}</span>
       </span>
     </div>
+
     <span v-for="(label, index) in pullRequest.labels" :key="index">
       <span class="github-label" v-bind:style="{ backgroundColor: `#${label.color}`}">{{ label.name }}</span>
     </span>
@@ -19,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { inject } from '@/di/injector'
 import { WebBrowserUserCaseKey } from '@/di/types'
 import { PullRequest } from '@/domain/model/github'
@@ -40,7 +45,13 @@ export default defineComponent({
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
     const openPullRequest = () => webBrowserUserCase.openUrl(props.pullRequest.url)
 
+    const boxStyle = computed(() => ({
+      'content-box-open': !props.pullRequest.isDraft,
+      'content-box-pr-draft': props.pullRequest.isDraft
+    }))
+
     return {
+      boxStyle,
       openPullRequest
     }
   }
@@ -48,6 +59,36 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/app.scss';
-@import '@/assets/contents.scss';
+@use '@/assets/app';
+@use '@/assets/contents';
+
+.content-box-pr-draft {
+  @include contents.content-box(var(--color-draft-pr));
+}
+
+.draft-mark {
+  @include app.badge-box();
+  background-color: var(--sub-background-color);
+}
+
+@mixin content-box($text-color) {
+  margin-left: 8px;
+  color: $text-color;
+}
+
+.info-icon {
+  @include content-box(var(--main-font-color));
+}
+
+.additions {
+  @include content-box(var(--color-diff-plus));
+}
+
+.deletions{
+  @include content-box(var(--color-diff-minus));
+}
+
+.github-label {
+  @include app.badge-box();
+}
 </style>

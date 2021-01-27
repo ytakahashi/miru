@@ -49,7 +49,7 @@ describe('IssueContent.vue', () => {
       }
     })
 
-    expect(wrapper.text()).toContain(`${author} created`)
+    expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
     expect(wrapper.findAll('span.github-label')).toHaveLength(2)
   })

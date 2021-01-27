@@ -1,15 +1,15 @@
 <template>
   <div class="content-box-open" v-on:click="openIssue()">
     <div class="text-tiny align-left padding-bottom">
-      <i class="far fa-clock"></i>
+      <i class="fas fa-clock"></i>
       {{ issue.getUpdatedRelativeDate() }}
     </div>
     <span class="text-strong">{{ issue.title }}</span>
     <div class="text-small padding-bottom">
-      {{ issue.authorName }} created {{ issue.getCreatedRelativeDate() }}
+      {{ issue.authorName }} opened {{ issue.getCreatedRelativeDate() }}
       <span class="text-small">
-        <i class="far fa-comments"></i> {{ issue.numberOfComments }}
-        <i class="far fa-user"></i>{{ issue.numberOfParticipants }}
+        <span class="info-icon"><i class="fas fa-comments"></i> {{ issue.numberOfComments }}</span>
+        <span class="info-icon"><i class="fas fa-user"></i> {{ issue.numberOfParticipants }}</span>
       </span>
     </div>
     <span v-for="(label, index) in issue.labels" :key="index">
@@ -48,6 +48,19 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/app.scss';
-@import '@/assets/contents.scss';
+@use '@/assets/app';
+@use '@/assets/contents';
+
+@mixin content-box($text-color) {
+  margin-left: 7px;
+  color: $text-color;
+}
+
+.info-icon {
+  @include content-box(var(--main-font-color));
+}
+
+.github-label {
+  @include app.badge-box();
+}
 </style>
