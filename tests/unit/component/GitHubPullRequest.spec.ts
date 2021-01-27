@@ -79,7 +79,8 @@ describe('GitHubPullRequest.vue', () => {
       3,
       123,
       456,
-      7
+      7,
+      false
     )
     const pr2 = new PullRequest(
       'author 2',
@@ -93,7 +94,8 @@ describe('GitHubPullRequest.vue', () => {
       3,
       234,
       567,
-      8
+      8,
+      false
     )
     const pullRequests = new PullRequests(setting, [pr1, pr2], 2)
     const wrapper = shallowMount(GitHubPullRequest, {
