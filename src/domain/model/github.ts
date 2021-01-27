@@ -207,7 +207,8 @@ export class PullRequest extends BaseContent {
     numberOfParticipants: number,
     additions: number,
     deletions: number,
-    changedFiles: number
+    changedFiles: number,
+    isDraft: boolean
   ) {
     super(
       authorName,
@@ -224,8 +225,7 @@ export class PullRequest extends BaseContent {
     this.additions = additions
     this.deletions = deletions
     this.changedFiles = changedFiles
-    // TODO: set from response
-    this.isDraft = false
+    this.isDraft = isDraft
   }
 }
 

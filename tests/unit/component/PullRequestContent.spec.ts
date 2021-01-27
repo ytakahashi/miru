@@ -32,7 +32,24 @@ const pr = new PullRequest(
   3,
   12,
   23,
-  4
+  4,
+  false
+)
+
+const draftPr = new PullRequest(
+  author,
+  title,
+  url,
+  '2020-12-15T21:23:56Z',
+  '2021-01-02T23:44:14Z',
+  123,
+  [label1, label2],
+  2,
+  3,
+  12,
+  23,
+  4,
+  true
 )
 
 describe('IssueContent.vue', () => {
@@ -40,7 +57,7 @@ describe('IssueContent.vue', () => {
     openUrlMock.mockClear()
   })
 
-  it('renders issue', async () => {
+  it('renders pull request', async () => {
     const wrapper = shallowMount(PullRequestContent, {
       global: {
         provide: {
@@ -52,8 +69,27 @@ describe('IssueContent.vue', () => {
       }
     })
 
-    expect(wrapper.text()).toContain(`${author} created`)
+    expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
+    expect(wrapper.find('span.draft-mark').exists()).toBe(false)
+    expect(wrapper.findAll('span.github-label')).toHaveLength(2)
+  })
+
+  it('renders draft pull request', async () => {
+    const wrapper = shallowMount(PullRequestContent, {
+      global: {
+        provide: {
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
+        }
+      },
+      props: {
+        pullRequest: draftPr
+      }
+    })
+
+    expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
+    expect(wrapper.text()).toContain(title)
+    expect(wrapper.find('span.draft-mark').exists()).toBe(true)
     expect(wrapper.findAll('span.github-label')).toHaveLength(2)
   })
 

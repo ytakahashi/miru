@@ -119,6 +119,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                 additions
                 deletions
                 changedFiles
+                isDraft
               }
             }
           }

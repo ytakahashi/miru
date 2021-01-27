@@ -25,14 +25,3 @@
 .content-box-open {
   @include content-box(var(--color-open));
 }
-
-.github-label {
-  border: 1px solid;
-  border-radius: 7px;
-  padding: 1px 8px;
-  margin: 0 3px;
-  font-size: 0.8em;
-  font-weight: bold;
-  color: var(--main-font-color);
-  border-color: var(--border-color);
-}

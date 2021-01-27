@@ -66,6 +66,7 @@ export type PullRequest = {
   additions: number;
   deletions: number;
   changedFiles: number;
+  isDraft: boolean;
 }
 
 export type PullRequestEdge = {

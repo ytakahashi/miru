@@ -27,8 +27,12 @@
   --hover-color: var(--color-bright-gray);
   --border-color: var(--color-gray);
 
+  --color-diff-plus: var(--color-green-dark);
+  --color-diff-minus: var(--color-red);
+
   --color-open: var(--color-green-light);
   --color-draft-release: var(--color-red);
+  --color-draft-pr: var(--color-dark-gray);
 }
 
 [app-theme="dark"] {
@@ -45,6 +49,10 @@
   --hover-color: var(--color-gray);
   --border-color: var(--color-light-gray);
 
+  --color-diff-plus: var(--color-green-light);
+  --color-diff-minus: var(--color-red);
+
   --color-open: var(--color-green-dark);
   --color-draft-release: var(--color-dark-red);
+  --color-draft-pr: var(--color-dark-gray);
 }
