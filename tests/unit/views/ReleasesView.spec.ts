@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import { defineComponent, h } from 'vue'
 import { shallowMount } from '@vue/test-utils'
 import GitHubRelease from '@/components/GitHubRelease.vue'
 import ReleasesView from '@/views/ReleasesView.vue'
@@ -48,6 +49,14 @@ const mockedAccountSettingUseCaseFactory: AccountSettingUseCaseFactory = {
   }
 }
 
+const RepositoryFilterMock = defineComponent({
+  name: 'RepositoryFilter',
+  methods: {
+    isVisible: () => true
+  },
+  render: () => h('input', {}, '')
+})
+
 describe('ReleasesView.vue', () => {
   it('renders when account is not configured', async () => {
     const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
@@ -60,6 +69,9 @@ describe('ReleasesView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([]),
           [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock
+        },
+        stubs: {
+          RepositoryFilter: RepositoryFilterMock
         }
       }
     })
@@ -79,6 +91,9 @@ describe('ReleasesView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([new ApplicationSetting('foo')]),
           [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock
+        },
+        stubs: {
+          RepositoryFilter: RepositoryFilterMock
         }
       }
     })
@@ -101,6 +116,9 @@ describe('ReleasesView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([new ApplicationSetting('foo')]),
           [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock
+        },
+        stubs: {
+          RepositoryFilter: RepositoryFilterMock
         }
       }
     })
@@ -124,6 +142,9 @@ describe('ReleasesView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([new ApplicationSetting('foo')]),
           [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock
+        },
+        stubs: {
+          RepositoryFilter: RepositoryFilterMock
         }
       }
     })
