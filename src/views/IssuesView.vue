@@ -1,8 +1,10 @@
 <template>
+  <RepositoryFilter ref="repositoryFilter" />
   <QueryOption :viewType="'issues'" />
   <div v-for="(t, index) in tuples" :key="index">
     <div v-for="repositorySetting in t.repositorySettings" :key="repositorySetting.getUrl()">
       <GitHubIssue
+        v-show="isVisible(repositorySetting)"
         :account="t.account"
         :repositorySetting="repositorySetting"
       />
@@ -16,9 +18,9 @@
 import { computed, defineComponent, onMounted, ref, Ref } from 'vue'
 import GitHubIssue from '@/components/GitHubIssue.vue'
 import QueryOption from '@/components/QueryOption.vue'
+import RepositoryFilter from '@/components/RepositoryFilter.vue'
 import { inject } from '@/di/injector'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, RepositorySettingUseCaseFactoryKey } from '@/di/types'
-
 import { Account } from '@/domain/model/github'
 import { RepositorySetting } from '@/domain/model/githubRepository'
 
@@ -31,7 +33,8 @@ export default defineComponent({
   name: 'IssuesView',
   components: {
     GitHubIssue,
-    QueryOption
+    QueryOption,
+    RepositoryFilter
   },
   setup () {
     const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)
@@ -39,6 +42,7 @@ export default defineComponent({
     const repositorySettingUseCaseFactory = inject(RepositorySettingUseCaseFactoryKey)
 
     const tuples: Ref<RepositoryTuple[]> = ref([])
+    const repositoryFilter = ref()
 
     const initAccounts = () => {
       const settings = applicationSettingUseCase.getSettings()
@@ -63,9 +67,14 @@ export default defineComponent({
 
     const isAccountConfigured = computed(() => tuples.value.length !== 0)
 
+    const isVisible = (repository: RepositorySetting) =>
+      (repositoryFilter.value as typeof RepositoryFilter).isVisible(repository)
+
     onMounted(initAccounts)
 
     return {
+      repositoryFilter,
+      isVisible,
       isAccountConfigured,
       total,
       tuples

@@ -43,3 +43,15 @@
   color: var(--main-font-color);
   border-color: var(--border-color);
 }
+
+@mixin base-input-form {
+  background-color: var(--main-background-color);
+  border: solid 1px var(--border-color);
+  border-radius: 3px;
+  color: var(--main-text-color);
+
+  &::placeholder {
+    color: var(--main-text-color);
+    text-align: center;
+  }
+}
