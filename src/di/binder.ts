@@ -13,8 +13,8 @@ import {
   GitHubAccountUseCaseFactoryImpl,
   GitHubRepositoryUseCaseFactoryImpl,
   RepositorySettingUseCaseFactoryImpl
-} from '@/usecase/factory/useCaseFactory'
-import { WebBrowserUserCaseInteractor } from '@/usecase/interactor/WebBrowserUserCaseInteractor'
+} from '@/application/usecase/factory/useCaseFactory'
+import { WebBrowserUserCaseInteractor } from '@/application/usecase/interactor/WebBrowserUserCaseInteractor'
 
 const accountSettingUseCaseFactory = new AccountSettingUseCaseFactoryImpl()
 const githubRepositoryUseCaseFactory = new GitHubRepositoryUseCaseFactoryImpl()

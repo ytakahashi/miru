@@ -2,15 +2,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { shallowMount } from '@vue/test-utils'
+import { AccountSettingUseCaseFactoryKey, RepositorySettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
+import { ApplicationSetting } from '@/application/domain/model/application'
+import { Account, GitHubUrl } from '@/application/domain/model/github'
+import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
+import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/application/usecase/accountSetting'
+import { RepositorySettingUseCase, RepositorySettingUseCaseFactory } from '@/application/usecase/repositorySetting'
 import AccountSetting from '@/components/AccountSetting.vue'
 import GitHubRepositories from '@/components/GitHubRepositories.vue'
-import { AccountSettingUseCaseFactoryKey, RepositorySettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
-import { ApplicationSetting } from '@/domain/model/application'
-import { Account, GitHubUrl } from '@/domain/model/github'
-import { RepositorySetting } from '@/domain/model/githubRepository'
-import { WebBrowserUserCase } from '@/usecase/webBrowser'
-import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
-import { RepositorySettingUseCase, RepositorySettingUseCaseFactory } from '@/usecase/repositorySetting'
 
 const url = new GitHubUrl('https://github.com', 'https://api.github.com/graphql')
 const account = new Account('name', 'https://github.com/ytakahashi', 'avatar', url, 'pat')

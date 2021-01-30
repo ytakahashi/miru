@@ -4,10 +4,10 @@ import { shallowMount } from '@vue/test-utils'
 import GitHubPullRequest from '@/components/GitHubPullRequest.vue'
 import PullRequestContent from '@/components/PullRequestContent.vue'
 import { GitHubRepositoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
-import { Account, GitHubUrl, Issues, PullRequest, PullRequests, Releases } from '@/domain/model/github'
-import { RepositorySetting } from '@/domain/model/githubRepository'
-import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory } from '@/usecase/githubRepository'
-import { WebBrowserUserCase } from '@/usecase/webBrowser'
+import { Account, GitHubUrl, Issues, PullRequest, PullRequests, Releases } from '@/application/domain/model/github'
+import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory } from '@/application/usecase/githubRepository'
+import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 
 const MockedIssues = jest.fn<Issues, []>()
 const MockedReleases = jest.fn<Releases, []>()

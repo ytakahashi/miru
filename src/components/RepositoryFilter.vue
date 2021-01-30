@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { RepositorySetting } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/application/domain/model/githubRepository'
 
 export default defineComponent({
   name: 'RepositoryFilter',

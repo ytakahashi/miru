@@ -16,13 +16,13 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, Ref } from 'vue'
+import { Account } from '@/application/domain/model/github'
+import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import GitHubRelease from '@/components/GitHubRelease.vue'
 import QueryOption from '@/components/QueryOption.vue'
 import RepositoryFilter from '@/components/RepositoryFilter.vue'
 import { inject } from '@/di/injector'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, RepositorySettingUseCaseFactoryKey } from '@/di/types'
-import { Account } from '@/domain/model/github'
-import { RepositorySetting } from '@/domain/model/githubRepository'
 
 type RepositoryTuple = {
   account: Account;

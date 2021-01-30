@@ -27,11 +27,11 @@
 
 <script lang="ts">
 import { defineComponent, readonly, ref } from 'vue'
+import { Account, PullRequests, GitHubUrl } from '@/application/domain/model/github'
+import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import PullRequestContent from '@/components/PullRequestContent.vue'
 import { inject } from '@/di/injector'
 import { WebBrowserUserCaseKey, GitHubRepositoryUseCaseFactoryKey } from '@/di/types'
-import { Account, PullRequests, GitHubUrl } from '@/domain/model/github'
-import { RepositorySetting } from '@/domain/model/githubRepository'
 import { getters, mutations } from '@/store/pullRequests'
 import { getters as queryOption } from '@/store/queryOption'
 

@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils'
 import GitHubRepository from '@/components/GitHubRepository.vue'
 import { WebBrowserUserCaseKey } from '@/di/types'
-import { RepositorySetting } from '@/domain/model/githubRepository'
-import { WebBrowserUserCase } from '@/usecase/webBrowser'
+import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 
 const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
 const openUrlMock = jest.fn()

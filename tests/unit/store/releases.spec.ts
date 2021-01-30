@@ -1,5 +1,5 @@
-import { Releases } from '@/domain/model/github'
-import { RepositorySetting } from '@/domain/model/githubRepository'
+import { Releases } from '@/application/domain/model/github'
+import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { getters, mutations } from '@/store/releases'
 
 const MockedReleases = jest.fn<Releases, [RepositorySetting]>()

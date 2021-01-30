@@ -4,11 +4,11 @@
 import { shallowMount } from '@vue/test-utils'
 import AccountSetting from '@/components/AccountSetting.vue'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, GitHubAccountUseCaseFactoryKey } from '@/di/types'
-import { ApplicationSetting } from '@/domain/model/application'
-import { Account, GitHubUrl } from '@/domain/model/github'
-import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/usecase/accountSetting'
-import { ApplicationSettingUseCase } from '@/usecase/applicationSetting'
-import { GitHubAccountUseCase, GitHubAccountUseCaseFactory } from '@/usecase/githubAccount'
+import { ApplicationSetting } from '@/application/domain/model/application'
+import { Account, GitHubUrl } from '@/application/domain/model/github'
+import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/application/usecase/accountSetting'
+import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting'
+import { GitHubAccountUseCase, GitHubAccountUseCaseFactory } from '@/application/usecase/githubAccount'
 import SettingView from '@/views/SettingView.vue'
 
 const url = new GitHubUrl('https://github.com', 'https://api.github.com/graphql')

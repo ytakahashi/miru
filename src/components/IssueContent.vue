@@ -20,9 +20,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { Issue } from '@/application/domain/model/github'
 import { inject } from '@/di/injector'
 import { WebBrowserUserCaseKey } from '@/di/types'
-import { Issue } from '@/domain/model/github'
 
 type PropsType = {
   issue: Issue

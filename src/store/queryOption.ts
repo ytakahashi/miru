@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import { Option } from '@/usecase/githubRepository'
+import { Option } from '@/application/usecase/githubRepository'
 
 const issueOption = reactive<Option>({
   count: 10,

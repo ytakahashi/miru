@@ -13,9 +13,9 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
+import { Release } from '@/application/domain/model/github'
 import { inject } from '@/di/injector'
 import { WebBrowserUserCaseKey } from '@/di/types'
-import { Release } from '@/domain/model/github'
 
 type PropsType = {
   release: Release

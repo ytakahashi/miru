@@ -27,8 +27,8 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, reactive, ref, watch, PropType, Ref } from 'vue'
+import { Option, SortDirection, SortField } from '@/application/usecase/githubRepository'
 import { getters, mutations } from '@/store/queryOption'
-import { Option, SortDirection, SortField } from '@/usecase/githubRepository'
 
 type ViewType = 'issues' | 'pullRequests' | 'releases'
 
