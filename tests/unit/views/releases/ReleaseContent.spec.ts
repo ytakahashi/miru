@@ -3,7 +3,7 @@
 import { shallowMount } from '@vue/test-utils'
 import { Release } from '@/application/domain/model/github'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import { WebBrowserUserCaseKey } from '@/di/types'
+import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 import ReleaseContent from '@/views/releases/ReleaseContent.vue'
 
 const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()

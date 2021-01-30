@@ -27,8 +27,8 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { inject } from '@/di/injector'
-import { WebBrowserUserCaseKey } from '@/di/types'
+import { inject } from '@/plugins/di/injector'
+import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 
 type PropsType = {
   editing: boolean;

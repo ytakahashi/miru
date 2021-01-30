@@ -6,7 +6,7 @@ import {
   GitHubRepositoryUseCaseFactoryKey,
   RepositorySettingUseCaseFactoryKey,
   WebBrowserUserCaseKey
-} from '@/di/types'
+} from '@/plugins/di/types'
 import {
   AccountSettingUseCaseFactoryImpl,
   ApplicationSettingUseCaseFactoryImpl,

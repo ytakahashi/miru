@@ -29,8 +29,8 @@
 import { computed, defineComponent, onMounted, ref, watch, PropType, Ref, SetupContext } from 'vue'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { inject } from '@/di/injector'
-import { AccountSettingUseCaseFactoryKey, RepositorySettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
+import { inject } from '@/plugins/di/injector'
+import { AccountSettingUseCaseFactoryKey, RepositorySettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import GitHubRepositories from '@/views/settings/GitHubRepositories.vue'
 
 type PropsType = {

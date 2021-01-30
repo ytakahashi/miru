@@ -5,7 +5,7 @@ import { Account, GitHubUrl, Issue, Issues, PullRequests, Releases } from '@/app
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory } from '@/application/usecase/githubRepository'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import { GitHubRepositoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
+import { GitHubRepositoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import GitHubIssue from '@/views/issues/GitHubIssue.vue'
 import IssueContent from '@/views/issues/IssueContent.vue'
 

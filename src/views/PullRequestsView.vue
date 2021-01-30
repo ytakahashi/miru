@@ -20,8 +20,8 @@ import { Account } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import QueryOption from '@/components/QueryOption.vue'
 import RepositoryFilter from '@/components/RepositoryFilter.vue'
-import { inject } from '@/di/injector'
-import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, RepositorySettingUseCaseFactoryKey } from '@/di/types'
+import { inject } from '@/plugins/di/injector'
+import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, RepositorySettingUseCaseFactoryKey } from '@/plugins/di/types'
 import GitHubPullRequest from '@/views/pullrequests/GitHubPullRequest.vue'
 
 type RepositoryTuple = {

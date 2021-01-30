@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { shallowMount } from '@vue/test-utils'
-import { GitHubRepositoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
+import { GitHubRepositoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { Account, GitHubUrl, Issues, PullRequests, Release, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory } from '@/application/usecase/githubRepository'

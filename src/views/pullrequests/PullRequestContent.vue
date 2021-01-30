@@ -26,8 +26,8 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import { PullRequest } from '@/application/domain/model/github'
-import { inject } from '@/di/injector'
-import { WebBrowserUserCaseKey } from '@/di/types'
+import { inject } from '@/plugins/di/injector'
+import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 
 type PropsType = {
   pullRequest: PullRequest

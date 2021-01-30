@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-import SettingView from '../views/SettingView.vue'
+import SettingView from '@/views/SettingView.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -10,17 +10,17 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/issues',
     name: 'Issues',
-    component: () => import(/* webpackChunkName: "issues" */ '../views/IssuesView.vue')
+    component: () => import(/* webpackChunkName: "issues" */ '@/views/IssuesView.vue')
   },
   {
     path: '/pulls',
     name: 'PullRequests',
-    component: () => import(/* webpackChunkName: "pulls" */ '../views/PullRequestsView.vue')
+    component: () => import(/* webpackChunkName: "pulls" */ '@/views/PullRequestsView.vue')
   },
   {
     path: '/releases',
     name: 'Releases',
-    component: () => import(/* webpackChunkName: "releases" */ '../views/ReleasesView.vue')
+    component: () => import(/* webpackChunkName: "releases" */ '@/views/ReleasesView.vue')
   }
 ]
 
