@@ -1,6 +1,6 @@
 {
   "name": "miru",
-  "description": "GitHub Issue/Pull Request viewer",
+  "description": "GitHub Issue/Pull Request/Release viewer",
   "version": "0.2.0",
   "author": "ytakahashi",
   "dependencies": {
