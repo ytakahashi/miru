@@ -9,8 +9,8 @@ import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/application/usecase/accountSetting'
 import { RepositorySettingUseCase, RepositorySettingUseCaseFactory } from '@/application/usecase/repositorySetting'
-import AccountSetting from '@/components/AccountSetting.vue'
-import GitHubRepositories from '@/components/GitHubRepositories.vue'
+import AccountSetting from '@/views/settings/AccountSetting.vue'
+import GitHubRepositories from '@/views/settings/GitHubRepositories.vue'
 
 const url = new GitHubUrl('https://github.com', 'https://api.github.com/graphql')
 const account = new Account('name', 'https://github.com/ytakahashi', 'avatar', url, 'pat')

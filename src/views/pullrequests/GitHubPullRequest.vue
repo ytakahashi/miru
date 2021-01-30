@@ -2,24 +2,24 @@
   <div class="content-list">
     <div class="content-list-header">
       <span class="text-strong clickable" v-on:click="openRepositorySetting(repositorySetting)">{{ repositorySetting.displayName() }}</span>
-      <button type="button" class="app-input-button" v-on:click="getIssues()">
+      <button type="button" class="app-input-button" v-on:click="getPullRequests()">
         <i class="fas fa-sync-alt"></i>
       </button>
     </div>
 
-    <div v-if="issues">
-      <div class="text-tiny align-right">Last fetched: {{ issues.fetchedAtDate() }}</div>
-      <div v-for="issue in issues.results" :key="issue.url">
-        <IssueContent :issue="issue" />
+    <div v-if="pullRequests">
+      <div class="text-tiny align-right">Last fetched: {{ pullRequests.fetchedAtDate() }}</div>
+      <div v-for="pr in pullRequests.results" :key="pr.url">
+        <PullRequestContent :pullRequest="pr" />
       </div>
 
-      <div v-if="!issues.hasContents()" class="clickable" v-on:click="openIssueUrl(repositorySetting)">
-        There aren’t any open issues.
+      <div v-if="!pullRequests.hasContents()" class="clickable" v-on:click="openPullRequestUrl(repositorySetting)">
+        There aren’t any open pull requests.
       </div>
     </div>
 
     <div v-if="isFailed">
-      Failed to list issues of <span class="clickable" v-on:click="openIssueUrl(repositorySetting)">{{ repositorySetting.getUrl() }}</span>.<br />
+      Failed to list pull requests of <span class="clickable" v-on:click="openPullRequestUrl(repositorySetting)">{{ repositorySetting.getUrl() }}</span>.<br />
       The repository does not exist or not visible with provided pesonal access token.
     </div>
   </div>
@@ -27,13 +27,13 @@
 
 <script lang="ts">
 import { defineComponent, readonly, ref } from 'vue'
-import { Account, Issues, GitHubUrl } from '@/application/domain/model/github'
+import { Account, PullRequests, GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import IssueContent from '@/components/IssueContent.vue'
 import { inject } from '@/di/injector'
 import { WebBrowserUserCaseKey, GitHubRepositoryUseCaseFactoryKey } from '@/di/types'
-import { getters, mutations } from '@/store/issues'
+import { getters, mutations } from '@/store/pullRequests'
 import { getters as queryOption } from '@/store/queryOption'
+import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
 
 type PropsType = {
   account: Account;
@@ -41,9 +41,9 @@ type PropsType = {
 }
 
 export default defineComponent({
-  name: 'GitHubIssue',
+  name: 'GitHubPullRequest',
   components: {
-    IssueContent
+    PullRequestContent
   },
   props: {
     account: {
@@ -60,7 +60,7 @@ export default defineComponent({
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
     const openRepositorySetting = (val: RepositorySetting) => webBrowserUserCase.openUrl(val.getUrl())
-    const openIssueUrl = (val: RepositorySetting) => webBrowserUserCase.openUrl(`${val.getUrl()}/issues`)
+    const openPullRequestUrl = (val: RepositorySetting) => webBrowserUserCase.openUrl(`${val.getUrl()}/pulls`)
 
     const account = readonly(props.account)
     const githubUrl = account.githubUrl as GitHubUrl
@@ -68,32 +68,32 @@ export default defineComponent({
     const githubRepositoryUseCase = githubRepositoryUseCaseFactory.newGitHubRepositoryUseCase(githubUrl, accessToken)
 
     const isFailed = ref(false)
-    const onSuccess = (i: Issues) => {
+    const onSuccess = (prs: PullRequests) => {
       isFailed.value = false
-      mutations.replace(i)
+      mutations.replace(prs)
     }
     const onFailure = (e: Error) => {
       // TODO: log
       console.error(e)
       isFailed.value = true
     }
-    const getIssues = (): void => {
+    const getPullRequests = (): void => {
       const { repositorySetting } = props
-      const option = queryOption.issues()
-      githubRepositoryUseCase.getIssues(repositorySetting, option)
+      const option = queryOption.pullRequests()
+      githubRepositoryUseCase.getPullRequests(repositorySetting, option)
         .then(onSuccess)
         .catch(onFailure)
     }
 
     return {
-      getIssues,
+      getPullRequests,
       isFailed,
       openRepositorySetting,
-      openIssueUrl
+      openPullRequestUrl
     }
   },
   computed: {
-    issues (): Issues|undefined {
+    pullRequests (): PullRequests|undefined {
       return getters.of(this.repositorySetting)
     }
   }

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { shallowMount } from '@vue/test-utils'
-import PullRequestContent from '@/components/PullRequestContent.vue'
-import { WebBrowserUserCaseKey } from '@/di/types'
-import { PullRequest, Label } from '@/application/domain/model/github'
+import { Release } from '@/application/domain/model/github'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
+import { WebBrowserUserCaseKey } from '@/di/types'
+import ReleaseContent from '@/views/releases/ReleaseContent.vue'
 
 const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
 const openUrlMock = jest.fn()
@@ -16,96 +16,98 @@ MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 
 const author = 'ytakahashi'
-const title = 'issue title'
+const title = 'release title'
 const url = 'https://github.com/ytakahashi/miru'
-const label1 = new Label('label-1', 'a9ff6d')
-const label2 = new Label('label-2', '6d78ff')
-const pr = new PullRequest(
+const draftRelease = new Release(
   author,
   title,
   url,
   '2020-12-15T21:23:56Z',
   '2021-01-02T23:44:14Z',
-  123,
-  [label1, label2],
+  true,
+  false,
   2,
-  3,
-  12,
-  23,
-  4,
-  false
+  '1.0.0'
 )
 
-const draftPr = new PullRequest(
+const release = new Release(
   author,
   title,
   url,
   '2020-12-15T21:23:56Z',
   '2021-01-02T23:44:14Z',
-  123,
-  [label1, label2],
+  false,
+  false,
   2,
-  3,
-  12,
-  23,
-  4,
-  true
+  '1.0.0'
 )
 
-describe('IssueContent.vue', () => {
+describe('ReleaseContent.vue', () => {
   beforeEach(() => {
     openUrlMock.mockClear()
   })
 
-  it('renders pull request', async () => {
-    const wrapper = shallowMount(PullRequestContent, {
+  it('renders release (not draft)', async () => {
+    const wrapper = shallowMount(ReleaseContent, {
       global: {
         provide: {
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
       props: {
-        pullRequest: pr
+        release: release
       }
     })
 
-    expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
+    expect(wrapper.text()).toMatch(/ytakahashi published .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
-    expect(wrapper.find('span.draft-mark').exists()).toBe(false)
-    expect(wrapper.findAll('span.github-label')).toHaveLength(2)
   })
 
-  it('renders draft pull request', async () => {
-    const wrapper = shallowMount(PullRequestContent, {
+  it('renders draft release', async () => {
+    const wrapper = shallowMount(ReleaseContent, {
       global: {
         provide: {
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
       props: {
-        pullRequest: draftPr
+        release: draftRelease
       }
     })
 
-    expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
+    expect(wrapper.text()).toMatch(/ytakahashi drafted .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
-    expect(wrapper.find('span.draft-mark').exists()).toBe(true)
-    expect(wrapper.findAll('span.github-label')).toHaveLength(2)
   })
 
-  it('can open url', async () => {
-    const wrapper = shallowMount(PullRequestContent, {
+  it('can open release url', async () => {
+    const wrapper = shallowMount(ReleaseContent, {
       global: {
         provide: {
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
       props: {
-        pullRequest: pr
+        release: release
       }
     })
 
     await wrapper.find('div.content-box-open').trigger('click')
+    expect(openUrlMock).toHaveBeenCalledWith(url)
+  })
+
+  it('can open draft release url', async () => {
+    const wrapper = shallowMount(ReleaseContent, {
+      global: {
+        provide: {
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
+        }
+      },
+      props: {
+        release: draftRelease
+      }
+    })
+
+    await wrapper.find('div.content-box-release-draft').trigger('click')
     expect(openUrlMock).toHaveBeenCalledWith(url)
   })
 })

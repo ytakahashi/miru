@@ -3,8 +3,6 @@
 
 import { defineComponent, h } from 'vue'
 import { shallowMount } from '@vue/test-utils'
-import GitHubIssue from '@/components/GitHubIssue.vue'
-import IssuesView from '@/views/IssuesView.vue'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, RepositorySettingUseCaseFactoryKey } from '@/di/types'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
@@ -12,6 +10,8 @@ import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/application/usecase/accountSetting'
 import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting'
 import { RepositorySettingUseCase, RepositorySettingUseCaseFactory } from '@/application/usecase/repositorySetting'
+import IssuesView from '@/views/IssuesView.vue'
+import GitHubIssue from '@/views/issues/GitHubIssue.vue'
 
 const account = new Account('name', 'profile', 'avatar', jest.fn<GitHubUrl, []>()(), 'pat')
 

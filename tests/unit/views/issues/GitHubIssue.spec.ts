@@ -1,20 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { shallowMount } from '@vue/test-utils'
-import GitHubRelease from '@/components/GitHubRelease.vue'
-import ReleaseContent from '@/components/ReleaseContent.vue'
-import { GitHubRepositoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
-import { Account, GitHubUrl, Issues, PullRequests, Release, Releases } from '@/application/domain/model/github'
+import { Account, GitHubUrl, Issue, Issues, PullRequests, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory } from '@/application/usecase/githubRepository'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
+import { GitHubRepositoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
+import GitHubIssue from '@/views/issues/GitHubIssue.vue'
+import IssueContent from '@/views/issues/IssueContent.vue'
 
-const MockedGitHubRepositoryUseCase = jest.fn<GitHubRepositoryUseCase, [Releases]>()
-MockedGitHubRepositoryUseCase.mockImplementation((releases: Releases): GitHubRepositoryUseCase => {
+const MockedGitHubRepositoryUseCase = jest.fn<GitHubRepositoryUseCase, [Issues]>()
+MockedGitHubRepositoryUseCase.mockImplementation((issues: Issues): GitHubRepositoryUseCase => {
   return {
-    getIssues: async (): Promise<Issues> => jest.fn<Issues, []>()(),
+    getIssues: async (): Promise<Issues> => issues,
     getPullRequests: async (): Promise<PullRequests> => jest.fn<PullRequests, []>()(),
-    getReleases: async (): Promise<Releases> => releases
+    getReleases: async (): Promise<Releases> => jest.fn<Releases, []>()()
   }
 })
 const createMock = (func: () => GitHubRepositoryUseCase): GitHubRepositoryUseCaseFactory => {
@@ -35,17 +35,17 @@ const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 const account = new Account('name', 'profile', 'avatar', jest.fn<GitHubUrl, []>()(), 'pat')
 const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
 
-describe('GitHubRelease.vue', () => {
+describe('GitHubIssue.vue', () => {
   beforeEach(() => {
     openUrlMock.mockClear()
   })
 
-  it('renders when release does not exist', async () => {
-    const releases = new Releases(setting, [], 0)
-    const wrapper = shallowMount(GitHubRelease, {
+  it('renders when open issue does not exist', async () => {
+    const issues = new Issues(setting, [], 0)
+    const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(releases)),
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(issues)),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
@@ -59,38 +59,39 @@ describe('GitHubRelease.vue', () => {
     await wrapper.vm.$nextTick()
 
     expect(wrapper.text()).toContain('ytakahashi/miru')
-    expect(wrapper.text()).toContain('There aren’t any releases.')
-    expect(wrapper.text()).toMatch(/Last fetched: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)
-    expect(wrapper.findAllComponents(ReleaseContent)).toHaveLength(0)
+    expect(wrapper.text()).toContain('There aren’t any open issues.')
+    expect(wrapper.findAllComponents(IssueContent)).toHaveLength(0)
     expect(openUrlMock).not.toHaveBeenCalled()
   })
 
-  it('renders when 2 releases exist', async () => {
-    const release1 = new Release(
+  it('renders when 2 open issues exist', async () => {
+    const issue1 = new Issue(
       'author 1',
       'issue title 1',
       'issue url 1',
       '2020-12-15T21:23:56Z',
       '2021-01-02T23:44:14Z',
-      false,
-      false,
+      123,
+      [],
+      2,
       3
     )
-    const release2 = new Release(
+    const issue2 = new Issue(
       'author 2',
       'issue title 2',
       'issue url 2',
       '2020-12-15T21:23:56Z',
       '2021-01-02T23:44:14Z',
-      false,
-      false,
-      0
+      124,
+      [],
+      2,
+      3
     )
-    const releases = new Releases(setting, [release1, release2], 2)
-    const wrapper = shallowMount(GitHubRelease, {
+    const issues = new Issues(setting, [issue1, issue2], 2)
+    const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(releases)),
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(issues)),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
@@ -104,18 +105,17 @@ describe('GitHubRelease.vue', () => {
     await wrapper.vm.$nextTick()
 
     expect(wrapper.text()).toContain('ytakahashi/miru')
-    expect(wrapper.text()).toMatch(/Last fetched: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)
     expect(wrapper.text()).not.toContain('There aren’t any open issues.')
-    expect(wrapper.findAllComponents(ReleaseContent)).toHaveLength(2)
+    expect(wrapper.findAllComponents(IssueContent)).toHaveLength(2)
     expect(openUrlMock).not.toHaveBeenCalled()
   })
 
   it('opens repository url', async () => {
-    const releases = new Releases(setting, [], 0)
-    const wrapper = shallowMount(GitHubRelease, {
+    const issues = new Issues(setting, [], 0)
+    const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(releases)),
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(issues)),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
@@ -129,12 +129,12 @@ describe('GitHubRelease.vue', () => {
     expect(openUrlMock).toHaveBeenCalledWith(setting.getUrl())
   })
 
-  it('opens releases url', async () => {
-    const releases = new Releases(setting, [], 0)
-    const wrapper = shallowMount(GitHubRelease, {
+  it('opens issues url', async () => {
+    const issues = new Issues(setting, [], 0)
+    const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(releases)),
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(issues)),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
@@ -148,6 +148,6 @@ describe('GitHubRelease.vue', () => {
     await wrapper.find('button').trigger('click')
     await wrapper.vm.$nextTick()
     await wrapper.find('div.clickable').trigger('click')
-    expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi/miru/releases')
+    expect(openUrlMock).toHaveBeenCalledWith(`${setting.getUrl()}/issues`)
   })
 })

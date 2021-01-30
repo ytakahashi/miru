@@ -33,10 +33,10 @@
 import { defineComponent, onMounted, ref, watch, Ref } from 'vue'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
-import AccountSetting from '@/components/AccountSetting.vue'
 import ThemeSwitch from '@/components/ThemeSwitch.vue'
 import { inject } from '@/di/injector'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, GitHubAccountUseCaseFactoryKey } from '@/di/types'
+import AccountSetting from '@/views/settings/AccountSetting.vue'
 
 export default defineComponent({
   name: 'SettingView',

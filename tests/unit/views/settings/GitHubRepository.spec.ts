@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import GitHubRepository from '@/components/GitHubRepository.vue'
+import GitHubRepository from '@/views/settings/GitHubRepository.vue'
 import { WebBrowserUserCaseKey } from '@/di/types'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'

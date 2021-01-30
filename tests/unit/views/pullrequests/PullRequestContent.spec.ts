@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { shallowMount } from '@vue/test-utils'
-import IssueContent from '@/components/IssueContent.vue'
-import { WebBrowserUserCaseKey } from '@/di/types'
-import { Issue, Label } from '@/application/domain/model/github'
+import { PullRequest, Label } from '@/application/domain/model/github'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
+import { WebBrowserUserCaseKey } from '@/di/types'
+import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
 
 const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
 const openUrlMock = jest.fn()
@@ -20,7 +20,7 @@ const title = 'issue title'
 const url = 'https://github.com/ytakahashi/miru'
 const label1 = new Label('label-1', 'a9ff6d')
 const label2 = new Label('label-2', '6d78ff')
-const issue = new Issue(
+const pr = new PullRequest(
   author,
   title,
   url,
@@ -29,7 +29,27 @@ const issue = new Issue(
   123,
   [label1, label2],
   2,
-  3
+  3,
+  12,
+  23,
+  4,
+  false
+)
+
+const draftPr = new PullRequest(
+  author,
+  title,
+  url,
+  '2020-12-15T21:23:56Z',
+  '2021-01-02T23:44:14Z',
+  123,
+  [label1, label2],
+  2,
+  3,
+  12,
+  23,
+  4,
+  true
 )
 
 describe('IssueContent.vue', () => {
@@ -37,32 +57,51 @@ describe('IssueContent.vue', () => {
     openUrlMock.mockClear()
   })
 
-  it('renders issue', async () => {
-    const wrapper = shallowMount(IssueContent, {
+  it('renders pull request', async () => {
+    const wrapper = shallowMount(PullRequestContent, {
       global: {
         provide: {
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
       props: {
-        issue: issue
+        pullRequest: pr
       }
     })
 
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
+    expect(wrapper.find('span.draft-mark').exists()).toBe(false)
     expect(wrapper.findAll('span.github-label')).toHaveLength(2)
   })
 
-  it('can open url', async () => {
-    const wrapper = shallowMount(IssueContent, {
+  it('renders draft pull request', async () => {
+    const wrapper = shallowMount(PullRequestContent, {
       global: {
         provide: {
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
       props: {
-        issue: issue
+        pullRequest: draftPr
+      }
+    })
+
+    expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
+    expect(wrapper.text()).toContain(title)
+    expect(wrapper.find('span.draft-mark').exists()).toBe(true)
+    expect(wrapper.findAll('span.github-label')).toHaveLength(2)
+  })
+
+  it('can open url', async () => {
+    const wrapper = shallowMount(PullRequestContent, {
+      global: {
+        provide: {
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
+        }
+      },
+      props: {
+        pullRequest: pr
       }
     })
 

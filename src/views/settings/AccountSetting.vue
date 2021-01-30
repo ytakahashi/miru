@@ -29,9 +29,9 @@
 import { computed, defineComponent, onMounted, ref, watch, PropType, Ref, SetupContext } from 'vue'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import GitHubRepositories from '@/components/GitHubRepositories.vue'
 import { inject } from '@/di/injector'
 import { AccountSettingUseCaseFactoryKey, RepositorySettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/di/types'
+import GitHubRepositories from '@/views/settings/GitHubRepositories.vue'
 
 type PropsType = {
   setting: ApplicationSetting

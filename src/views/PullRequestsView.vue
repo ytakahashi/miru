@@ -18,11 +18,11 @@
 import { computed, defineComponent, onMounted, ref, Ref } from 'vue'
 import { Account } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import GitHubPullRequest from '@/components/GitHubPullRequest.vue'
 import QueryOption from '@/components/QueryOption.vue'
 import RepositoryFilter from '@/components/RepositoryFilter.vue'
 import { inject } from '@/di/injector'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, RepositorySettingUseCaseFactoryKey } from '@/di/types'
+import GitHubPullRequest from '@/views/pullrequests/GitHubPullRequest.vue'
 
 type RepositoryTuple = {
   account: Account;

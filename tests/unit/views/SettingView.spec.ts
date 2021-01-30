@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { shallowMount } from '@vue/test-utils'
-import AccountSetting from '@/components/AccountSetting.vue'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, GitHubAccountUseCaseFactoryKey } from '@/di/types'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
@@ -10,6 +9,7 @@ import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/applicati
 import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting'
 import { GitHubAccountUseCase, GitHubAccountUseCaseFactory } from '@/application/usecase/githubAccount'
 import SettingView from '@/views/SettingView.vue'
+import AccountSetting from '@/views/settings/AccountSetting.vue'
 
 const url = new GitHubUrl('https://github.com', 'https://api.github.com/graphql')
 const account = new Account('name', 'https://github.com/ytakahashi', 'avatar', url, 'pat')

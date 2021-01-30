@@ -27,7 +27,7 @@
 import { defineComponent, PropType } from 'vue'
 import draggable from 'vuedraggable'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import GitHubRepository from '@/components/GitHubRepository.vue'
+import GitHubRepository from '@/views/settings/GitHubRepository.vue'
 
 export default defineComponent({
   name: 'GitHubRepositories',
