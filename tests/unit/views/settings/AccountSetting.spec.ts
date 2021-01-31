@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import { defineComponent, h } from 'vue'
 import { shallowMount } from '@vue/test-utils'
 import { AccountSettingUseCaseFactoryKey, RepositorySettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { ApplicationSetting } from '@/application/domain/model/application'
@@ -62,6 +63,12 @@ const createRepositorySettingMock = (func: () => RepositorySettingUseCase): Repo
   }
 }
 
+const GitHubRepositoriesMock = defineComponent({
+  name: 'GitHubRepositories',
+  emits: ['edit'],
+  render: () => h('div', {}, '')
+})
+
 describe('AccountSetting.vue', () => {
   beforeEach(() => {
     addRepositorySettingMock.mockClear()
@@ -100,7 +107,7 @@ describe('AccountSetting.vue', () => {
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         },
         stubs: {
-          GitHubRepositories: true
+          GitHubRepositories: GitHubRepositoriesMock
         }
       },
       props: {
@@ -133,7 +140,7 @@ describe('AccountSetting.vue', () => {
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         },
         stubs: {
-          GitHubRepositories: true
+          GitHubRepositories: GitHubRepositoriesMock
         }
       },
       props: {

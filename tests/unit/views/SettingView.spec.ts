@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import { defineComponent, h } from 'vue'
 import { shallowMount } from '@vue/test-utils'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, GitHubAccountUseCaseFactoryKey } from '@/plugins/di/types'
 import { ApplicationSetting } from '@/application/domain/model/application'
@@ -59,6 +60,12 @@ MockedGitHubAccountUseCaseFactory.mockImplementation(() => {
   }
 })
 const mockedGitHubAccountUseCaseFactory = new MockedGitHubAccountUseCaseFactory()
+
+const AccountSettingMock = defineComponent({
+  name: 'AccountSetting',
+  emits: ['account-deleted'],
+  render: () => h('div', {}, '')
+})
 
 describe('SettingView.vue', () => {
   beforeEach(() => {
@@ -174,6 +181,9 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory
+        },
+        stubs: {
+          AccountSetting: AccountSettingMock
         }
       }
     })
