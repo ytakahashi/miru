@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import RepositoryFilter from '@/components/RepositoryFilter.vue'
-import { RepositorySetting } from '@/domain/model/githubRepository'
+import { RepositorySetting } from '@/application/domain/model/githubRepository'
 
 const setting = new RepositorySetting('https://github.com/foo/bar')
 

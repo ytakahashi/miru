@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
-import binder from './di/binder'
+import App from '@/App.vue'
+import router from '@/plugins/router'
+import binder from '@/plugins/di/binder'
 
 createApp(App)
   .use(router)

@@ -1,5 +1,5 @@
-import { PullRequests } from '@/domain/model/github'
-import { RepositorySetting } from '@/domain/model/githubRepository'
+import { PullRequests } from '@/application/domain/model/github'
+import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { getters, mutations } from '@/store/pullRequests'
 
 const MockedPullRequests = jest.fn<PullRequests, [RepositorySetting]>()
