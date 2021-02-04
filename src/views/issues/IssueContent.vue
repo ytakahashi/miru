@@ -1,17 +1,20 @@
 <template>
   <div class="content-box-open" v-on:click="openIssue()">
-    <div class="text-tiny align-left padding-bottom">
-      <i class="fas fa-clock"></i>
-      {{ issue.getUpdatedRelativeDate() }}
+    <div class="issue-information">
+      <span><i class="fas fa-clock"></i>{{ issue.getUpdatedRelativeDate() }}      </span>
+      <span>#{{ issue.issueNumber }}</span>
     </div>
-    <span class="text-strong">{{ issue.title }}</span>
-    <div class="text-small padding-bottom">
-      {{ issue.authorName }} opened {{ issue.getCreatedRelativeDate() }}
-      <span class="text-small">
-        <span class="info-icon"><i class="fas fa-comments"></i> {{ issue.numberOfComments }}</span>
-        <span class="info-icon"><i class="fas fa-user"></i> {{ issue.numberOfParticipants }}</span>
-      </span>
+
+    <span class="content-title">
+      {{ issue.title }}
+    </span>
+
+    <div class="issue-description">
+      <span>{{ issue.authorName }} opened {{ issue.getCreatedRelativeDate() }}</span>
+      <span><i class="fas fa-comments"></i>{{ issue.numberOfComments }}</span>
+      <span><i class="fas fa-user"></i>{{ issue.numberOfParticipants }}</span>
     </div>
+
     <span v-for="(label, index) in issue.labels" :key="index">
       <span class="github-label" v-bind:style="{ backgroundColor: `#${label.color}`}">{{ label.name }}</span>
     </span>
@@ -51,16 +54,15 @@ export default defineComponent({
 @use '@/assets/app';
 @use '@/assets/contents';
 
-@mixin content-box($text-color) {
-  margin-left: 7px;
-  color: $text-color;
-}
-
-.info-icon {
-  @include content-box(var(--main-font-color));
-}
-
 .github-label {
   @include app.badge-box();
+}
+
+.issue-information {
+  @include contents.base-content-description(space-between);
+}
+
+.issue-description {
+  @include contents.base-content-description(center);
 }
 </style>
