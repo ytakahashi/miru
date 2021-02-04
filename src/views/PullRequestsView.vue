@@ -12,6 +12,8 @@
   </div>
   <div v-if="!isAccountConfigured">Account is not configured.</div>
   <div v-if="isAccountConfigured && total === 0">No repositories are configured.</div>
+
+  <ScrollToTopButton />
 </template>
 
 <script lang="ts">
@@ -20,6 +22,7 @@ import { Account } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import QueryOption from '@/components/QueryOption.vue'
 import RepositoryFilter from '@/components/RepositoryFilter.vue'
+import ScrollToTopButton from '@/components/ScrollToTopButton.vue'
 import { inject } from '@/plugins/di/injector'
 import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, RepositorySettingUseCaseFactoryKey } from '@/plugins/di/types'
 import GitHubPullRequest from '@/views/pullrequests/GitHubPullRequest.vue'
@@ -34,7 +37,8 @@ export default defineComponent({
   components: {
     GitHubPullRequest,
     QueryOption,
-    RepositoryFilter
+    RepositoryFilter,
+    ScrollToTopButton
   },
   setup () {
     const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)
