@@ -1,10 +1,14 @@
 <template>
   <div :class="boxStyle" v-on:click="openRelease()">
-    <div class="text-tiny align-left padding-bottom">
-      <i class="fas fa-clock"></i>
-      {{ release.getUpdatedRelativeDate() }}
+    <div class="release-information">
+      <span><i class="fas fa-clock"></i>{{ release.getUpdatedRelativeDate() }}</span>
+      <span v-if="release.tagName"><i class="fas fa-tag"></i>{{ release.tagName }}</span>
     </div>
-    <span class="text-strong">{{ releaseTitle }}</span>
+
+    <span class="content-title">
+      {{ releaseTitle }}
+    </span>
+
     <div class="text-small padding-bottom">
       {{ releaseDescription }}
     </div>
@@ -65,5 +69,13 @@ export default defineComponent({
 
 .content-box-release-draft {
   @include contents.content-box(var(--color-draft-release));
+}
+
+.release-information {
+  @include contents.base-content-description(space-between);
+}
+
+.release-description {
+  @include contents.base-content-description(center);
 }
 </style>

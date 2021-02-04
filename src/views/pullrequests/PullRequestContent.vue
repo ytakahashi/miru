@@ -1,20 +1,24 @@
 <template>
   <div :class="boxStyle" v-on:click="openPullRequest()">
-    <div class="text-tiny align-left padding-bottom">
-      <i class="fas fa-clock"></i>
-      {{ pullRequest.getUpdatedRelativeDate() }}
-      <span class="draft-mark" v-if="pullRequest.isDraft">draft</span>
-    </div>
-    <span class="text-strong">{{ pullRequest.title }}</span>
-    <div class="text-small padding-bottom">
-      {{ pullRequest.authorName }} opened {{ pullRequest.getCreatedRelativeDate() }}
-      <span class="text-small">
-        <span class="info-icon"><i class="fas fa-comments"></i> {{ pullRequest.numberOfComments }}</span>
-        <span class="info-icon"><i class="fas fa-user"></i> {{ pullRequest.numberOfParticipants }}</span>
-        <span class="info-icon"><i class="fas fa-file"></i> {{ pullRequest.changedFiles }}</span>
-        <span class="additions">+{{ pullRequest.additions }}</span>
-        <span class="deletions">-{{ pullRequest.deletions }}</span>
+    <div class="pr-information">
+      <span>
+        <i class="fas fa-clock"></i>{{ pullRequest.getUpdatedRelativeDate() }}
+        <span class="draft-mark" v-if="pullRequest.isDraft">draft</span>
       </span>
+      <span>#{{ pullRequest.issueNumber }}</span>
+    </div>
+
+    <span class="content-title">
+      {{ pullRequest.title }}
+    </span>
+
+    <div class="pr-description">
+      <span>{{ pullRequest.authorName }} opened {{ pullRequest.getCreatedRelativeDate() }}</span>
+      <span><i class="fas fa-comments"></i>{{ pullRequest.numberOfComments }}</span>
+      <span><i class="fas fa-user"></i>{{ pullRequest.numberOfParticipants }}</span>
+      <span><i class="fas fa-file"></i> {{ pullRequest.changedFiles }}</span>
+      <span class="additions">+{{ pullRequest.additions }}</span>
+      <span class="deletions">-{{ pullRequest.deletions }}</span>
     </div>
 
     <span v-for="(label, index) in pullRequest.labels" :key="index">
@@ -71,24 +75,27 @@ export default defineComponent({
   background-color: var(--sub-background-color);
 }
 
-@mixin content-box($text-color) {
-  margin-left: 8px;
-  color: $text-color;
-}
-
-.info-icon {
-  @include content-box(var(--main-font-color));
-}
-
 .additions {
-  @include content-box(var(--color-diff-plus));
+  color: var(--color-diff-plus);
 }
 
-.deletions{
-  @include content-box(var(--color-diff-minus));
+.deletions {
+  color: var(--color-diff-minus);
 }
 
 .github-label {
   @include app.badge-box();
+}
+
+.github-label {
+  @include app.badge-box();
+}
+
+.pr-information {
+  @include contents.base-content-description(space-between);
+}
+
+.pr-description {
+  @include contents.base-content-description(center);
 }
 </style>

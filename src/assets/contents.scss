@@ -25,3 +25,27 @@
 .content-box-open {
   @include content-box(var(--color-open));
 }
+
+@mixin base-content-description($justify-content) {
+  display: flex;
+  justify-content: $justify-content;
+  font-size: 80%;
+  padding-top: 7px;
+  padding-bottom: 7px;
+
+  span {
+    margin-right: 5px;
+    i {
+      font-size: 90%;
+      margin-right: 3px;
+    }
+    > i {
+      margin-left: 4px;
+    }
+  }
+}
+
+.content-title {
+  font-size: 1.1em;
+  font-weight: bold;
+}
