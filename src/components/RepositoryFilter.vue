@@ -1,9 +1,9 @@
 <template>
-  <input v-model="filterText" :placeholder="placeholder" class="form-input" />
+  <input v-model="filterText" :placeholder="placeholder" class="form-input" ref="repositoryFilter" />
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onMounted, onUnmounted, ref, Ref } from 'vue'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 
 export default defineComponent({
@@ -20,7 +20,13 @@ export default defineComponent({
     const isVisible = (repository: RepositorySetting) =>
       repository.displayName().includes(filterText.value)
 
+    const repositoryFilter: Ref<HTMLElement|null> = ref(null)
+    const listener = () => (repositoryFilter.value?.focus())
+    onMounted(() => (window.addEventListener('keydown', listener)))
+    onUnmounted(() => (window.removeEventListener('keydown', listener)))
+
     return {
+      repositoryFilter,
       filterText,
       isVisible
     }

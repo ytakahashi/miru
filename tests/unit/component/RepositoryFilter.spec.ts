@@ -26,4 +26,20 @@ describe('RepositoryFilter.vue', () => {
       expect(wrapper.vm.isVisible(setting)).toBe(false)
     })
   })
+
+  it('focuses input on keydown', async () => {
+    const elem = document.createElement('div')
+    document.body.appendChild(elem)
+    const wrapper = mount(RepositoryFilter, {
+      attachTo: elem
+    })
+
+    const input = wrapper.find('input').element
+    expect(input).not.toBe(document.activeElement)
+
+    await wrapper.trigger('keydown', {
+      key: 'a'
+    })
+    expect(input).toBe(document.activeElement)
+  })
 })
