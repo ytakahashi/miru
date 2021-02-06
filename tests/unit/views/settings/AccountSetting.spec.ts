@@ -10,6 +10,7 @@ import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/application/usecase/accountSetting'
 import { RepositorySettingUseCase, RepositorySettingUseCaseFactory } from '@/application/usecase/repositorySetting'
+import ModalWindow from '@/components/ModalWindow.vue'
 import AccountSetting from '@/views/settings/AccountSetting.vue'
 import GitHubRepositories from '@/views/settings/GitHubRepositories.vue'
 
@@ -66,6 +67,12 @@ const createRepositorySettingMock = (func: () => RepositorySettingUseCase): Repo
 const GitHubRepositoriesMock = defineComponent({
   name: 'GitHubRepositories',
   emits: ['edit'],
+  render: () => h('div', {}, '')
+})
+
+const ModalWindowMock = defineComponent({
+  name: 'ModalWindow',
+  emits: ['cancel', 'ok'],
   render: () => h('div', {}, '')
 })
 
@@ -187,7 +194,7 @@ describe('AccountSetting.vue', () => {
     expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi')
   })
 
-  it('can delete account', async () => {
+  it('can open modal', async () => {
     const wrapper = shallowMount(AccountSetting, {
       global: {
         provide: {
@@ -200,7 +207,56 @@ describe('AccountSetting.vue', () => {
         setting: setting
       }
     })
+    expect(wrapper.findComponent(ModalWindow).exists()).toBe(false)
     await wrapper.find('i.fa-trash-alt').trigger('click')
+    expect(wrapper.findComponent(ModalWindow).exists()).toBe(true)
+  })
+
+  it('can close modal', async () => {
+    const wrapper = shallowMount(AccountSetting, {
+      global: {
+        provide: {
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase([])),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
+        },
+        stubs: {
+          ModalWindow: ModalWindowMock
+        }
+      },
+      props: {
+        setting: setting
+      }
+    })
+
+    await wrapper.find('i.fa-trash-alt').trigger('click')
+    const modal = wrapper.findComponent(ModalWindow)
+    await modal.vm.$emit('cancel')
+    expect(wrapper.findComponent(ModalWindow).exists()).toBe(false)
+    expect(deleteSettingMock).toHaveBeenCalledTimes(0)
+  })
+
+  it('can delete account', async () => {
+    const wrapper = shallowMount(AccountSetting, {
+      global: {
+        provide: {
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase([])),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
+        },
+        stubs: {
+          ModalWindow: ModalWindowMock
+        }
+      },
+      props: {
+        setting: setting
+      }
+    })
+
+    await wrapper.find('i.fa-trash-alt').trigger('click')
+    const modal = wrapper.findComponent(ModalWindow)
+    await modal.vm.$emit('ok')
+    expect(wrapper.findComponent(ModalWindow).exists()).toBe(false)
     expect(deleteSettingMock).toHaveBeenCalledTimes(1)
   })
 })

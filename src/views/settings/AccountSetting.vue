@@ -5,7 +5,7 @@
     </div>
     <div class="block">
       <span class="text-strong clickable" v-on:click="openProfile()">{{ profile }}</span>
-      <i class="fas fa-trash-alt clickable" v-on:click="deleteSetting()"></i>
+      <i class="fas fa-trash-alt clickable" v-on:click="showModal = true"></i>
     </div>
 
     <div class="block">
@@ -22,6 +22,15 @@
       <button v-on:click="addGitHubRepository()" class="app-font-button"><i class="fas fa-plus"></i></button>
       <p v-if="validationMessage !== ''">{{ validationMessage }} URL: {{ githubRepositorySettingInput }}</p>
     </div>
+
+    <ModalWindow v-if="showModal" @cancel="showModal = false" @ok="deleteSetting()">
+      <template v-slot:header>
+        Are you sure to remove this setting?
+      </template>
+      <template v-slot:body>
+        {{ profile }}
+      </template>
+    </ModalWindow>
   </div>
 </template>
 
@@ -29,6 +38,7 @@
 import { computed, defineComponent, onMounted, ref, watch, PropType, Ref, SetupContext } from 'vue'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import ModalWindow from '@/components/ModalWindow.vue'
 import { inject } from '@/plugins/di/injector'
 import { AccountSettingUseCaseFactoryKey, RepositorySettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import GitHubRepositories from '@/views/settings/GitHubRepositories.vue'
@@ -40,7 +50,8 @@ type PropsType = {
 export default defineComponent({
   name: 'AccountSetting',
   components: {
-    GitHubRepositories
+    GitHubRepositories,
+    ModalWindow
   },
   emits: {
     accountDeleted: null
@@ -93,6 +104,7 @@ export default defineComponent({
     }
 
     const deleteSetting = () => {
+      showModal.value = false
       accountSettingUseCase.deleteSetting()
       context.emit('accountDeleted', props.setting)
     }
@@ -107,6 +119,7 @@ export default defineComponent({
     watch(githubRepositorySettingInput, () => (validationMessage.value = ''))
     onMounted(() => (githubRepositorySettings.value = repositorySettingUseCase.getRepositorySettings()))
 
+    const showModal = ref(false)
     return {
       account,
       profile,
@@ -120,15 +133,17 @@ export default defineComponent({
       addGitHubRepository,
       deleteRepository,
       deleteSetting,
-      editHandler
+      editHandler,
+
+      showModal
     }
   }
 })
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/form.scss';
-@import '@/assets/app.scss';
+@use '@/assets/form';
+@use '@/assets/app';
 
 $card-border-radius: 7px;
 
