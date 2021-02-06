@@ -1,12 +1,11 @@
 'use strict'
 
 import { app, protocol, BrowserWindow } from 'electron'
+import Store from 'electron-store'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const Store = require('electron-store')
 Store.initRenderer()
 
 // Scheme must be registered before the app is ready
