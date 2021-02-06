@@ -55,3 +55,16 @@
     text-align: center;
   }
 }
+
+@mixin base-button($border-radius) {
+  background-color: var(--main-background-color);
+  border: solid 1px var(--border-color);
+  border-radius: $border-radius;
+  color: var(--main-text-color);
+  cursor: pointer;
+  outline: none;
+
+  &:hover {
+    background-color: var(--sub-background-color);
+  }
+}
