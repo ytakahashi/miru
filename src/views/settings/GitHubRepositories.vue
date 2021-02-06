@@ -14,7 +14,7 @@
   >
     <template #item="{ element }">
       <div>
-        <i class="fas fa-times delete-button" v-if="editing" v-on:click="deleteRepository(element)"></i>
+        <i class="fas fa-times delete-button" v-if="editing" v-on:click="emitDelete(element)"></i>
         <span>
           <GitHubRepository :editing="editing" :repositorySetting="element" />
         </span>
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, SetupContext, PropType } from 'vue'
 import draggable from 'vuedraggable'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import GitHubRepository from '@/views/settings/GitHubRepository.vue'
@@ -46,12 +46,13 @@ export default defineComponent({
       required: true
     }
   },
-  methods: {
-    emitEdit (editing: boolean): void {
-      this.$emit('edit', editing)
-    },
-    deleteRepository (repositorySetting: RepositorySetting): void {
-      this.$emit('deleteRepository', repositorySetting)
+  setup (_, context: SetupContext) {
+    const emitDelete = (repository: RepositorySetting) => context.emit('deleteRepository', repository)
+    const emitEdit = (editing: boolean) => context.emit('edit', editing)
+
+    return {
+      emitDelete,
+      emitEdit
     }
   }
 })
