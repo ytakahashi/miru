@@ -163,6 +163,11 @@ describe('AccountSetting.vue', () => {
     const urlInput = wrapper.find('input')
     const addButton = wrapper.find('button')
 
+    // click without input
+    addButton.trigger('click')
+    await wrapper.vm.$nextTick()
+    expect(wrapper.text()).toContain('GitHub repository URL is not specified.')
+
     // set invalid input
     await urlInput.setValue('foo')
     addButton.trigger('click')

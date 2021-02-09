@@ -127,7 +127,7 @@ describe('SettingView.vue', () => {
     expect(wrapper.find('div.input-form-block').exists()).toBe(false)
 
     // When: click add button
-    await wrapper.find('button.app-font-button').trigger('click')
+    await wrapper.find('button.open-form-button').trigger('click')
     await wrapper.vm.$nextTick()
 
     // Then: shows input menu
@@ -152,7 +152,7 @@ describe('SettingView.vue', () => {
     await wrapper.vm.$nextTick()
     expect(wrapper.findAllComponents(AccountSetting)).toHaveLength(0)
     expect(wrapper.find('div.input-form-block').exists()).toBe(false)
-    await wrapper.find('button.app-font-button').trigger('click')
+    await wrapper.find('button.open-form-button').trigger('click')
     await wrapper.vm.$nextTick()
     expect(wrapper.find('div.input-form-block').exists()).toBe(true)
 
@@ -211,7 +211,7 @@ describe('SettingView.vue', () => {
       }
     })
 
-    await wrapper.find('button.app-font-button').trigger('click')
+    await wrapper.find('button.open-form-button').trigger('click')
     await wrapper.vm.$nextTick()
 
     await wrapper.find('input#pat-input').setValue('foo')
@@ -239,7 +239,7 @@ describe('SettingView.vue', () => {
       }
     })
 
-    await wrapper.find('button.app-font-button').trigger('click')
+    await wrapper.find('button.open-form-button').trigger('click')
     await wrapper.vm.$nextTick()
 
     expect(wrapper.find('i.fa-eye').exists()).toBe(true)
