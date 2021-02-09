@@ -25,11 +25,11 @@ const issues1 = new MockedIssues(setting1)
 const issues2 = new MockedIssues(setting2)
 const issues3 = new MockedIssues(setting3)
 
-beforeAll(() => {
+beforeEach(() => {
   mutations.add([issues1, issues2, issues3])
 })
 
-afterAll(() => {
+afterEach(() => {
   mutations.clear()
 })
 
@@ -49,6 +49,15 @@ describe('issue store', () => {
       const actual = getters.of(setting1)
       expect(actual).not.toStrictEqual(issues1)
       expect(actual).toStrictEqual(newIssues1)
+    })
+
+    it('removes issue', () => {
+      let actual1 = getters.of(setting1)
+      expect(actual1).toStrictEqual(issues1)
+
+      mutations.remove(setting1)
+      actual1 = getters.of(setting1)
+      expect(actual1).not.toBeDefined()
     })
   })
 })

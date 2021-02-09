@@ -21,15 +21,15 @@ const setting1 = new RepositorySetting('https://github.com/foo/test1')
 const setting2 = new RepositorySetting('https://github.com/foo/test2')
 const setting3 = new RepositorySetting('https://github.com/foo/test3')
 
-const issues1 = new MockedReleases(setting1)
-const issues2 = new MockedReleases(setting2)
-const issues3 = new MockedReleases(setting3)
+const release1 = new MockedReleases(setting1)
+const release2 = new MockedReleases(setting2)
+const release3 = new MockedReleases(setting3)
 
-beforeAll(() => {
-  mutations.add([issues1, issues2, issues3])
+beforeEach(() => {
+  mutations.add([release1, release2, release3])
 })
 
-afterAll(() => {
+afterEach(() => {
   mutations.clear()
 })
 
@@ -37,7 +37,7 @@ describe('releases store', () => {
   describe('getters', () => {
     it('returns releases', () => {
       const actual = getters.of(setting1)
-      expect(actual).toStrictEqual(issues1)
+      expect(actual).toStrictEqual(release1)
     })
   })
 
@@ -47,8 +47,17 @@ describe('releases store', () => {
       mutations.replace(newReleases1)
 
       const actual = getters.of(setting1)
-      expect(actual).not.toStrictEqual(issues1)
+      expect(actual).not.toStrictEqual(release1)
       expect(actual).toStrictEqual(newReleases1)
+    })
+
+    it('removes release', () => {
+      let actual1 = getters.of(setting1)
+      expect(actual1).toStrictEqual(release1)
+
+      mutations.remove(setting1)
+      actual1 = getters.of(setting1)
+      expect(actual1).not.toBeDefined()
     })
   })
 })

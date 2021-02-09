@@ -8,7 +8,10 @@
     </div>
 
     <div v-if="issues">
-      <div class="text-tiny align-right">Last fetched: {{ issues.fetchedAtDate() }}</div>
+      <div class="issue-list-description">
+        <button class="clear-button" v-on:click="clearIssues()">clear</button>
+        <span>Last fetched: {{ issues.fetchedAtDate() }}</span>
+      </div>
       <div v-for="issue in issues.results" :key="issue.url">
         <IssueContent :issue="issue" />
       </div>
@@ -26,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, readonly, ref } from 'vue'
+import { computed, defineComponent, readonly, ref } from 'vue'
 import { Account, Issues, GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { inject } from '@/plugins/di/injector'
@@ -68,10 +71,6 @@ export default defineComponent({
     const githubRepositoryUseCase = githubRepositoryUseCaseFactory.newGitHubRepositoryUseCase(githubUrl, accessToken)
 
     const isFailed = ref(false)
-    const onSuccess = (i: Issues) => {
-      isFailed.value = false
-      mutations.replace(i)
-    }
     const onFailure = (e: Error) => {
       // TODO: log
       console.error(e)
@@ -81,27 +80,36 @@ export default defineComponent({
       const { repositorySetting } = props
       const option = queryOption.issues()
       githubRepositoryUseCase.getIssues(repositorySetting, option)
-        .then(onSuccess)
+        .then((i: Issues) => mutations.replace(i))
+        .then(() => (isFailed.value = false))
         .catch(onFailure)
     }
+    const clearIssues = (): void => mutations.remove(props.repositorySetting)
+    const issues = computed(() => getters.of(props.repositorySetting))
 
     return {
+      clearIssues,
       getIssues,
       isFailed,
       openRepositorySetting,
-      openIssueUrl
-    }
-  },
-  computed: {
-    issues (): Issues|undefined {
-      return getters.of(this.repositorySetting)
+      openIssueUrl,
+      issues
     }
   }
 })
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/app.scss';
-@import '@/assets/contents.scss';
-@import '@/assets/form.scss';
+@use '@/assets/app';
+@use '@/assets/contents';
+@use '@/assets/form';
+
+.issue-list-description {
+  @include contents.base-content-description(space-between);
+}
+
+.clear-button {
+  @include app.base-button(2px);
+  font-size: 90%;
+}
 </style>

@@ -17,6 +17,12 @@ export const mutations = {
   clear (): void {
     store.splice(0)
   },
+  remove (setting: RepositorySetting): void {
+    const url = setting.getUrl()
+    const f = store.filter(s => !s.belongsTo(url))
+    store.splice(0)
+    store.push(...f)
+  },
   replace (issues: Issues): void {
     const url = issues.repositoryUrl
     const f = store.filter(s => !s.belongsTo(url))

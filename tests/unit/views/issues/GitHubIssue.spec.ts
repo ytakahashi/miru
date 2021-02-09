@@ -9,10 +9,10 @@ import { GitHubRepositoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plug
 import GitHubIssue from '@/views/issues/GitHubIssue.vue'
 import IssueContent from '@/views/issues/IssueContent.vue'
 
-const MockedGitHubRepositoryUseCase = jest.fn<GitHubRepositoryUseCase, [Issues]>()
-MockedGitHubRepositoryUseCase.mockImplementation((issues: Issues): GitHubRepositoryUseCase => {
+const MockedGitHubRepositoryUseCase = jest.fn<GitHubRepositoryUseCase, [() => Issues]>()
+MockedGitHubRepositoryUseCase.mockImplementation((cb: () => Issues): GitHubRepositoryUseCase => {
   return {
-    getIssues: async (): Promise<Issues> => issues,
+    getIssues: async (): Promise<Issues> => cb(),
     getPullRequests: async (): Promise<PullRequests> => jest.fn<PullRequests, []>()(),
     getReleases: async (): Promise<Releases> => jest.fn<Releases, []>()()
   }
@@ -45,7 +45,7 @@ describe('GitHubIssue.vue', () => {
     const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(issues)),
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => issues)),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
@@ -55,9 +55,12 @@ describe('GitHubIssue.vue', () => {
         option: {}
       }
     })
-    await wrapper.find('button').trigger('click')
+
+    // when: click button
+    await wrapper.find('.app-input-button').trigger('click')
     await wrapper.vm.$nextTick()
 
+    // then: message appears
     expect(wrapper.text()).toContain('ytakahashi/miru')
     expect(wrapper.text()).toContain('There aren’t any open issues.')
     expect(wrapper.findAllComponents(IssueContent)).toHaveLength(0)
@@ -91,7 +94,7 @@ describe('GitHubIssue.vue', () => {
     const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(issues)),
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => issues)),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
@@ -101,12 +104,24 @@ describe('GitHubIssue.vue', () => {
         option: {}
       }
     })
-    await wrapper.find('button').trigger('click')
+
+    // when: click button
+    await wrapper.find('.app-input-button').trigger('click')
     await wrapper.vm.$nextTick()
 
+    // then: issues appears
     expect(wrapper.text()).toContain('ytakahashi/miru')
     expect(wrapper.text()).not.toContain('There aren’t any open issues.')
+    expect(wrapper.find('.clear-button').exists()).toBe(true)
     expect(wrapper.findAllComponents(IssueContent)).toHaveLength(2)
+    expect(openUrlMock).not.toHaveBeenCalled()
+
+    // when: click clear button
+    await wrapper.find('.clear-button').trigger('click')
+    await wrapper.vm.$nextTick()
+
+    // then: issues disappears
+    expect(wrapper.findAllComponents(IssueContent)).toHaveLength(0)
     expect(openUrlMock).not.toHaveBeenCalled()
   })
 
@@ -115,7 +130,7 @@ describe('GitHubIssue.vue', () => {
     const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(issues)),
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => issues)),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
@@ -125,7 +140,11 @@ describe('GitHubIssue.vue', () => {
         option: {}
       }
     })
+
+    // when: click header text
     await wrapper.find('span.text-strong').trigger('click')
+
+    // then: repository url is opened
     expect(openUrlMock).toHaveBeenCalledWith(setting.getUrl())
   })
 
@@ -134,7 +153,7 @@ describe('GitHubIssue.vue', () => {
     const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(issues)),
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => issues)),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
@@ -145,9 +164,12 @@ describe('GitHubIssue.vue', () => {
       }
     })
 
-    await wrapper.find('button').trigger('click')
+    // when: click button
+    await wrapper.find('.app-input-button').trigger('click')
     await wrapper.vm.$nextTick()
+
+    // then: issue appears and issues url is opened
     await wrapper.find('div.clickable').trigger('click')
-    expect(openUrlMock).toHaveBeenCalledWith(`${setting.getUrl()}/issues`)
+    expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi/miru/issues')
   })
 })

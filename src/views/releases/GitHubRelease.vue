@@ -8,7 +8,10 @@
     </div>
 
     <div v-if="releases">
-      <div class="text-tiny align-right">Last fetched: {{ releases.fetchedAtDate() }}</div>
+      <div class="release-list-description">
+        <button class="clear-button" v-on:click="clearReleases()">clear</button>
+        <span>Last fetched: {{ releases.fetchedAtDate() }}</span>
+      </div>
       <div v-for="release in releases.results" :key="release.url">
         <ReleaseContent :release="release" />
       </div>
@@ -68,10 +71,6 @@ export default defineComponent({
     const githubRepositoryUseCase = githubRepositoryUseCaseFactory.newGitHubRepositoryUseCase(githubUrl, accessToken)
 
     const isFailed = ref(false)
-    const onSuccess = (v: Releases) => {
-      isFailed.value = false
-      mutations.replace(v)
-    }
     const onFailure = (e: Error) => {
       // TODO: log
       console.error(e)
@@ -81,12 +80,15 @@ export default defineComponent({
       const { repositorySetting } = props
       const option = queryOption.releases()
       githubRepositoryUseCase.getReleases(repositorySetting, option)
-        .then(onSuccess)
+        .then((r: Releases) => mutations.replace(r))
+        .then(() => (isFailed.value = false))
         .catch(onFailure)
     }
+    const clearReleases = (): void => mutations.remove(props.repositorySetting)
     const releases = computed(() => getters.of(props.repositorySetting))
 
     return {
+      clearReleases,
       getReleases,
       isFailed,
       openRepositorySetting,
@@ -98,7 +100,16 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@use '@/assets/app.scss';
-@use '@/assets/contents.scss';
-@use '@/assets/form.scss';
+@use '@/assets/app';
+@use '@/assets/contents';
+@use '@/assets/form';
+
+.release-list-description {
+  @include contents.base-content-description(space-between);
+}
+
+.clear-button {
+  @include app.base-button(2px);
+  font-size: 90%;
+}
 </style>
