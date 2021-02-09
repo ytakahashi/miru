@@ -8,7 +8,10 @@
     </div>
 
     <div v-if="pullRequests">
-      <div class="text-tiny align-right">Last fetched: {{ pullRequests.fetchedAtDate() }}</div>
+      <div class="pr-list-description">
+        <button class="clear-button" v-on:click="clearPRs()">clear</button>
+        <span>Last fetched: {{ pullRequests.fetchedAtDate() }}</span>
+      </div>
       <div v-for="pr in pullRequests.results" :key="pr.url">
         <PullRequestContent :pullRequest="pr" />
       </div>
@@ -26,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, readonly, ref } from 'vue'
+import { computed, defineComponent, readonly, ref } from 'vue'
 import { Account, PullRequests, GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { inject } from '@/plugins/di/injector'
@@ -68,10 +71,6 @@ export default defineComponent({
     const githubRepositoryUseCase = githubRepositoryUseCaseFactory.newGitHubRepositoryUseCase(githubUrl, accessToken)
 
     const isFailed = ref(false)
-    const onSuccess = (prs: PullRequests) => {
-      isFailed.value = false
-      mutations.replace(prs)
-    }
     const onFailure = (e: Error) => {
       // TODO: log
       console.error(e)
@@ -81,27 +80,36 @@ export default defineComponent({
       const { repositorySetting } = props
       const option = queryOption.pullRequests()
       githubRepositoryUseCase.getPullRequests(repositorySetting, option)
-        .then(onSuccess)
+        .then((prs: PullRequests) => mutations.replace(prs))
+        .then(() => (isFailed.value = false))
         .catch(onFailure)
     }
+    const clearPRs = (): void => mutations.remove(props.repositorySetting)
+    const pullRequests = computed(() => getters.of(props.repositorySetting))
 
     return {
+      clearPRs,
       getPullRequests,
       isFailed,
       openRepositorySetting,
-      openPullRequestUrl
-    }
-  },
-  computed: {
-    pullRequests (): PullRequests|undefined {
-      return getters.of(this.repositorySetting)
+      openPullRequestUrl,
+      pullRequests
     }
   }
 })
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/app.scss';
-@import '@/assets/contents.scss';
-@import '@/assets/form.scss';
+@use '@/assets/app';
+@use '@/assets/contents';
+@use '@/assets/form';
+
+.pr-list-description {
+  @include contents.base-content-description(space-between);
+}
+
+.clear-button {
+  @include app.base-button(2px);
+  font-size: 90%;
+}
 </style>

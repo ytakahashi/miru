@@ -1,7 +1,7 @@
 <template>
   <div class="content-box-open" v-on:click="openIssue()">
     <div class="issue-information">
-      <span><i class="fas fa-clock"></i>{{ issue.getUpdatedRelativeDate() }}      </span>
+      <span><i class="fas fa-clock"></i>{{ issue.getUpdatedRelativeDate() }}</span>
       <span>#{{ issue.issueNumber }}</span>
     </div>
 

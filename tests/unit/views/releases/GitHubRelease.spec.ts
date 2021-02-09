@@ -55,9 +55,12 @@ describe('GitHubRelease.vue', () => {
         option: {}
       }
     })
+
+    // when: click button
     await wrapper.find('button').trigger('click')
     await wrapper.vm.$nextTick()
 
+    // then: message appears
     expect(wrapper.text()).toContain('ytakahashi/miru')
     expect(wrapper.text()).toContain('There aren’t any releases.')
     expect(wrapper.text()).toMatch(/Last fetched: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)
@@ -100,13 +103,25 @@ describe('GitHubRelease.vue', () => {
         option: {}
       }
     })
+
+    // when: click button
     await wrapper.find('button').trigger('click')
     await wrapper.vm.$nextTick()
 
+    // then: releases appear
     expect(wrapper.text()).toContain('ytakahashi/miru')
     expect(wrapper.text()).toMatch(/Last fetched: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)
     expect(wrapper.text()).not.toContain('There aren’t any open issues.')
+    expect(wrapper.find('.clear-button').exists()).toBe(true)
     expect(wrapper.findAllComponents(ReleaseContent)).toHaveLength(2)
+    expect(openUrlMock).not.toHaveBeenCalled()
+
+    // when: click clear button
+    await wrapper.find('.clear-button').trigger('click')
+    await wrapper.vm.$nextTick()
+
+    // then: releases disappears
+    expect(wrapper.findAllComponents(ReleaseContent)).toHaveLength(0)
     expect(openUrlMock).not.toHaveBeenCalled()
   })
 
@@ -125,7 +140,11 @@ describe('GitHubRelease.vue', () => {
         option: {}
       }
     })
+
+    // when: click header text
     await wrapper.find('span.text-strong').trigger('click')
+
+    // then: repository url is opened
     expect(openUrlMock).toHaveBeenCalledWith(setting.getUrl())
   })
 
@@ -145,8 +164,11 @@ describe('GitHubRelease.vue', () => {
       }
     })
 
-    await wrapper.find('button').trigger('click')
+    // when: click button
+    await wrapper.find('.app-input-button').trigger('click')
     await wrapper.vm.$nextTick()
+
+    // then: release appears and release url is opened
     await wrapper.find('div.clickable').trigger('click')
     expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi/miru/releases')
   })

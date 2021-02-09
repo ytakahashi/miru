@@ -25,11 +25,11 @@ const pr1 = new MockedPullRequests(setting1)
 const pr2 = new MockedPullRequests(setting2)
 const pr3 = new MockedPullRequests(setting3)
 
-beforeAll(() => {
+beforeEach(() => {
   mutations.add([pr1, pr2, pr3])
 })
 
-afterAll(() => {
+afterEach(() => {
   mutations.clear()
 })
 
@@ -49,6 +49,15 @@ describe('PullRequests store', () => {
       const actual = getters.of(setting1)
       expect(actual).not.toStrictEqual(pr1)
       expect(actual).toStrictEqual(newPR1)
+    })
+
+    it('removes PR', () => {
+      let actual1 = getters.of(setting1)
+      expect(actual1).toStrictEqual(pr1)
+
+      mutations.remove(setting1)
+      actual1 = getters.of(setting1)
+      expect(actual1).not.toBeDefined()
     })
   })
 })
