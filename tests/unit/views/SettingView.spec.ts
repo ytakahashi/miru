@@ -199,6 +199,29 @@ describe('SettingView.vue', () => {
     expect(removeSettingMock).toHaveBeenCalledTimes(1)
   })
 
+  it('shows error message when add account button is clicked without input', async () => {
+    const mockedApplicationSettingUseCase = new MockedApplicationSettingUseCase([])
+    const wrapper = shallowMount(SettingView, {
+      global: {
+        provide: {
+          [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
+          [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
+          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory
+        }
+      }
+    })
+
+    await wrapper.find('button.open-form-button').trigger('click')
+    await wrapper.vm.$nextTick()
+
+    // When: add account button is clicked
+    await wrapper.find('button.add-account-button').trigger('click')
+    await wrapper.vm.$nextTick()
+
+    // Then: error message appears
+    expect(wrapper.text()).toContain('Access token is required.')
+  })
+
   it('shows error message for invalid url', async () => {
     const mockedApplicationSettingUseCase = new MockedApplicationSettingUseCase([])
     const wrapper = shallowMount(SettingView, {
@@ -224,7 +247,7 @@ describe('SettingView.vue', () => {
     await wrapper.vm.$nextTick()
 
     // Then: error message appears
-    expect(wrapper.text()).toContain('invalid url: bar')
+    expect(wrapper.text()).toContain('Invalid GitHub URL: bar')
   })
 
   it('shows/hides personal access token input', async () => {

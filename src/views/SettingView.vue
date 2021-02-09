@@ -12,7 +12,7 @@
     <div class="input-form-block">
       <label class="input-label" for="url-input">GitHub URL (default: https://github.com)</label>
       <input class="setting-input" v-model="githubUrlInput" id="url-input">
-      <div class="input-invalid" v-if="isInvalidUrl">invalid url: {{ githubUrlInput }}</div>
+      <div class="input-invalid" v-if="isInvalidUrl">{{ errorMessage }}</div>
     </div>
     <div class="input-form-block">
       <label class="input-label" for="pat-input">GitHub Personal Access Token
@@ -20,8 +20,8 @@
         <i v-if="isPatVisible" class="fas fa-eye-slash" v-on:click="viewPersonalAccessToken()"></i>
       </label>
       <input class="setting-input" :type="isPatVisible ? 'text' : 'password'" v-model="personalAccessTokenInput" id="pat-input">
-      <div class="input-invalid" v-if="isInvalidAccessToken">invalid access token: {{ personalAccessTokenInput }}</div>
-      <div class="input-invalid" v-if="isDuplicated">duplicated personal access token: {{ personalAccessTokenInput }}</div>
+      <div class="input-invalid" v-if="isInvalidAccessToken">{{ errorMessage }}</div>
+      <div class="input-invalid" v-if="isDuplicated">{{ errorMessage }}</div>
     </div>
     <button v-on:click="addAccount()" class="add-account-button">Add Account</button>
     <button v-on:click="isEditing = !isEditing" class="add-account-button">Cancel</button>
@@ -58,32 +58,38 @@ export default defineComponent({
     const isInvalidUrl = ref(false)
     const isEditing = ref(false)
     const isPatVisible = ref(false)
+    const errorMessage = ref('')
 
     const onSuccess = (resolved: Account) => {
       const setting = new ApplicationSetting(resolved.getId())
       if (applicationSettingUseCase.hasSetting(setting)) {
         isDuplicated.value = true
+        errorMessage.value = `Account ${resolved.userName} is already configured.`
       } else {
         applicationSettingUseCase.addSetting(setting)
         const accountSettingUseCase = accountSettingUseCaseFactory.newAccountSettingUseCase(setting)
         accountSettingUseCase.setAccount(resolved)
         accountSettings.value.push(setting)
         isEditing.value = false
+        errorMessage.value = ''
       }
     }
     const onFailure = (err: Error) => {
       // TODO: log
       console.error(err)
       isInvalidAccessToken.value = true
+      errorMessage.value = `Failed to resolve access token: ${personalAccessTokenInput.value}`
     }
     const addAccount = () => {
       if (!personalAccessTokenInput.value) {
         isInvalidAccessToken.value = true
+        errorMessage.value = 'Access token is required.'
         return
       }
       const url = GitHubUrl.from(githubUrlInput.value)
       if (url === undefined) {
         isInvalidUrl.value = true
+        errorMessage.value = `Invalid GitHub URL: ${githubUrlInput.value}`
         return
       }
       const github = githubAccountUseCaseFactory.newGitHubAccountUseCase(url)
@@ -131,6 +137,7 @@ export default defineComponent({
       isInvalidUrl,
       isEditing,
       isPatVisible,
+      errorMessage,
 
       addAccount,
       deleteAccount,
