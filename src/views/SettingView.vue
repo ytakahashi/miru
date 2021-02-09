@@ -6,24 +6,25 @@
     />
   </div>
 
-  <button v-if="!isEditing" v-on:click="isEditing = !isEditing" class="add-button app-font-button"><i class="fas fa-plus"></i></button>
+  <button v-if="!isEditing" v-on:click="isEditing = !isEditing" class="open-form-button"><i class="fas fa-plus"></i></button>
 
   <div v-if="isEditing">
     <div class="input-form-block">
       <label class="input-label" for="url-input">GitHub URL (default: https://github.com)</label>
-      <input class="app-input-form setting-input" v-model="githubUrlInput" id="url-input">
-      <div class="input-invalid" v-if="isInvalidUrl">invalid url: {{ githubUrlInput }}</div>
+      <input class="setting-input" v-model="githubUrlInput" id="url-input">
+      <div class="input-invalid" v-if="isInvalidUrl">{{ errorMessage }}</div>
     </div>
     <div class="input-form-block">
       <label class="input-label" for="pat-input">GitHub Personal Access Token
         <i v-if="!isPatVisible" class="fas fa-eye" v-on:click="viewPersonalAccessToken()"></i>
         <i v-if="isPatVisible" class="fas fa-eye-slash" v-on:click="viewPersonalAccessToken()"></i>
       </label>
-      <input class="app-input-form setting-input" :type="isPatVisible ? 'text' : 'password'" v-model="personalAccessTokenInput" id="pat-input">
-      <div class="input-invalid" v-if="isInvalidAccessToken">invalid access token: {{ personalAccessTokenInput }}</div>
-      <div class="input-invalid" v-if="isDuplicated">duplicated personal access token: {{ personalAccessTokenInput }}</div>
+      <input class="setting-input" :type="isPatVisible ? 'text' : 'password'" v-model="personalAccessTokenInput" id="pat-input">
+      <div class="input-invalid" v-if="isInvalidAccessToken">{{ errorMessage }}</div>
+      <div class="input-invalid" v-if="isDuplicated">{{ errorMessage }}</div>
     </div>
     <button v-on:click="addAccount()" class="add-account-button">Add Account</button>
+    <button v-on:click="isEditing = !isEditing" class="add-account-button">Cancel</button>
   </div>
 
   <ThemeSwitch />
@@ -57,32 +58,38 @@ export default defineComponent({
     const isInvalidUrl = ref(false)
     const isEditing = ref(false)
     const isPatVisible = ref(false)
+    const errorMessage = ref('')
 
     const onSuccess = (resolved: Account) => {
       const setting = new ApplicationSetting(resolved.getId())
       if (applicationSettingUseCase.hasSetting(setting)) {
         isDuplicated.value = true
+        errorMessage.value = `Account ${resolved.userName} is already configured.`
       } else {
         applicationSettingUseCase.addSetting(setting)
         const accountSettingUseCase = accountSettingUseCaseFactory.newAccountSettingUseCase(setting)
         accountSettingUseCase.setAccount(resolved)
         accountSettings.value.push(setting)
+        isEditing.value = false
+        errorMessage.value = ''
       }
-      isEditing.value = false
     }
     const onFailure = (err: Error) => {
       // TODO: log
       console.error(err)
       isInvalidAccessToken.value = true
+      errorMessage.value = `Failed to resolve access token: ${personalAccessTokenInput.value}`
     }
     const addAccount = () => {
       if (!personalAccessTokenInput.value) {
         isInvalidAccessToken.value = true
+        errorMessage.value = 'Access token is required.'
         return
       }
       const url = GitHubUrl.from(githubUrlInput.value)
       if (url === undefined) {
         isInvalidUrl.value = true
+        errorMessage.value = `Invalid GitHub URL: ${githubUrlInput.value}`
         return
       }
       const github = githubAccountUseCaseFactory.newGitHubAccountUseCase(url)
@@ -130,6 +137,7 @@ export default defineComponent({
       isInvalidUrl,
       isEditing,
       isPatVisible,
+      errorMessage,
 
       addAccount,
       deleteAccount,
@@ -140,17 +148,20 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/form.scss';
+@use '@/assets/app';
+@use '@/assets/form';
+
+.open-form-button {
+  @include app.base-button(15px);
+  font-size: 15px;
+  padding: 5px 10px;
+}
 
 .add-account-button {
+  @include app.base-button(3px);
   padding: 5px;
-  border: solid 1px var(--border-color);
-  background-color: var(--main-background-color);
-  color: var(--main-text-color);
-  cursor: pointer;
-
-  &:hover {
-    background-color: var(--sub-background-color);
+  + button {
+    margin-left: 10px;
   }
 }
 
@@ -165,6 +176,7 @@ export default defineComponent({
 }
 
 .setting-input {
+  @include app.base-input-form();
   width: inherit;
 }
 

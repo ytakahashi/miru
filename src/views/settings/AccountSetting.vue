@@ -18,9 +18,9 @@
     </div>
 
     <div v-if="isEditing" class="block">
-      <input class="app-input-form url-input" v-model="githubRepositorySettingInput" placeholder="GitHub Repository URL">
-      <button v-on:click="addGitHubRepository()" class="app-font-button"><i class="fas fa-plus"></i></button>
-      <p v-if="validationMessage !== ''">{{ validationMessage }} URL: {{ githubRepositorySettingInput }}</p>
+      <input class="url-input" v-model="githubRepositoryUrlInput" placeholder="GitHub Repository URL">
+      <button v-on:click="addGitHubRepository()" class="add-repository-button"><i class="fas fa-plus"></i></button>
+      <div class="input-invalid" v-if="validationMessage !== ''">{{ validationMessage }}</div>
     </div>
 
     <ModalWindow v-if="showModal" @cancel="showModal = false" @ok="deleteSetting()">
@@ -74,27 +74,28 @@ export default defineComponent({
     const profile = computed(() => `${account.userName}@${account.githubUrl.getDomain()}`)
     const openProfile = () => webBrowserUserCase.openUrl(account.profileUrl)
 
-    const githubRepositorySettingInput = ref('')
+    const githubRepositoryUrlInput = ref('')
     const githubRepositorySettings: Ref<Array<RepositorySetting>> = ref([])
     const isEditing = ref(false)
     const validationMessage = ref('')
 
     const addGitHubRepository = () => {
-      if (githubRepositorySettingInput.value === '') {
+      if (githubRepositoryUrlInput.value === '') {
+        validationMessage.value = 'GitHub repository URL is not specified.'
         return
       }
-      const url = new RepositorySetting(githubRepositorySettingInput.value)
+      const url = new RepositorySetting(githubRepositoryUrlInput.value)
       if (!url.isValid()) {
-        validationMessage.value = 'Invalid'
+        validationMessage.value = `Invalid URL: ${githubRepositoryUrlInput.value}`
         return
       }
       const added = repositorySettingUseCase.addRepositorySetting(url)
       if (added) {
         githubRepositorySettings.value = repositorySettingUseCase.getRepositorySettings()
         validationMessage.value = ''
-        githubRepositorySettingInput.value = ''
+        githubRepositoryUrlInput.value = ''
       } else {
-        validationMessage.value = 'Duplicated'
+        validationMessage.value = `Duplicated URL: ${githubRepositoryUrlInput.value}`
       }
     }
 
@@ -116,7 +117,7 @@ export default defineComponent({
       }
     }
 
-    watch(githubRepositorySettingInput, () => (validationMessage.value = ''))
+    watch(githubRepositoryUrlInput, () => (validationMessage.value = ''))
     onMounted(() => (githubRepositorySettings.value = repositorySettingUseCase.getRepositorySettings()))
 
     const showModal = ref(false)
@@ -125,7 +126,7 @@ export default defineComponent({
       profile,
       openProfile,
 
-      githubRepositorySettingInput,
+      githubRepositoryUrlInput,
       githubRepositorySettings,
       isEditing,
       validationMessage,
@@ -177,7 +178,20 @@ $card-border-radius: 7px;
 }
 
 .url-input {
+  @include app.base-input-form();
   width: 50%;
   margin-right: 10px;
+}
+
+.add-repository-button {
+  @include app.base-button(10px);
+  font-size: 12px;
+  padding: 3px 8px;
+}
+
+.input-invalid {
+  color: var(--warning-color);
+  text-align: center;
+  font-size: 0.9em;
 }
 </style>
