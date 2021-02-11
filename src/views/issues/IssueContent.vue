@@ -61,6 +61,7 @@ export default defineComponent({
 
 .github-label {
   @include app.badge-box();
+  display: inline-block;
 }
 
 .issue-information {
