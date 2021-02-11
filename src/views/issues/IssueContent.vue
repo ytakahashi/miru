@@ -16,14 +16,14 @@
     </div>
 
     <span v-for="(label, index) in issue.labels" :key="index">
-      <span class="github-label" v-bind:style="{ backgroundColor: `#${label.color}`}">{{ label.name }}</span>
+      <span class="github-label" v-bind:style="getLabelColor(label)">{{ label.name }}</span>
     </span>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Issue } from '@/application/domain/model/github'
+import { Issue, Label } from '@/application/domain/model/github'
 import { inject } from '@/plugins/di/injector'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 
@@ -42,9 +42,14 @@ export default defineComponent({
   setup (props: PropsType) {
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
     const openIssue = () => webBrowserUserCase.openUrl(props.issue.url)
+    const getLabelColor = (label: Label) => ({
+      color: label.isLight ? '#2e2d2d' : '#fdfdfd',
+      backgroundColor: label.color
+    })
 
     return {
-      openIssue
+      openIssue,
+      getLabelColor
     }
   }
 })

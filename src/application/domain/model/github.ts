@@ -1,5 +1,6 @@
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import tinycolor from 'tinycolor2'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 
 dayjs.extend(relativeTime)
@@ -72,9 +73,13 @@ export class Account {
 export class Label {
   public readonly name: string;
   public readonly color: string;
+  public readonly isLight: boolean
+
   constructor (name: string, color: string) {
     this.name = name
-    this.color = color
+    const t = tinycolor(color)
+    this.color = t.toHexString()
+    this.isLight = t.isLight()
   }
 }
 

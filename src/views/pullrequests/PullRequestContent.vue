@@ -22,14 +22,14 @@
     </div>
 
     <span v-for="(label, index) in pullRequest.labels" :key="index">
-      <span class="github-label" v-bind:style="{ backgroundColor: `#${label.color}`}">{{ label.name }}</span>
+      <span class="github-label" v-bind:style="getLabelColor(label)">{{ label.name }}</span>
     </span>
   </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import { PullRequest } from '@/application/domain/model/github'
+import { Label, PullRequest } from '@/application/domain/model/github'
 import { inject } from '@/plugins/di/injector'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 
@@ -53,10 +53,15 @@ export default defineComponent({
       'content-box-open': !props.pullRequest.isDraft,
       'content-box-pr-draft': props.pullRequest.isDraft
     }))
+    const getLabelColor = (label: Label) => ({
+      color: label.isLight ? '#2e2d2d' : '#fdfdfd',
+      backgroundColor: label.color
+    })
 
     return {
       boxStyle,
-      openPullRequest
+      openPullRequest,
+      getLabelColor
     }
   }
 })

@@ -1,4 +1,4 @@
-import { GitHubUrl, Issue, Issues } from '@/application/domain/model/github'
+import { GitHubUrl, Label, Issue, Issues } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 
 describe('GitHubUrl', () => {
@@ -40,6 +40,15 @@ describe('GitHubUrl', () => {
     expect(actual.getApiEndpoint()).toBe('https://github.test.enterprise.com/api/graphql')
     expect(actual.getDomain()).toBe('github.test.enterprise.com')
     expect(actual.isEnterprise()).toBeTruthy()
+  })
+})
+
+describe('Label class', () => {
+  it('can initialize', () => {
+    const actual = new Label('test1', '2B3196')
+    expect(actual.name).toBe('test1')
+    expect(actual.color).toBe('#2b3196')
+    expect(actual.isLight).toBe(false)
   })
 })
 
