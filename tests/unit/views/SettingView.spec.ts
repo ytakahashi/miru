@@ -3,12 +3,18 @@
 
 import { defineComponent, h } from 'vue'
 import { shallowMount } from '@vue/test-utils'
-import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, GitHubAccountUseCaseFactoryKey } from '@/plugins/di/types'
+import {
+  AccountSettingUseCaseFactoryKey,
+  ApplicationSettingUseCaseKey,
+  GitHubAccountUseCaseFactoryKey,
+  LogUseCaseKey
+} from '@/plugins/di/types'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
 import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/application/usecase/accountSetting'
 import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting'
 import { GitHubAccountUseCase, GitHubAccountUseCaseFactory } from '@/application/usecase/githubAccount'
+import { LogUseCase } from '@/application/usecase/log'
 import SettingView from '@/views/SettingView.vue'
 import AccountSetting from '@/views/settings/AccountSetting.vue'
 
@@ -61,6 +67,16 @@ MockedGitHubAccountUseCaseFactory.mockImplementation(() => {
 })
 const mockedGitHubAccountUseCaseFactory = new MockedGitHubAccountUseCaseFactory()
 
+// LogUseCase mock
+const errorMock = jest.fn()
+const MockedLogUseCase = jest.fn<LogUseCase, []>()
+MockedLogUseCase.mockImplementation((): LogUseCase => {
+  return {
+    error: errorMock
+  }
+})
+const mockedLogUseCase = new MockedLogUseCase()
+
 const AccountSettingMock = defineComponent({
   name: 'AccountSetting',
   emits: ['account-deleted'],
@@ -80,7 +96,8 @@ describe('SettingView.vue', () => {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
-          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory
+          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
+          [LogUseCaseKey as symbol]: mockedLogUseCase
         }
       }
     })
@@ -100,7 +117,8 @@ describe('SettingView.vue', () => {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
-          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory
+          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
+          [LogUseCaseKey as symbol]: mockedLogUseCase
         }
       }
     })
@@ -116,7 +134,8 @@ describe('SettingView.vue', () => {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
-          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory
+          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
+          [LogUseCaseKey as symbol]: mockedLogUseCase
         }
       }
     })
@@ -144,7 +163,8 @@ describe('SettingView.vue', () => {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
-          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory
+          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
+          [LogUseCaseKey as symbol]: mockedLogUseCase
         }
       }
     })
@@ -180,7 +200,8 @@ describe('SettingView.vue', () => {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
-          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory
+          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
+          [LogUseCaseKey as symbol]: mockedLogUseCase
         },
         stubs: {
           AccountSetting: AccountSettingMock
@@ -206,7 +227,8 @@ describe('SettingView.vue', () => {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
-          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory
+          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
+          [LogUseCaseKey as symbol]: mockedLogUseCase
         }
       }
     })
@@ -229,7 +251,8 @@ describe('SettingView.vue', () => {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
-          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory
+          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
+          [LogUseCaseKey as symbol]: mockedLogUseCase
         }
       }
     })
@@ -257,7 +280,8 @@ describe('SettingView.vue', () => {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
-          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory
+          [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
+          [LogUseCaseKey as symbol]: mockedLogUseCase
         }
       }
     })

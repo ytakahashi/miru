@@ -3,12 +3,15 @@ import { LocalStorageAccessor } from '@/application/domain/interface/localStorag
 import { Account, GitHubUrl } from '@/application/domain/model/github'
 import { GitHubAccount } from '@/application/infrastructure/dto/local'
 import { AccountSettingUseCase } from '@/application/usecase/accountSetting'
+import { LogUseCase } from '@/application/usecase/log'
 
 export class AccountSettingUseCaseInteractor implements AccountSettingUseCase {
   #localStorageAccessor: LocalStorageAccessor
+  #logger: LogUseCase
 
-  constructor (localStorageAccessor: LocalStorageAccessor) {
+  constructor (localStorageAccessor: LocalStorageAccessor, logger: LogUseCase) {
     this.#localStorageAccessor = localStorageAccessor
+    this.#logger = logger
   }
 
   setAccount = (account: Account): void => {
@@ -42,7 +45,7 @@ export class AccountSettingUseCaseInteractor implements AccountSettingUseCase {
     try {
       unlinkSync(path)
     } catch (err) {
-      console.error('delete failed. ', err)
+      this.#logger.error(err)
     }
   }
 }
