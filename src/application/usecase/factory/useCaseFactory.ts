@@ -10,12 +10,14 @@ import { AccountSettingUseCaseInteractor } from '@/application/usecase/interacto
 import { ApplicationSettingUseCaseInteractor } from '@/application/usecase/interactor/applicationSettingUseCaseInteractor'
 import { GitHubAccountUseCaseInteractor } from '@/application/usecase/interactor/githubAccountUseCaseInteractor'
 import { GitHubRepositoryUseCaseInteractor } from '@/application/usecase/interactor/githubRepositoryUseCaseInteractor'
+import { LogUseCaseInteractor } from '@/application/usecase/interactor/LogUseCaseInteractor'
 import { RepositorySettingUseCaseInteractor } from '@/application/usecase/interactor/repositorySettingUseCaseInteractor'
 
 export class AccountSettingUseCaseFactoryImpl implements AccountSettingUseCaseFactory {
   newAccountSettingUseCase = (setting: ApplicationSetting): AccountSettingUseCase => {
     return new AccountSettingUseCaseInteractor(
-      newLocalStorageAccessor(setting.configPostfix)
+      newLocalStorageAccessor(setting.configPostfix),
+      new LogUseCaseInteractor()
     )
   }
 }

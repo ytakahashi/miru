@@ -1,20 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+import { nextTick } from 'vue'
 import { shallowMount } from '@vue/test-utils'
-import { GitHubRepositoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { Account, GitHubUrl, Issues, PullRequests, Release, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory } from '@/application/usecase/githubRepository'
+import { LogUseCase } from '@/application/usecase/log'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
+import { GitHubRepositoryUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import GitHubRelease from '@/views/releases/GitHubRelease.vue'
 import ReleaseContent from '@/views/releases/ReleaseContent.vue'
 
-const MockedGitHubRepositoryUseCase = jest.fn<GitHubRepositoryUseCase, [Releases]>()
-MockedGitHubRepositoryUseCase.mockImplementation((releases: Releases): GitHubRepositoryUseCase => {
+// GitHubRepositoryUseCase mock
+const MockedGitHubRepositoryUseCase = jest.fn<GitHubRepositoryUseCase, [() => Releases]>()
+MockedGitHubRepositoryUseCase.mockImplementation((cb:() => Releases): GitHubRepositoryUseCase => {
   return {
     getIssues: async (): Promise<Issues> => jest.fn<Issues, []>()(),
     getPullRequests: async (): Promise<PullRequests> => jest.fn<PullRequests, []>()(),
-    getReleases: async (): Promise<Releases> => releases
+    getReleases: async (): Promise<Releases> => cb()
   }
 })
 const createMock = (func: () => GitHubRepositoryUseCase): GitHubRepositoryUseCaseFactory => {
@@ -23,6 +26,17 @@ const createMock = (func: () => GitHubRepositoryUseCase): GitHubRepositoryUseCas
   }
 }
 
+// LogUseCase mock
+const errorMock = jest.fn()
+const MockedLogUseCase = jest.fn<LogUseCase, []>()
+MockedLogUseCase.mockImplementation((): LogUseCase => {
+  return {
+    error: errorMock
+  }
+})
+const mockedLogUseCase = new MockedLogUseCase()
+
+// WebBrowserUserCase mock
 const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
 const openUrlMock = jest.fn()
 MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
@@ -37,6 +51,7 @@ const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
 
 describe('GitHubRelease.vue', () => {
   beforeEach(() => {
+    errorMock.mockClear()
     openUrlMock.mockClear()
   })
 
@@ -45,7 +60,8 @@ describe('GitHubRelease.vue', () => {
     const wrapper = shallowMount(GitHubRelease, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(releases)),
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => releases)),
+          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
@@ -57,7 +73,7 @@ describe('GitHubRelease.vue', () => {
     })
 
     // when: click button
-    await wrapper.find('button').trigger('click')
+    await wrapper.find('button.get-button').trigger('click')
     await wrapper.vm.$nextTick()
 
     // then: message appears
@@ -93,7 +109,8 @@ describe('GitHubRelease.vue', () => {
     const wrapper = shallowMount(GitHubRelease, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(releases)),
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => releases)),
+          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
@@ -125,12 +142,45 @@ describe('GitHubRelease.vue', () => {
     expect(openUrlMock).not.toHaveBeenCalled()
   })
 
+  it('fails to get releases', async () => {
+    const err = new Error('error')
+    const supplier = () => {
+      throw err
+    }
+
+    const wrapper = shallowMount(GitHubRelease, {
+      global: {
+        provide: {
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(supplier)),
+          [LogUseCaseKey as symbol]: mockedLogUseCase,
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
+        }
+      },
+      props: {
+        account: account,
+        repositorySetting: setting,
+        option: {}
+      }
+    })
+
+    // when: click button
+    await wrapper.find('button.get-button').trigger('click').then(() => nextTick())
+
+    // then: error mock is called
+    expect(errorMock).toHaveBeenCalledWith(err)
+
+    // then: error message appears
+    await wrapper.vm.$nextTick()
+    expect(wrapper.text()).toContain('Failed to list releases')
+  })
+
   it('opens repository url', async () => {
     const releases = new Releases(setting, [], 0)
     const wrapper = shallowMount(GitHubRelease, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(releases)),
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => releases)),
+          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
@@ -153,7 +203,8 @@ describe('GitHubRelease.vue', () => {
     const wrapper = shallowMount(GitHubRelease, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(releases)),
+          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => releases)),
+          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
       },
@@ -165,7 +216,7 @@ describe('GitHubRelease.vue', () => {
     })
 
     // when: click button
-    await wrapper.find('.app-input-button').trigger('click')
+    await wrapper.find('.get-button').trigger('click')
     await wrapper.vm.$nextTick()
 
     // then: release appears and release url is opened

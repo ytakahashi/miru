@@ -2,7 +2,7 @@
   <div class="content-list">
     <div class="content-list-header">
       <span class="text-strong clickable" v-on:click="openRepositorySetting(repositorySetting)">{{ repositorySetting.displayName() }}</span>
-      <button type="button" class="app-input-button" v-on:click="getReleases()">
+      <button type="button" class="get-button" v-on:click="getReleases()">
         <i class="fas fa-sync-alt"></i>
       </button>
     </div>
@@ -33,7 +33,7 @@ import { computed, defineComponent, readonly, ref } from 'vue'
 import { Account, GitHubUrl, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { inject } from '@/plugins/di/injector'
-import { WebBrowserUserCaseKey, GitHubRepositoryUseCaseFactoryKey } from '@/plugins/di/types'
+import { GitHubRepositoryUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { getters as queryOption } from '@/store/queryOption'
 import { getters, mutations } from '@/store/releases'
 import ReleaseContent from '@/views/releases/ReleaseContent.vue'
@@ -60,6 +60,7 @@ export default defineComponent({
   },
   setup (props: PropsType) {
     const githubRepositoryUseCaseFactory = inject(GitHubRepositoryUseCaseFactoryKey)
+    const logUseCase = inject(LogUseCaseKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
     const openRepositorySetting = (val: RepositorySetting) => webBrowserUserCase.openUrl(val.getUrl())
@@ -71,18 +72,16 @@ export default defineComponent({
     const githubRepositoryUseCase = githubRepositoryUseCaseFactory.newGitHubRepositoryUseCase(githubUrl, accessToken)
 
     const isFailed = ref(false)
-    const onFailure = (e: Error) => {
-      // TODO: log
-      console.error(e)
-      isFailed.value = true
-    }
-    const getReleases = (): void => {
+    const getReleases = async (): Promise<void> => {
       const { repositorySetting } = props
       const option = queryOption.releases()
-      githubRepositoryUseCase.getReleases(repositorySetting, option)
+      isFailed.value = await githubRepositoryUseCase.getReleases(repositorySetting, option)
         .then((r: Releases) => mutations.replace(r))
-        .then(() => (isFailed.value = false))
-        .catch(onFailure)
+        .then(() => false)
+        .catch((e: Error) => {
+          logUseCase.error(e)
+          return true
+        })
     }
     const clearReleases = (): void => mutations.remove(props.repositorySetting)
     const releases = computed(() => getters.of(props.repositorySetting))
@@ -106,6 +105,11 @@ export default defineComponent({
 
 .release-list-description {
   @include contents.base-content-description(space-between);
+}
+
+.get-button {
+  @include app.base-button(8px);
+  padding: 5px 7px;
 }
 
 .clear-button {
