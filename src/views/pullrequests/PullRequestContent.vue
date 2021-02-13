@@ -3,7 +3,7 @@
     <div class="pr-information">
       <span>
         <i class="fas fa-clock"></i>{{ pullRequest.getUpdatedRelativeDate() }}
-        <span class="draft-mark" v-if="pullRequest.isDraft">draft</span>
+        <span class="draft-mark" v-if="pullRequest.isDraft">Draft</span>
       </span>
       <span>#{{ pullRequest.issueNumber }}</span>
     </div>
@@ -77,7 +77,6 @@ export default defineComponent({
 
 .draft-mark {
   @include app.badge-box();
-  background-color: var(--sub-background-color);
 }
 
 .additions {
