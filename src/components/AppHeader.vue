@@ -1,12 +1,12 @@
 <template>
   <div id="nav">
-    <router-link to="/">Settings</router-link>
+    <router-link to="/" class="link">Settings</router-link>
     <span class="separator">|</span>
-    <router-link to="/issues">Issues</router-link>
+    <router-link to="/issues" class="link">Issues</router-link>
     <span class="separator">|</span>
-    <router-link to="/pulls">Pull Requests</router-link>
+    <router-link to="/pulls" class="link">Pull Requests</router-link>
     <span class="separator">|</span>
-    <router-link to="/releases">Releases</router-link>
+    <router-link to="/releases" class="link">Releases</router-link>
   </div>
 </template>
 
@@ -46,18 +46,43 @@ export default defineComponent({
 <style lang="scss">
 #nav {
   padding: 20px;
-  font-weight: bold;
 
   a {
-    color: var(--link-color);
+    color: var(--main-font-color);
+    text-decoration: none;
+    font-size: 95%;
 
     &.router-link-exact-active {
-      color: var(--link-color-active);
+      font-weight: bold;
+      font-size: 130%;
     }
   }
 
   .separator {
     padding: 0px 10px;
   }
+}
+
+.link {
+    position: relative;
+
+    &::before {
+      content: '';
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+
+    &:hover::before{
+      transform: scaleX(1);
+    }
+
+    &::before, &::after {
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      top: 100%;
+      background: currentColor;
+      pointer-events: none;
+    }
 }
 </style>
