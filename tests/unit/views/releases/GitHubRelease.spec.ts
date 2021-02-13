@@ -168,10 +168,6 @@ describe('GitHubRelease.vue', () => {
 
     // then: error mock is called
     expect(errorMock).toHaveBeenCalledWith(err)
-
-    // then: error message appears
-    await wrapper.vm.$nextTick()
-    expect(wrapper.text()).toContain('Failed to list releases')
   })
 
   it('opens repository url', async () => {

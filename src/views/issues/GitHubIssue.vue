@@ -25,6 +25,8 @@
       Failed to list issues of <span class="clickable" v-on:click="openIssueUrl(repositorySetting)">{{ repositorySetting.getUrl() }}</span>.<br />
       The repository does not exist or not visible with provided pesonal access token.
     </div>
+
+    <LoadingImage :loading="loading" @cancel="loading = false" />
   </div>
 </template>
 
@@ -32,6 +34,7 @@
 import { computed, defineComponent, readonly, ref } from 'vue'
 import { Account, Issues, GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
 import { GitHubRepositoryUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { getters, mutations } from '@/store/issues'
@@ -46,7 +49,8 @@ type PropsType = {
 export default defineComponent({
   name: 'GitHubIssue',
   components: {
-    IssueContent
+    IssueContent,
+    LoadingImage
   },
   props: {
     account: {
@@ -70,9 +74,11 @@ export default defineComponent({
     const githubUrl = account.githubUrl as GitHubUrl
     const accessToken = account.personalAccessToken
     const githubRepositoryUseCase = githubRepositoryUseCaseFactory.newGitHubRepositoryUseCase(githubUrl, accessToken)
+    const loading = ref(false)
 
     const isFailed = ref(false)
     const getIssues = async (): Promise<void> => {
+      loading.value = true
       const { repositorySetting } = props
       const option = queryOption.issues()
       isFailed.value = await githubRepositoryUseCase.getIssues(repositorySetting, option)
@@ -82,6 +88,7 @@ export default defineComponent({
           logUseCase.error(e)
           return true
         })
+        .finally(() => (loading.value = false))
     }
     const clearIssues = (): void => mutations.remove(props.repositorySetting)
     const issues = computed(() => getters.of(props.repositorySetting))
@@ -92,7 +99,8 @@ export default defineComponent({
       isFailed,
       openRepositorySetting,
       openIssueUrl,
-      issues
+      issues,
+      loading
     }
   }
 })
