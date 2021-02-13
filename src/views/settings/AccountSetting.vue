@@ -36,6 +36,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, watch, PropType, Ref, SetupContext } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import ModalWindow from '@/components/ModalWindow.vue'
@@ -119,6 +120,12 @@ export default defineComponent({
 
     watch(githubRepositoryUrlInput, () => (validationMessage.value = ''))
     onMounted(() => (githubRepositorySettings.value = repositorySettingUseCase.getRepositorySettings()))
+
+    onBeforeRouteLeave(() => {
+      if (isEditing.value) {
+        repositorySettingUseCase.setRepositorySettings(githubRepositorySettings.value)
+      }
+    })
 
     const showModal = ref(false)
     return {

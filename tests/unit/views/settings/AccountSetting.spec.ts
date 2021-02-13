@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { defineComponent, h } from 'vue'
+import { matchedRouteKey } from 'vue-router'
 import { shallowMount } from '@vue/test-utils'
 import { AccountSettingUseCaseFactoryKey, RepositorySettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { ApplicationSetting } from '@/application/domain/model/application'
@@ -36,7 +36,7 @@ const deleteSettingMock = jest.fn()
 const MockedAccountSettingUseCase = jest.fn<AccountSettingUseCase, []>()
 MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
   return {
-    setAccount: (account: Account) => {},
+    setAccount: (account: Account) => jest.fn(),
     getAccount: () => account,
     deleteSetting: () => deleteSettingMock()
   }
@@ -64,17 +64,28 @@ const createRepositorySettingMock = (func: () => RepositorySettingUseCase): Repo
   }
 }
 
+// GitHubRepositories Mock
 const GitHubRepositoriesMock = defineComponent({
   name: 'GitHubRepositories',
   emits: ['edit'],
   render: () => h('div', {}, '')
 })
 
+// ModalWindow Mock
 const ModalWindowMock = defineComponent({
   name: 'ModalWindow',
   emits: ['cancel', 'ok'],
   render: () => h('div', {}, '')
 })
+
+// vue router (onBeforeRouteLeave) mock
+const mockRoute = {
+  value: {
+    leaveGuards: {
+      add: () => jest.fn()
+    }
+  }
+}
 
 describe('AccountSetting.vue', () => {
   beforeEach(() => {
@@ -88,6 +99,7 @@ describe('AccountSetting.vue', () => {
     const wrapper = shallowMount(AccountSetting, {
       global: {
         provide: {
+          [matchedRouteKey as symbol]: mockRoute,
           [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase([])),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
@@ -109,6 +121,7 @@ describe('AccountSetting.vue', () => {
     const wrapper = shallowMount(AccountSetting, {
       global: {
         provide: {
+          [matchedRouteKey as symbol]: mockRoute,
           [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase(repos)),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
@@ -142,6 +155,7 @@ describe('AccountSetting.vue', () => {
     const wrapper = shallowMount(AccountSetting, {
       global: {
         provide: {
+          [matchedRouteKey as symbol]: mockRoute,
           [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase(repos)),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
@@ -186,6 +200,7 @@ describe('AccountSetting.vue', () => {
     const wrapper = shallowMount(AccountSetting, {
       global: {
         provide: {
+          [matchedRouteKey as symbol]: mockRoute,
           [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase([])),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
@@ -203,6 +218,7 @@ describe('AccountSetting.vue', () => {
     const wrapper = shallowMount(AccountSetting, {
       global: {
         provide: {
+          [matchedRouteKey as symbol]: mockRoute,
           [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase([])),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
@@ -221,6 +237,7 @@ describe('AccountSetting.vue', () => {
     const wrapper = shallowMount(AccountSetting, {
       global: {
         provide: {
+          [matchedRouteKey as symbol]: mockRoute,
           [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase([])),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
@@ -245,6 +262,7 @@ describe('AccountSetting.vue', () => {
     const wrapper = shallowMount(AccountSetting, {
       global: {
         provide: {
+          [matchedRouteKey as symbol]: mockRoute,
           [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase([])),
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
