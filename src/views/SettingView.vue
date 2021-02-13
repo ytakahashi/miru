@@ -28,12 +28,14 @@
   </div>
 
   <ThemeSwitch />
+  <LoadingImage :loading="loading" @cancel="loading = false" />
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch, Ref } from 'vue'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
+import LoadingImage from '@/components/LoadingImage.vue'
 import ThemeSwitch from '@/components/ThemeSwitch.vue'
 import { inject } from '@/plugins/di/injector'
 import {
@@ -48,6 +50,7 @@ export default defineComponent({
   name: 'SettingView',
   components: {
     AccountSetting,
+    LoadingImage,
     ThemeSwitch
   },
   setup () {
@@ -65,6 +68,7 @@ export default defineComponent({
     const isEditing = ref(false)
     const isPatVisible = ref(false)
     const errorMessage = ref('')
+    const loading = ref(false)
 
     const onSuccess = (resolved: Account) => {
       const setting = new ApplicationSetting(resolved.getId())
@@ -86,6 +90,7 @@ export default defineComponent({
       errorMessage.value = `Failed to resolve access token: ${personalAccessTokenInput.value}`
     }
     const addAccount = () => {
+      loading.value = true
       if (!personalAccessTokenInput.value) {
         isInvalidAccessToken.value = true
         errorMessage.value = 'Access token is required.'
@@ -101,6 +106,7 @@ export default defineComponent({
       github.resolvePersonalAccessToken(personalAccessTokenInput.value)
         .then(r => onSuccess(r))
         .catch(e => onFailure(e))
+        .finally(() => (loading.value = false))
     }
 
     const refreshAccounts = () => {
@@ -143,7 +149,7 @@ export default defineComponent({
       isEditing,
       isPatVisible,
       errorMessage,
-
+      loading,
       addAccount,
       deleteAccount,
       viewPersonalAccessToken

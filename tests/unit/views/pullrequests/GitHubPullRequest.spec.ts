@@ -176,10 +176,6 @@ describe('GitHubPullRequest.vue', () => {
 
     // then: error mock is called
     expect(errorMock).toHaveBeenCalledWith(err)
-
-    // then: error message appears
-    await wrapper.vm.$nextTick()
-    expect(wrapper.text()).toContain('Failed to list pull requests')
   })
 
   it('opens repository url', async () => {
