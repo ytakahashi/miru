@@ -1,7 +1,11 @@
 <template>
   <div :class="boxStyle" v-on:click="openRelease()">
     <div class="release-information">
-      <span><i class="fas fa-clock"></i>{{ release.getUpdatedRelativeDate() }}</span>
+      <span>
+        <i class="fas fa-clock"></i>{{ release.getUpdatedRelativeDate() }}
+        <span class="draft-mark" v-if="release.isDraft">Draft</span>
+        <span class="prerelease-mark" v-if="release.isPrerelease">Pre-release</span>
+      </span>
       <span v-if="release.tagName"><i class="fas fa-tag"></i>{{ release.tagName }}</span>
     </div>
 
@@ -9,7 +13,7 @@
       {{ releaseTitle }}
     </span>
 
-    <div class="text-small padding-bottom">
+    <div class="release-description">
       {{ releaseDescription }}
     </div>
   </div>
@@ -38,8 +42,9 @@ export default defineComponent({
     const openRelease = () => webBrowserUserCase.openUrl(props.release.url)
 
     const boxStyle = computed(() => ({
-      'content-box-open': !props.release.isDraft,
-      'content-box-release-draft': props.release.isDraft
+      'content-box-open': !props.release.isDraft && !props.release.isPrerelease,
+      'content-box-release-draft': props.release.isDraft,
+      'content-box-pre-release': props.release.isPrerelease
     }))
 
     const releaseTitle = props.release.isDraft === true
@@ -69,6 +74,18 @@ export default defineComponent({
 
 .content-box-release-draft {
   @include contents.content-box(var(--color-draft-release));
+}
+
+.content-box-pre-release {
+  @include contents.content-box(var(--color-prerelease));
+}
+
+.draft-mark {
+  @include app.badge-box(var(--color-draft-release), var(--color-draft-release));
+}
+
+.prerelease-mark {
+  @include app.badge-box(var(--color-prerelease), var(--color-prerelease));
 }
 
 .release-information {

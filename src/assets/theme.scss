@@ -7,6 +7,7 @@
   --color-white: #fdfdfd;
   --color-dark-red: #c02739;
   --color-red: #ff3e55;
+  --color-orange: #ff953e;
   --color-green-light1: #47a740;
   --color-green-light: #4bc243;
   --color-green-dark: #278120;
@@ -32,6 +33,7 @@
 
   --color-open: var(--color-green-light);
   --color-draft-release: var(--color-red);
+  --color-prerelease: var(--color-orange);
   --color-draft-pr: var(--color-dark-gray);
 }
 
@@ -53,6 +55,7 @@
   --color-diff-minus: var(--color-red);
 
   --color-open: var(--color-green-dark);
-  --color-draft-release: var(--color-dark-red);
+  --color-draft-release: var(--color-red);
+  --color-prerelease: var(--color-orange);
   --color-draft-pr: var(--color-dark-gray);
 }

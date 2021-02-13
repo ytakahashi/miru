@@ -39,7 +39,7 @@ export class RepositorySettingUseCaseInteractor implements RepositorySettingUseC
       {
         showsIssues: v.showsIssues,
         showsPullRequests: v.showsPullRequests,
-        showsReleases: v.showsReleases === undefined ? true : v.showsReleases
+        showsReleases: v.showsReleases
       }
     ))
   }
