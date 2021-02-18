@@ -2,7 +2,9 @@
   <div :class="boxStyle" v-on:click="openRelease()">
     <div class="release-information">
       <span>
-        <i class="fas fa-clock"></i>{{ release.getUpdatedRelativeDate() }}
+        <span class="tooltip" :data-tooltip="release.getUpdatedLocalDate()">
+          <i class="fas fa-clock"></i>{{ release.getUpdatedRelativeDate() }}
+        </span>
         <span class="draft-mark" v-if="release.isDraft">Draft</span>
         <span class="prerelease-mark" v-if="release.isPrerelease">Pre-release</span>
       </span>
@@ -14,7 +16,9 @@
     </span>
 
     <div class="release-description">
-      {{ releaseDescription }}
+      <span>{{ release.authorName }}</span>
+      <span>{{ releaseType }}</span>
+      <span class="tooltip" :data-tooltip="releaseLocalTime">{{ releaseRelativeTime }}</span>
     </div>
   </div>
 </template>
@@ -52,17 +56,20 @@ export default defineComponent({
       : props.release.title === '' ? props.release.tagName : props.release.title
 
     const releaseType = props.release.isDraft === true ? 'drafted' : 'published'
+    const releaseLocalTime = props.release.isDraft === true
+      ? props.release.getUpdatedLocalDate()
+      : props.release.getCreatedLocalDate()
     const releaseRelativeTime = props.release.isDraft === true
       ? props.release.getUpdatedRelativeDate()
       : props.release.getCreatedRelativeDate()
-    const releaseDescription = computed(() =>
-      (`${props.release.authorName} ${releaseType} ${releaseRelativeTime}`))
 
     return {
       boxStyle,
       openRelease,
       releaseTitle,
-      releaseDescription
+      releaseType,
+      releaseLocalTime,
+      releaseRelativeTime
     }
   }
 })

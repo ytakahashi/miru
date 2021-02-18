@@ -48,3 +48,48 @@
     background-color: var(--sub-background-color);
   }
 }
+
+.tooltip {
+  display: inline-block;
+  position: relative;
+
+  &::before,
+  &::after {
+    opacity: 0;
+    position: absolute;
+    transform: translateY(-50%);
+    transition: all 0.2s ease-out;
+    visibility: hidden;
+    top: 50%;
+    z-index: 10;
+  }
+
+  $tip-width: 9px;
+  &::before {
+    border-color: transparent var(--tooltip-background-color) transparent transparent;
+    border-style: solid;
+    border-right-width: $tip-width;
+    content: "";
+    left: calc(100%);
+  }
+
+  &::after {
+    content: attr(data-tooltip);
+    background: var(--tooltip-background-color);
+    border-radius: 5px;
+    color: var(--tooltip-text-color);
+    display: block;
+    font-size: 90%;
+    font-weight: bold;
+    left: calc(100% + #{$tip-width + 2px});
+    padding: 3px 8px;
+    white-space: nowrap;
+  }
+
+  &:hover {
+    &::before, &::after {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
