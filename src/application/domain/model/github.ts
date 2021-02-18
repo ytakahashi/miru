@@ -1,9 +1,11 @@
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import utc from 'dayjs/plugin/utc'
 import tinycolor from 'tinycolor2'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 
 dayjs.extend(relativeTime)
+dayjs.extend(utc)
 
 const githubEndpoint = 'https://github.com'
 const githubApiEndpoint = 'https://api.github.com/graphql'
@@ -110,6 +112,14 @@ export class BaseContent {
 
   getUpdatedRelativeDate = (): string => {
     return dayjs(this.updatedAt).fromNow()
+  }
+
+  getCreatedLocalDate = (): string => {
+    return dayjs(this.createdAt).local().format('YYYY-MM-DD HH:mm:ssZ')
+  }
+
+  getUpdatedLocalDate = (): string => {
+    return dayjs(this.updatedAt).local().format('YYYY-MM-DD HH:mm:ssZ')
   }
 }
 

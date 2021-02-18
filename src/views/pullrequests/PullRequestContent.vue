@@ -2,7 +2,9 @@
   <div :class="boxStyle" v-on:click="openPullRequest()">
     <div class="pr-information">
       <span>
-        <i class="fas fa-clock"></i>{{ pullRequest.getUpdatedRelativeDate() }}
+        <span class="tooltip" :data-tooltip="pullRequest.getUpdatedLocalDate()">
+          <i class="fas fa-clock"></i>{{ pullRequest.getUpdatedRelativeDate() }}
+        </span>
         <span class="draft-mark" v-if="pullRequest.isDraft">Draft</span>
       </span>
       <span>#{{ pullRequest.issueNumber }}</span>
@@ -13,7 +15,9 @@
     </span>
 
     <div class="pr-description">
-      <span>{{ pullRequest.authorName }} opened {{ pullRequest.getCreatedRelativeDate() }}</span>
+      <span>
+        {{ pullRequest.authorName }} opened <span class="tooltip" :data-tooltip="pullRequest.getCreatedLocalDate()">{{ pullRequest.getCreatedRelativeDate() }}</span>
+      </span>
       <span><i class="fas fa-comments"></i>{{ pullRequest.numberOfComments }}</span>
       <span><i class="fas fa-user"></i>{{ pullRequest.numberOfParticipants }}</span>
       <span><i class="fas fa-file"></i> {{ pullRequest.changedFiles }}</span>

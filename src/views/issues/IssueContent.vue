@@ -1,7 +1,9 @@
 <template>
   <div class="content-box-open" v-on:click="openIssue()">
     <div class="issue-information">
-      <span><i class="fas fa-clock"></i>{{ issue.getUpdatedRelativeDate() }}</span>
+      <span class="tooltip" :data-tooltip="issue.getUpdatedLocalDate()">
+        <i class="fas fa-clock"></i>{{ issue.getUpdatedRelativeDate() }}
+      </span>
       <span>#{{ issue.issueNumber }}</span>
     </div>
 
@@ -10,7 +12,9 @@
     </span>
 
     <div class="issue-description">
-      <span>{{ issue.authorName }} opened {{ issue.getCreatedRelativeDate() }}</span>
+      <span>
+        {{ issue.authorName }} opened <span class="tooltip" :data-tooltip="issue.getCreatedLocalDate()">{{ issue.getCreatedRelativeDate() }}</span>
+      </span>
       <span><i class="fas fa-comments"></i>{{ issue.numberOfComments }}</span>
       <span><i class="fas fa-user"></i>{{ issue.numberOfParticipants }}</span>
     </div>

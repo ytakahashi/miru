@@ -59,8 +59,10 @@ describe('ReleaseContent.vue', () => {
       }
     })
 
-    expect(wrapper.text()).toMatch(/ytakahashi published .+ .+ ago/)
+    expect(wrapper.text()).toContain(author)
     expect(wrapper.text()).toContain(title)
+    expect(wrapper.text()).toContain('published')
+    expect(wrapper.text()).toMatch(/.+ .+ ago/)
   })
 
   it('renders draft release', async () => {
@@ -75,8 +77,10 @@ describe('ReleaseContent.vue', () => {
       }
     })
 
-    expect(wrapper.text()).toMatch(/ytakahashi drafted .+ .+ ago/)
+    expect(wrapper.text()).toContain(author)
     expect(wrapper.text()).toContain(title)
+    expect(wrapper.text()).toContain('drafted')
+    expect(wrapper.text()).toMatch(/.+ .+ ago/)
   })
 
   it('can open release url', async () => {
