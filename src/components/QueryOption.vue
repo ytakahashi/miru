@@ -162,7 +162,7 @@ export default defineComponent({
   width: 220px;
   text-align: left;
   padding: 1em;
-  margin: 0 13% 20px auto;
+  margin: 15px 13% 20px auto;
   border: 1px solid var(--border-color);
   border-radius: 0.5em;
 }
