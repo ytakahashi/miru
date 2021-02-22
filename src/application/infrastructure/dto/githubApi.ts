@@ -53,6 +53,20 @@ export type IssueConnection = {
   edges: Array<IssueEdge>;
 }
 
+export type PullRequestReviewCommentConnection = {
+  totalCount: number;
+}
+
+export type PillRequestReview = {
+  body: string;
+  comments: PullRequestReviewCommentConnection;
+}
+
+export type PillRequestReviewConnection = {
+  totalCount: number;
+  nodes: PillRequestReview[];
+}
+
 export type PullRequest = {
   author: GitHubUser;
   title: string;
@@ -67,6 +81,7 @@ export type PullRequest = {
   deletions: number;
   changedFiles: number;
   isDraft: boolean;
+  reviews: PillRequestReviewConnection;
 }
 
 export type PullRequestEdge = {

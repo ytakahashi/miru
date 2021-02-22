@@ -1,7 +1,7 @@
 import { GitHubAccessor, Option } from '@/application/domain/interface/githubAccessor'
-import { Issues, Issue, Label, PullRequest, PullRequests, TagReference, Release, Releases } from '@/application/domain/model/github'
+import { Issues, Issue, Label, PullRequest, PullRequests, PullRequestReviews, TagReference, Release, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { IssueConnection, PullRequestConnection, ReleaseConnection } from '@/application/infrastructure/dto/githubApi'
+import { IssueConnection, PullRequestConnection, PillRequestReview, PillRequestReviewConnection, ReleaseConnection } from '@/application/infrastructure/dto/githubApi'
 import { GitHubRepositoryUseCase } from '@/application/usecase/githubRepository'
 
 export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCase {
@@ -45,6 +45,14 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
       throw new Error('Invalid GitHub URL.')
     }
 
+    const reviewCommentMapper = (reviewNodes: PillRequestReview): number =>
+      reviewNodes.body !== '' ? reviewNodes.comments.totalCount + 1 : reviewNodes.comments.totalCount
+
+    const countReviewComments = (review: PillRequestReviewConnection): PullRequestReviews => {
+      const remained = review.totalCount !== review.nodes.length
+      const result = review.nodes.map(reviewCommentMapper).reduce((a, b) => a + b, 0)
+      return new PullRequestReviews(result, remained)
+    }
     const mapToPullRequests = (v: PullRequestConnection): PullRequests => {
       const prs = v.edges
         .map(v => v.node)
@@ -61,7 +69,8 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
           v.additions,
           v.deletions,
           v.changedFiles,
-          v.isDraft
+          v.isDraft,
+          countReviewComments(v.reviews)
         ))
       return new PullRequests(setting, prs, v.totalCount)
     }
