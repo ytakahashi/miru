@@ -120,6 +120,15 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                 deletions
                 changedFiles
                 isDraft
+                reviews(first: 30) {
+                  totalCount
+                  nodes {
+                    body
+                    comments(first: 20) {
+                      totalCount
+                    }
+                  }
+                }
               }
             }
           }

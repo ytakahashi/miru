@@ -200,6 +200,18 @@ export class Release extends BaseContent {
   }
 }
 
+export class PullRequestReviews {
+  public readonly reviewCount: number;
+  public readonly hasRemainedItem: boolean;
+
+  constructor (
+    reviewCount: number,
+    hasRemainedItem: boolean
+  ) {
+    this.reviewCount = reviewCount
+    this.hasRemainedItem = hasRemainedItem
+  }
+}
 export class PullRequest extends BaseContent {
   public readonly issueNumber: number;
   public readonly labels: Array<Label>;
@@ -209,6 +221,7 @@ export class PullRequest extends BaseContent {
   public readonly deletions: number;
   public readonly changedFiles: number;
   public readonly isDraft: boolean;
+  public readonly reviews: PullRequestReviews;
 
   constructor (
     authorName: string,
@@ -223,7 +236,8 @@ export class PullRequest extends BaseContent {
     additions: number,
     deletions: number,
     changedFiles: number,
-    isDraft: boolean
+    isDraft: boolean,
+    reviews: PullRequestReviews
   ) {
     super(
       authorName,
@@ -241,6 +255,7 @@ export class PullRequest extends BaseContent {
     this.deletions = deletions
     this.changedFiles = changedFiles
     this.isDraft = isDraft
+    this.reviews = reviews
   }
 }
 

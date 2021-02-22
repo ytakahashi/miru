@@ -18,7 +18,7 @@
       <span>
         {{ pullRequest.authorName }} opened <span class="tooltip" :data-tooltip="pullRequest.getCreatedLocalDate()">{{ pullRequest.getCreatedRelativeDate() }}</span>
       </span>
-      <span><i class="fas fa-comments"></i>{{ pullRequest.numberOfComments }}</span>
+      <span class="tooltip" :data-tooltip="conversationDetail"><i class="fas fa-comments"></i>{{ conversationCount }}</span>
       <span><i class="fas fa-user"></i>{{ pullRequest.numberOfParticipants }}</span>
       <span><i class="fas fa-file"></i> {{ pullRequest.changedFiles }}</span>
       <span class="additions">+{{ pullRequest.additions }}</span>
@@ -62,10 +62,24 @@ export default defineComponent({
       backgroundColor: label.color
     })
 
+    const conversationCount = computed(() => {
+      const count = (props.pullRequest.numberOfComments + props.pullRequest.reviews.reviewCount).toString()
+      return props.pullRequest.reviews.hasRemainedItem ? count + '+' : count
+    })
+
+    const conversationDetail = computed(() => {
+      const reviews = props.pullRequest.reviews.hasRemainedItem
+        ? props.pullRequest.reviews.reviewCount.toString() + '+'
+        : props.pullRequest.reviews.reviewCount.toString()
+      return `${props.pullRequest.numberOfComments} comments, ${reviews} reviews`
+    })
+
     return {
       boxStyle,
       openPullRequest,
-      getLabelColor
+      getLabelColor,
+      conversationCount,
+      conversationDetail
     }
   }
 })
