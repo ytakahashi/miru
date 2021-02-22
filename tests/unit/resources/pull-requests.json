@@ -22,7 +22,25 @@
         },
         "additions": 374,
         "deletions": 42,
-        "changedFiles": 6
+        "changedFiles": 6,
+        "isDraft": false,
+        "reviews": {
+          "totalCount": 2,
+          "nodes": [
+            {
+              "body": "",
+              "comments": {
+                "totalCount": 1
+              }
+            },
+            {
+              "body": "",
+              "comments": {
+                "totalCount": 3
+              }
+            }
+          ]
+        }
       }
     }
   ]

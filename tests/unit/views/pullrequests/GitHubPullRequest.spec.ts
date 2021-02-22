@@ -2,7 +2,7 @@
 
 import { nextTick } from 'vue'
 import { shallowMount } from '@vue/test-utils'
-import { Account, GitHubUrl, Issues, PullRequest, PullRequests, Releases } from '@/application/domain/model/github'
+import { Account, GitHubUrl, Issues, PullRequest, PullRequests, PullRequestReviews, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory } from '@/application/usecase/githubRepository'
 import { LogUseCase } from '@/application/usecase/log'
@@ -96,7 +96,8 @@ describe('GitHubPullRequest.vue', () => {
       123,
       456,
       7,
-      false
+      false,
+      new PullRequestReviews(15, false)
     )
     const pr2 = new PullRequest(
       'author 2',
@@ -111,7 +112,8 @@ describe('GitHubPullRequest.vue', () => {
       234,
       567,
       8,
-      false
+      false,
+      new PullRequestReviews(5, false)
     )
     const pullRequests = new PullRequests(setting, [pr1, pr2], 2)
     const wrapper = shallowMount(GitHubPullRequest, {

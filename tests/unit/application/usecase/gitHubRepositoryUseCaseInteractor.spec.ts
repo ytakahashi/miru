@@ -75,7 +75,9 @@ describe('GitHubRepositoryUseCaseInteractor class', () => {
       expect(actualPullRequest.additions).toBe(374)
       expect(actualPullRequest.deletions).toBe(42)
       expect(actualPullRequest.changedFiles).toBe(6)
-      expect(actualPullRequest.isDraft).toBeFalsy()
+      expect(actualPullRequest.isDraft).toBe(false)
+      expect(actualPullRequest.reviews.hasRemainedItem).toBe(false)
+      expect(actualPullRequest.reviews.reviewCount).toBe(4)
     })
   })
 

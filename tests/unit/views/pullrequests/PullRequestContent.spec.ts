@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { shallowMount } from '@vue/test-utils'
-import { PullRequest, Label } from '@/application/domain/model/github'
+import { PullRequest, PullRequestReviews, Label } from '@/application/domain/model/github'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
@@ -33,7 +33,8 @@ const pr = new PullRequest(
   12,
   23,
   4,
-  false
+  false,
+  new PullRequestReviews(20, true)
 )
 
 const draftPr = new PullRequest(
@@ -49,10 +50,11 @@ const draftPr = new PullRequest(
   12,
   23,
   4,
-  true
+  true,
+  new PullRequestReviews(10, false)
 )
 
-describe('IssueContent.vue', () => {
+describe('PullRequestContent.vue', () => {
   beforeEach(() => {
     openUrlMock.mockClear()
   })
@@ -72,6 +74,10 @@ describe('IssueContent.vue', () => {
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
     expect(wrapper.find('span.draft-mark').exists()).toBe(false)
+    const tooltips = wrapper.find('div.pr-description').findAll('span.tooltip')
+    expect(tooltips).toHaveLength(2)
+    expect(tooltips[1].text()).toBe('22+')
+    expect(tooltips[1].attributes('data-tooltip')).toBe('2 comments, 20+ reviews')
     expect(wrapper.findAll('span.github-label')).toHaveLength(2)
   })
 
@@ -89,7 +95,10 @@ describe('IssueContent.vue', () => {
 
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
-    expect(wrapper.find('span.draft-mark').exists()).toBe(true)
+    const tooltips = wrapper.find('div.pr-description').findAll('span.tooltip')
+    expect(tooltips).toHaveLength(2)
+    expect(tooltips[1].text()).toBe('12')
+    expect(tooltips[1].attributes('data-tooltip')).toBe('2 comments, 10 reviews')
     expect(wrapper.findAll('span.github-label')).toHaveLength(2)
   })
 
