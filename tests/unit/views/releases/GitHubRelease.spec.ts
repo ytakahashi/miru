@@ -170,7 +170,7 @@ describe('GitHubRelease.vue', () => {
     expect(errorMock).toHaveBeenCalledWith(err)
   })
 
-  it('opens repository url', async () => {
+  it('opens release url (repository name)', async () => {
     const releases = new Releases(setting, [], 0)
     const wrapper = shallowMount(GitHubRelease, {
       global: {
@@ -190,11 +190,11 @@ describe('GitHubRelease.vue', () => {
     // when: click header text
     await wrapper.find('span.text-strong').trigger('click')
 
-    // then: repository url is opened
-    expect(openUrlMock).toHaveBeenCalledWith(setting.getUrl())
+    // then: release url is opened
+    expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi/miru/releases')
   })
 
-  it('opens releases url', async () => {
+  it('opens releases url (empty result)', async () => {
     const releases = new Releases(setting, [], 0)
     const wrapper = shallowMount(GitHubRelease, {
       global: {
