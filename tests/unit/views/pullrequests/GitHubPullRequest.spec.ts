@@ -180,7 +180,7 @@ describe('GitHubPullRequest.vue', () => {
     expect(errorMock).toHaveBeenCalledWith(err)
   })
 
-  it('opens repository url', async () => {
+  it('opens pull requests url (repository name)', async () => {
     const pullRequests = new PullRequests(setting, [], 0)
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {
@@ -200,11 +200,11 @@ describe('GitHubPullRequest.vue', () => {
     // when: click header text
     await wrapper.find('span.text-strong').trigger('click')
 
-    // then: repository url is opened
-    expect(openUrlMock).toHaveBeenCalledWith(setting.getUrl())
+    // then: pr url is opened
+    expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi/miru/pulls')
   })
 
-  it('opens pill requests url', async () => {
+  it('opens pull requests url (empty result)', async () => {
     const pullRequests = new PullRequests(setting, [], 0)
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {

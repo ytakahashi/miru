@@ -170,7 +170,7 @@ describe('GitHubIssue.vue', () => {
     expect(errorMock).toHaveBeenCalledWith(err)
   })
 
-  it('opens repository url', async () => {
+  it('opens issues url (repository name)', async () => {
     const issues = new Issues(setting, [], 0)
     const wrapper = shallowMount(GitHubIssue, {
       global: {
@@ -190,11 +190,11 @@ describe('GitHubIssue.vue', () => {
     // when: click header text
     await wrapper.find('span.text-strong').trigger('click')
 
-    // then: repository url is opened
-    expect(openUrlMock).toHaveBeenCalledWith(setting.getUrl())
+    // then: issue url is opened
+    expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi/miru/issues')
   })
 
-  it('opens issues url', async () => {
+  it('opens issues url (empty result)', async () => {
     const issues = new Issues(setting, [], 0)
     const wrapper = shallowMount(GitHubIssue, {
       global: {

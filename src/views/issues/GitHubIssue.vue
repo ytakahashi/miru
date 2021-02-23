@@ -1,7 +1,7 @@
 <template>
   <div class="content-list">
     <div class="content-list-header">
-      <span class="text-strong clickable" v-on:click="openRepositorySetting(repositorySetting)">{{ repositorySetting.displayName() }}</span>
+      <span class="text-strong clickable" v-on:click="openIssueUrl(repositorySetting)">{{ repositorySetting.displayName() }}</span>
       <button type="button" class="get-button" v-on:click="getIssues()">
         <i class="fas fa-sync-alt"></i>
       </button>
@@ -67,7 +67,6 @@ export default defineComponent({
     const logUseCase = inject(LogUseCaseKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
-    const openRepositorySetting = (val: RepositorySetting) => webBrowserUserCase.openUrl(val.getUrl())
     const openIssueUrl = (val: RepositorySetting) => webBrowserUserCase.openUrl(`${val.getUrl()}/issues`)
 
     const account = readonly(props.account)
@@ -97,7 +96,6 @@ export default defineComponent({
       clearIssues,
       getIssues,
       isFailed,
-      openRepositorySetting,
       openIssueUrl,
       issues,
       loading
