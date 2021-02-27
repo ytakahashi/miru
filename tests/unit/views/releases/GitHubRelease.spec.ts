@@ -131,6 +131,7 @@ describe('GitHubRelease.vue', () => {
     expect(wrapper.text()).not.toContain('There aren’t any open issues.')
     expect(wrapper.find('.clear-button').exists()).toBe(true)
     expect(wrapper.findAllComponents(ReleaseContent)).toHaveLength(2)
+    expect(wrapper.text()).toContain('showing 2 of 2 releases')
     expect(openUrlMock).not.toHaveBeenCalled()
 
     // when: click clear button

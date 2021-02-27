@@ -21,6 +21,10 @@
       </div>
     </div>
 
+    <div v-if="total">
+      {{ total }}
+    </div>
+
     <div v-if="isFailed">
       Failed to list pull requests of <span class="clickable" v-on:click="openPullRequestUrl(repositorySetting)">{{ repositorySetting.getUrl() }}</span>.<br />
       The repository does not exist or not visible with provided pesonal access token.
@@ -91,6 +95,17 @@ export default defineComponent({
     }
     const clearPRs = (): void => mutations.remove(props.repositorySetting)
     const pullRequests = computed(() => getters.of(props.repositorySetting))
+    const total = computed(() => {
+      const { value } = pullRequests
+      if (value === undefined || !value.hasContents()) {
+        return ''
+      }
+      const count = value.results.length
+      const totalCount = value.totalCount
+      return totalCount !== undefined
+        ? `showing ${count} of ${totalCount} pull requests`
+        : ''
+    })
 
     return {
       clearPRs,
@@ -98,7 +113,8 @@ export default defineComponent({
       isFailed,
       openPullRequestUrl,
       pullRequests,
-      loading
+      loading,
+      total
     }
   }
 })
