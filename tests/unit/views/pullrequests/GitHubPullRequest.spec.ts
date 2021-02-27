@@ -139,6 +139,7 @@ describe('GitHubPullRequest.vue', () => {
     expect(wrapper.text()).toContain('ytakahashi/miru')
     expect(wrapper.text()).toMatch(/Last fetched: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)
     expect(wrapper.text()).not.toContain('There aren’t any open pull requests.')
+    expect(wrapper.text()).toContain('showing 2 of 2 pull requests')
     expect(wrapper.find('.clear-button').exists()).toBe(true)
     expect(wrapper.findAllComponents(PullRequestContent)).toHaveLength(2)
     expect(openUrlMock).not.toHaveBeenCalled()

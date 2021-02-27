@@ -21,6 +21,10 @@
       </div>
     </div>
 
+    <div v-if="total">
+      {{ total }}
+    </div>
+
     <div v-if="isFailed">
       Failed to list issues of <span class="clickable" v-on:click="openIssueUrl(repositorySetting)">{{ repositorySetting.getUrl() }}</span>.<br />
       The repository does not exist or not visible with provided pesonal access token.
@@ -91,6 +95,17 @@ export default defineComponent({
     }
     const clearIssues = (): void => mutations.remove(props.repositorySetting)
     const issues = computed(() => getters.of(props.repositorySetting))
+    const total = computed(() => {
+      const { value } = issues
+      if (value === undefined || !value.hasContents()) {
+        return ''
+      }
+      const count = value.results.length
+      const totalCount = value.totalCount
+      return totalCount !== undefined
+        ? `showing ${count} of ${totalCount} issues`
+        : ''
+    })
 
     return {
       clearIssues,
@@ -98,7 +113,8 @@ export default defineComponent({
       isFailed,
       openIssueUrl,
       issues,
-      loading
+      loading,
+      total
     }
   }
 })
