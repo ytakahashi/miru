@@ -6,7 +6,10 @@
       </span>
       <span>#{{ issue.issueNumber }}</span>
     </div>
-
+    <div class="issue-information">
+      <span class="info-badge">{{ issue.viewerDidAuthor }}</span>
+      <span class="info-badge">{{ issue.isAssigned }}</span>
+    </div>
     <span class="content-title">
       {{ issue.title }}
     </span>
@@ -70,6 +73,10 @@ export default defineComponent({
 
 .issue-information {
   @include contents.base-content-description(space-between);
+}
+
+.info-badge {
+  @include app.badge-box();
 }
 
 .issue-description {

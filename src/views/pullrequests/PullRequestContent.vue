@@ -9,6 +9,13 @@
       </span>
       <span>#{{ pullRequest.issueNumber }}</span>
     </div>
+    <div class="pr-information">
+      <span class="info-badge">{{ pullRequest.viewerDidAuthor }}</span>
+      <span>
+        <span class="info-badge">{{ pullRequest.isAssigned }}</span>
+        <span class="info-badge">{{ pullRequest.isReviewRequested }}</span>
+      </span>
+    </div>
 
     <span class="content-title">
       {{ pullRequest.title }}
@@ -94,6 +101,10 @@ export default defineComponent({
 }
 
 .draft-mark {
+  @include app.badge-box();
+}
+
+.info-badge {
   @include app.badge-box();
 }
 
