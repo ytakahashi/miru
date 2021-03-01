@@ -48,6 +48,8 @@ describe('GitHubRepositoryUseCaseInteractor class', () => {
       expect(actualIssue.labels).toHaveLength(2)
       expect(actualIssue.numberOfComments).toBe(16)
       expect(actualIssue.numberOfParticipants).toBe(5)
+      expect(actualIssue.isAssigned).toBe(true)
+      expect(actualIssue.viewerDidAuthor).toBe(true)
     })
   })
 
@@ -78,6 +80,9 @@ describe('GitHubRepositoryUseCaseInteractor class', () => {
       expect(actualPullRequest.isDraft).toBe(false)
       expect(actualPullRequest.reviews.hasRemainedItem).toBe(false)
       expect(actualPullRequest.reviews.reviewCount).toBe(4)
+      expect(actualPullRequest.isAssigned).toBe(false)
+      expect(actualPullRequest.isReviewRequested).toBe(true)
+      expect(actualPullRequest.viewerDidAuthor).toBe(false)
     })
   })
 

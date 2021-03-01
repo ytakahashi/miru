@@ -3,6 +3,9 @@
   "edges": [
     {
       "node": {
+        "assignees": {
+          "nodes": []
+        },
         "author": {
           "login": "ytakahashi"
         },
@@ -40,7 +43,22 @@
               }
             }
           ]
-        }
+        },
+        "reviewRequests": {
+          "nodes": [
+            {
+              "requestedReviewer": {
+                "isViewer": false
+              }
+            },
+            {
+              "requestedReviewer": {
+                "isViewer": true
+              }
+            }
+          ]
+        },
+        "viewerDidAuthor": false
       }
     }
   ]

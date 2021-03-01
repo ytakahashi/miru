@@ -128,6 +128,8 @@ export class Issue extends BaseContent {
   public readonly labels: Array<Label>;
   public readonly numberOfComments: number;
   public readonly numberOfParticipants: number;
+  public readonly isAssigned: boolean;
+  public readonly viewerDidAuthor: boolean;
 
   constructor (
     authorName: string,
@@ -138,7 +140,9 @@ export class Issue extends BaseContent {
     issueNumber: number,
     labels: Array<Label>,
     numberOfComments: number,
-    numberOfParticipants: number
+    numberOfParticipants: number,
+    isAssigned: boolean,
+    viewerDidAuthor: boolean
   ) {
     super(
       authorName,
@@ -151,6 +155,8 @@ export class Issue extends BaseContent {
     this.labels = labels
     this.numberOfComments = numberOfComments
     this.numberOfParticipants = numberOfParticipants
+    this.isAssigned = isAssigned
+    this.viewerDidAuthor = viewerDidAuthor
   }
 }
 
@@ -222,6 +228,9 @@ export class PullRequest extends BaseContent {
   public readonly changedFiles: number;
   public readonly isDraft: boolean;
   public readonly reviews: PullRequestReviews;
+  public readonly isAssigned: boolean;
+  public readonly isReviewRequested: boolean;
+  public readonly viewerDidAuthor: boolean;
 
   constructor (
     authorName: string,
@@ -237,7 +246,10 @@ export class PullRequest extends BaseContent {
     deletions: number,
     changedFiles: number,
     isDraft: boolean,
-    reviews: PullRequestReviews
+    reviews: PullRequestReviews,
+    isAssigned: boolean,
+    isReviewRequested: boolean,
+    viewerDidAuthor: boolean
   ) {
     super(
       authorName,
@@ -256,6 +268,9 @@ export class PullRequest extends BaseContent {
     this.changedFiles = changedFiles
     this.isDraft = isDraft
     this.reviews = reviews
+    this.isAssigned = isAssigned
+    this.isReviewRequested = isReviewRequested
+    this.viewerDidAuthor = viewerDidAuthor
   }
 }
 

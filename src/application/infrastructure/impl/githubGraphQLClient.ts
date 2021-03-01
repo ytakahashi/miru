@@ -36,6 +36,11 @@ export class GitHubGraphQLClient implements GitHubAccessor {
             totalCount
             edges {
               node {
+                assignees(first:5) {
+                  nodes {
+                    isViewer
+                  }
+                }
                 author {
                   avatarUrl
                   login
@@ -60,6 +65,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                 participants {
                   totalCount
                 }
+                viewerDidAuthor
               }
             }
           }
@@ -94,6 +100,11 @@ export class GitHubGraphQLClient implements GitHubAccessor {
             totalCount
             edges {
               node {
+                assignees(first:5) {
+                  nodes {
+                    isViewer
+                  }
+                }
                 author {
                   login
                 }
@@ -129,6 +140,18 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                     }
                   }
                 }
+                reviewRequests(first:5) {
+                  nodes {
+                    requestedReviewer {
+                      ... on User {
+                        isViewer
+                        login
+                        name
+                      }
+                    }
+                  }
+                }
+                viewerDidAuthor
               }
             }
           }
