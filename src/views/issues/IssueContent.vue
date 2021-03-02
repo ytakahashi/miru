@@ -6,7 +6,11 @@
       </span>
       <span>#{{ issue.issueNumber }}</span>
     </div>
-
+    <div class="issue-information">
+      <span class="info-badge" v-if="issue.viewerDidAuthor">My Issue</span>
+      <span v-else />
+      <span class="info-badge" v-if="issue.isAssigned">Assigned</span>
+    </div>
     <span class="content-title">
       {{ issue.title }}
     </span>
@@ -70,6 +74,10 @@ export default defineComponent({
 
 .issue-information {
   @include contents.base-content-description(space-between);
+}
+
+.info-badge {
+  @include app.badge-box(var(--notice-color), var(--notice-color));
 }
 
 .issue-description {

@@ -3,6 +3,13 @@
   "edges": [
     {
       "node": {
+        "assignees": {
+          "nodes": [
+            {
+              "isViewer": true
+            }
+          ]
+        },
         "author": {
           "login": "ytakahashi"
         },
@@ -32,7 +39,8 @@
         "number": 1294,
         "participants": {
           "totalCount": 5
-        }
+        },
+        "viewerDidAuthor": true
       }
     }
   ]

@@ -9,6 +9,14 @@
       </span>
       <span>#{{ pullRequest.issueNumber }}</span>
     </div>
+    <div class="pr-information">
+      <span class="info-badge" v-if="pullRequest.viewerDidAuthor">My PR</span>
+      <span v-else />
+      <span>
+        <span class="info-badge" v-if="pullRequest.isAssigned">Assigned</span>
+        <span class="info-badge" v-if="pullRequest.isReviewRequested">Review Requested</span>
+      </span>
+    </div>
 
     <span class="content-title">
       {{ pullRequest.title }}
@@ -95,6 +103,10 @@ export default defineComponent({
 
 .draft-mark {
   @include app.badge-box();
+}
+
+.info-badge {
+  @include app.badge-box(var(--notice-color), var(--notice-color));
 }
 
 .additions {

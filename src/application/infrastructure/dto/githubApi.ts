@@ -26,11 +26,17 @@ export type IssueCommentConnection = {
   totalCount: number;
 }
 
+export type User = {
+  isViewer: boolean;
+}
+
 export type UserConnection = {
+  nodes: User[];
   totalCount: number;
 }
 
 export type Issue = {
+  assignees: UserConnection;
   author: GitHubUser;
   title: string;
   url: string;
@@ -40,6 +46,7 @@ export type Issue = {
   labels: IssueLabelEdge;
   number: number;
   participants: UserConnection;
+  viewerDidAuthor: boolean;
 }
 
 export type IssueEdge = {
@@ -67,7 +74,18 @@ export type PillRequestReviewConnection = {
   nodes: PillRequestReview[];
 }
 
+export type UserRequestedReviewer = User
+
+export type ReviewRequest = {
+  requestedReviewer: UserRequestedReviewer
+}
+
+export type ReviewRequestConnection = {
+  nodes: ReviewRequest[]
+}
+
 export type PullRequest = {
+  assignees: UserConnection;
   author: GitHubUser;
   title: string;
   url: string;
@@ -82,6 +100,8 @@ export type PullRequest = {
   changedFiles: number;
   isDraft: boolean;
   reviews: PillRequestReviewConnection;
+  reviewRequests: ReviewRequestConnection;
+  viewerDidAuthor: boolean;
 }
 
 export type PullRequestEdge = {

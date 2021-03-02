@@ -30,7 +30,9 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
           v.number,
           v.labels.edges.map(l => new Label(l.node.name, l.node.color)),
           v.comments.totalCount,
-          v.participants.totalCount
+          v.participants.totalCount,
+          v.assignees.nodes.some(a => a.isViewer),
+          v.viewerDidAuthor
         ))
       return new Issues(setting, issues, i.totalCount)
     }
@@ -70,7 +72,10 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
           v.deletions,
           v.changedFiles,
           v.isDraft,
-          countReviewComments(v.reviews)
+          countReviewComments(v.reviews),
+          v.assignees.nodes.some(a => a.isViewer),
+          v.reviewRequests.nodes.some(r => r.requestedReviewer.isViewer),
+          v.viewerDidAuthor
         ))
       return new PullRequests(setting, prs, v.totalCount)
     }

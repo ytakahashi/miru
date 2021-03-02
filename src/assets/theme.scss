@@ -5,8 +5,9 @@
   --color-light-gray: #c2c0c0;
   --color-bright-gray: #dfdfdf;
   --color-white: #fdfdfd;
-  --color-dark-red: #c02739;
+  --color-dark-red: #ce2b3e;
   --color-red: #ff3e55;
+  --color-light-red: #f88f8f;
   --color-orange: #ff953e;
   --color-green-light1: #47a740;
   --color-green-light: #4bc243;
@@ -26,6 +27,7 @@
   --link-color: var(--color-gray);
   --link-color-active: var(--color-dark-red);
 
+  --notice-color: var(--color-dark-red);
   --warning-color: var(--color-dark-red);
   --focused-color: var(--color-light-blue);
   --hover-color: var(--color-bright-gray);
@@ -52,6 +54,7 @@
   --link-color: var(--color-light-gray);
   --link-color-active: var(--color-dark-red);
 
+  --notice-color: var(--color-light-red);
   --warning-color: var(--color-red);
   --focused-color: var(--color-light-blue);
   --hover-color: var(--color-gray);
