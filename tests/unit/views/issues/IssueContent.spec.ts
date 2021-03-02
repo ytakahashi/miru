@@ -20,24 +20,27 @@ const title = 'issue title'
 const url = 'https://github.com/ytakahashi/miru'
 const label1 = new Label('label-1', 'a9ff6d')
 const label2 = new Label('label-2', '6d78ff')
-const issue = new Issue(
-  author,
-  title,
-  url,
-  '2020-12-15T21:23:56Z',
-  '2021-01-02T23:44:14Z',
-  123,
-  [label1, label2],
-  2,
-  3
-)
 
 describe('IssueContent.vue', () => {
   beforeEach(() => {
     openUrlMock.mockClear()
   })
 
-  it('renders issue', async () => {
+  it('renders issue (opened)', async () => {
+    const issue = new Issue(
+      author,
+      title,
+      url,
+      '2020-12-15T21:23:56Z',
+      '2021-01-02T23:44:14Z',
+      123,
+      [label1, label2],
+      2,
+      3,
+      false,
+      true
+    )
+
     const wrapper = shallowMount(IssueContent, {
       global: {
         provide: {
@@ -51,10 +54,59 @@ describe('IssueContent.vue', () => {
 
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
+    expect(wrapper.text()).toContain('My Issue')
+    expect(wrapper.text()).not.toContain('Assigned')
+    expect(wrapper.findAll('span.github-label')).toHaveLength(2)
+  })
+
+  it('renders issue (opened)', async () => {
+    const issue = new Issue(
+      author,
+      title,
+      url,
+      '2020-12-15T21:23:56Z',
+      '2021-01-02T23:44:14Z',
+      123,
+      [label1, label2],
+      2,
+      3,
+      true,
+      false
+    )
+
+    const wrapper = shallowMount(IssueContent, {
+      global: {
+        provide: {
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
+        }
+      },
+      props: {
+        issue: issue
+      }
+    })
+
+    expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
+    expect(wrapper.text()).toContain(title)
+    expect(wrapper.text()).not.toContain('My Issue')
+    expect(wrapper.text()).toContain('Assigned')
     expect(wrapper.findAll('span.github-label')).toHaveLength(2)
   })
 
   it('can open url', async () => {
+    const issue = new Issue(
+      author,
+      title,
+      url,
+      '2020-12-15T21:23:56Z',
+      '2021-01-02T23:44:14Z',
+      123,
+      [label1, label2],
+      2,
+      3,
+      false,
+      true
+    )
+
     const wrapper = shallowMount(IssueContent, {
       global: {
         provide: {

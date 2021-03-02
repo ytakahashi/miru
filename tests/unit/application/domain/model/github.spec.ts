@@ -63,7 +63,9 @@ describe('Issue', () => {
       123,
       [],
       2,
-      3
+      3,
+      false,
+      false
     )
 
     expect(actual.title).toBe('issue title')
@@ -72,6 +74,8 @@ describe('Issue', () => {
     expect(actual.getCreatedLocalDate()).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)
     expect(actual.getUpdatedRelativeDate()).toMatch(/ago$/)
     expect(actual.getUpdatedLocalDate()).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)
+    expect(actual.isAssigned).toBe(false)
+    expect(actual.viewerDidAuthor).toBe(false)
     expect(actual.labels).toHaveLength(0)
   })
 })
