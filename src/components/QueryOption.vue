@@ -1,14 +1,14 @@
 <template>
-  <div v-if="!open" class="open-button app-font-button">
+  <div v-if="!open" class="open-button">
     <i class="fas fa-cog" v-on:click="open = true"></i>
   </div>
   <div v-if="open" class="list-options">
-    <div class="close-button app-font-button">
+    <div class="close-button">
       <i class="fas fa-times" v-on:click="open = false"></i>
     </div>
     <div>
       <span class="option-title">Number of items:</span>
-      <select v-model.number="viewModel.itemCount" class="app-input-form number-input">
+      <select v-model.number="viewModel.itemCount" class="number-input">
         <option v-for="i in itemCounts" v-bind:key="i">
           {{ i }}
         </option>
@@ -16,7 +16,7 @@
     </div>
     <div>
       <span class="option-title">Sort:</span>
-      <select v-model="viewModel.selectedValue" class="app-input-form sort-input">
+      <select v-model="viewModel.selectedValue" class="sort-input">
         <option v-for="name in sortNames" v-bind:key="name">
           {{ name }}
         </option>
@@ -156,7 +156,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@use '@/assets/form';
+@use '@/assets/app';
 
 .list-options {
   width: 220px;
@@ -174,18 +174,22 @@ export default defineComponent({
 .open-button {
   width: max-content;
   margin: 0 13% 10px auto;
+  cursor: pointer;
 }
 
 .close-button {
   margin: -8px -10px 0 auto;
   width: 18px;
+  cursor: pointer;
 }
 
 .number-input {
+  @include app.base-input-form();
   width: 75px;
 }
 
 .sort-input {
+  @include app.base-input-form();
   width: 167px;
 }
 </style>

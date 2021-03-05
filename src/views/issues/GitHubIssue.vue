@@ -123,7 +123,6 @@ export default defineComponent({
 <style scoped lang="scss">
 @use '@/assets/app';
 @use '@/assets/contents';
-@use '@/assets/form';
 
 .issue-list-description {
   @include contents.base-content-description(space-between);

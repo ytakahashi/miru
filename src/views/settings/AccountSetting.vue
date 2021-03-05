@@ -150,7 +150,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@use '@/assets/form';
 @use '@/assets/app';
 
 $card-border-radius: 7px;
