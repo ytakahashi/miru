@@ -34,6 +34,11 @@
     color: var(--main-text-color);
     text-align: center;
   }
+
+  &:focus {
+    outline: 0;
+    border: solid 2px var(--border-color);
+  }
 }
 
 @mixin base-button($border-radius) {
@@ -46,6 +51,10 @@
 
   &:hover {
     background-color: var(--sub-background-color);
+  }
+
+  &:active {
+    transform: translate(0, 2px);
   }
 }
 

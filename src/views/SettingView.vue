@@ -160,7 +160,6 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @use '@/assets/app';
-@use '@/assets/form';
 
 .open-form-button {
   @include app.base-button(15px);
