@@ -40,7 +40,7 @@ import { Account, GitHubUrl, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
-import { GitHubRepositoryUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { GetReleasesUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { getters as queryOption } from '@/store/queryOption'
 import { getters, mutations } from '@/store/releases'
 import ReleaseContent from '@/views/releases/ReleaseContent.vue'
@@ -67,7 +67,7 @@ export default defineComponent({
     }
   },
   setup (props: PropsType) {
-    const githubRepositoryUseCaseFactory = inject(GitHubRepositoryUseCaseFactoryKey)
+    const getReleasesUseCaseFactory = inject(GetReleasesUseCaseFactoryKey)
     const logUseCase = inject(LogUseCaseKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
@@ -76,7 +76,7 @@ export default defineComponent({
     const account = readonly(props.account)
     const githubUrl = account.githubUrl as GitHubUrl
     const accessToken = account.personalAccessToken
-    const githubRepositoryUseCase = githubRepositoryUseCaseFactory.newGitHubRepositoryUseCase(githubUrl, accessToken)
+    const getReleasesUseCase = getReleasesUseCaseFactory.create(githubUrl, accessToken)
     const loading = ref(false)
 
     const isFailed = ref(false)
@@ -84,7 +84,7 @@ export default defineComponent({
       loading.value = true
       const { repositorySetting } = props
       const option = queryOption.releases()
-      isFailed.value = await githubRepositoryUseCase.getReleases(repositorySetting, option)
+      isFailed.value = await getReleasesUseCase.execute(repositorySetting, option)
         .then((r: Releases) => mutations.replace(r))
         .then(() => false)
         .catch((e: Error) => {

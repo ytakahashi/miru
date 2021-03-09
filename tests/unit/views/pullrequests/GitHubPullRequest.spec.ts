@@ -2,27 +2,25 @@
 
 import { nextTick } from 'vue'
 import { shallowMount } from '@vue/test-utils'
-import { Account, GitHubUrl, Issues, PullRequest, PullRequests, PullRequestReviews, Releases } from '@/application/domain/model/github'
+import { Account, GitHubUrl, PullRequest, PullRequests, PullRequestReviews } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory } from '@/application/usecase/githubRepository'
+import { GetPullRequestsUseCase, GetPullRequestsUseCaseFactory } from '@/application/usecase/githubRepository'
 import { LogUseCase } from '@/application/usecase/log'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import { GitHubRepositoryUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { GetPullRequestsUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import GitHubPullRequest from '@/views/pullrequests/GitHubPullRequest.vue'
 import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
 
-// GitHubRepositoryUseCase mock
-const MockedGitHubRepositoryUseCase = jest.fn<GitHubRepositoryUseCase, [() => PullRequests]>()
-MockedGitHubRepositoryUseCase.mockImplementation((cb: () => PullRequests): GitHubRepositoryUseCase => {
+// GetPullRequestsUseCase mock
+const MockedGetPullRequestsUseCase = jest.fn<GetPullRequestsUseCase, [() => PullRequests]>()
+MockedGetPullRequestsUseCase.mockImplementation((cb: () => PullRequests): GetPullRequestsUseCase => {
   return {
-    getIssues: async (): Promise<Issues> => jest.fn<Issues, []>()(),
-    getPullRequests: async (): Promise<PullRequests> => cb(),
-    getReleases: async (): Promise<Releases> => jest.fn<Releases, []>()()
+    execute: async (): Promise<PullRequests> => cb()
   }
 })
-const createMock = (func: () => GitHubRepositoryUseCase): GitHubRepositoryUseCaseFactory => {
+const createMock = (func: () => GetPullRequestsUseCase): GetPullRequestsUseCaseFactory => {
   return {
-    newGitHubRepositoryUseCase: (githubUrl: GitHubUrl, personalAccessToken: string) => func()
+    create: (githubUrl: GitHubUrl, personalAccessToken: string) => func()
   }
 }
 
@@ -60,7 +58,7 @@ describe('GitHubPullRequest.vue', () => {
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => pullRequests)),
+          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(() => new MockedGetPullRequestsUseCase(() => pullRequests)),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
@@ -125,7 +123,7 @@ describe('GitHubPullRequest.vue', () => {
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => pullRequests)),
+          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(() => new MockedGetPullRequestsUseCase(() => pullRequests)),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
@@ -168,7 +166,7 @@ describe('GitHubPullRequest.vue', () => {
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(supplier)),
+          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(() => new MockedGetPullRequestsUseCase(supplier)),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
@@ -192,7 +190,7 @@ describe('GitHubPullRequest.vue', () => {
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => pullRequests)),
+          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(() => new MockedGetPullRequestsUseCase(() => pullRequests)),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
@@ -216,7 +214,7 @@ describe('GitHubPullRequest.vue', () => {
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => pullRequests)),
+          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(() => new MockedGetPullRequestsUseCase(() => pullRequests)),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }

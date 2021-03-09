@@ -2,9 +2,13 @@ import { GitHubAccessor, Option } from '@/application/domain/interface/githubAcc
 import { Issues, Issue, Label, PullRequest, PullRequests, PullRequestReviews, TagReference, Release, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { IssueConnection, PullRequestConnection, PillRequestReview, PillRequestReviewConnection, ReleaseConnection } from '@/application/infrastructure/dto/githubApi'
-import { GitHubRepositoryUseCase } from '@/application/usecase/githubRepository'
+import {
+  GetIssuesUseCase,
+  GetPullRequestsUseCase,
+  GetReleasesUseCase
+} from '@/application/usecase/githubRepository'
 
-export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCase {
+export class GetIssuesUseCaseInteractor implements GetIssuesUseCase {
   #githubAccessor: GitHubAccessor
   #personalAccessToken: string
 
@@ -13,7 +17,7 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
     this.#personalAccessToken = personalAccessToken
   }
 
-  getIssues = async (setting: RepositorySetting, opts?: Option): Promise<Issues> => {
+  execute = (setting: RepositorySetting, opts?: Option): Promise<Issues> => {
     if (!setting.isValid()) {
       throw new Error('Invalid GitHub URL.')
     }
@@ -41,8 +45,18 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
       .then(mapToIssues)
       .catch(e => { throw e })
   }
+}
 
-  getPullRequests = async (setting: RepositorySetting, opts?: Option): Promise<PullRequests> => {
+export class GetPullRequestsUseCaseInteractor implements GetPullRequestsUseCase {
+  #githubAccessor: GitHubAccessor
+  #personalAccessToken: string
+
+  constructor (githubAccessor: GitHubAccessor, personalAccessToken: string) {
+    this.#githubAccessor = githubAccessor
+    this.#personalAccessToken = personalAccessToken
+  }
+
+  execute = (setting: RepositorySetting, opts?: Option): Promise<PullRequests> => {
     if (!setting.isValid()) {
       throw new Error('Invalid GitHub URL.')
     }
@@ -84,8 +98,18 @@ export class GitHubRepositoryUseCaseInteractor implements GitHubRepositoryUseCas
       .then(mapToPullRequests)
       .catch(e => { throw e })
   }
+}
 
-  getReleases = async (setting: RepositorySetting, opts?: Option): Promise<Releases> => {
+export class GetReleasesUseCaseInteractor implements GetReleasesUseCase {
+  #githubAccessor: GitHubAccessor
+  #personalAccessToken: string
+
+  constructor (githubAccessor: GitHubAccessor, personalAccessToken: string) {
+    this.#githubAccessor = githubAccessor
+    this.#personalAccessToken = personalAccessToken
+  }
+
+  execute = (setting: RepositorySetting, opts?: Option): Promise<Releases> => {
     if (!setting.isValid()) {
       throw new Error('Invalid GitHub URL.')
     }

@@ -3,7 +3,9 @@ import {
   AccountSettingUseCaseFactoryKey,
   ApplicationSettingUseCaseKey,
   GitHubAccountUseCaseFactoryKey,
-  GitHubRepositoryUseCaseFactoryKey,
+  GetIssuesUseCaseFactoryKey,
+  GetPullRequestsUseCaseFactoryKey,
+  GetReleasesUseCaseFactoryKey,
   LogUseCaseKey,
   RepositorySettingUseCaseFactoryKey,
   WebBrowserUserCaseKey
@@ -11,15 +13,16 @@ import {
 import {
   AccountSettingUseCaseFactoryImpl,
   ApplicationSettingUseCaseFactoryImpl,
+  GetIssuesUseCaseFactoryImpl,
+  GetPullRequestsUseCaseFactoryImpl,
+  GetReleasesUseCaseFactoryImpl,
   GitHubAccountUseCaseFactoryImpl,
-  GitHubRepositoryUseCaseFactoryImpl,
   RepositorySettingUseCaseFactoryImpl
 } from '@/application/usecase/factory/useCaseFactory'
 import { LogUseCaseInteractor } from '@/application/usecase/interactor/LogUseCaseInteractor'
 import { WebBrowserUserCaseInteractor } from '@/application/usecase/interactor/WebBrowserUserCaseInteractor'
 
 const accountSettingUseCaseFactory = new AccountSettingUseCaseFactoryImpl()
-const githubRepositoryUseCaseFactory = new GitHubRepositoryUseCaseFactoryImpl()
 const webBrowserUserCaseInteractor = new WebBrowserUserCaseInteractor()
 const logUseCaseInteractor = new LogUseCaseInteractor()
 
@@ -27,12 +30,18 @@ const applicationSettingUseCase = new ApplicationSettingUseCaseFactoryImpl().new
 const gitHubAccountUseCaseFactory = new GitHubAccountUseCaseFactoryImpl()
 const repositorySettingUseCaseFactory = new RepositorySettingUseCaseFactoryImpl()
 
+const getIssuesUseCaseFactory = new GetIssuesUseCaseFactoryImpl()
+const getPullRequestsUseCaseFactory = new GetPullRequestsUseCaseFactoryImpl()
+const getReleasesUseCaseFactory = new GetReleasesUseCaseFactoryImpl()
+
 export default {
   install (app: App): void {
     app.provide(AccountSettingUseCaseFactoryKey, accountSettingUseCaseFactory)
     app.provide(ApplicationSettingUseCaseKey, applicationSettingUseCase)
     app.provide(GitHubAccountUseCaseFactoryKey, gitHubAccountUseCaseFactory)
-    app.provide(GitHubRepositoryUseCaseFactoryKey, githubRepositoryUseCaseFactory)
+    app.provide(GetIssuesUseCaseFactoryKey, getIssuesUseCaseFactory)
+    app.provide(GetPullRequestsUseCaseFactoryKey, getPullRequestsUseCaseFactory)
+    app.provide(GetReleasesUseCaseFactoryKey, getReleasesUseCaseFactory)
     app.provide(LogUseCaseKey, logUseCaseInteractor)
     app.provide(WebBrowserUserCaseKey, webBrowserUserCaseInteractor)
     app.provide(RepositorySettingUseCaseFactoryKey, repositorySettingUseCaseFactory)

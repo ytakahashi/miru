@@ -40,7 +40,7 @@ import { Account, PullRequests, GitHubUrl } from '@/application/domain/model/git
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
-import { GitHubRepositoryUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { GetPullRequestsUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { getters, mutations } from '@/store/pullRequests'
 import { getters as queryOption } from '@/store/queryOption'
 import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
@@ -67,7 +67,7 @@ export default defineComponent({
     }
   },
   setup (props: PropsType) {
-    const githubRepositoryUseCaseFactory = inject(GitHubRepositoryUseCaseFactoryKey)
+    const getPullRequestsUseCaseFactory = inject(GetPullRequestsUseCaseFactoryKey)
     const logUseCase = inject(LogUseCaseKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
@@ -76,7 +76,7 @@ export default defineComponent({
     const account = readonly(props.account)
     const githubUrl = account.githubUrl as GitHubUrl
     const accessToken = account.personalAccessToken
-    const githubRepositoryUseCase = githubRepositoryUseCaseFactory.newGitHubRepositoryUseCase(githubUrl, accessToken)
+    const getPullRequestsUseCase = getPullRequestsUseCaseFactory.create(githubUrl, accessToken)
     const loading = ref(false)
 
     const isFailed = ref(false)
@@ -84,7 +84,7 @@ export default defineComponent({
       loading.value = true
       const { repositorySetting } = props
       const option = queryOption.pullRequests()
-      isFailed.value = await githubRepositoryUseCase.getPullRequests(repositorySetting, option)
+      isFailed.value = await getPullRequestsUseCase.execute(repositorySetting, option)
         .then((prs: PullRequests) => mutations.replace(prs))
         .then(() => false)
         .catch((e: Error) => {
