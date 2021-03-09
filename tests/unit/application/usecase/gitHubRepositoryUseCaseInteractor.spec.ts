@@ -2,11 +2,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { GitHubAccessor } from '@/application/domain/interface/githubAccessor'
-import { GitHubRepositoryUseCaseInteractor } from '@/application/usecase/interactor/githubRepositoryUseCaseInteractor'
+import {
+  GetIssuesUseCaseInteractor,
+  GetPullRequestsUseCaseInteractor,
+  GetReleasesUseCaseInteractor
+} from '@/application/usecase/interactor/githubRepositoryUseCaseInteractor'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { IssueConnection, PullRequestConnection, ReleaseConnection, Viewer } from '@/application/infrastructure/dto/githubApi'
 
-describe('GitHubRepositoryUseCaseInteractor class', () => {
+describe('GitHubRepositoryUseCaseInteractor.ts', () => {
   const viewer: Viewer = require('../../resources/viewer.json')
   const issueConnection: IssueConnection = require('../../resources/issues.json')
   const pullRequestConnection: PullRequestConnection = require('../../resources/pull-requests.json')
@@ -27,11 +31,11 @@ describe('GitHubRepositoryUseCaseInteractor class', () => {
     }
   }
 
-  describe('getIssues method', () => {
+  describe('GetIssuesUseCaseInteractor', () => {
     it('returns issues', async () => {
-      const sut = new GitHubRepositoryUseCaseInteractor(mock, 'pat')
+      const sut = new GetIssuesUseCaseInteractor(mock, 'pat')
       const target = new RepositorySetting('https://github.com/ytakahashi/miru')
-      const actual = await sut.getIssues(target)
+      const actual = await sut.execute(target)
       expect(actual.totalCount).toBe(16)
       expect(actual.results).toHaveLength(1)
       expect(actual.belongsTo('https://github.com/ytakahashi/miru')).toBe(true)
@@ -53,11 +57,11 @@ describe('GitHubRepositoryUseCaseInteractor class', () => {
     })
   })
 
-  describe('getPullRequests method', () => {
+  describe('GetPullRequestsUseCaseInteractor', () => {
     it('returns pull requests', async () => {
-      const sut = new GitHubRepositoryUseCaseInteractor(mock, 'pat')
+      const sut = new GetPullRequestsUseCaseInteractor(mock, 'pat')
       const target = new RepositorySetting('https://github.com/ytakahashi/miru')
-      const actual = await sut.getPullRequests(target)
+      const actual = await sut.execute(target)
       expect(actual.totalCount).toBe(7)
       expect(actual.results).toHaveLength(1)
       expect(actual.belongsTo('https://github.com/ytakahashi/miru')).toBe(true)
@@ -86,11 +90,11 @@ describe('GitHubRepositoryUseCaseInteractor class', () => {
     })
   })
 
-  describe('getReleases method', () => {
+  describe('GetReleasesUseCaseInteractor', () => {
     it('returns releases', async () => {
-      const sut = new GitHubRepositoryUseCaseInteractor(mock, 'pat')
+      const sut = new GetReleasesUseCaseInteractor(mock, 'pat')
       const target = new RepositorySetting('https://github.com/ytakahashi/miru')
-      const actual = await sut.getReleases(target)
+      const actual = await sut.execute(target)
       expect(actual.totalCount).toBe(2)
       expect(actual.results).toHaveLength(2)
       expect(actual.belongsTo('https://github.com/ytakahashi/miru')).toBe(true)

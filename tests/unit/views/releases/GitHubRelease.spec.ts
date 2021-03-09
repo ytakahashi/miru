@@ -4,25 +4,23 @@ import { nextTick } from 'vue'
 import { shallowMount } from '@vue/test-utils'
 import { Account, GitHubUrl, Issues, PullRequests, Release, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { GitHubRepositoryUseCase, GitHubRepositoryUseCaseFactory } from '@/application/usecase/githubRepository'
+import { GetReleasesUseCase, GetReleasesUseCaseFactory } from '@/application/usecase/githubRepository'
 import { LogUseCase } from '@/application/usecase/log'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import { GitHubRepositoryUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { GetReleasesUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import GitHubRelease from '@/views/releases/GitHubRelease.vue'
 import ReleaseContent from '@/views/releases/ReleaseContent.vue'
 
-// GitHubRepositoryUseCase mock
-const MockedGitHubRepositoryUseCase = jest.fn<GitHubRepositoryUseCase, [() => Releases]>()
-MockedGitHubRepositoryUseCase.mockImplementation((cb:() => Releases): GitHubRepositoryUseCase => {
+// GetReleasesUseCase mock
+const MockedGetReleasesUseCase = jest.fn<GetReleasesUseCase, [() => Releases]>()
+MockedGetReleasesUseCase.mockImplementation((cb:() => Releases): GetReleasesUseCase => {
   return {
-    getIssues: async (): Promise<Issues> => jest.fn<Issues, []>()(),
-    getPullRequests: async (): Promise<PullRequests> => jest.fn<PullRequests, []>()(),
-    getReleases: async (): Promise<Releases> => cb()
+    execute: async (): Promise<Releases> => cb()
   }
 })
-const createMock = (func: () => GitHubRepositoryUseCase): GitHubRepositoryUseCaseFactory => {
+const createMock = (func: () => GetReleasesUseCase): GetReleasesUseCaseFactory => {
   return {
-    newGitHubRepositoryUseCase: (githubUrl: GitHubUrl, personalAccessToken: string) => func()
+    create: (githubUrl: GitHubUrl, personalAccessToken: string) => func()
   }
 }
 
@@ -60,7 +58,7 @@ describe('GitHubRelease.vue', () => {
     const wrapper = shallowMount(GitHubRelease, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => releases)),
+          [GetReleasesUseCaseFactoryKey as symbol]: createMock(() => new MockedGetReleasesUseCase(() => releases)),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
@@ -109,7 +107,7 @@ describe('GitHubRelease.vue', () => {
     const wrapper = shallowMount(GitHubRelease, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => releases)),
+          [GetReleasesUseCaseFactoryKey as symbol]: createMock(() => new MockedGetReleasesUseCase(() => releases)),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
@@ -152,7 +150,7 @@ describe('GitHubRelease.vue', () => {
     const wrapper = shallowMount(GitHubRelease, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(supplier)),
+          [GetReleasesUseCaseFactoryKey as symbol]: createMock(() => new MockedGetReleasesUseCase(supplier)),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
@@ -176,7 +174,7 @@ describe('GitHubRelease.vue', () => {
     const wrapper = shallowMount(GitHubRelease, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => releases)),
+          [GetReleasesUseCaseFactoryKey as symbol]: createMock(() => new MockedGetReleasesUseCase(() => releases)),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
@@ -200,7 +198,7 @@ describe('GitHubRelease.vue', () => {
     const wrapper = shallowMount(GitHubRelease, {
       global: {
         provide: {
-          [GitHubRepositoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGitHubRepositoryUseCase(() => releases)),
+          [GetReleasesUseCaseFactoryKey as symbol]: createMock(() => new MockedGetReleasesUseCase(() => releases)),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
         }
