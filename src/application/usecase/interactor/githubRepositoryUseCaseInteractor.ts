@@ -17,7 +17,7 @@ export class GetIssuesUseCaseInteractor implements GetIssuesUseCase {
     this.#personalAccessToken = personalAccessToken
   }
 
-  execute (setting: RepositorySetting, opts?: Option): Promise<Issues> {
+  execute = (setting: RepositorySetting, opts?: Option): Promise<Issues> => {
     if (!setting.isValid()) {
       throw new Error('Invalid GitHub URL.')
     }
@@ -56,7 +56,7 @@ export class GetPullRequestsUseCaseInteractor implements GetPullRequestsUseCase 
     this.#personalAccessToken = personalAccessToken
   }
 
-  execute (setting: RepositorySetting, opts?: Option): Promise<PullRequests> {
+  execute = (setting: RepositorySetting, opts?: Option): Promise<PullRequests> => {
     if (!setting.isValid()) {
       throw new Error('Invalid GitHub URL.')
     }
@@ -109,7 +109,7 @@ export class GetReleasesUseCaseInteractor implements GetReleasesUseCase {
     this.#personalAccessToken = personalAccessToken
   }
 
-  execute (setting: RepositorySetting, opts?: Option): Promise<Releases> {
+  execute = (setting: RepositorySetting, opts?: Option): Promise<Releases> => {
     if (!setting.isValid()) {
       throw new Error('Invalid GitHub URL.')
     }
