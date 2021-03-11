@@ -115,9 +115,31 @@ export type PullRequestConnection = {
   edges: Array<PullRequestEdge>;
 }
 
+export type GitActor = {
+ user: GitHubUser
+}
+
+export type CommitNode = {
+  additions: number
+  author?: GitActor
+  authoredDate: string
+  changedFiles: number
+  commitUrl: string
+  committedDate: string
+  committer?: GitActor
+  deletions: number
+  message: string
+  pushedDate?: string
+}
+
+export type CommitHistoryConnection = {
+  nodes: CommitNode[]
+}
+
 export type GitObject = {
   abbreviatedOid: string
   commitUrl: string
+  history?: CommitHistoryConnection
 }
 
 export type Ref = {
@@ -158,6 +180,7 @@ export type GithubRepository = {
   issues?: IssueConnection;
   pullRequests?: PullRequestConnection;
   releases?: ReleaseConnection;
+  defaultBranchRef?: Ref
 }
 
 export type Repository = {

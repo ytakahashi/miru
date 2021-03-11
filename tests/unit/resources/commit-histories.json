@@ -1,0 +1,60 @@
+{
+    "nodes": [
+        {
+            "additions": 178,
+            "author": {
+                "user": {
+                    "login": "ytakahashi"
+                }
+            },
+            "authoredDate": "2021-03-01T21:12:41Z",
+            "changedFiles": 12,
+            "commitUrl": "https://github.com/ytakahashi/miru/commit/54f50be6d23a7b46533bf955d6e5d217283475b9",
+            "committedDate": "2021-03-09T21:12:41Z",
+            "committer": {
+                "user": null
+            },
+            "deletions": 98,
+            "message": "refactor: separate usecase (#66)",
+            "pushedDate": "2021-03-09T21:12:42Z"
+        },
+        {
+            "additions": 1,
+            "author": {
+                "user": {
+                    "login": "ytakahashi"
+                }
+            },
+            "authoredDate": "2021-03-07T00:44:32Z",
+            "changedFiles": 1,
+            "commitUrl": "https://github.com/ytakahashi/miru/commit/60a7220a7a0b60c84eb5adbce1c44f5bb85e80ef",
+            "committedDate": "2021-03-07T00:44:32Z",
+            "committer": {
+                "user": {
+                    "login": "ytakahashi"
+                }
+            },
+            "deletions": 1,
+            "message": "v0.8.0",
+            "pushedDate": "2021-03-07T00:45:00Z"
+        },
+        {
+            "additions": 18,
+            "author": {
+                "user": {
+                    "login": "ytakahashi"
+                }
+            },
+            "authoredDate": "2021-03-05T21:13:27Z",
+            "changedFiles": 8,
+            "commitUrl": "https://github.com/ytakahashi/miru/commit/47e5de4385a808d6365ee606c5354f5978f89a49",
+            "committedDate": "2021-03-05T21:13:27Z",
+            "committer": {
+                "user": null
+            },
+            "deletions": 40,
+            "message": "style: update button/from (#65)",
+            "pushedDate": "2021-03-05T21:13:28Z"
+        }
+    ]
+}

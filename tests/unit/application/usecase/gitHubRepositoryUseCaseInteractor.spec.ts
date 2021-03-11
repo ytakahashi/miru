@@ -8,13 +8,14 @@ import {
   GetReleasesUseCaseInteractor
 } from '@/application/usecase/interactor/githubRepositoryUseCaseInteractor'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { IssueConnection, PullRequestConnection, ReleaseConnection, Viewer } from '@/application/infrastructure/dto/githubApi'
+import { CommitHistoryConnection, IssueConnection, PullRequestConnection, ReleaseConnection, Viewer } from '@/application/infrastructure/dto/githubApi'
 
 describe('GitHubRepositoryUseCaseInteractor.ts', () => {
   const viewer: Viewer = require('../../resources/viewer.json')
   const issueConnection: IssueConnection = require('../../resources/issues.json')
   const pullRequestConnection: PullRequestConnection = require('../../resources/pull-requests.json')
   const releaseConnection: ReleaseConnection = require('../../resources/releases.json')
+  const commitHistoryConnection: CommitHistoryConnection = require('../../resources/commit-histories.json')
 
   const mock: GitHubAccessor = {
     async getViewer (personalAccessToken: string): Promise<Viewer> {
@@ -28,6 +29,9 @@ describe('GitHubRepositoryUseCaseInteractor.ts', () => {
     },
     async getReleases (personalAccessToken: string, s: RepositorySetting): Promise<ReleaseConnection> {
       return releaseConnection
+    },
+    async getCommits (personalAccessToken: string, s: RepositorySetting): Promise<CommitHistoryConnection> {
+      return commitHistoryConnection
     }
   }
 
