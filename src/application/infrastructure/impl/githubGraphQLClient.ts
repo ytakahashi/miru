@@ -2,7 +2,7 @@ import { GraphQLClient, gql } from 'graphql-request'
 import { GitHubUrl } from '@/application/domain/model/github'
 import { GitHubAccessor, Option } from '@/application/domain/interface/githubAccessor'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { IssueConnection, PullRequestConnection, ReleaseConnection, Repository, Viewer } from '@/application/infrastructure/dto/githubApi'
+import { CommitHistoryConnection, IssueConnection, PullRequestConnection, ReleaseConnection, Repository, Viewer } from '@/application/infrastructure/dto/githubApi'
 
 export class GitHubGraphQLClient implements GitHubAccessor {
   #graphQLClient: GraphQLClient
@@ -230,5 +230,59 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       }
     }
     return this.#graphQLClient.request<Repository>(query, variables, requestHeaders).then(takeReleases)
+  }
+
+  public getCommits = async (personalAccessToken: string, setting: RepositorySetting, opts?: Option): Promise<CommitHistoryConnection> => {
+    const requestHeaders = {
+      authorization: `Bearer ${personalAccessToken}`
+    }
+    const query = gql`
+      query getCommits($owner: String!, $name: String!, $firstNumber: Int!) {
+        repository(owner: $owner, name: $name) {
+          defaultBranchRef {
+            target {
+              ... on Commit {
+                history(first: $firstNumber) {
+                  nodes {
+                    additions
+                    author {
+                      user {
+                        login
+                      }
+                    }
+                    authoredDate
+                    changedFiles
+                    commitUrl
+                    committedDate
+                    committer {
+                      user {
+                        login
+                      }
+                    }
+                    deletions
+                    message
+                    pushedDate
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `
+
+    const variables = {
+      owner: setting.getOwner(),
+      name: setting.getRepositoryName(),
+      firstNumber: opts?.count !== undefined ? opts.count : 3
+    }
+    const takeCommitHistories = (r: Repository): CommitHistoryConnection => {
+      if (r.repository?.defaultBranchRef?.target?.history) {
+        return r.repository?.defaultBranchRef?.target?.history
+      } else {
+        throw Error(`Failed to get commit histories: ${setting.getUrl()}, ${r}.`)
+      }
+    }
+    return this.#graphQLClient.request<Repository>(query, variables, requestHeaders).then(takeCommitHistories)
   }
 }
