@@ -274,7 +274,44 @@ export class PullRequest extends BaseContent {
   }
 }
 
-class ResultListHolder<T extends BaseContent> {
+export class Commit {
+  public readonly message: string;
+  public readonly commitUrl: string;
+  public readonly additions: number;
+  public readonly deletions: number;
+  public readonly changedFiles: number;
+  public readonly authorName?: string;
+  public readonly authoredDate: string;
+  public readonly committerName? :string;
+  public readonly committedDate: string;
+  public readonly pushedDate?: string;
+
+  constructor (
+    message: string,
+    commitUrl: string,
+    additions: number,
+    deletions: number,
+    changedFiles: number,
+    authorName: string | undefined,
+    authoredDate: string,
+    committerName :string | undefined,
+    committedDate: string,
+    pushedDate: string | undefined
+  ) {
+    this.message = message
+    this.commitUrl = commitUrl
+    this.additions = additions
+    this.deletions = deletions
+    this.changedFiles = changedFiles
+    this.authorName = authorName
+    this.authoredDate = authoredDate
+    this.committerName = committerName
+    this.committedDate = committedDate
+    this.pushedDate = pushedDate
+  }
+}
+
+class ResultListHolder<T> {
   readonly fetchedAt: number
   public readonly repositoryUrl: string;
   public readonly results: Array<T>;
@@ -311,4 +348,7 @@ export class PullRequests extends ResultListHolder<PullRequest> {
 }
 
 export class Releases extends ResultListHolder<Release> {
+}
+
+export class CommitHistory extends ResultListHolder<Commit> {
 }
