@@ -2,6 +2,8 @@
   <div id="nav">
     <router-link to="/" class="link">Settings</router-link>
     <span class="separator">|</span>
+    <router-link to="/commits" class="link">Commits</router-link>
+    <span class="separator">|</span>
     <router-link to="/issues" class="link">Issues</router-link>
     <span class="separator">|</span>
     <router-link to="/pulls" class="link">Pull Requests</router-link>
@@ -15,6 +17,7 @@ import { defineComponent, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const shortcut = new Map([
+  ['c', '/commits'],
   ['i', '/issues'],
   ['p', '/pulls'],
   ['r', '/releases'],

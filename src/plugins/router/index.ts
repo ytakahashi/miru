@@ -8,6 +8,11 @@ const routes: Array<RouteRecordRaw> = [
     component: SettingView
   },
   {
+    path: '/commits',
+    name: 'Commits',
+    component: () => import(/* webpackChunkName: "commits" */ '@/views/CommitsView.vue')
+  },
+  {
     path: '/issues',
     name: 'Issues',
     component: () => import(/* webpackChunkName: "issues" */ '@/views/IssuesView.vue')
