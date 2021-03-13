@@ -309,6 +309,52 @@ export class Commit {
     this.committedDate = committedDate
     this.pushedDate = pushedDate
   }
+
+  getPushedRelativeDate = (): string => {
+    return this.pushedDate === undefined
+      ? ''
+      : dayjs(this.pushedDate).fromNow()
+  }
+
+  getAuthoredRelativeDate = (): string => {
+    return dayjs(this.authoredDate).fromNow()
+  }
+
+  getCommittedRelativeDate = (): string => {
+    return dayjs(this.committedDate).fromNow()
+  }
+
+  getPushedLocalDate = (): string => {
+    return this.pushedDate === undefined
+      ? ''
+      : dayjs(this.pushedDate).local().format('YYYY-MM-DD HH:mm:ssZ')
+  }
+
+  getAuthoredLocalDate = (): string => {
+    return dayjs(this.authoredDate).local().format('YYYY-MM-DD HH:mm:ssZ')
+  }
+
+  getCommittedLocalDate = (): string => {
+    return dayjs(this.committedDate).local().format('YYYY-MM-DD HH:mm:ssZ')
+  }
+
+  public getAuthorInformation = (): string => {
+    let text = ''
+    if (this.authorName !== undefined) {
+      text += this.authorName + ' '
+    }
+    text += 'authored ' + this.getAuthoredRelativeDate()
+    return text
+  }
+
+  public getCommitInformation = (): string => {
+    let text = ''
+    if (this.committerName !== undefined) {
+      text += this.committerName + ' '
+    }
+    text += 'committed ' + this.getCommittedRelativeDate()
+    return text
+  }
 }
 
 class ResultListHolder<T> {
