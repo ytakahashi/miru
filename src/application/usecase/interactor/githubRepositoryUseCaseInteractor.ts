@@ -1,8 +1,28 @@
 import { GitHubAccessor, Option } from '@/application/domain/interface/githubAccessor'
-import { Issues, Issue, Label, PullRequest, PullRequests, PullRequestReviews, TagReference, Release, Releases } from '@/application/domain/model/github'
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { IssueConnection, PullRequestConnection, PillRequestReview, PillRequestReviewConnection, ReleaseConnection } from '@/application/infrastructure/dto/githubApi'
 import {
+  Commit,
+  CommitHistory,
+  Issues,
+  Issue,
+  Label,
+  PullRequest,
+  PullRequests,
+  PullRequestReviews,
+  TagReference,
+  Release,
+  Releases
+} from '@/application/domain/model/github'
+import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import {
+  CommitHistoryConnection,
+  IssueConnection,
+  PullRequestConnection,
+  PillRequestReview,
+  PillRequestReviewConnection,
+  ReleaseConnection
+} from '@/application/infrastructure/dto/githubApi'
+import {
+  GetCommitHistoryUseCase,
   GetIssuesUseCase,
   GetPullRequestsUseCase,
   GetReleasesUseCase
@@ -136,5 +156,41 @@ export class GetReleasesUseCaseInteractor implements GetReleasesUseCase {
 
     return this.#githubAccessor.getReleases(this.#personalAccessToken, setting, opts)
       .then(mapToReleases)
+  }
+}
+
+export class GetCommitHistoryUseCaseInteractor implements GetCommitHistoryUseCase {
+  #githubAccessor: GitHubAccessor
+  #personalAccessToken: string
+
+  constructor (githubAccessor: GitHubAccessor, personalAccessToken: string) {
+    this.#githubAccessor = githubAccessor
+    this.#personalAccessToken = personalAccessToken
+  }
+
+  execute = (setting: RepositorySetting, opts?: Option): Promise<CommitHistory> => {
+    if (!setting.isValid()) {
+      throw new Error('Invalid GitHub URL.')
+    }
+
+    const mapToCommitHistory = (v: CommitHistoryConnection): CommitHistory => {
+      const history = v.nodes
+        .map(c => new Commit(
+          c.message,
+          c.commitUrl,
+          c.additions,
+          c.deletions,
+          c.changedFiles,
+          c.author?.user?.login,
+          c.authoredDate,
+          c.committer?.user?.login,
+          c.committedDate,
+          c.pushedDate
+        ))
+      return new CommitHistory(setting, history, v.nodes.length)
+    }
+
+    return this.#githubAccessor.getCommits(this.#personalAccessToken, setting, opts)
+      .then(mapToCommitHistory)
   }
 }

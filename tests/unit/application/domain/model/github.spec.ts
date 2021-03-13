@@ -1,4 +1,4 @@
-import { GitHubUrl, Label, Issue, Issues } from '@/application/domain/model/github'
+import { Commit, GitHubUrl, Label, Issue, Issues } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 
 describe('GitHubUrl', () => {
@@ -92,5 +92,28 @@ describe('Issues', () => {
     expect(actual.belongsTo('https://github.com/facebook/jest')).toBe(true)
     expect(actual.belongsTo('https://github.com/foo/bar')).toBe(false)
     expect(actual.hasContents()).toBe(false)
+  })
+})
+
+describe('Commit', () => {
+  const sut = new Commit(
+    'commit message',
+    'https://example.com/commits/1',
+    100,
+    50,
+    3,
+    'ytakahashi',
+    '2021-03-13T00:00:00Z',
+    'ytakahashi',
+    '2021-03-13T00:00:01Z',
+    '2021-03-13T00:00:02Z'
+  )
+  it('holds parameters and all methods work', () => {
+    expect(sut.getPushedLocalDate()).not.toBe(undefined)
+    expect(sut.getAuthoredLocalDate()).not.toBe(undefined)
+    expect(sut.getCommittedLocalDate()).not.toBe(undefined)
+    expect(sut.getPushedRelativeDate()).toMatch(/^.+ ago$/)
+    expect(sut.getAuthorInformation()).toMatch(/^ytakahashi authored .+ ago$/)
+    expect(sut.getCommitInformation()).toMatch(/^ytakahashi committed .+ ago$/)
   })
 })

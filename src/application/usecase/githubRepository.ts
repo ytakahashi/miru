@@ -1,4 +1,4 @@
-import { GitHubUrl, Issues, PullRequests, Releases } from '@/application/domain/model/github'
+import { CommitHistory, GitHubUrl, Issues, PullRequests, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { Option } from '@/application/domain/interface/githubAccessor'
 export { Option, SortDirection, SortField } from '@/application/domain/interface/githubAccessor'
@@ -15,6 +15,10 @@ export interface GetReleasesUseCase {
   execute (setting: RepositorySetting, opts?: Option): Promise<Releases>
 }
 
+export interface GetCommitHistoryUseCase {
+  execute (setting: RepositorySetting, opts?: Option): Promise<CommitHistory>
+}
+
 export interface GetIssuesUseCaseFactory {
   create (githubUrl: GitHubUrl, personalAccessToken: string): GetIssuesUseCase
 }
@@ -25,4 +29,8 @@ export interface GetPullRequestsUseCaseFactory {
 
 export interface GetReleasesUseCaseFactory {
   create (githubUrl: GitHubUrl, personalAccessToken: string): GetReleasesUseCase
+}
+
+export interface GetCommitHistoryUseCaseFactory {
+  create (githubUrl: GitHubUrl, personalAccessToken: string): GetCommitHistoryUseCase
 }

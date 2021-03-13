@@ -3,6 +3,7 @@
 
 import { GitHubAccessor } from '@/application/domain/interface/githubAccessor'
 import {
+  GetCommitHistoryUseCaseInteractor,
   GetIssuesUseCaseInteractor,
   GetPullRequestsUseCaseInteractor,
   GetReleasesUseCaseInteractor
@@ -15,7 +16,7 @@ describe('GitHubRepositoryUseCaseInteractor.ts', () => {
   const issueConnection: IssueConnection = require('../../resources/issues.json')
   const pullRequestConnection: PullRequestConnection = require('../../resources/pull-requests.json')
   const releaseConnection: ReleaseConnection = require('../../resources/releases.json')
-  const commitHistoryConnection: CommitHistoryConnection = require('../../resources/commit-histories.json')
+  const commitHistoryConnection: CommitHistoryConnection = require('../../resources/commit-history.json')
 
   const mock: GitHubAccessor = {
     async getViewer (personalAccessToken: string): Promise<Viewer> {
@@ -118,6 +119,31 @@ describe('GitHubRepositoryUseCaseInteractor.ts', () => {
       expect(actualRelease0.tag).toBeDefined()
       expect(actualRelease0.tag?.abbreviatedObjectId).toBe('e6e7ac5')
       expect(actualRelease0.tag?.commitUrl).toBe('https://github.com/ytakahashi/miru/commit/893093edc0849de20763d1858d84a7bcb02ca07b')
+    })
+  })
+
+  describe('GetCommitHistoryUseCaseInteractor', () => {
+    it('returns releases', async () => {
+      const sut = new GetCommitHistoryUseCaseInteractor(mock, 'pat')
+      const target = new RepositorySetting('https://github.com/ytakahashi/miru')
+      const actual = await sut.execute(target)
+      expect(actual.totalCount).toBe(3)
+      expect(actual.results).toHaveLength(3)
+      expect(actual.belongsTo('https://github.com/ytakahashi/miru')).toBe(true)
+      expect(actual.hasContents()).toBe(true)
+      expect(actual.fetchedAtDate()).not.toBeUndefined()
+
+      const actualCommit0 = actual.results[0]
+      expect(actualCommit0.message).toBe('refactor: separate usecase (#66)')
+      expect(actualCommit0.commitUrl).toBe('https://github.com/ytakahashi/miru/commit/54f50be6d23a7b46533bf955d6e5d217283475b9')
+      expect(actualCommit0.additions).toBe(178)
+      expect(actualCommit0.deletions).toBe(98)
+      expect(actualCommit0.changedFiles).toBe(12)
+      expect(actualCommit0.authorName).toBe('ytakahashi')
+      expect(actualCommit0.authoredDate).toBe('2021-03-01T21:12:41Z')
+      expect(actualCommit0.committerName).toBe(undefined)
+      expect(actualCommit0.committedDate).toBe('2021-03-09T21:12:41Z')
+      expect(actualCommit0.pushedDate).toBe('2021-03-09T21:12:42Z')
     })
   })
 })

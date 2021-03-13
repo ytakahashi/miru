@@ -5,6 +5,8 @@ import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/applicati
 import { ApplicationSettingUseCase, ApplicationSettingUseCaseFactory } from '@/application/usecase/applicationSetting'
 import { GitHubAccountUseCase, GitHubAccountUseCaseFactory } from '@/application/usecase/githubAccount'
 import {
+  GetCommitHistoryUseCase,
+  GetCommitHistoryUseCaseFactory,
   GetIssuesUseCase,
   GetIssuesUseCaseFactory,
   GetPullRequestsUseCase,
@@ -17,6 +19,7 @@ import { AccountSettingUseCaseInteractor } from '@/application/usecase/interacto
 import { ApplicationSettingUseCaseInteractor } from '@/application/usecase/interactor/applicationSettingUseCaseInteractor'
 import { GitHubAccountUseCaseInteractor } from '@/application/usecase/interactor/githubAccountUseCaseInteractor'
 import {
+  GetCommitHistoryUseCaseInteractor,
   GetIssuesUseCaseInteractor,
   GetPullRequestsUseCaseInteractor,
   GetReleasesUseCaseInteractor
@@ -49,6 +52,15 @@ export class RepositorySettingUseCaseFactoryImpl implements RepositorySettingUse
   newRepositorySettingUseCase = (setting: ApplicationSetting): RepositorySettingUseCase => {
     return new RepositorySettingUseCaseInteractor(
       newLocalStorageAccessor(setting.configPostfix)
+    )
+  }
+}
+
+export class GetCommitHistoryUseCaseFactoryImpl implements GetCommitHistoryUseCaseFactory {
+  create = (githubUrl: GitHubUrl, personalAccessToken: string): GetCommitHistoryUseCase => {
+    return new GetCommitHistoryUseCaseInteractor(
+      newGitHubAccessor(githubUrl),
+      personalAccessToken
     )
   }
 }
