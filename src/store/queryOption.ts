@@ -1,6 +1,10 @@
 import { reactive } from 'vue'
 import { Option } from '@/application/usecase/githubRepository'
 
+const commitOption = reactive<Option>({
+  count: 5
+})
+
 const issueOption = reactive<Option>({
   count: 10,
   sortField: 'UPDATED_AT',
@@ -20,6 +24,9 @@ const releaseOption = reactive<Option>({
 })
 
 export const getters = {
+  commits (): Option {
+    return commitOption
+  },
   issues (): Option {
     return issueOption
   },
@@ -32,6 +39,9 @@ export const getters = {
 }
 
 export const mutations = {
+  commits (option: Option): void {
+    commitOption.count = option.count
+  },
   issues (option: Option): void {
     issueOption.count = option.count
     issueOption.sortField = option.sortField

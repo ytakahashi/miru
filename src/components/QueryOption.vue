@@ -6,7 +6,7 @@
     <div class="close-button">
       <i class="fas fa-times" v-on:click="open = false"></i>
     </div>
-    <div>
+    <div class="option-line">
       <span class="option-title">Number of items:</span>
       <select v-model.number="viewModel.itemCount" class="number-input">
         <option v-for="i in itemCounts" v-bind:key="i">
@@ -14,7 +14,7 @@
         </option>
       </select>
     </div>
-    <div>
+    <div v-if="isSortable" class="option-line">
       <span class="option-title">Sort:</span>
       <select v-model="viewModel.selectedValue" class="sort-input">
         <option v-for="name in sortNames" v-bind:key="name">
@@ -30,7 +30,7 @@ import { defineComponent, onMounted, reactive, ref, watch, PropType, Ref } from 
 import { Option, SortDirection, SortField } from '@/application/usecase/githubRepository'
 import { getters, mutations } from '@/store/queryOption'
 
-type ViewType = 'issues' | 'pullRequests' | 'releases'
+type ViewType = 'commits' | 'issues' | 'pullRequests' | 'releases'
 
 type PropsType = {
   viewType: ViewType
@@ -128,6 +128,7 @@ export default defineComponent({
     const itemCounts = ref(definedCounts)
     const sortNames = ref(namedSortList.filter(v => v.supportedBy.includes(props.viewType)).map(v => v.sortName))
     const open = ref(false)
+    const isSortable = ['issues', 'pullRequests', 'releases'].includes(props.viewType)
 
     const updateViewModel = () => {
       const { viewType } = props
@@ -149,7 +150,8 @@ export default defineComponent({
       viewModel,
       sortNames,
       itemCounts,
-      open
+      open,
+      isSortable
     }
   }
 })
@@ -185,11 +187,19 @@ export default defineComponent({
 
 .number-input {
   @include app.base-input-form();
-  width: 75px;
+  width: 85px;
 }
 
 .sort-input {
   @include app.base-input-form();
   width: 167px;
+}
+
+.option-line {
+  font-size: 90%;
+
+  & + & {
+    margin-top: 10px;
+  }
 }
 </style>

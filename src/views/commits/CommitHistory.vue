@@ -34,6 +34,7 @@ import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
 import { GetCommitHistoryUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { getters, mutations } from '@/store/commits'
+import { getters as queryOption } from '@/store/queryOption'
 import CommitContent from '@/views/commits/CommitContent.vue'
 
 type PropsType = {
@@ -74,7 +75,8 @@ export default defineComponent({
     const getCommits = async (): Promise<void> => {
       loading.value = true
       const { repositorySetting } = props
-      isFailed.value = await getCommitHistoryUseCase.execute(repositorySetting)
+      const option = queryOption.commits()
+      isFailed.value = await getCommitHistoryUseCase.execute(repositorySetting, option)
         .then((ch: CommitHistory) => mutations.replace(ch))
         .then(() => false)
         .catch((e: Error) => {

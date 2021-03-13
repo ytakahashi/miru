@@ -1,6 +1,7 @@
 const urlRegex = /^https:\/\/(?<origin>[^/]+)\/(?<owner>[^/]+)\/(?<name>[^/]+)\/?$/
 
 type Preference = {
+  showsCommits: boolean;
   showsIssues: boolean;
   showsPullRequests: boolean;
   showsReleases: boolean;
@@ -10,6 +11,7 @@ export class RepositorySetting {
   readonly #owner?: string;
   readonly #repositoryName?: string;
   #preference: Preference = {
+    showsCommits: true,
     showsIssues: true,
     showsPullRequests: true,
     showsReleases: true
@@ -53,6 +55,10 @@ export class RepositorySetting {
     return `${this.#owner}${separator}${this.#repositoryName}`
   }
 
+  public setCommitPreference = (b: boolean): void => {
+    this.#preference.showsCommits = b
+  }
+
   public setIssuePreference = (b: boolean): void => {
     this.#preference.showsIssues = b
   }
@@ -63,6 +69,10 @@ export class RepositorySetting {
 
   public setReleasePreference = (b: boolean): void => {
     this.#preference.showsReleases = b
+  }
+
+  public showsCommits = (): boolean => {
+    return this.#preference.showsCommits
   }
 
   public showsIssues = (): boolean => {
