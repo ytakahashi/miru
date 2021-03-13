@@ -27,7 +27,7 @@ describe('AppHeader.vue', () => {
       }
     })
 
-    expect(wrapper.findAll('router-link-stub')).toHaveLength(4)
+    expect(wrapper.findAll('router-link-stub')).toHaveLength(5)
   })
 
   it('pushes / on keydown', async () => {
@@ -74,6 +74,28 @@ describe('AppHeader.vue', () => {
 
     await wrapper.trigger('keydown.ctrl.s')
     expect(mockRouter.push).not.toHaveBeenCalled()
+  })
+
+  it('pushes /commits on keydown', async () => {
+    const mockRouter = {
+      push: jest.fn()
+    }
+
+    const wrapper = shallowMount(AppHeader, {
+      attachTo: elem,
+      global: {
+        provide: {
+          [routerKey as symbol]: mockRouter,
+          [routeLocationKey as symbol]: mockRoute
+        },
+        stubs: {
+          RouterLink: true
+        }
+      }
+    })
+
+    await wrapper.trigger('keydown.ctrl.c')
+    expect(mockRouter.push).toHaveBeenCalledWith('/commits')
   })
 
   it('pushes /issues on keydown', async () => {
