@@ -9,6 +9,7 @@ export type GitHubAccount = {
 
 export type RepositorySetting = {
   url: string;
+  showsCommits?: boolean;
   showsIssues: boolean;
   showsPullRequests: boolean;
   showsReleases: boolean;

@@ -1,5 +1,6 @@
 <template>
   <RepositoryFilter ref="repositoryFilter" />
+  <QueryOption :viewType="'commits'" />
   <div v-for="(t, index) in tuples" :key="index">
     <div v-for="repositorySetting in t.repositorySettings" :key="repositorySetting.getUrl()">
       <CommitHistory
@@ -19,6 +20,7 @@
 import { computed, defineComponent, onMounted, ref, Ref } from 'vue'
 import { Account } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import QueryOption from '@/components/QueryOption.vue'
 import RepositoryFilter from '@/components/RepositoryFilter.vue'
 import ScrollToTopButton from '@/components/ScrollToTopButton.vue'
 import { inject } from '@/plugins/di/injector'
@@ -34,6 +36,7 @@ export default defineComponent({
   name: 'CommitsView',
   components: {
     CommitHistory,
+    QueryOption,
     RepositoryFilter,
     ScrollToTopButton
   },
@@ -54,7 +57,7 @@ export default defineComponent({
         const repositorySettings = repositorySettingUseCase.getRepositorySettings()
         tuples.value.push({
           account: account,
-          repositorySettings: repositorySettings
+          repositorySettings: repositorySettings.filter(s => s.showsCommits())
         })
       }
     }

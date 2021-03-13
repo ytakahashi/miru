@@ -37,6 +37,7 @@ export class RepositorySettingUseCaseInteractor implements RepositorySettingUseC
     return current.map(v => new RepositorySetting(
       v.url,
       {
+        showsCommits: v.showsCommits === undefined ? true : v.showsCommits,
         showsIssues: v.showsIssues,
         showsPullRequests: v.showsPullRequests,
         showsReleases: v.showsReleases
@@ -48,6 +49,7 @@ export class RepositorySettingUseCaseInteractor implements RepositorySettingUseC
     const stored = settings.map(setting => {
       return {
         url: setting.getUrl(),
+        showsCommits: setting.showsCommits(),
         showsIssues: setting.showsIssues(),
         showsPullRequests: setting.showsPullRequests(),
         showsReleases: setting.showsReleases()

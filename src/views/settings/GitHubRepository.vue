@@ -4,6 +4,12 @@
   </span>
 
   <span v-if="editing" class="preference-input-block">
+    <span class="preference-input clickable" v-on:click="toggleCommitPreference()">
+      <i class="fas fa-square" v-if="!showsCommits"></i>
+      <i class="fas fa-check-square" v-if="showsCommits"></i>
+      <span class="margin-left">Commit</span>
+    </span>
+
     <span class="preference-input clickable" v-on:click="toggleIssuePreference()">
       <i class="fas fa-square" v-if="!showsIssues"></i>
       <i class="fas fa-check-square" v-if="showsIssues"></i>
@@ -56,6 +62,10 @@ export default defineComponent({
       webBrowserUserCase.openUrl(props.repositorySetting.getUrl())
     }
 
+    const showsCommits = ref(props.repositorySetting.showsCommits())
+    watch(showsCommits, (next: boolean) => props.repositorySetting.setCommitPreference(next))
+    const toggleCommitPreference = () => (showsCommits.value = !showsCommits.value)
+
     const showsIssues = ref(props.repositorySetting.showsIssues())
     watch(showsIssues, (next: boolean) => props.repositorySetting.setIssuePreference(next))
     const toggleIssuePreference = () => (showsIssues.value = !showsIssues.value)
@@ -70,6 +80,8 @@ export default defineComponent({
 
     return {
       openRepository,
+      showsCommits,
+      toggleCommitPreference,
       showsIssues,
       toggleIssuePreference,
       showsPullRequests,

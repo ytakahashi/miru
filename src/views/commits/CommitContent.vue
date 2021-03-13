@@ -51,7 +51,7 @@ export default defineComponent({
 @use '@/assets/contents';
 
 .commit-box {
-  @include contents.content-box(var(--sub-font-color));
+  @include contents.content-box(var(--color-commit));
 }
 
 .commit-message {

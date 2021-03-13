@@ -40,6 +40,7 @@
   --color-draft-release: var(--color-red);
   --color-prerelease: var(--color-orange);
   --color-draft-pr: var(--color-dark-gray);
+  --color-commit: var(--color-light-gray);
 }
 
 [app-theme="dark"] {
@@ -67,4 +68,5 @@
   --color-draft-release: var(--color-red);
   --color-prerelease: var(--color-orange);
   --color-draft-pr: var(--color-dark-gray);
+  --color-commit: var(--color-gray);
 }
