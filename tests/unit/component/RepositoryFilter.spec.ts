@@ -38,8 +38,32 @@ describe('RepositoryFilter.vue', () => {
     expect(input).not.toBe(document.activeElement)
 
     await wrapper.trigger('keydown', {
+      code: 'KeyA',
       key: 'a'
     })
     expect(input).toBe(document.activeElement)
+  })
+
+  it('does not focus input on keydown', async () => {
+    const elem = document.createElement('div')
+    document.body.appendChild(elem)
+    const wrapper = mount(RepositoryFilter, {
+      attachTo: elem
+    })
+
+    const input = wrapper.find('input').element
+    expect(input).not.toBe(document.activeElement)
+
+    await wrapper.trigger('keydown', {
+      code: 'Enter',
+      key: 'Enter'
+    })
+    expect(input).not.toBe(document.activeElement)
+
+    await wrapper.trigger('keydown', {
+      code: 'Tab',
+      key: 'Tab'
+    })
+    expect(input).not.toBe(document.activeElement)
   })
 })

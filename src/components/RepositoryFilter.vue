@@ -21,7 +21,11 @@ export default defineComponent({
       repository.displayName().includes(filterText.value)
 
     const repositoryFilter: Ref<HTMLElement|null> = ref(null)
-    const listener = () => (repositoryFilter.value?.focus())
+    const listener = (event: KeyboardEvent) => {
+      if (['Key', 'Digit'].some(v => event.code.startsWith(v))) {
+        repositoryFilter.value?.focus()
+      }
+    }
     onMounted(() => (window.addEventListener('keydown', listener)))
     onUnmounted(() => (window.removeEventListener('keydown', listener)))
 
