@@ -83,7 +83,10 @@ export default defineComponent({
           logUseCase.error(e)
           return true
         })
-        .finally(() => (loading.value = false))
+        .finally(() => {
+          (document.activeElement as HTMLElement).blur()
+          loading.value = false
+        })
     }
     const clearCommits = (): void => mutations.remove(props.repositorySetting)
     const commits = computed(() => getters.of(props.repositorySetting))
@@ -109,7 +112,7 @@ export default defineComponent({
 }
 
 .get-button {
-  @include app.base-button(8px);
+  @include app.rotate-button(8px);
   padding: 5px 7px;
 }
 

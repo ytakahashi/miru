@@ -50,11 +50,34 @@
   outline: none;
 
   &:hover {
-    background-color: var(--sub-background-color);
+    color: var(--button-hover-text-color);
+    background-color: var(--button-hover-color);
+  }
+
+  &:focus {
+    color: var(--button-hover-text-color);
+    background-color: var(--button-hover-color);
   }
 
   &:active {
     transform: translate(0, 2px);
+  }
+}
+
+@mixin rotate-button($border-radius) {
+  @include base-button($border-radius);
+  &:focus {
+    i {
+      transform: rotate(120deg);
+      transition: transform 0.3s linear;
+    }
+  }
+
+  &:hover {
+    i {
+      transform: rotate(120deg);
+      transition: transform 0.3s linear;
+    }
   }
 }
 

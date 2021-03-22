@@ -68,6 +68,7 @@ export default defineComponent({
 
 .link {
     position: relative;
+    outline: 0 none;
 
     &::before {
       content: '';

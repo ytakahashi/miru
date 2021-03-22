@@ -30,8 +30,10 @@
   --notice-color: var(--color-dark-red);
   --warning-color: var(--color-dark-red);
   --focused-color: var(--color-light-blue);
-  --hover-color: var(--color-bright-gray);
   --border-color: var(--color-gray);
+
+  --button-hover-color: var(--color-dark-gray);
+  --button-hover-text-color: var(--color-white);
 
   --color-diff-plus: var(--color-green-dark);
   --color-diff-minus: var(--color-red);
@@ -58,8 +60,10 @@
   --notice-color: var(--color-light-red);
   --warning-color: var(--color-red);
   --focused-color: var(--color-light-blue);
-  --hover-color: var(--color-gray);
   --border-color: var(--color-light-gray);
+
+  --button-hover-color: var(--color-white);
+  --button-hover-text-color: var(--color-black);
 
   --color-diff-plus: var(--color-green-light);
   --color-diff-minus: var(--color-red);
