@@ -108,7 +108,7 @@ export class GetPullRequestsUseCaseInteractor implements GetPullRequestsUseCase 
           v.isDraft,
           countReviewComments(v.reviews),
           v.assignees.nodes.some(a => a.isViewer),
-          v.reviewRequests.nodes.some(r => r.requestedReviewer.isViewer),
+          v.reviewRequests.nodes.some(r => r.requestedReviewer?.isViewer),
           v.viewerDidAuthor
         ))
       return new PullRequests(setting, prs, v.totalCount)

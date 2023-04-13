@@ -30,7 +30,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       authorization: `Bearer ${personalAccessToken}`
     }
     const query = gql`
-      query getIssues($owner: String!, $name: String!, $firstIssueNumber: Int!, $sortField: String!, $sortDirection: String!) {
+      query getIssues($owner: String!, $name: String!, $firstIssueNumber: Int!, $sortField: IssueOrderField!, $sortDirection: OrderDirection!) {
         repository(owner:$owner, name:$name) {
           issues(first:$firstIssueNumber, states:OPEN, orderBy:{field: $sortField, direction: $sortDirection}) {
             totalCount
@@ -94,7 +94,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       authorization: `Bearer ${personalAccessToken}`
     }
     const query = gql`
-      query getPRs($owner: String!, $name: String!, $firstIssueNumber: Int!, $sortField: String!, $sortDirection: String!) {
+      query getPRs($owner: String!, $name: String!, $firstIssueNumber: Int!, $sortField: IssueOrderField!, $sortDirection: OrderDirection!) {
         repository(owner:$owner, name:$name) {
           pullRequests(first:$firstIssueNumber, states:OPEN, orderBy:{field: $sortField, direction: $sortDirection}) {
             totalCount
@@ -180,7 +180,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       authorization: `Bearer ${personalAccessToken}`
     }
     const query = gql`
-      query getReleases($owner: String!, $name: String!, $firstNumber: Int!, $sortField: String!, $sortDirection: String!) {
+      query getReleases($owner: String!, $name: String!, $firstNumber: Int!, $sortField: ReleaseOrderField!, $sortDirection: OrderDirection!) {
         repository(owner:$owner, name:$name) {
           releases(first:$firstNumber, orderBy:{field: $sortField, direction: $sortDirection}) {
             totalCount

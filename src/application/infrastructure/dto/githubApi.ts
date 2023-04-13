@@ -77,7 +77,7 @@ export type PillRequestReviewConnection = {
 export type UserRequestedReviewer = User
 
 export type ReviewRequest = {
-  requestedReviewer: UserRequestedReviewer
+  requestedReviewer?: UserRequestedReviewer
 }
 
 export type ReviewRequestConnection = {
