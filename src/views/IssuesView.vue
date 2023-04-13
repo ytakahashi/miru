@@ -56,7 +56,7 @@ export default defineComponent({
         const account = accountSettingUseCase.getAccount()
         const repositorySettings = repositorySettingUseCase.getRepositorySettings()
         tuples.value.push({
-          account: account,
+          account,
           repositorySettings: repositorySettings.filter(s => s.showsIssues())
         })
       }

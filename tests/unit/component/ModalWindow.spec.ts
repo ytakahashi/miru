@@ -7,8 +7,8 @@ describe('ModalWindow.vue', () => {
     const body = 'slot body test'
     const wrapper = mount(ModalWindow, {
       slots: {
-        header: header,
-        body: body
+        header,
+        body
       }
     })
     expect(wrapper.find('.modal-header').text()).toBe(header)

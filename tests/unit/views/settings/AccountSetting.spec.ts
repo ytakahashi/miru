@@ -106,7 +106,7 @@ describe('AccountSetting.vue', () => {
         }
       },
       props: {
-        setting: setting
+        setting
       }
     })
 
@@ -131,7 +131,7 @@ describe('AccountSetting.vue', () => {
         }
       },
       props: {
-        setting: setting
+        setting
       }
     })
     await wrapper.vm.$nextTick()
@@ -165,7 +165,7 @@ describe('AccountSetting.vue', () => {
         }
       },
       props: {
-        setting: setting
+        setting
       }
     })
 
@@ -207,7 +207,7 @@ describe('AccountSetting.vue', () => {
         }
       },
       props: {
-        setting: setting
+        setting
       }
     })
     await wrapper.find('span.text-strong').trigger('click')
@@ -225,7 +225,7 @@ describe('AccountSetting.vue', () => {
         }
       },
       props: {
-        setting: setting
+        setting
       }
     })
     expect(wrapper.findComponent(ModalWindow).exists()).toBe(false)
@@ -247,7 +247,7 @@ describe('AccountSetting.vue', () => {
         }
       },
       props: {
-        setting: setting
+        setting
       }
     })
 
@@ -272,7 +272,7 @@ describe('AccountSetting.vue', () => {
         }
       },
       props: {
-        setting: setting
+        setting
       }
     })
 

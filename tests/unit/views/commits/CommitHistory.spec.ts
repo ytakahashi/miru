@@ -88,7 +88,7 @@ describe('CommitHistory.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }
@@ -128,7 +128,7 @@ describe('CommitHistory.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }
@@ -152,7 +152,7 @@ describe('CommitHistory.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }

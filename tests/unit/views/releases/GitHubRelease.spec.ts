@@ -64,7 +64,7 @@ describe('GitHubRelease.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }
@@ -113,7 +113,7 @@ describe('GitHubRelease.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }
@@ -156,7 +156,7 @@ describe('GitHubRelease.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }
@@ -180,7 +180,7 @@ describe('GitHubRelease.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }
@@ -204,7 +204,7 @@ describe('GitHubRelease.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }

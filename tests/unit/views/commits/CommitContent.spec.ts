@@ -41,7 +41,7 @@ describe('CommitContent.vue', () => {
         }
       },
       props: {
-        commit: commit
+        commit
       }
     })
 
@@ -58,7 +58,7 @@ describe('CommitContent.vue', () => {
         }
       },
       props: {
-        commit: commit
+        commit
       }
     })
 
