@@ -64,7 +64,7 @@ describe('GitHubIssue.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }
@@ -118,7 +118,7 @@ describe('GitHubIssue.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }
@@ -160,7 +160,7 @@ describe('GitHubIssue.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }
@@ -184,7 +184,7 @@ describe('GitHubIssue.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }
@@ -208,7 +208,7 @@ describe('GitHubIssue.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }

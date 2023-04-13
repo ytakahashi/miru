@@ -45,7 +45,7 @@ export class AccountSettingUseCaseInteractor implements AccountSettingUseCase {
     try {
       unlinkSync(path)
     } catch (err) {
-      this.#logger.error(err)
+      this.#logger.error(err as Error)
     }
   }
 }

@@ -7,9 +7,9 @@ type Preference = {
   showsReleases: boolean;
 }
 export class RepositorySetting {
-  readonly #origin?: string;
-  readonly #owner?: string;
-  readonly #repositoryName?: string;
+  readonly #origin?: string
+  readonly #owner?: string
+  readonly #repositoryName?: string
   #preference: Preference = {
     showsCommits: true,
     showsIssues: true,

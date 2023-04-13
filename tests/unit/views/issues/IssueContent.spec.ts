@@ -48,7 +48,7 @@ describe('IssueContent.vue', () => {
         }
       },
       props: {
-        issue: issue
+        issue
       }
     })
 
@@ -81,7 +81,7 @@ describe('IssueContent.vue', () => {
         }
       },
       props: {
-        issue: issue
+        issue
       }
     })
 
@@ -114,7 +114,7 @@ describe('IssueContent.vue', () => {
         }
       },
       props: {
-        issue: issue
+        issue
       }
     })
 

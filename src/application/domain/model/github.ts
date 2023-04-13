@@ -11,8 +11,8 @@ const githubEndpoint = 'https://github.com'
 const githubApiEndpoint = 'https://api.github.com/graphql'
 
 export class GitHubUrl {
-  #url: URL;
-  #apiEndpoint: string;
+  #url: URL
+  #apiEndpoint: string
 
   static from = (url?: string): GitHubUrl|undefined => {
     try {
@@ -47,11 +47,11 @@ export class GitHubUrl {
 }
 
 export class Account {
-  public readonly userName: string;
-  public readonly profileUrl: string;
-  public readonly avatarUrl: string;
-  public readonly githubUrl: GitHubUrl;
-  public readonly personalAccessToken: string;
+  public readonly userName: string
+  public readonly profileUrl: string
+  public readonly avatarUrl: string
+  public readonly githubUrl: GitHubUrl
+  public readonly personalAccessToken: string
 
   constructor (
     userName: string,
@@ -73,8 +73,8 @@ export class Account {
 }
 
 export class Label {
-  public readonly name: string;
-  public readonly color: string;
+  public readonly name: string
+  public readonly color: string
   public readonly isLight: boolean
 
   constructor (name: string, color: string) {
@@ -86,11 +86,11 @@ export class Label {
 }
 
 export class BaseContent {
-  public readonly authorName: string;
-  public readonly title: string;
-  public readonly url: string;
-  public readonly createdAt: string;
-  public readonly updatedAt: string;
+  public readonly authorName: string
+  public readonly title: string
+  public readonly url: string
+  public readonly createdAt: string
+  public readonly updatedAt: string
 
   constructor (
     authorName: string,
@@ -124,12 +124,12 @@ export class BaseContent {
 }
 
 export class Issue extends BaseContent {
-  public readonly issueNumber: number;
-  public readonly labels: Array<Label>;
-  public readonly numberOfComments: number;
-  public readonly numberOfParticipants: number;
-  public readonly isAssigned: boolean;
-  public readonly viewerDidAuthor: boolean;
+  public readonly issueNumber: number
+  public readonly labels: Array<Label>
+  public readonly numberOfComments: number
+  public readonly numberOfParticipants: number
+  public readonly isAssigned: boolean
+  public readonly viewerDidAuthor: boolean
 
   constructor (
     authorName: string,
@@ -161,8 +161,8 @@ export class Issue extends BaseContent {
 }
 
 export class TagReference {
-  public readonly abbreviatedObjectId: string;
-  public readonly commitUrl: string;
+  public readonly abbreviatedObjectId: string
+  public readonly commitUrl: string
 
   constructor (
     abbreviatedObjectId: string,
@@ -173,11 +173,11 @@ export class TagReference {
   }
 }
 export class Release extends BaseContent {
-  public readonly isDraft: boolean;
-  public readonly isPrerelease: boolean;
-  public readonly releaseAssetCount: number;
-  public readonly tagName?: string;
-  public readonly tag?: TagReference;
+  public readonly isDraft: boolean
+  public readonly isPrerelease: boolean
+  public readonly releaseAssetCount: number
+  public readonly tagName?: string
+  public readonly tag?: TagReference
 
   constructor (
     authorName: string,
@@ -207,8 +207,8 @@ export class Release extends BaseContent {
 }
 
 export class PullRequestReviews {
-  public readonly reviewCount: number;
-  public readonly hasRemainedItem: boolean;
+  public readonly reviewCount: number
+  public readonly hasRemainedItem: boolean
 
   constructor (
     reviewCount: number,
@@ -219,18 +219,18 @@ export class PullRequestReviews {
   }
 }
 export class PullRequest extends BaseContent {
-  public readonly issueNumber: number;
-  public readonly labels: Array<Label>;
-  public readonly numberOfComments: number;
-  public readonly numberOfParticipants: number;
-  public readonly additions: number;
-  public readonly deletions: number;
-  public readonly changedFiles: number;
-  public readonly isDraft: boolean;
-  public readonly reviews: PullRequestReviews;
-  public readonly isAssigned: boolean;
-  public readonly isReviewRequested: boolean;
-  public readonly viewerDidAuthor: boolean;
+  public readonly issueNumber: number
+  public readonly labels: Array<Label>
+  public readonly numberOfComments: number
+  public readonly numberOfParticipants: number
+  public readonly additions: number
+  public readonly deletions: number
+  public readonly changedFiles: number
+  public readonly isDraft: boolean
+  public readonly reviews: PullRequestReviews
+  public readonly isAssigned: boolean
+  public readonly isReviewRequested: boolean
+  public readonly viewerDidAuthor: boolean
 
   constructor (
     authorName: string,
@@ -275,16 +275,16 @@ export class PullRequest extends BaseContent {
 }
 
 export class Commit {
-  public readonly message: string;
-  public readonly commitUrl: string;
-  public readonly additions: number;
-  public readonly deletions: number;
-  public readonly changedFiles: number;
-  public readonly authorName?: string;
-  public readonly authoredDate: string;
-  public readonly committerName? :string;
-  public readonly committedDate: string;
-  public readonly pushedDate?: string;
+  public readonly message: string
+  public readonly commitUrl: string
+  public readonly additions: number
+  public readonly deletions: number
+  public readonly changedFiles: number
+  public readonly authorName?: string
+  public readonly authoredDate: string
+  public readonly committerName? :string
+  public readonly committedDate: string
+  public readonly pushedDate?: string
 
   constructor (
     message: string,
@@ -359,9 +359,9 @@ export class Commit {
 
 class ResultListHolder<T> {
   readonly fetchedAt: number
-  public readonly repositoryUrl: string;
-  public readonly results: Array<T>;
-  public readonly totalCount?: number;
+  public readonly repositoryUrl: string
+  public readonly results: Array<T>
+  public readonly totalCount?: number
 
   constructor (
     repositorySetting: RepositorySetting,

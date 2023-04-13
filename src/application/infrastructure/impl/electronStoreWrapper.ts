@@ -15,7 +15,7 @@ export class ElectronStoreWrapper implements LocalStorageAccessor {
   constructor (namePostfix?: string) {
     const name = namePostfix === undefined ? 'config' : `config_${namePostfix}`
     this.#store = new Store<StoreType>({
-      name: name
+      name
     })
   }
 

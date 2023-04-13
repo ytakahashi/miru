@@ -64,7 +64,7 @@ describe('GitHubPullRequest.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }
@@ -129,7 +129,7 @@ describe('GitHubPullRequest.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }
@@ -172,7 +172,7 @@ describe('GitHubPullRequest.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }
@@ -196,7 +196,7 @@ describe('GitHubPullRequest.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }
@@ -220,7 +220,7 @@ describe('GitHubPullRequest.vue', () => {
         }
       },
       props: {
-        account: account,
+        account,
         repositorySetting: setting,
         option: {}
       }

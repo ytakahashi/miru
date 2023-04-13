@@ -55,7 +55,7 @@ describe('ReleaseContent.vue', () => {
         }
       },
       props: {
-        release: release
+        release
       }
     })
 
@@ -91,7 +91,7 @@ describe('ReleaseContent.vue', () => {
         }
       },
       props: {
-        release: release
+        release
       }
     })
 
