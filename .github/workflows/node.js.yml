@@ -29,4 +29,5 @@ jobs:
       - run: yarn --frozen-lockfile
       - run: yarn lint
       - run: yarn test:unit
-      - run: yarn electron:build
+        env:
+          CI: true

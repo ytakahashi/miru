@@ -44,6 +44,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use "sass:math";
+
 .background-mask {
   position: fixed;
   z-index: 9998;
@@ -104,11 +106,11 @@ span.loading01 span {
 @keyframes animation01 {
   $num: 8;
   @for $i from 1 through $num {
-    #{$i /$num * 100 - 0.1%} {
-      transform: rotate(#{($i - 1) * 360/$num}deg);
+    #{math.div($i, $num) * 100 - 0.1%} {
+      transform: rotate(#{($i - 1) * math.div(360, $num)}deg);
     }
-    #{$i / $num * 100%} {
-      transform: rotate(#{$i * 360/$num}deg);
+    #{math.div($i, $num) * 100%} {
+      transform: rotate(#{$i * math.div(360, $num)}deg);
     }
   }
 }
