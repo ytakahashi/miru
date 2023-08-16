@@ -6,7 +6,7 @@ name: Node.js CI
 on:
   push:
     branches:
-      - '*'
+      - '**'
   pull_request:
     branches:
       - '*'
@@ -18,16 +18,16 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - 14.x
+          - 18.x
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: yarn --frozen-lockfile
-    - run: yarn lint
-    - run: yarn test:unit
-      env:
-        CI: true
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn --frozen-lockfile
+      - run: yarn lint
+      - run: yarn test:unit
+        env:
+          CI: true
