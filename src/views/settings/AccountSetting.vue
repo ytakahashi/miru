@@ -1,16 +1,16 @@
 <template>
   <div class="profile">
-    <div v-if="!account.githubUrl.isEnterprise()" class="profile-img" v-on:click="openProfile()">
+    <div v-if="!account.githubUrl.isEnterprise()" class="profile-img" @click="openProfile()">
       <img :src="account.avatarUrl" />
     </div>
     <div class="block">
-      <span class="text-strong clickable" v-on:click="openProfile()">{{ profile }}</span>
-      <i class="fas fa-trash-alt clickable" v-on:click="showModal = true"></i>
+      <span class="text-strong clickable" @click="openProfile()">{{ profile }}</span>
+      <i class="fas fa-trash-alt clickable" @click="showModal = true"></i>
     </div>
 
     <div class="block">
       <GitHubRepositories
-        :repositorySettings="githubRepositorySettings"
+        :repository-settings="githubRepositorySettings"
         :editing="isEditing"
         @edit="editHandler"
         @delete-repository="deleteRepository"
@@ -18,16 +18,22 @@
     </div>
 
     <div v-if="isEditing" class="block">
-      <input class="url-input" v-model="githubRepositoryUrlInput" placeholder="GitHub Repository URL">
-      <button v-on:click="addGitHubRepository()" class="add-repository-button"><i class="fas fa-plus"></i></button>
-      <div class="input-invalid" v-if="validationMessage !== ''">{{ validationMessage }}</div>
+      <input
+        v-model="githubRepositoryUrlInput"
+        class="url-input"
+        placeholder="GitHub Repository URL"
+      />
+      <button class="add-repository-button" @click="addGitHubRepository()">
+        <i class="fas fa-plus"></i>
+      </button>
+      <div v-if="validationMessage !== ''" class="input-invalid">
+        {{ validationMessage }}
+      </div>
     </div>
 
     <ModalWindow v-if="showModal" @cancel="showModal = false" @ok="deleteSetting()">
-      <template v-slot:header>
-        Are you sure to remove this setting?
-      </template>
-      <template v-slot:body>
+      <template #header> Are you sure to remove this setting? </template>
+      <template #body>
         {{ profile }}
       </template>
     </ModalWindow>
@@ -41,7 +47,11 @@ import { ApplicationSetting } from '@/application/domain/model/application'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import ModalWindow from '@/components/ModalWindow.vue'
 import { inject } from '@/plugins/di/injector'
-import { AccountSettingUseCaseFactoryKey, RepositorySettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import {
+  AccountSettingUseCaseFactoryKey,
+  RepositorySettingUseCaseFactoryKey,
+  WebBrowserUserCaseKey,
+} from '@/plugins/di/types'
 import GitHubRepositories from '@/views/settings/GitHubRepositories.vue'
 
 type PropsType = {
@@ -52,24 +62,28 @@ export default defineComponent({
   name: 'AccountSetting',
   components: {
     GitHubRepositories,
-    ModalWindow
-  },
-  emits: {
-    accountDeleted: null
+    ModalWindow,
   },
   props: {
     setting: {
       type: Object as PropType<ApplicationSetting>,
-      required: true
-    }
+      required: true,
+    },
   },
-  setup (props: PropsType, context: SetupContext) {
+  emits: {
+    accountDeleted: null,
+  },
+  setup(props: PropsType, context: SetupContext) {
     const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)
     const repositorySettingUseCaseFactory = inject(RepositorySettingUseCaseFactoryKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
-    const accountSettingUseCase = accountSettingUseCaseFactory.newAccountSettingUseCase(props.setting)
-    const repositorySettingUseCase = repositorySettingUseCaseFactory.newRepositorySettingUseCase(props.setting)
+    const accountSettingUseCase = accountSettingUseCaseFactory.newAccountSettingUseCase(
+      props.setting
+    )
+    const repositorySettingUseCase = repositorySettingUseCaseFactory.newRepositorySettingUseCase(
+      props.setting
+    )
 
     const account = accountSettingUseCase.getAccount()
     const profile = computed(() => `${account.userName}@${account.githubUrl.getDomain()}`)
@@ -119,7 +133,9 @@ export default defineComponent({
     }
 
     watch(githubRepositoryUrlInput, () => (validationMessage.value = ''))
-    onMounted(() => (githubRepositorySettings.value = repositorySettingUseCase.getRepositorySettings()))
+    onMounted(
+      () => (githubRepositorySettings.value = repositorySettingUseCase.getRepositorySettings())
+    )
 
     onBeforeRouteLeave(() => {
       if (isEditing.value) {
@@ -143,9 +159,9 @@ export default defineComponent({
       deleteSetting,
       editHandler,
 
-      showModal
+      showModal,
     }
-  }
+  },
 })
 </script>
 

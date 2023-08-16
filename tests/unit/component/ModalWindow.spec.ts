@@ -8,8 +8,8 @@ describe('ModalWindow.vue', () => {
     const wrapper = mount(ModalWindow, {
       slots: {
         header,
-        body
-      }
+        body,
+      },
     })
     expect(wrapper.find('.modal-header').text()).toBe(header)
     expect(wrapper.find('.modal-body').text()).toBe(body)

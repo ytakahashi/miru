@@ -4,18 +4,18 @@ import { ApplicationSetting } from '@/application/domain/model/application'
 import { GitHubAccount, RepositorySetting } from '@/application/infrastructure/dto/local'
 
 type StoreType = {
-  account?: GitHubAccount;
-  applicationSettings?: Array<ApplicationSetting>;
-  repositorySettings?: Array<RepositorySetting>;
+  account?: GitHubAccount
+  applicationSettings?: Array<ApplicationSetting>
+  repositorySettings?: Array<RepositorySetting>
 }
 
 export class ElectronStoreWrapper implements LocalStorageAccessor {
   #store: Store<StoreType>
 
-  constructor (namePostfix?: string) {
+  constructor(namePostfix?: string) {
     const name = namePostfix === undefined ? 'config' : `config_${namePostfix}`
     this.#store = new Store<StoreType>({
-      name
+      name,
     })
   }
 

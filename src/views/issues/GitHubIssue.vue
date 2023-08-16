@@ -1,22 +1,24 @@
 <template>
   <div class="content-list">
     <div class="content-list-header">
-      <span class="text-strong clickable" v-on:click="openIssueUrl(repositorySetting)">{{ repositorySetting.displayName() }}</span>
-      <button type="button" class="get-button" v-on:click="getIssues()">
+      <span class="text-strong clickable" @click="openIssueUrl(repositorySetting)">{{
+        repositorySetting.displayName()
+      }}</span>
+      <button type="button" class="get-button" @click="getIssues()">
         <i class="fas fa-sync-alt"></i>
       </button>
     </div>
 
     <div v-if="issues">
       <div class="issue-list-description">
-        <button class="clear-button" v-on:click="clearIssues()">clear</button>
+        <button class="clear-button" @click="clearIssues()">clear</button>
         <span>Last fetched: {{ issues.fetchedAtDate() }}</span>
       </div>
       <div v-for="issue in issues.results" :key="issue.url">
         <IssueContent :issue="issue" />
       </div>
 
-      <div v-if="!issues.hasContents()" class="clickable" v-on:click="openIssueUrl(repositorySetting)">
+      <div v-if="!issues.hasContents()" class="clickable" @click="openIssueUrl(repositorySetting)">
         There aren’t any open issues.
       </div>
     </div>
@@ -26,7 +28,11 @@
     </div>
 
     <div v-if="isFailed">
-      Failed to list issues of <span class="clickable" v-on:click="openIssueUrl(repositorySetting)">{{ repositorySetting.getUrl() }}</span>.<br />
+      Failed to list issues of
+      <span class="clickable" @click="openIssueUrl(repositorySetting)">{{
+        repositorySetting.getUrl()
+      }}</span
+      >.<br />
       The repository does not exist or not visible with provided pesonal access token.
     </div>
 
@@ -40,38 +46,43 @@ import { Account, Issues, GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
-import { GetIssuesUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import {
+  GetIssuesUseCaseFactoryKey,
+  LogUseCaseKey,
+  WebBrowserUserCaseKey,
+} from '@/plugins/di/types'
 import { getters, mutations } from '@/store/issues'
 import { getters as queryOption } from '@/store/queryOption'
 import IssueContent from '@/views/issues/IssueContent.vue'
 
 type PropsType = {
-  account: Account;
-  repositorySetting: RepositorySetting;
+  account: Account
+  repositorySetting: RepositorySetting
 }
 
 export default defineComponent({
   name: 'GitHubIssue',
   components: {
     IssueContent,
-    LoadingImage
+    LoadingImage,
   },
   props: {
     account: {
       type: Account,
-      required: true
+      required: true,
     },
     repositorySetting: {
       type: RepositorySetting,
-      required: true
-    }
+      required: true,
+    },
   },
-  setup (props: PropsType) {
+  setup(props: PropsType) {
     const getIssuesUseCaseFactory = inject(GetIssuesUseCaseFactoryKey)
     const logUseCase = inject(LogUseCaseKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
-    const openIssueUrl = (val: RepositorySetting) => webBrowserUserCase.openUrl(`${val.getUrl()}/issues`)
+    const openIssueUrl = (val: RepositorySetting) =>
+      webBrowserUserCase.openUrl(`${val.getUrl()}/issues`)
 
     const account = readonly(props.account)
     const githubUrl = account.githubUrl as GitHubUrl
@@ -84,7 +95,8 @@ export default defineComponent({
       loading.value = true
       const { repositorySetting } = props
       const option = queryOption.issues()
-      isFailed.value = await getIssuesUseCase.execute(repositorySetting, option)
+      isFailed.value = await getIssuesUseCase
+        .execute(repositorySetting, option)
         .then((i: Issues) => mutations.replace(i))
         .then(() => false)
         .catch((e: Error) => {
@@ -92,7 +104,7 @@ export default defineComponent({
           return true
         })
         .finally(() => {
-          (document.activeElement as HTMLElement).blur()
+          ;(document.activeElement as HTMLElement).blur()
           loading.value = false
         })
     }
@@ -105,9 +117,7 @@ export default defineComponent({
       }
       const count = value.results.length
       const totalCount = value.totalCount
-      return totalCount !== undefined
-        ? `showing ${count} of ${totalCount} issues`
-        : ''
+      return totalCount !== undefined ? `showing ${count} of ${totalCount} issues` : ''
     })
 
     return {
@@ -117,9 +127,9 @@ export default defineComponent({
       openIssueUrl,
       issues,
       loading,
-      total
+      total,
     }
-  }
+  },
 })
 </script>
 

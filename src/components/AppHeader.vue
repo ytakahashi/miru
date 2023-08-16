@@ -21,12 +21,12 @@ const shortcut = new Map([
   ['i', '/issues'],
   ['p', '/pulls'],
   ['r', '/releases'],
-  ['s', '/']
+  ['s', '/'],
 ])
 
 export default defineComponent({
   name: 'AppHeader',
-  setup () {
+  setup() {
     const route = useRoute()
     const router = useRouter()
 
@@ -42,7 +42,7 @@ export default defineComponent({
 
     onMounted(() => document.addEventListener('keydown', keyHandler))
     onUnmounted(() => document.removeEventListener('keydown', keyHandler))
-  }
+  },
 })
 </script>
 
@@ -67,26 +67,27 @@ export default defineComponent({
 }
 
 .link {
-    position: relative;
-    outline: 0 none;
+  position: relative;
+  outline: 0 none;
 
-    &::before {
-      content: '';
-      transform: scaleX(0);
-      transition: transform 0.2s;
-    }
+  &::before {
+    content: '';
+    transform: scaleX(0);
+    transition: transform 0.2s;
+  }
 
-    &:hover::before{
-      transform: scaleX(1);
-    }
+  &:hover::before {
+    transform: scaleX(1);
+  }
 
-    &::before, &::after {
-      position: absolute;
-      width: 100%;
-      height: 1px;
-      top: 100%;
-      background: currentColor;
-      pointer-events: none;
-    }
+  &::before,
+  &::after {
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    top: 100%;
+    background: currentColor;
+    pointer-events: none;
+  }
 }
 </style>

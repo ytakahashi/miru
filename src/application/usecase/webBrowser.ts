@@ -1,3 +1,3 @@
 export interface WebBrowserUserCase {
-  openUrl (url: string): void
+  openUrl(url: string): void
 }

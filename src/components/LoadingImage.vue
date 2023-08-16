@@ -1,6 +1,6 @@
 <template>
-  <div v-if="loading" class="background-mask" ref="mask">
-    <div class="icon-wrapper" ref="wrapper">
+  <div v-if="loading" ref="mask" class="background-mask">
+    <div ref="wrapper" class="icon-wrapper">
       <span class="loading01"><span></span></span>
     </div>
   </div>
@@ -11,18 +11,18 @@ import { defineComponent, onMounted, onUnmounted, ref, Ref, SetupContext } from 
 
 export default defineComponent({
   name: 'LoadingImage',
-  emits: {
-    cancel: null
-  },
   props: {
     loading: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
-  setup (_, context: SetupContext) {
-    const mask: Ref<HTMLElement|null> = ref(null)
-    const wrapper: Ref<HTMLElement|null> = ref(null)
+  emits: {
+    cancel: null,
+  },
+  setup(_, context: SetupContext) {
+    const mask: Ref<HTMLElement | null> = ref(null)
+    const wrapper: Ref<HTMLElement | null> = ref(null)
 
     const clickListener = (event: MouseEvent) => {
       if (event.target === null) {
@@ -37,14 +37,14 @@ export default defineComponent({
 
     return {
       mask,
-      wrapper
+      wrapper,
     }
-  }
+  },
 })
 </script>
 
 <style scoped lang="scss">
-@use "sass:math";
+@use 'sass:math';
 
 .background-mask {
   position: fixed;
@@ -68,16 +68,21 @@ $color-off: var(--color-gray);
 $color-on: var(--color-light-gray);
 
 // https://mamewaza.com/tools/loading.html
-span.loading01, span.loading01:after {
+span.loading01,
+span.loading01:after {
   display: inline-block;
   width: 60px;
   height: 60px;
   background-repeat: no-repeat;
-  background-image:
-  radial-gradient($circle-size $circle-size at 10% 50%, $color-off, $color-off 95%, transparent),
-  radial-gradient($circle-size $circle-size at 50% 10%, $color-off, $color-off 95%, transparent),
-  radial-gradient($circle-size $circle-size at 90% 50%, $color-off, $color-off 95%, transparent),
-  radial-gradient($circle-size $circle-size at 50% 90%, $color-off, $color-off 95%, transparent);
+  background-image: radial-gradient(
+      $circle-size $circle-size at 10% 50%,
+      $color-off,
+      $color-off 95%,
+      transparent
+    ),
+    radial-gradient($circle-size $circle-size at 50% 10%, $color-off, $color-off 95%, transparent),
+    radial-gradient($circle-size $circle-size at 90% 50%, $color-off, $color-off 95%, transparent),
+    radial-gradient($circle-size $circle-size at 50% 90%, $color-off, $color-off 95%, transparent);
 }
 span.loading01 {
   position: relative;
@@ -85,7 +90,7 @@ span.loading01 {
 }
 span.loading01:after {
   position: absolute;
-  content: " ";
+  content: ' ';
   z-index: -1;
   left: 0;
   top: 0;
@@ -99,7 +104,12 @@ span.loading01 span {
   width: 100%;
   height: 100%;
   margin: 0;
-  background-image: radial-gradient($circle-size $circle-size at 10% 50%, $color-on, $color-on 95%, transparent);
+  background-image: radial-gradient(
+    $circle-size $circle-size at 10% 50%,
+    $color-on,
+    $color-on 95%,
+    transparent
+  );
   animation: animation01 1.5s linear infinite;
 }
 

@@ -7,13 +7,19 @@ import {
   AccountSettingUseCaseFactoryKey,
   ApplicationSettingUseCaseKey,
   GitHubAccountUseCaseFactoryKey,
-  LogUseCaseKey
+  LogUseCaseKey,
 } from '@/plugins/di/types'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
-import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/application/usecase/accountSetting'
+import {
+  AccountSettingUseCase,
+  AccountSettingUseCaseFactory,
+} from '@/application/usecase/accountSetting'
 import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting'
-import { GitHubAccountUseCase, GitHubAccountUseCaseFactory } from '@/application/usecase/githubAccount'
+import {
+  GitHubAccountUseCase,
+  GitHubAccountUseCaseFactory,
+} from '@/application/usecase/githubAccount'
 import { LogUseCase } from '@/application/usecase/log'
 import SettingView from '@/views/SettingView.vue'
 import AccountSetting from '@/views/settings/AccountSetting.vue'
@@ -26,43 +32,50 @@ const MockedAccountSettingUseCase = jest.fn<AccountSettingUseCase, []>()
 const newAccountSettingUseCaseMock = jest.fn()
 MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
   return {
-    setAccount (account: Account): void {},
-    getAccount (): Account { return account },
-    deleteSetting (): void {}
+    setAccount(account: Account): void {},
+    getAccount(): Account {
+      return account
+    },
+    deleteSetting(): void {},
   }
 })
 const mockedAccountSettingUseCaseFactory: AccountSettingUseCaseFactory = {
   newAccountSettingUseCase: (setting: ApplicationSetting): AccountSettingUseCase => {
     newAccountSettingUseCaseMock(setting)
     return new MockedAccountSettingUseCase()
-  }
+  },
 }
 
 // ApplicationSettingUseCase mock
 const addSettingMock = jest.fn()
 const removeSettingMock = jest.fn()
-const MockedApplicationSettingUseCase = jest.fn<ApplicationSettingUseCase, [Array<ApplicationSetting>]>()
-MockedApplicationSettingUseCase.mockImplementation((settings: Array<ApplicationSetting>): ApplicationSettingUseCase => {
-  return {
-    hasSetting: (setting: ApplicationSetting) => settings.some(s => s.equals(setting)),
-    getSettings: () => settings,
-    addSetting: (setting: ApplicationSetting) => addSettingMock(),
-    removeSetting: (setting: ApplicationSetting) => removeSettingMock()
+const MockedApplicationSettingUseCase = jest.fn<
+  ApplicationSettingUseCase,
+  [Array<ApplicationSetting>]
+>()
+MockedApplicationSettingUseCase.mockImplementation(
+  (settings: Array<ApplicationSetting>): ApplicationSettingUseCase => {
+    return {
+      hasSetting: (setting: ApplicationSetting) => settings.some(s => s.equals(setting)),
+      getSettings: () => settings,
+      addSetting: (setting: ApplicationSetting) => addSettingMock(),
+      removeSetting: (setting: ApplicationSetting) => removeSettingMock(),
+    }
   }
-})
+)
 
 // GitHubAccountUseCase mock
 const MockedGitHubAccountUseCase = jest.fn<GitHubAccountUseCase, []>()
 MockedGitHubAccountUseCase.mockImplementation((): GitHubAccountUseCase => {
   return {
-    resolvePersonalAccessToken: async (personalAccessToken: string) => account
+    resolvePersonalAccessToken: async (personalAccessToken: string) => account,
   }
 })
 
 const MockedGitHubAccountUseCaseFactory = jest.fn<GitHubAccountUseCaseFactory, []>()
 MockedGitHubAccountUseCaseFactory.mockImplementation(() => {
   return {
-    newGitHubAccountUseCase: (githubUrl: GitHubUrl) => new MockedGitHubAccountUseCase()
+    newGitHubAccountUseCase: (githubUrl: GitHubUrl) => new MockedGitHubAccountUseCase(),
   }
 })
 const mockedGitHubAccountUseCaseFactory = new MockedGitHubAccountUseCaseFactory()
@@ -72,7 +85,7 @@ const errorMock = jest.fn()
 const MockedLogUseCase = jest.fn<LogUseCase, []>()
 MockedLogUseCase.mockImplementation((): LogUseCase => {
   return {
-    error: errorMock
+    error: errorMock,
   }
 })
 const mockedLogUseCase = new MockedLogUseCase()
@@ -80,7 +93,7 @@ const mockedLogUseCase = new MockedLogUseCase()
 const AccountSettingMock = defineComponent({
   name: 'AccountSetting',
   emits: ['account-deleted'],
-  render: () => h('div', {}, '')
+  render: () => h('div', {}, ''),
 })
 
 describe('SettingView.vue', () => {
@@ -97,9 +110,9 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase
-        }
-      }
+          [LogUseCaseKey as symbol]: mockedLogUseCase,
+        },
+      },
     })
 
     await wrapper.vm.$nextTick()
@@ -118,9 +131,9 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase
-        }
-      }
+          [LogUseCaseKey as symbol]: mockedLogUseCase,
+        },
+      },
     })
 
     await wrapper.vm.$nextTick()
@@ -135,9 +148,9 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase
-        }
-      }
+          [LogUseCaseKey as symbol]: mockedLogUseCase,
+        },
+      },
     })
 
     await wrapper.vm.$nextTick()
@@ -164,9 +177,9 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase
-        }
-      }
+          [LogUseCaseKey as symbol]: mockedLogUseCase,
+        },
+      },
     })
 
     await wrapper.vm.$nextTick()
@@ -201,12 +214,12 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase
+          [LogUseCaseKey as symbol]: mockedLogUseCase,
         },
         stubs: {
-          AccountSetting: AccountSettingMock
-        }
-      }
+          AccountSetting: AccountSettingMock,
+        },
+      },
     })
 
     await wrapper.vm.$nextTick()
@@ -228,9 +241,9 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase
-        }
-      }
+          [LogUseCaseKey as symbol]: mockedLogUseCase,
+        },
+      },
     })
 
     await wrapper.find('button.open-form-button').trigger('click')
@@ -252,9 +265,9 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase
-        }
-      }
+          [LogUseCaseKey as symbol]: mockedLogUseCase,
+        },
+      },
     })
 
     await wrapper.find('button.open-form-button').trigger('click')
@@ -281,9 +294,9 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase
-        }
-      }
+          [LogUseCaseKey as symbol]: mockedLogUseCase,
+        },
+      },
     })
 
     await wrapper.find('button.open-form-button').trigger('click')

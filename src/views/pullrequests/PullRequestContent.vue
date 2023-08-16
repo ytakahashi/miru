@@ -1,20 +1,20 @@
 <template>
-  <div :class="boxStyle" v-on:click="openPullRequest()">
+  <div :class="boxStyle" @click="openPullRequest()">
     <div class="pr-information">
       <span>
         <span class="tooltip" :data-tooltip="pullRequest.getUpdatedLocalDate()">
           <i class="fas fa-clock"></i>{{ pullRequest.getUpdatedRelativeDate() }}
         </span>
-        <span class="draft-mark" v-if="pullRequest.isDraft">Draft</span>
+        <span v-if="pullRequest.isDraft" class="draft-mark">Draft</span>
       </span>
       <span>#{{ pullRequest.issueNumber }}</span>
     </div>
     <div class="pr-information">
-      <span class="info-badge" v-if="pullRequest.viewerDidAuthor">My PR</span>
+      <span v-if="pullRequest.viewerDidAuthor" class="info-badge">My PR</span>
       <span v-else />
       <span>
-        <span class="info-badge" v-if="pullRequest.isAssigned">Assigned</span>
-        <span class="info-badge" v-if="pullRequest.isReviewRequested">Review Requested</span>
+        <span v-if="pullRequest.isAssigned" class="info-badge">Assigned</span>
+        <span v-if="pullRequest.isReviewRequested" class="info-badge">Review Requested</span>
       </span>
     </div>
 
@@ -24,9 +24,14 @@
 
     <div class="pr-description">
       <span>
-        {{ pullRequest.authorName }} opened <span class="tooltip" :data-tooltip="pullRequest.getCreatedLocalDate()">{{ pullRequest.getCreatedRelativeDate() }}</span>
+        {{ pullRequest.authorName }} opened
+        <span class="tooltip" :data-tooltip="pullRequest.getCreatedLocalDate()">{{
+          pullRequest.getCreatedRelativeDate()
+        }}</span>
       </span>
-      <span class="tooltip" :data-tooltip="conversationDetail"><i class="fas fa-comments"></i>{{ conversationCount }}</span>
+      <span class="tooltip" :data-tooltip="conversationDetail"
+        ><i class="fas fa-comments"></i>{{ conversationCount }}</span
+      >
       <span><i class="fas fa-user"></i>{{ pullRequest.numberOfParticipants }}</span>
       <span><i class="fas fa-file"></i> {{ pullRequest.changedFiles }}</span>
       <span class="additions">+{{ pullRequest.additions }}</span>
@@ -34,7 +39,7 @@
     </div>
 
     <span v-for="(label, index) in pullRequest.labels" :key="index">
-      <span class="github-label" v-bind:style="getLabelColor(label)">{{ label.name }}</span>
+      <span class="github-label" :style="getLabelColor(label)">{{ label.name }}</span>
     </span>
   </div>
 </template>
@@ -54,24 +59,26 @@ export default defineComponent({
   props: {
     pullRequest: {
       type: PullRequest,
-      required: true
-    }
+      required: true,
+    },
   },
-  setup (props: PropsType) {
+  setup(props: PropsType) {
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
     const openPullRequest = () => webBrowserUserCase.openUrl(props.pullRequest.url)
 
     const boxStyle = computed(() => ({
       'content-box-open': !props.pullRequest.isDraft,
-      'content-box-pr-draft': props.pullRequest.isDraft
+      'content-box-pr-draft': props.pullRequest.isDraft,
     }))
     const getLabelColor = (label: Label) => ({
       color: label.isLight ? '#2e2d2d' : '#fdfdfd',
-      backgroundColor: label.color
+      backgroundColor: label.color,
     })
 
     const conversationCount = computed(() => {
-      const count = (props.pullRequest.numberOfComments + props.pullRequest.reviews.reviewCount).toString()
+      const count = (
+        props.pullRequest.numberOfComments + props.pullRequest.reviews.reviewCount
+      ).toString()
       return props.pullRequest.reviews.hasRemainedItem ? count + '+' : count
     })
 
@@ -87,9 +94,9 @@ export default defineComponent({
       openPullRequest,
       getLabelColor,
       conversationCount,
-      conversationDetail
+      conversationDetail,
     }
-  }
+  },
 })
 </script>
 

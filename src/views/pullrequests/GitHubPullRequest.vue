@@ -1,22 +1,28 @@
 <template>
   <div class="content-list">
     <div class="content-list-header">
-      <span class="text-strong clickable" v-on:click="openPullRequestUrl(repositorySetting)">{{ repositorySetting.displayName() }}</span>
-      <button type="button" class="get-button" v-on:click="getPullRequests()">
+      <span class="text-strong clickable" @click="openPullRequestUrl(repositorySetting)">{{
+        repositorySetting.displayName()
+      }}</span>
+      <button type="button" class="get-button" @click="getPullRequests()">
         <i class="fas fa-sync-alt"></i>
       </button>
     </div>
 
     <div v-if="pullRequests">
       <div class="pr-list-description">
-        <button class="clear-button" v-on:click="clearPRs()">clear</button>
+        <button class="clear-button" @click="clearPRs()">clear</button>
         <span>Last fetched: {{ pullRequests.fetchedAtDate() }}</span>
       </div>
       <div v-for="pr in pullRequests.results" :key="pr.url">
-        <PullRequestContent :pullRequest="pr" />
+        <PullRequestContent :pull-request="pr" />
       </div>
 
-      <div v-if="!pullRequests.hasContents()" class="clickable" v-on:click="openPullRequestUrl(repositorySetting)">
+      <div
+        v-if="!pullRequests.hasContents()"
+        class="clickable"
+        @click="openPullRequestUrl(repositorySetting)"
+      >
         There aren’t any open pull requests.
       </div>
     </div>
@@ -26,7 +32,11 @@
     </div>
 
     <div v-if="isFailed">
-      Failed to list pull requests of <span class="clickable" v-on:click="openPullRequestUrl(repositorySetting)">{{ repositorySetting.getUrl() }}</span>.<br />
+      Failed to list pull requests of
+      <span class="clickable" @click="openPullRequestUrl(repositorySetting)">{{
+        repositorySetting.getUrl()
+      }}</span
+      >.<br />
       The repository does not exist or not visible with provided pesonal access token.
     </div>
 
@@ -40,38 +50,43 @@ import { Account, PullRequests, GitHubUrl } from '@/application/domain/model/git
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
-import { GetPullRequestsUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import {
+  GetPullRequestsUseCaseFactoryKey,
+  LogUseCaseKey,
+  WebBrowserUserCaseKey,
+} from '@/plugins/di/types'
 import { getters, mutations } from '@/store/pullRequests'
 import { getters as queryOption } from '@/store/queryOption'
 import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
 
 type PropsType = {
-  account: Account;
-  repositorySetting: RepositorySetting;
+  account: Account
+  repositorySetting: RepositorySetting
 }
 
 export default defineComponent({
   name: 'GitHubPullRequest',
   components: {
     LoadingImage,
-    PullRequestContent
+    PullRequestContent,
   },
   props: {
     account: {
       type: Account,
-      required: true
+      required: true,
     },
     repositorySetting: {
       type: RepositorySetting,
-      required: true
-    }
+      required: true,
+    },
   },
-  setup (props: PropsType) {
+  setup(props: PropsType) {
     const getPullRequestsUseCaseFactory = inject(GetPullRequestsUseCaseFactoryKey)
     const logUseCase = inject(LogUseCaseKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
-    const openPullRequestUrl = (val: RepositorySetting) => webBrowserUserCase.openUrl(`${val.getUrl()}/pulls`)
+    const openPullRequestUrl = (val: RepositorySetting) =>
+      webBrowserUserCase.openUrl(`${val.getUrl()}/pulls`)
 
     const account = readonly(props.account)
     const githubUrl = account.githubUrl as GitHubUrl
@@ -84,7 +99,8 @@ export default defineComponent({
       loading.value = true
       const { repositorySetting } = props
       const option = queryOption.pullRequests()
-      isFailed.value = await getPullRequestsUseCase.execute(repositorySetting, option)
+      isFailed.value = await getPullRequestsUseCase
+        .execute(repositorySetting, option)
         .then((prs: PullRequests) => mutations.replace(prs))
         .then(() => false)
         .catch((e: Error) => {
@@ -92,7 +108,7 @@ export default defineComponent({
           return true
         })
         .finally(() => {
-          (document.activeElement as HTMLElement).blur()
+          ;(document.activeElement as HTMLElement).blur()
           loading.value = false
         })
     }
@@ -105,9 +121,7 @@ export default defineComponent({
       }
       const count = value.results.length
       const totalCount = value.totalCount
-      return totalCount !== undefined
-        ? `showing ${count} of ${totalCount} pull requests`
-        : ''
+      return totalCount !== undefined ? `showing ${count} of ${totalCount} pull requests` : ''
     })
 
     return {
@@ -117,9 +131,9 @@ export default defineComponent({
       openPullRequestUrl,
       pullRequests,
       loading,
-      total
+      total,
     }
-  }
+  },
 })
 </script>
 

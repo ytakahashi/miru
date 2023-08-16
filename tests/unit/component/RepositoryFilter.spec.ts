@@ -31,7 +31,7 @@ describe('RepositoryFilter.vue', () => {
     const elem = document.createElement('div')
     document.body.appendChild(elem)
     const wrapper = mount(RepositoryFilter, {
-      attachTo: elem
+      attachTo: elem,
     })
 
     const input = wrapper.find('input').element
@@ -39,7 +39,7 @@ describe('RepositoryFilter.vue', () => {
 
     await wrapper.trigger('keydown', {
       code: 'KeyA',
-      key: 'a'
+      key: 'a',
     })
     expect(input).toBe(document.activeElement)
   })
@@ -48,7 +48,7 @@ describe('RepositoryFilter.vue', () => {
     const elem = document.createElement('div')
     document.body.appendChild(elem)
     const wrapper = mount(RepositoryFilter, {
-      attachTo: elem
+      attachTo: elem,
     })
 
     const input = wrapper.find('input').element
@@ -56,13 +56,13 @@ describe('RepositoryFilter.vue', () => {
 
     await wrapper.trigger('keydown', {
       code: 'Enter',
-      key: 'Enter'
+      key: 'Enter',
     })
     expect(input).not.toBe(document.activeElement)
 
     await wrapper.trigger('keydown', {
       code: 'Tab',
-      key: 'Tab'
+      key: 'Tab',
     })
     expect(input).not.toBe(document.activeElement)
   })

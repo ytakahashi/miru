@@ -1,77 +1,77 @@
 export type GitHubUser = {
-  avatarUrl: string;
-  login: string;
-  url: string;
+  avatarUrl: string
+  login: string
+  url: string
 }
 
 export type Viewer = {
-  viewer: GitHubUser;
+  viewer: GitHubUser
 }
 
 export type IssueLabel = {
-  name: string;
-  color: string;
+  name: string
+  color: string
 }
 
 export type IssueLabelNode = {
-  node: IssueLabel;
+  node: IssueLabel
 }
 
 export type IssueLabelEdge = {
-  cursor?: string;
-  edges: Array<IssueLabelNode>;
+  cursor?: string
+  edges: Array<IssueLabelNode>
 }
 
 export type IssueCommentConnection = {
-  totalCount: number;
+  totalCount: number
 }
 
 export type User = {
-  isViewer: boolean;
+  isViewer: boolean
 }
 
 export type UserConnection = {
-  nodes: User[];
-  totalCount: number;
+  nodes: User[]
+  totalCount: number
 }
 
 export type Issue = {
-  assignees: UserConnection;
-  author: GitHubUser;
-  title: string;
-  url: string;
-  comments: IssueCommentConnection;
-  createdAt: string;
-  updatedAt: string;
-  labels: IssueLabelEdge;
-  number: number;
-  participants: UserConnection;
-  viewerDidAuthor: boolean;
+  assignees: UserConnection
+  author: GitHubUser
+  title: string
+  url: string
+  comments: IssueCommentConnection
+  createdAt: string
+  updatedAt: string
+  labels: IssueLabelEdge
+  number: number
+  participants: UserConnection
+  viewerDidAuthor: boolean
 }
 
 export type IssueEdge = {
-  cursor?: string;
-  node: Issue;
+  cursor?: string
+  node: Issue
 }
 
 export type IssueConnection = {
-  cursor?: string;
-  totalCount?: number;
-  edges: Array<IssueEdge>;
+  cursor?: string
+  totalCount?: number
+  edges: Array<IssueEdge>
 }
 
 export type PullRequestReviewCommentConnection = {
-  totalCount: number;
+  totalCount: number
 }
 
 export type PillRequestReview = {
-  body: string;
-  comments: PullRequestReviewCommentConnection;
+  body: string
+  comments: PullRequestReviewCommentConnection
 }
 
 export type PillRequestReviewConnection = {
-  totalCount: number;
-  nodes: PillRequestReview[];
+  totalCount: number
+  nodes: PillRequestReview[]
 }
 
 export type UserRequestedReviewer = User
@@ -85,38 +85,38 @@ export type ReviewRequestConnection = {
 }
 
 export type PullRequest = {
-  assignees: UserConnection;
-  author: GitHubUser;
-  title: string;
-  url: string;
-  comments: IssueCommentConnection;
-  createdAt: string;
-  updatedAt: string;
-  labels: IssueLabelEdge;
-  number: number;
-  participants: UserConnection;
-  additions: number;
-  deletions: number;
-  changedFiles: number;
-  isDraft: boolean;
-  reviews: PillRequestReviewConnection;
-  reviewRequests: ReviewRequestConnection;
-  viewerDidAuthor: boolean;
+  assignees: UserConnection
+  author: GitHubUser
+  title: string
+  url: string
+  comments: IssueCommentConnection
+  createdAt: string
+  updatedAt: string
+  labels: IssueLabelEdge
+  number: number
+  participants: UserConnection
+  additions: number
+  deletions: number
+  changedFiles: number
+  isDraft: boolean
+  reviews: PillRequestReviewConnection
+  reviewRequests: ReviewRequestConnection
+  viewerDidAuthor: boolean
 }
 
 export type PullRequestEdge = {
-  cursor?: string;
-  node: PullRequest;
+  cursor?: string
+  node: PullRequest
 }
 
 export type PullRequestConnection = {
-  cursor?: string;
-  totalCount?: number;
-  edges: Array<PullRequestEdge>;
+  cursor?: string
+  totalCount?: number
+  edges: Array<PullRequestEdge>
 }
 
 export type GitActor = {
- user: GitHubUser
+  user: GitHubUser
 }
 
 export type CommitNode = {
@@ -143,46 +143,46 @@ export type GitObject = {
 }
 
 export type Ref = {
-  name: string;
-  target?: GitObject;
+  name: string
+  target?: GitObject
 }
 
 export type ReleaseAssetConnection = {
-  totalCount: number;
+  totalCount: number
 }
 
 export type Release = {
-  author: GitHubUser;
-  createdAt: string;
-  isDraft: boolean;
+  author: GitHubUser
+  createdAt: string
+  isDraft: boolean
   // isLatest: boolean;
-  isPrerelease: boolean;
-  name: string;
-  publishedAt: string;
-  releaseAssets: ReleaseAssetConnection;
-  tag?: Ref;
-  updatedAt: string;
-  url: string;
+  isPrerelease: boolean
+  name: string
+  publishedAt: string
+  releaseAssets: ReleaseAssetConnection
+  tag?: Ref
+  updatedAt: string
+  url: string
 }
 
 export type ReleaseEdge = {
-  cursor?: string;
-  node: Release;
+  cursor?: string
+  node: Release
 }
 
 export type ReleaseConnection = {
-  cursor?: string;
-  totalCount?: number;
-  edges: Array<ReleaseEdge>;
+  cursor?: string
+  totalCount?: number
+  edges: Array<ReleaseEdge>
 }
 
 export type GithubRepository = {
-  issues?: IssueConnection;
-  pullRequests?: PullRequestConnection;
-  releases?: ReleaseConnection;
+  issues?: IssueConnection
+  pullRequests?: PullRequestConnection
+  releases?: ReleaseConnection
   defaultBranchRef?: Ref
 }
 
 export type Repository = {
-  repository?: GithubRepository;
+  repository?: GithubRepository
 }

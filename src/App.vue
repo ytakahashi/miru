@@ -10,8 +10,8 @@ import AppHeader from '@/components/AppHeader.vue'
 export default defineComponent({
   name: 'App',
   components: {
-    AppHeader
-  }
+    AppHeader,
+  },
 })
 </script>
 

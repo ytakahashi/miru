@@ -9,7 +9,7 @@ export class AccountSettingUseCaseInteractor implements AccountSettingUseCase {
   #localStorageAccessor: LocalStorageAccessor
   #logger: LogUseCase
 
-  constructor (localStorageAccessor: LocalStorageAccessor, logger: LogUseCase) {
+  constructor(localStorageAccessor: LocalStorageAccessor, logger: LogUseCase) {
     this.#localStorageAccessor = localStorageAccessor
     this.#logger = logger
   }
@@ -21,7 +21,7 @@ export class AccountSettingUseCaseInteractor implements AccountSettingUseCase {
       avatarUrl: account.avatarUrl,
       githubUrl: account.githubUrl.getUrl(),
       githubApiEndpoint: account.githubUrl.getApiEndpoint(),
-      personalAccessToken: account.personalAccessToken
+      personalAccessToken: account.personalAccessToken,
     }
     this.#localStorageAccessor.setGitHubAccount(gitHubAccount)
   }

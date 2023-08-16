@@ -1,30 +1,37 @@
 <template>
   <div v-for="(accountSetting, index) in accountSettings" :key="index">
-    <AccountSetting
-      :setting="accountSetting"
-      @account-deleted="deleteAccount"
-    />
+    <AccountSetting :setting="accountSetting" @account-deleted="deleteAccount" />
   </div>
 
-  <button v-if="!isEditing" v-on:click="isEditing = !isEditing" class="open-form-button"><i class="fas fa-plus"></i></button>
+  <button v-if="!isEditing" class="open-form-button" @click="isEditing = !isEditing">
+    <i class="fas fa-plus"></i>
+  </button>
 
   <div v-if="isEditing">
     <div class="input-form-block">
       <label class="input-label" for="url-input">GitHub URL (default: https://github.com)</label>
-      <input class="setting-input" v-model="githubUrlInput" id="url-input">
-      <div class="input-invalid" v-if="isInvalidUrl">{{ errorMessage }}</div>
+      <input id="url-input" v-model="githubUrlInput" class="setting-input" />
+      <div v-if="isInvalidUrl" class="input-invalid">{{ errorMessage }}</div>
     </div>
     <div class="input-form-block">
-      <label class="input-label" for="pat-input">GitHub Personal Access Token
-        <i v-if="!isPatVisible" class="fas fa-eye" v-on:click="viewPersonalAccessToken()"></i>
-        <i v-if="isPatVisible" class="fas fa-eye-slash" v-on:click="viewPersonalAccessToken()"></i>
+      <label class="input-label" for="pat-input"
+        >GitHub Personal Access Token
+        <i v-if="!isPatVisible" class="fas fa-eye" @click="viewPersonalAccessToken()"></i>
+        <i v-if="isPatVisible" class="fas fa-eye-slash" @click="viewPersonalAccessToken()"></i>
       </label>
-      <input class="setting-input" :type="isPatVisible ? 'text' : 'password'" v-model="personalAccessTokenInput" id="pat-input">
-      <div class="input-invalid" v-if="isInvalidAccessToken">{{ errorMessage }}</div>
-      <div class="input-invalid" v-if="isDuplicated">{{ errorMessage }}</div>
+      <input
+        id="pat-input"
+        v-model="personalAccessTokenInput"
+        class="setting-input"
+        :type="isPatVisible ? 'text' : 'password'"
+      />
+      <div v-if="isInvalidAccessToken" class="input-invalid">
+        {{ errorMessage }}
+      </div>
+      <div v-if="isDuplicated" class="input-invalid">{{ errorMessage }}</div>
     </div>
-    <button v-on:click="addAccount()" class="add-account-button">Add Account</button>
-    <button v-on:click="isEditing = !isEditing" class="add-account-button">Cancel</button>
+    <button class="add-account-button" @click="addAccount()">Add Account</button>
+    <button class="add-account-button" @click="isEditing = !isEditing">Cancel</button>
   </div>
 
   <ThemeSwitch />
@@ -42,7 +49,7 @@ import {
   AccountSettingUseCaseFactoryKey,
   ApplicationSettingUseCaseKey,
   GitHubAccountUseCaseFactoryKey,
-  LogUseCaseKey
+  LogUseCaseKey,
 } from '@/plugins/di/types'
 import AccountSetting from '@/views/settings/AccountSetting.vue'
 
@@ -51,9 +58,9 @@ export default defineComponent({
   components: {
     AccountSetting,
     LoadingImage,
-    ThemeSwitch
+    ThemeSwitch,
   },
-  setup () {
+  setup() {
     const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)
     const applicationSettingUseCase = inject(ApplicationSettingUseCaseKey)
     const githubAccountUseCaseFactory = inject(GitHubAccountUseCaseFactoryKey)
@@ -103,7 +110,8 @@ export default defineComponent({
         return
       }
       const github = githubAccountUseCaseFactory.newGitHubAccountUseCase(url)
-      github.resolvePersonalAccessToken(personalAccessTokenInput.value)
+      github
+        .resolvePersonalAccessToken(personalAccessTokenInput.value)
         .then(r => onSuccess(r))
         .catch(e => onFailure(e))
         .finally(() => (loading.value = false))
@@ -152,9 +160,9 @@ export default defineComponent({
       loading,
       addAccount,
       deleteAccount,
-      viewPersonalAccessToken
+      viewPersonalAccessToken,
     }
-  }
+  },
 })
 </script>
 

@@ -1,6 +1,6 @@
 <template>
-  <div class="commit-box" v-on:click="openCommit()">
-    <div class="commit-information" v-if="commit.pushedDate">
+  <div class="commit-box" @click="openCommit()">
+    <div v-if="commit.pushedDate" class="commit-information">
       <span class="tooltip" :data-tooltip="commit.getPushedLocalDate()">
         <i class="fas fa-clock"></i>{{ commit.getPushedRelativeDate() }}
       </span>
@@ -32,17 +32,17 @@ export default defineComponent({
   props: {
     commit: {
       type: Commit,
-      required: true
-    }
+      required: true,
+    },
   },
-  setup (props: PropsType) {
+  setup(props: PropsType) {
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
     const openCommit = () => webBrowserUserCase.openUrl(props.commit.commitUrl)
 
     return {
-      openCommit
+      openCommit,
     }
-  }
+  },
 })
 </script>
 

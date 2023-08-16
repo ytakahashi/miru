@@ -1,10 +1,10 @@
 const urlRegex = /^https:\/\/(?<origin>[^/]+)\/(?<owner>[^/]+)\/(?<name>[^/]+)\/?$/
 
 type Preference = {
-  showsCommits: boolean;
-  showsIssues: boolean;
-  showsPullRequests: boolean;
-  showsReleases: boolean;
+  showsCommits: boolean
+  showsIssues: boolean
+  showsPullRequests: boolean
+  showsReleases: boolean
 }
 export class RepositorySetting {
   readonly #origin?: string
@@ -14,10 +14,10 @@ export class RepositorySetting {
     showsCommits: true,
     showsIssues: true,
     showsPullRequests: true,
-    showsReleases: true
+    showsReleases: true,
   }
 
-  constructor (url: string, preference?: Preference) {
+  constructor(url: string, preference?: Preference) {
     const result = url.match(urlRegex)
     if (result?.groups !== undefined) {
       this.#origin = result.groups.origin
@@ -30,7 +30,9 @@ export class RepositorySetting {
   }
 
   public isValid = (): boolean => {
-    return this.#origin !== undefined && this.#repositoryName !== undefined && this.#owner !== undefined
+    return (
+      this.#origin !== undefined && this.#repositoryName !== undefined && this.#owner !== undefined
+    )
   }
 
   public getUrl = (): string => {

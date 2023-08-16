@@ -17,7 +17,7 @@ try {
 
 module.exports = {
   configureWebpack: {
-    target: 'electron-renderer'
+    target: 'electron-renderer',
   },
   pluginOptions: {
     electronBuilder: {
@@ -27,12 +27,12 @@ module.exports = {
         appId: 'net.ytakahashi.miru',
         copyright: 'Copyright © 2020 ytakahashi',
         mac: {
-          icon: 'public/icon.icns'
+          icon: 'public/icon.icns',
         },
         win: {
-          icon: 'public/icon.png'
-        }
-      }
-    }
-  }
+          icon: 'public/icon.png',
+        },
+      },
+    },
+  },
 }

@@ -3,64 +3,87 @@
 
 import { defineComponent, h } from 'vue'
 import { shallowMount } from '@vue/test-utils'
-import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, RepositorySettingUseCaseFactoryKey } from '@/plugins/di/types'
+import {
+  AccountSettingUseCaseFactoryKey,
+  ApplicationSettingUseCaseKey,
+  RepositorySettingUseCaseFactoryKey,
+} from '@/plugins/di/types'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/application/usecase/accountSetting'
+import {
+  AccountSettingUseCase,
+  AccountSettingUseCaseFactory,
+} from '@/application/usecase/accountSetting'
 import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting'
-import { RepositorySettingUseCase, RepositorySettingUseCaseFactory } from '@/application/usecase/repositorySetting'
+import {
+  RepositorySettingUseCase,
+  RepositorySettingUseCaseFactory,
+} from '@/application/usecase/repositorySetting'
 import CommitsView from '@/views/CommitsView.vue'
 import CommitHistory from '@/views/commits/CommitHistory.vue'
 
 const account = new Account('name', 'profile', 'avatar', jest.fn<GitHubUrl, []>()(), 'pat')
 
-const MockedApplicationSettingUseCase = jest.fn<ApplicationSettingUseCase, [Array<ApplicationSetting>]>()
-MockedApplicationSettingUseCase.mockImplementation((arr: Array<ApplicationSetting>): ApplicationSettingUseCase => {
-  return {
-    hasSetting: (setting: ApplicationSetting) => true,
-    getSettings: () => arr,
-    addSetting: (setting: ApplicationSetting) => {},
-    removeSetting: (setting: ApplicationSetting) => {}
+const MockedApplicationSettingUseCase = jest.fn<
+  ApplicationSettingUseCase,
+  [Array<ApplicationSetting>]
+>()
+MockedApplicationSettingUseCase.mockImplementation(
+  (arr: Array<ApplicationSetting>): ApplicationSettingUseCase => {
+    return {
+      hasSetting: (setting: ApplicationSetting) => true,
+      getSettings: () => arr,
+      addSetting: (setting: ApplicationSetting) => {},
+      removeSetting: (setting: ApplicationSetting) => {},
+    }
   }
-})
+)
 
 const MockedAccountSettingUseCase = jest.fn<AccountSettingUseCase, []>()
 MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
   return {
-    setAccount (account: Account): void {},
-    getAccount (): Account { return account },
-    deleteSetting (): void {}
+    setAccount(account: Account): void {},
+    getAccount(): Account {
+      return account
+    },
+    deleteSetting(): void {},
   }
 })
 
-const MockedRepositorySettingUseCase = jest.fn<RepositorySettingUseCase, [Array<RepositorySetting>]>()
-MockedRepositorySettingUseCase.mockImplementation((arr: Array<RepositorySetting>): RepositorySettingUseCase => {
-  return {
-    addRepositorySetting: (s: RepositorySetting) => true,
-    deleteRepositorySetting: (s: RepositorySetting) => {},
-    getRepositorySettings: () => arr,
-    setRepositorySettings: (s: Array<RepositorySetting>) => {}
+const MockedRepositorySettingUseCase = jest.fn<
+  RepositorySettingUseCase,
+  [Array<RepositorySetting>]
+>()
+MockedRepositorySettingUseCase.mockImplementation(
+  (arr: Array<RepositorySetting>): RepositorySettingUseCase => {
+    return {
+      addRepositorySetting: (s: RepositorySetting) => true,
+      deleteRepositorySetting: (s: RepositorySetting) => {},
+      getRepositorySettings: () => arr,
+      setRepositorySettings: (s: Array<RepositorySetting>) => {},
+    }
   }
-})
+)
 const mockedAccountSettingUseCaseFactory: AccountSettingUseCaseFactory = {
   newAccountSettingUseCase: (setting: ApplicationSetting): AccountSettingUseCase => {
     return new MockedAccountSettingUseCase()
-  }
+  },
 }
 
 const RepositoryFilterMock = defineComponent({
   name: 'RepositoryFilter',
   methods: {
-    isVisible: () => true
+    isVisible: () => true,
   },
-  render: () => h('input', {}, '')
+  render: () => h('input', {}, ''),
 })
 
 describe('CommitsView.vue', () => {
   it('renders when account is not configured', async () => {
     const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
-      newRepositorySettingUseCase: (setting: ApplicationSetting) => new MockedRepositorySettingUseCase([])
+      newRepositorySettingUseCase: (setting: ApplicationSetting) =>
+        new MockedRepositorySettingUseCase([]),
     }
 
     const wrapper = shallowMount(CommitsView, {
@@ -68,12 +91,12 @@ describe('CommitsView.vue', () => {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([]),
-          [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock
+          [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock,
         },
         stubs: {
-          RepositoryFilter: RepositoryFilterMock
-        }
-      }
+          RepositoryFilter: RepositoryFilterMock,
+        },
+      },
     })
     await wrapper.vm.$nextTick()
     expect(wrapper.text()).toBe('Account is not configured.')
@@ -82,20 +105,23 @@ describe('CommitsView.vue', () => {
 
   it('renders when no repositories are configured', async () => {
     const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
-      newRepositorySettingUseCase: (setting: ApplicationSetting) => new MockedRepositorySettingUseCase([])
+      newRepositorySettingUseCase: (setting: ApplicationSetting) =>
+        new MockedRepositorySettingUseCase([]),
     }
 
     const wrapper = shallowMount(CommitsView, {
       global: {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
-          [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([new ApplicationSetting('foo')]),
-          [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock
+          [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([
+            new ApplicationSetting('foo'),
+          ]),
+          [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock,
         },
         stubs: {
-          RepositoryFilter: RepositoryFilterMock
-        }
-      }
+          RepositoryFilter: RepositoryFilterMock,
+        },
+      },
     })
     await wrapper.vm.$nextTick()
     expect(wrapper.text()).toBe('No repositories are configured.')
@@ -107,20 +133,22 @@ describe('CommitsView.vue', () => {
     const repository2 = new RepositorySetting('https://github.com/c/d')
     const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
       newRepositorySettingUseCase: (setting: ApplicationSetting) =>
-        new MockedRepositorySettingUseCase([repository1, repository2])
+        new MockedRepositorySettingUseCase([repository1, repository2]),
     }
 
     const wrapper = shallowMount(CommitsView, {
       global: {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
-          [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([new ApplicationSetting('foo')]),
-          [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock
+          [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([
+            new ApplicationSetting('foo'),
+          ]),
+          [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock,
         },
         stubs: {
-          RepositoryFilter: RepositoryFilterMock
-        }
-      }
+          RepositoryFilter: RepositoryFilterMock,
+        },
+      },
     })
     await wrapper.vm.$nextTick()
     expect(wrapper.text()).toBe('')

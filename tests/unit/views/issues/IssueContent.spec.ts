@@ -10,7 +10,7 @@ const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
 const openUrlMock = jest.fn()
 MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
   return {
-    openUrl: (url: string) => openUrlMock(url)
+    openUrl: (url: string) => openUrlMock(url),
   }
 })
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
@@ -44,12 +44,12 @@ describe('IssueContent.vue', () => {
     const wrapper = shallowMount(IssueContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
-        issue
-      }
+        issue,
+      },
     })
 
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
@@ -77,12 +77,12 @@ describe('IssueContent.vue', () => {
     const wrapper = shallowMount(IssueContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
-        issue
-      }
+        issue,
+      },
     })
 
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
@@ -110,12 +110,12 @@ describe('IssueContent.vue', () => {
     const wrapper = shallowMount(IssueContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
-        issue
-      }
+        issue,
+      },
     })
 
     await wrapper.find('div.content-box-open').trigger('click')

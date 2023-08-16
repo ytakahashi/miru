@@ -1,15 +1,15 @@
 <template>
   <div v-if="!open" class="open-button">
-    <i class="fas fa-cog" v-on:click="open = true"></i>
+    <i class="fas fa-cog" @click="open = true"></i>
   </div>
   <div v-if="open" class="list-options">
     <div class="close-button">
-      <i class="fas fa-times" v-on:click="open = false"></i>
+      <i class="fas fa-times" @click="open = false"></i>
     </div>
     <div class="option-line">
       <span class="option-title">Number of items:</span>
       <select v-model.number="viewModel.itemCount" class="number-input">
-        <option v-for="i in itemCounts" v-bind:key="i">
+        <option v-for="i in itemCounts" :key="i">
           {{ i }}
         </option>
       </select>
@@ -17,7 +17,7 @@
     <div v-if="isSortable" class="option-line">
       <span class="option-title">Sort:</span>
       <select v-model="viewModel.selectedValue" class="sort-input">
-        <option v-for="name in sortNames" v-bind:key="name">
+        <option v-for="name in sortNames" :key="name">
           {{ name }}
         </option>
       </select>
@@ -45,27 +45,67 @@ const definedSorts = [
   'Recently updated',
   'Least recently updated',
   'Alphabetical',
-  'Reverse alphabetical'
+  'Reverse alphabetical',
 ] as const
 
-type SortName = typeof definedSorts[number]
+type SortName = (typeof definedSorts)[number]
 
 type NamedSort = {
-  sortName: SortName;
-  sortField: SortField;
-  sortDirection: SortDirection;
-  supportedBy: ViewType[];
+  sortName: SortName
+  sortField: SortField
+  sortDirection: SortDirection
+  supportedBy: ViewType[]
 }
 
 const namedSortList: Array<NamedSort> = [
-  { sortName: 'Newest', sortField: 'CREATED_AT', sortDirection: 'DESC', supportedBy: ['issues', 'pullRequests', 'releases'] },
-  { sortName: 'Oldest', sortField: 'CREATED_AT', sortDirection: 'ASC', supportedBy: ['issues', 'pullRequests', 'releases'] },
-  { sortName: 'Most commented', sortField: 'COMMENTS', sortDirection: 'DESC', supportedBy: ['issues', 'pullRequests'] },
-  { sortName: 'Least commented', sortField: 'COMMENTS', sortDirection: 'ASC', supportedBy: ['issues', 'pullRequests'] },
-  { sortName: 'Recently updated', sortField: 'UPDATED_AT', sortDirection: 'DESC', supportedBy: ['issues', 'pullRequests'] },
-  { sortName: 'Least recently updated', sortField: 'UPDATED_AT', sortDirection: 'ASC', supportedBy: ['issues', 'pullRequests'] },
-  { sortName: 'Alphabetical', sortField: 'NAME', sortDirection: 'ASC', supportedBy: ['releases'] },
-  { sortName: 'Reverse alphabetical', sortField: 'NAME', sortDirection: 'DESC', supportedBy: ['releases'] }
+  {
+    sortName: 'Newest',
+    sortField: 'CREATED_AT',
+    sortDirection: 'DESC',
+    supportedBy: ['issues', 'pullRequests', 'releases'],
+  },
+  {
+    sortName: 'Oldest',
+    sortField: 'CREATED_AT',
+    sortDirection: 'ASC',
+    supportedBy: ['issues', 'pullRequests', 'releases'],
+  },
+  {
+    sortName: 'Most commented',
+    sortField: 'COMMENTS',
+    sortDirection: 'DESC',
+    supportedBy: ['issues', 'pullRequests'],
+  },
+  {
+    sortName: 'Least commented',
+    sortField: 'COMMENTS',
+    sortDirection: 'ASC',
+    supportedBy: ['issues', 'pullRequests'],
+  },
+  {
+    sortName: 'Recently updated',
+    sortField: 'UPDATED_AT',
+    sortDirection: 'DESC',
+    supportedBy: ['issues', 'pullRequests'],
+  },
+  {
+    sortName: 'Least recently updated',
+    sortField: 'UPDATED_AT',
+    sortDirection: 'ASC',
+    supportedBy: ['issues', 'pullRequests'],
+  },
+  {
+    sortName: 'Alphabetical',
+    sortField: 'NAME',
+    sortDirection: 'ASC',
+    supportedBy: ['releases'],
+  },
+  {
+    sortName: 'Reverse alphabetical',
+    sortField: 'NAME',
+    sortDirection: 'DESC',
+    supportedBy: ['releases'],
+  },
 ]
 
 class OptionViewModel {
@@ -76,7 +116,7 @@ class OptionViewModel {
   sortDirection: Ref<SortDirection>
   selectedValue: Ref<SortName>
 
-  constructor () {
+  constructor() {
     this.#defaultSort = namedSortList[0]
     this.sortField = ref(this.#defaultSort.sortField)
     this.sortDirection = ref(this.#defaultSort.sortDirection)
@@ -104,13 +144,12 @@ class OptionViewModel {
   }
 
   getOption = (): Option => {
-    const found = namedSortList
-      .find(v => v.sortName === this.selectedValue.value)
+    const found = namedSortList.find(v => v.sortName === this.selectedValue.value)
     const sort = found === undefined ? this.#defaultSort : found
     return {
       count: this.itemCount.value,
       sortField: sort.sortField,
-      sortDirection: sort.sortDirection
+      sortDirection: sort.sortDirection,
     }
   }
 }
@@ -120,13 +159,15 @@ export default defineComponent({
   props: {
     viewType: {
       type: String as PropType<ViewType>,
-      required: true
-    }
+      required: true,
+    },
   },
-  setup (props: PropsType) {
+  setup(props: PropsType) {
     const viewModel = reactive(new OptionViewModel())
     const itemCounts = ref(definedCounts)
-    const sortNames = ref(namedSortList.filter(v => v.supportedBy.includes(props.viewType)).map(v => v.sortName))
+    const sortNames = ref(
+      namedSortList.filter(v => v.supportedBy.includes(props.viewType)).map(v => v.sortName)
+    )
     const open = ref(false)
     const isSortable = ['issues', 'pullRequests', 'releases'].includes(props.viewType)
 
@@ -151,9 +192,9 @@ export default defineComponent({
       sortNames,
       itemCounts,
       open,
-      isSortable
+      isSortable,
     }
-  }
+  },
 })
 </script>
 

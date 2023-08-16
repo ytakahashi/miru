@@ -9,7 +9,7 @@ import {
   GetReleasesUseCaseFactoryKey,
   LogUseCaseKey,
   RepositorySettingUseCaseFactoryKey,
-  WebBrowserUserCaseKey
+  WebBrowserUserCaseKey,
 } from '@/plugins/di/types'
 import {
   AccountSettingUseCaseFactoryImpl,
@@ -19,7 +19,7 @@ import {
   GetPullRequestsUseCaseFactoryImpl,
   GetReleasesUseCaseFactoryImpl,
   GitHubAccountUseCaseFactoryImpl,
-  RepositorySettingUseCaseFactoryImpl
+  RepositorySettingUseCaseFactoryImpl,
 } from '@/application/usecase/factory/useCaseFactory'
 import { LogUseCaseInteractor } from '@/application/usecase/interactor/LogUseCaseInteractor'
 import { WebBrowserUserCaseInteractor } from '@/application/usecase/interactor/WebBrowserUserCaseInteractor'
@@ -28,7 +28,8 @@ const accountSettingUseCaseFactory = new AccountSettingUseCaseFactoryImpl()
 const webBrowserUserCaseInteractor = new WebBrowserUserCaseInteractor()
 const logUseCaseInteractor = new LogUseCaseInteractor()
 
-const applicationSettingUseCase = new ApplicationSettingUseCaseFactoryImpl().newApplicationSettingUseCase()
+const applicationSettingUseCase =
+  new ApplicationSettingUseCaseFactoryImpl().newApplicationSettingUseCase()
 const gitHubAccountUseCaseFactory = new GitHubAccountUseCaseFactoryImpl()
 const repositorySettingUseCaseFactory = new RepositorySettingUseCaseFactoryImpl()
 
@@ -38,7 +39,7 @@ const getPullRequestsUseCaseFactory = new GetPullRequestsUseCaseFactoryImpl()
 const getReleasesUseCaseFactory = new GetReleasesUseCaseFactoryImpl()
 
 export default {
-  install (app: App): void {
+  install(app: App): void {
     app.provide(AccountSettingUseCaseFactoryKey, accountSettingUseCaseFactory)
     app.provide(ApplicationSettingUseCaseKey, applicationSettingUseCase)
     app.provide(GitHubAccountUseCaseFactoryKey, gitHubAccountUseCaseFactory)
@@ -49,5 +50,5 @@ export default {
     app.provide(LogUseCaseKey, logUseCaseInteractor)
     app.provide(WebBrowserUserCaseKey, webBrowserUserCaseInteractor)
     app.provide(RepositorySettingUseCaseFactoryKey, repositorySettingUseCaseFactory)
-  }
+  },
 }

@@ -5,7 +5,7 @@ import { ApplicationSettingUseCase } from '@/application/usecase/applicationSett
 export class ApplicationSettingUseCaseInteractor implements ApplicationSettingUseCase {
   #localStorageAccessor: LocalStorageAccessor
 
-  constructor (localStorageAccessor: LocalStorageAccessor) {
+  constructor(localStorageAccessor: LocalStorageAccessor) {
     this.#localStorageAccessor = localStorageAccessor
   }
 

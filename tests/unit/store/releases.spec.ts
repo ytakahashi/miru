@@ -13,7 +13,7 @@ MockedReleases.mockImplementation((s: RepositorySetting): Releases => {
     belongsTo: (r: string): boolean => {
       return s.getUrl() === r
     },
-    hasContents: (): boolean => true
+    hasContents: (): boolean => true,
   }
 })
 

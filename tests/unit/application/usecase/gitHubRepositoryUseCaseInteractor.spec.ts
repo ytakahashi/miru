@@ -6,10 +6,16 @@ import {
   GetCommitHistoryUseCaseInteractor,
   GetIssuesUseCaseInteractor,
   GetPullRequestsUseCaseInteractor,
-  GetReleasesUseCaseInteractor
+  GetReleasesUseCaseInteractor,
 } from '@/application/usecase/interactor/githubRepositoryUseCaseInteractor'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { CommitHistoryConnection, IssueConnection, PullRequestConnection, ReleaseConnection, Viewer } from '@/application/infrastructure/dto/githubApi'
+import {
+  CommitHistoryConnection,
+  IssueConnection,
+  PullRequestConnection,
+  ReleaseConnection,
+  Viewer,
+} from '@/application/infrastructure/dto/githubApi'
 
 describe('GitHubRepositoryUseCaseInteractor.ts', () => {
   const viewer: Viewer = require('../../resources/viewer.json')
@@ -19,21 +25,30 @@ describe('GitHubRepositoryUseCaseInteractor.ts', () => {
   const commitHistoryConnection: CommitHistoryConnection = require('../../resources/commit-history.json')
 
   const mock: GitHubAccessor = {
-    async getViewer (personalAccessToken: string): Promise<Viewer> {
+    async getViewer(personalAccessToken: string): Promise<Viewer> {
       return viewer
     },
-    async getIssues (personalAccessToken: string, s: RepositorySetting): Promise<IssueConnection> {
+    async getIssues(personalAccessToken: string, s: RepositorySetting): Promise<IssueConnection> {
       return issueConnection
     },
-    async getPullRequests (personalAccessToken: string, s: RepositorySetting): Promise<PullRequestConnection> {
+    async getPullRequests(
+      personalAccessToken: string,
+      s: RepositorySetting
+    ): Promise<PullRequestConnection> {
       return pullRequestConnection
     },
-    async getReleases (personalAccessToken: string, s: RepositorySetting): Promise<ReleaseConnection> {
+    async getReleases(
+      personalAccessToken: string,
+      s: RepositorySetting
+    ): Promise<ReleaseConnection> {
       return releaseConnection
     },
-    async getCommits (personalAccessToken: string, s: RepositorySetting): Promise<CommitHistoryConnection> {
+    async getCommits(
+      personalAccessToken: string,
+      s: RepositorySetting
+    ): Promise<CommitHistoryConnection> {
       return commitHistoryConnection
-    }
+    },
   }
 
   describe('GetIssuesUseCaseInteractor', () => {
@@ -118,7 +133,9 @@ describe('GitHubRepositoryUseCaseInteractor.ts', () => {
       expect(actualRelease0.tagName).toBe('v0.2.0')
       expect(actualRelease0.tag).toBeDefined()
       expect(actualRelease0.tag?.abbreviatedObjectId).toBe('e6e7ac5')
-      expect(actualRelease0.tag?.commitUrl).toBe('https://github.com/ytakahashi/miru/commit/893093edc0849de20763d1858d84a7bcb02ca07b')
+      expect(actualRelease0.tag?.commitUrl).toBe(
+        'https://github.com/ytakahashi/miru/commit/893093edc0849de20763d1858d84a7bcb02ca07b'
+      )
     })
   })
 
@@ -135,7 +152,9 @@ describe('GitHubRepositoryUseCaseInteractor.ts', () => {
 
       const actualCommit0 = actual.results[0]
       expect(actualCommit0.message).toBe('refactor: separate usecase (#66)')
-      expect(actualCommit0.commitUrl).toBe('https://github.com/ytakahashi/miru/commit/54f50be6d23a7b46533bf955d6e5d217283475b9')
+      expect(actualCommit0.commitUrl).toBe(
+        'https://github.com/ytakahashi/miru/commit/54f50be6d23a7b46533bf955d6e5d217283475b9'
+      )
       expect(actualCommit0.additions).toBe(178)
       expect(actualCommit0.deletions).toBe(98)
       expect(actualCommit0.changedFiles).toBe(12)

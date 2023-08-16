@@ -7,13 +7,13 @@ type Store = {
 }
 
 const theme = reactive<Store>({
-  theme: 'dark'
+  theme: 'dark',
 })
 
 export const getTheme = (): string => theme.theme
 
 export const mutations = {
-  set (value: Theme): void {
+  set(value: Theme): void {
     theme.theme = value
-  }
+  },
 }
