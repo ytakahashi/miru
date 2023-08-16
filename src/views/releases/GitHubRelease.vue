@@ -1,22 +1,28 @@
 <template>
   <div class="content-list">
     <div class="content-list-header">
-      <span class="text-strong clickable" v-on:click="openReleaseUrl(repositorySetting)">{{ repositorySetting.displayName() }}</span>
-      <button type="button" class="get-button" v-on:click="getReleases()">
+      <span class="text-strong clickable" @click="openReleaseUrl(repositorySetting)">{{
+        repositorySetting.displayName()
+      }}</span>
+      <button type="button" class="get-button" @click="getReleases()">
         <i class="fas fa-sync-alt"></i>
       </button>
     </div>
 
     <div v-if="releases">
       <div class="release-list-description">
-        <button class="clear-button" v-on:click="clearReleases()">clear</button>
+        <button class="clear-button" @click="clearReleases()">clear</button>
         <span>Last fetched: {{ releases.fetchedAtDate() }}</span>
       </div>
       <div v-for="release in releases.results" :key="release.url">
         <ReleaseContent :release="release" />
       </div>
 
-      <div v-if="!releases.hasContents()" class="clickable" v-on:click="openReleaseUrl(repositorySetting)">
+      <div
+        v-if="!releases.hasContents()"
+        class="clickable"
+        @click="openReleaseUrl(repositorySetting)"
+      >
         There aren’t any releases.
       </div>
     </div>
@@ -26,7 +32,11 @@
     </div>
 
     <div v-if="isFailed">
-      Failed to list releases of <span class="clickable" v-on:click="openIssueUrl(repositorySetting)">{{ repositorySetting.getUrl() }}</span>.<br />
+      Failed to list releases of
+      <span class="clickable" @click="openIssueUrl(repositorySetting)">{{
+        repositorySetting.getUrl()
+      }}</span
+      >.<br />
       The repository does not exist or not visible with provided pesonal access token.
     </div>
 
@@ -40,38 +50,43 @@ import { Account, GitHubUrl, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
-import { GetReleasesUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import {
+  GetReleasesUseCaseFactoryKey,
+  LogUseCaseKey,
+  WebBrowserUserCaseKey,
+} from '@/plugins/di/types'
 import { getters as queryOption } from '@/store/queryOption'
 import { getters, mutations } from '@/store/releases'
 import ReleaseContent from '@/views/releases/ReleaseContent.vue'
 
 type PropsType = {
-  account: Account;
-  repositorySetting: RepositorySetting;
+  account: Account
+  repositorySetting: RepositorySetting
 }
 
 export default defineComponent({
   name: 'GitHubRelease',
   components: {
     LoadingImage,
-    ReleaseContent
+    ReleaseContent,
   },
   props: {
     account: {
       type: Account,
-      required: true
+      required: true,
     },
     repositorySetting: {
       type: RepositorySetting,
-      required: true
-    }
+      required: true,
+    },
   },
-  setup (props: PropsType) {
+  setup(props: PropsType) {
     const getReleasesUseCaseFactory = inject(GetReleasesUseCaseFactoryKey)
     const logUseCase = inject(LogUseCaseKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
-    const openReleaseUrl = (val: RepositorySetting) => webBrowserUserCase.openUrl(`${val.getUrl()}/releases`)
+    const openReleaseUrl = (val: RepositorySetting) =>
+      webBrowserUserCase.openUrl(`${val.getUrl()}/releases`)
 
     const account = readonly(props.account)
     const githubUrl = account.githubUrl as GitHubUrl
@@ -84,7 +99,8 @@ export default defineComponent({
       loading.value = true
       const { repositorySetting } = props
       const option = queryOption.releases()
-      isFailed.value = await getReleasesUseCase.execute(repositorySetting, option)
+      isFailed.value = await getReleasesUseCase
+        .execute(repositorySetting, option)
         .then((r: Releases) => mutations.replace(r))
         .then(() => false)
         .catch((e: Error) => {
@@ -92,7 +108,7 @@ export default defineComponent({
           return true
         })
         .finally(() => {
-          (document.activeElement as HTMLElement).blur()
+          ;(document.activeElement as HTMLElement).blur()
           loading.value = false
         })
     }
@@ -105,9 +121,7 @@ export default defineComponent({
       }
       const count = value.results.length
       const totalCount = value.totalCount
-      return totalCount !== undefined
-        ? `showing ${count} of ${totalCount} releases`
-        : ''
+      return totalCount !== undefined ? `showing ${count} of ${totalCount} releases` : ''
     })
 
     return {
@@ -117,9 +131,9 @@ export default defineComponent({
       openReleaseUrl,
       releases,
       loading,
-      total
+      total,
     }
-  }
+  },
 })
 </script>
 

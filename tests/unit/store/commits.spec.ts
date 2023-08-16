@@ -13,7 +13,7 @@ MockedCommitHistory.mockImplementation((s: RepositorySetting): CommitHistory => 
     belongsTo: (r: string): boolean => {
       return s.getUrl() === r
     },
-    hasContents: (): boolean => true
+    hasContents: (): boolean => true,
   }
 })
 

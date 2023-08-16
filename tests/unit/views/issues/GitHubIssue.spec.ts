@@ -7,7 +7,11 @@ import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { GetIssuesUseCase, GetIssuesUseCaseFactory } from '@/application/usecase/githubRepository'
 import { LogUseCase } from '@/application/usecase/log'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import { GetIssuesUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import {
+  GetIssuesUseCaseFactoryKey,
+  LogUseCaseKey,
+  WebBrowserUserCaseKey,
+} from '@/plugins/di/types'
 import GitHubIssue from '@/views/issues/GitHubIssue.vue'
 import IssueContent from '@/views/issues/IssueContent.vue'
 
@@ -15,12 +19,12 @@ import IssueContent from '@/views/issues/IssueContent.vue'
 const MockedGetIssuesUseCase = jest.fn<GetIssuesUseCase, [() => Issues]>()
 MockedGetIssuesUseCase.mockImplementation((cb: () => Issues): GetIssuesUseCase => {
   return {
-    execute: async (): Promise<Issues> => cb()
+    execute: async (): Promise<Issues> => cb(),
   }
 })
 const createMock = (func: () => GetIssuesUseCase): GetIssuesUseCaseFactory => {
   return {
-    create: (githubUrl: GitHubUrl, personalAccessToken: string) => func()
+    create: (githubUrl: GitHubUrl, personalAccessToken: string) => func(),
   }
 }
 
@@ -29,7 +33,7 @@ const errorMock = jest.fn()
 const MockedLogUseCase = jest.fn<LogUseCase, []>()
 MockedLogUseCase.mockImplementation((): LogUseCase => {
   return {
-    error: (e: Error) => errorMock(e)
+    error: (e: Error) => errorMock(e),
   }
 })
 const mockedLogUseCase = new MockedLogUseCase()
@@ -39,7 +43,7 @@ const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
 const openUrlMock = jest.fn()
 MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
   return {
-    openUrl: (url: string) => openUrlMock(url)
+    openUrl: (url: string) => openUrlMock(url),
   }
 })
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
@@ -58,16 +62,18 @@ describe('GitHubIssue.vue', () => {
     const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
-          [GetIssuesUseCaseFactoryKey as symbol]: createMock(() => new MockedGetIssuesUseCase(() => issues)),
+          [GetIssuesUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetIssuesUseCase(() => issues)
+          ),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
         account,
         repositorySetting: setting,
-        option: {}
-      }
+        option: {},
+      },
     })
 
     // when: click button
@@ -112,16 +118,18 @@ describe('GitHubIssue.vue', () => {
     const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
-          [GetIssuesUseCaseFactoryKey as symbol]: createMock(() => new MockedGetIssuesUseCase(() => issues)),
+          [GetIssuesUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetIssuesUseCase(() => issues)
+          ),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
         account,
         repositorySetting: setting,
-        option: {}
-      }
+        option: {},
+      },
     })
 
     // when: click button
@@ -154,20 +162,25 @@ describe('GitHubIssue.vue', () => {
     const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
-          [GetIssuesUseCaseFactoryKey as symbol]: createMock(() => new MockedGetIssuesUseCase(supplier)),
+          [GetIssuesUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetIssuesUseCase(supplier)
+          ),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
         account,
         repositorySetting: setting,
-        option: {}
-      }
+        option: {},
+      },
     })
 
     // when: click clear button
-    await wrapper.find('.get-button').trigger('click').then(() => nextTick())
+    await wrapper
+      .find('.get-button')
+      .trigger('click')
+      .then(() => nextTick())
 
     // then: error mock is called
     expect(errorMock).toHaveBeenCalledWith(err)
@@ -178,16 +191,18 @@ describe('GitHubIssue.vue', () => {
     const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
-          [GetIssuesUseCaseFactoryKey as symbol]: createMock(() => new MockedGetIssuesUseCase(() => issues)),
+          [GetIssuesUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetIssuesUseCase(() => issues)
+          ),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
         account,
         repositorySetting: setting,
-        option: {}
-      }
+        option: {},
+      },
     })
 
     // when: click header text
@@ -202,16 +217,18 @@ describe('GitHubIssue.vue', () => {
     const wrapper = shallowMount(GitHubIssue, {
       global: {
         provide: {
-          [GetIssuesUseCaseFactoryKey as symbol]: createMock(() => new MockedGetIssuesUseCase(() => issues)),
+          [GetIssuesUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetIssuesUseCase(() => issues)
+          ),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
         account,
         repositorySetting: setting,
-        option: {}
-      }
+        option: {},
+      },
     })
 
     // when: click button

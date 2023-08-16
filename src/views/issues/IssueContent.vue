@@ -1,5 +1,5 @@
 <template>
-  <div class="content-box-open" v-on:click="openIssue()">
+  <div class="content-box-open" @click="openIssue()">
     <div class="issue-information">
       <span class="tooltip" :data-tooltip="issue.getUpdatedLocalDate()">
         <i class="fas fa-clock"></i>{{ issue.getUpdatedRelativeDate() }}
@@ -7,9 +7,9 @@
       <span>#{{ issue.issueNumber }}</span>
     </div>
     <div class="issue-information">
-      <span class="info-badge" v-if="issue.viewerDidAuthor">My Issue</span>
+      <span v-if="issue.viewerDidAuthor" class="info-badge">My Issue</span>
       <span v-else />
-      <span class="info-badge" v-if="issue.isAssigned">Assigned</span>
+      <span v-if="issue.isAssigned" class="info-badge">Assigned</span>
     </div>
     <span class="content-title">
       {{ issue.title }}
@@ -17,14 +17,17 @@
 
     <div class="issue-description">
       <span>
-        {{ issue.authorName }} opened <span class="tooltip" :data-tooltip="issue.getCreatedLocalDate()">{{ issue.getCreatedRelativeDate() }}</span>
+        {{ issue.authorName }} opened
+        <span class="tooltip" :data-tooltip="issue.getCreatedLocalDate()">{{
+          issue.getCreatedRelativeDate()
+        }}</span>
       </span>
       <span><i class="fas fa-comments"></i>{{ issue.numberOfComments }}</span>
       <span><i class="fas fa-user"></i>{{ issue.numberOfParticipants }}</span>
     </div>
 
     <span v-for="(label, index) in issue.labels" :key="index">
-      <span class="github-label" v-bind:style="getLabelColor(label)">{{ label.name }}</span>
+      <span class="github-label" :style="getLabelColor(label)">{{ label.name }}</span>
     </span>
   </div>
 </template>
@@ -44,22 +47,22 @@ export default defineComponent({
   props: {
     issue: {
       type: Issue,
-      required: true
-    }
+      required: true,
+    },
   },
-  setup (props: PropsType) {
+  setup(props: PropsType) {
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
     const openIssue = () => webBrowserUserCase.openUrl(props.issue.url)
     const getLabelColor = (label: Label) => ({
       color: label.isLight ? '#2e2d2d' : '#fdfdfd',
-      backgroundColor: label.color
+      backgroundColor: label.color,
     })
 
     return {
       openIssue,
-      getLabelColor
+      getLabelColor,
     }
-  }
+  },
 })
 </script>
 

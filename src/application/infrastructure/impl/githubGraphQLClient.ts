@@ -2,41 +2,64 @@ import { GraphQLClient, gql } from 'graphql-request'
 import { GitHubUrl } from '@/application/domain/model/github'
 import { GitHubAccessor, Option } from '@/application/domain/interface/githubAccessor'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { CommitHistoryConnection, IssueConnection, PullRequestConnection, ReleaseConnection, Repository, Viewer } from '@/application/infrastructure/dto/githubApi'
+import {
+  CommitHistoryConnection,
+  IssueConnection,
+  PullRequestConnection,
+  ReleaseConnection,
+  Repository,
+  Viewer,
+} from '@/application/infrastructure/dto/githubApi'
 
 export class GitHubGraphQLClient implements GitHubAccessor {
   #graphQLClient: GraphQLClient
 
-  constructor (gitHubUrl: GitHubUrl) {
+  constructor(gitHubUrl: GitHubUrl) {
     this.#graphQLClient = new GraphQLClient(gitHubUrl.getApiEndpoint())
   }
 
   public getViewer = async (personalAccessToken: string): Promise<Viewer> => {
     const requestHeaders = {
-      authorization: `Bearer ${personalAccessToken}`
+      authorization: `Bearer ${personalAccessToken}`,
     }
-    const query = gql`{
-      viewer {
-        avatarUrl
-        login
-        url
+    const query = gql`
+      {
+        viewer {
+          avatarUrl
+          login
+          url
+        }
       }
-    }`
+    `
     return this.#graphQLClient.request<Viewer>(query, {}, requestHeaders)
   }
 
-  public getIssues = async (personalAccessToken: string, setting: RepositorySetting, opts?: Option): Promise<IssueConnection> => {
+  public getIssues = async (
+    personalAccessToken: string,
+    setting: RepositorySetting,
+    opts?: Option
+  ): Promise<IssueConnection> => {
     const requestHeaders = {
-      authorization: `Bearer ${personalAccessToken}`
+      authorization: `Bearer ${personalAccessToken}`,
     }
     const query = gql`
-      query getIssues($owner: String!, $name: String!, $firstIssueNumber: Int!, $sortField: IssueOrderField!, $sortDirection: OrderDirection!) {
-        repository(owner:$owner, name:$name) {
-          issues(first:$firstIssueNumber, states:OPEN, orderBy:{field: $sortField, direction: $sortDirection}) {
+      query getIssues(
+        $owner: String!
+        $name: String!
+        $firstIssueNumber: Int!
+        $sortField: IssueOrderField!
+        $sortDirection: OrderDirection!
+      ) {
+        repository(owner: $owner, name: $name) {
+          issues(
+            first: $firstIssueNumber
+            states: OPEN
+            orderBy: { field: $sortField, direction: $sortDirection }
+          ) {
             totalCount
             edges {
               node {
-                assignees(first:5) {
+                assignees(first: 5) {
                   nodes {
                     isViewer
                   }
@@ -53,7 +76,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                 url
                 createdAt
                 updatedAt
-                labels(first:10) {
+                labels(first: 10) {
                   edges {
                     node {
                       name
@@ -70,14 +93,15 @@ export class GitHubGraphQLClient implements GitHubAccessor {
             }
           }
         }
-      }`
+      }
+    `
 
     const variables = {
       owner: setting.getOwner(),
       name: setting.getRepositoryName(),
       firstIssueNumber: opts?.count !== undefined ? opts.count : 10,
       sortField: opts?.sortField !== undefined ? opts.sortField : 'UPDATED_AT',
-      sortDirection: opts?.sortDirection !== undefined ? opts.sortDirection : 'DESC'
+      sortDirection: opts?.sortDirection !== undefined ? opts.sortDirection : 'DESC',
     }
     const takeIssues = (r: Repository): IssueConnection => {
       if (r.repository?.issues) {
@@ -86,21 +110,37 @@ export class GitHubGraphQLClient implements GitHubAccessor {
         throw Error(`Failed to get issues: ${setting.getUrl()}.`)
       }
     }
-    return this.#graphQLClient.request<Repository>(query, variables, requestHeaders).then(takeIssues)
+    return this.#graphQLClient
+      .request<Repository>(query, variables, requestHeaders)
+      .then(takeIssues)
   }
 
-  public getPullRequests = async (personalAccessToken: string, setting: RepositorySetting, opts?: Option): Promise<PullRequestConnection> => {
+  public getPullRequests = async (
+    personalAccessToken: string,
+    setting: RepositorySetting,
+    opts?: Option
+  ): Promise<PullRequestConnection> => {
     const requestHeaders = {
-      authorization: `Bearer ${personalAccessToken}`
+      authorization: `Bearer ${personalAccessToken}`,
     }
     const query = gql`
-      query getPRs($owner: String!, $name: String!, $firstIssueNumber: Int!, $sortField: IssueOrderField!, $sortDirection: OrderDirection!) {
-        repository(owner:$owner, name:$name) {
-          pullRequests(first:$firstIssueNumber, states:OPEN, orderBy:{field: $sortField, direction: $sortDirection}) {
+      query getPRs(
+        $owner: String!
+        $name: String!
+        $firstIssueNumber: Int!
+        $sortField: IssueOrderField!
+        $sortDirection: OrderDirection!
+      ) {
+        repository(owner: $owner, name: $name) {
+          pullRequests(
+            first: $firstIssueNumber
+            states: OPEN
+            orderBy: { field: $sortField, direction: $sortDirection }
+          ) {
             totalCount
             edges {
               node {
-                assignees(first:5) {
+                assignees(first: 5) {
                   nodes {
                     isViewer
                   }
@@ -115,7 +155,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                 }
                 createdAt
                 updatedAt
-                labels(first:10) {
+                labels(first: 10) {
                   edges {
                     node {
                       name
@@ -140,7 +180,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                     }
                   }
                 }
-                reviewRequests(first:5) {
+                reviewRequests(first: 5) {
                   nodes {
                     requestedReviewer {
                       ... on User {
@@ -156,14 +196,15 @@ export class GitHubGraphQLClient implements GitHubAccessor {
             }
           }
         }
-      }`
+      }
+    `
 
     const variables = {
       owner: setting.getOwner(),
       name: setting.getRepositoryName(),
       firstIssueNumber: opts?.count !== undefined ? opts.count : 10,
       sortField: opts?.sortField !== undefined ? opts.sortField : 'UPDATED_AT',
-      sortDirection: opts?.sortDirection !== undefined ? opts.sortDirection : 'DESC'
+      sortDirection: opts?.sortDirection !== undefined ? opts.sortDirection : 'DESC',
     }
     const takePullRequests = (r: Repository): PullRequestConnection => {
       if (r.repository?.pullRequests) {
@@ -172,17 +213,29 @@ export class GitHubGraphQLClient implements GitHubAccessor {
         throw Error(`Failed to get PRs: ${setting.getUrl()}.`)
       }
     }
-    return this.#graphQLClient.request<Repository>(query, variables, requestHeaders).then(takePullRequests)
+    return this.#graphQLClient
+      .request<Repository>(query, variables, requestHeaders)
+      .then(takePullRequests)
   }
 
-  public getReleases = async (personalAccessToken: string, setting: RepositorySetting, opts?: Option): Promise<ReleaseConnection> => {
+  public getReleases = async (
+    personalAccessToken: string,
+    setting: RepositorySetting,
+    opts?: Option
+  ): Promise<ReleaseConnection> => {
     const requestHeaders = {
-      authorization: `Bearer ${personalAccessToken}`
+      authorization: `Bearer ${personalAccessToken}`,
     }
     const query = gql`
-      query getReleases($owner: String!, $name: String!, $firstNumber: Int!, $sortField: ReleaseOrderField!, $sortDirection: OrderDirection!) {
-        repository(owner:$owner, name:$name) {
-          releases(first:$firstNumber, orderBy:{field: $sortField, direction: $sortDirection}) {
+      query getReleases(
+        $owner: String!
+        $name: String!
+        $firstNumber: Int!
+        $sortField: ReleaseOrderField!
+        $sortDirection: OrderDirection!
+      ) {
+        repository(owner: $owner, name: $name) {
+          releases(first: $firstNumber, orderBy: { field: $sortField, direction: $sortDirection }) {
             totalCount
             edges {
               node {
@@ -213,14 +266,15 @@ export class GitHubGraphQLClient implements GitHubAccessor {
             }
           }
         }
-      }`
+      }
+    `
 
     const variables = {
       owner: setting.getOwner(),
       name: setting.getRepositoryName(),
       firstNumber: opts?.count !== undefined ? opts.count : 3,
       sortField: opts?.sortField !== undefined ? opts.sortField : 'CREATED_AT',
-      sortDirection: opts?.sortDirection !== undefined ? opts.sortDirection : 'DESC'
+      sortDirection: opts?.sortDirection !== undefined ? opts.sortDirection : 'DESC',
     }
     const takeReleases = (r: Repository): ReleaseConnection => {
       if (r.repository?.releases) {
@@ -229,12 +283,18 @@ export class GitHubGraphQLClient implements GitHubAccessor {
         throw Error(`Failed to get Releases: ${setting.getUrl()}.`)
       }
     }
-    return this.#graphQLClient.request<Repository>(query, variables, requestHeaders).then(takeReleases)
+    return this.#graphQLClient
+      .request<Repository>(query, variables, requestHeaders)
+      .then(takeReleases)
   }
 
-  public getCommits = async (personalAccessToken: string, setting: RepositorySetting, opts?: Option): Promise<CommitHistoryConnection> => {
+  public getCommits = async (
+    personalAccessToken: string,
+    setting: RepositorySetting,
+    opts?: Option
+  ): Promise<CommitHistoryConnection> => {
     const requestHeaders = {
-      authorization: `Bearer ${personalAccessToken}`
+      authorization: `Bearer ${personalAccessToken}`,
     }
     const query = gql`
       query getCommits($owner: String!, $name: String!, $firstNumber: Int!) {
@@ -274,7 +334,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
     const variables = {
       owner: setting.getOwner(),
       name: setting.getRepositoryName(),
-      firstNumber: opts?.count !== undefined ? opts.count : 3
+      firstNumber: opts?.count !== undefined ? opts.count : 3,
     }
     const takeCommitHistories = (r: Repository): CommitHistoryConnection => {
       if (r.repository?.defaultBranchRef?.target?.history) {
@@ -283,6 +343,8 @@ export class GitHubGraphQLClient implements GitHubAccessor {
         throw Error(`Failed to get commit histories: ${setting.getUrl()}, ${r}.`)
       }
     }
-    return this.#graphQLClient.request<Repository>(query, variables, requestHeaders).then(takeCommitHistories)
+    return this.#graphQLClient
+      .request<Repository>(query, variables, requestHeaders)
+      .then(takeCommitHistories)
   }
 }

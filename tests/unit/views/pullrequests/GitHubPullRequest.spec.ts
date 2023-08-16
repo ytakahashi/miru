@@ -2,25 +2,40 @@
 
 import { nextTick } from 'vue'
 import { shallowMount } from '@vue/test-utils'
-import { Account, GitHubUrl, PullRequest, PullRequests, PullRequestReviews } from '@/application/domain/model/github'
+import {
+  Account,
+  GitHubUrl,
+  PullRequest,
+  PullRequests,
+  PullRequestReviews,
+} from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { GetPullRequestsUseCase, GetPullRequestsUseCaseFactory } from '@/application/usecase/githubRepository'
+import {
+  GetPullRequestsUseCase,
+  GetPullRequestsUseCaseFactory,
+} from '@/application/usecase/githubRepository'
 import { LogUseCase } from '@/application/usecase/log'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import { GetPullRequestsUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import {
+  GetPullRequestsUseCaseFactoryKey,
+  LogUseCaseKey,
+  WebBrowserUserCaseKey,
+} from '@/plugins/di/types'
 import GitHubPullRequest from '@/views/pullrequests/GitHubPullRequest.vue'
 import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
 
 // GetPullRequestsUseCase mock
 const MockedGetPullRequestsUseCase = jest.fn<GetPullRequestsUseCase, [() => PullRequests]>()
-MockedGetPullRequestsUseCase.mockImplementation((cb: () => PullRequests): GetPullRequestsUseCase => {
-  return {
-    execute: async (): Promise<PullRequests> => cb()
+MockedGetPullRequestsUseCase.mockImplementation(
+  (cb: () => PullRequests): GetPullRequestsUseCase => {
+    return {
+      execute: async (): Promise<PullRequests> => cb(),
+    }
   }
-})
+)
 const createMock = (func: () => GetPullRequestsUseCase): GetPullRequestsUseCaseFactory => {
   return {
-    create: (githubUrl: GitHubUrl, personalAccessToken: string) => func()
+    create: (githubUrl: GitHubUrl, personalAccessToken: string) => func(),
   }
 }
 
@@ -29,7 +44,7 @@ const errorMock = jest.fn()
 const MockedLogUseCase = jest.fn<LogUseCase, []>()
 MockedLogUseCase.mockImplementation((): LogUseCase => {
   return {
-    error: errorMock
+    error: errorMock,
   }
 })
 const mockedLogUseCase = new MockedLogUseCase()
@@ -39,7 +54,7 @@ const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
 const openUrlMock = jest.fn()
 MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
   return {
-    openUrl: (url: string) => openUrlMock(url)
+    openUrl: (url: string) => openUrlMock(url),
   }
 })
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
@@ -58,16 +73,18 @@ describe('GitHubPullRequest.vue', () => {
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {
         provide: {
-          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(() => new MockedGetPullRequestsUseCase(() => pullRequests)),
+          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetPullRequestsUseCase(() => pullRequests)
+          ),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
         account,
         repositorySetting: setting,
-        option: {}
-      }
+        option: {},
+      },
     })
 
     // when: click button
@@ -123,16 +140,18 @@ describe('GitHubPullRequest.vue', () => {
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {
         provide: {
-          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(() => new MockedGetPullRequestsUseCase(() => pullRequests)),
+          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetPullRequestsUseCase(() => pullRequests)
+          ),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
         account,
         repositorySetting: setting,
-        option: {}
-      }
+        option: {},
+      },
     })
 
     // when: click button
@@ -166,20 +185,25 @@ describe('GitHubPullRequest.vue', () => {
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {
         provide: {
-          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(() => new MockedGetPullRequestsUseCase(supplier)),
+          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetPullRequestsUseCase(supplier)
+          ),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
         account,
         repositorySetting: setting,
-        option: {}
-      }
+        option: {},
+      },
     })
 
     // when: click button
-    await wrapper.find('.get-button').trigger('click').then(() => nextTick())
+    await wrapper
+      .find('.get-button')
+      .trigger('click')
+      .then(() => nextTick())
 
     // then: error mock is called
     expect(errorMock).toHaveBeenCalledWith(err)
@@ -190,16 +214,18 @@ describe('GitHubPullRequest.vue', () => {
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {
         provide: {
-          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(() => new MockedGetPullRequestsUseCase(() => pullRequests)),
+          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetPullRequestsUseCase(() => pullRequests)
+          ),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
         account,
         repositorySetting: setting,
-        option: {}
-      }
+        option: {},
+      },
     })
 
     // when: click header text
@@ -214,16 +240,18 @@ describe('GitHubPullRequest.vue', () => {
     const wrapper = shallowMount(GitHubPullRequest, {
       global: {
         provide: {
-          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(() => new MockedGetPullRequestsUseCase(() => pullRequests)),
+          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetPullRequestsUseCase(() => pullRequests)
+          ),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
         account,
         repositorySetting: setting,
-        option: {}
-      }
+        option: {},
+      },
     })
 
     // when: click button

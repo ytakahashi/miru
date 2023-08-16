@@ -8,7 +8,7 @@ const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
 const openUrlMock = jest.fn()
 MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
   return {
-    openUrl: (url: string) => openUrlMock(url)
+    openUrl: (url: string) => openUrlMock(url),
   }
 })
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
@@ -19,13 +19,13 @@ describe('GitHubRepository.vue', () => {
     const wrapper = mount(GitHubRepository, {
       props: {
         editing: false,
-        repositorySetting: setting
+        repositorySetting: setting,
       },
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
-      }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
+      },
     })
 
     expect(wrapper.text()).toBe('ytakahashi/miru')
@@ -36,13 +36,13 @@ describe('GitHubRepository.vue', () => {
     const wrapper = mount(GitHubRepository, {
       props: {
         editing: true,
-        repositorySetting: setting
+        repositorySetting: setting,
       },
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
-      }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
+      },
     })
 
     expect(wrapper.text()).toContain('ytakahashi/miru')
@@ -57,13 +57,13 @@ describe('GitHubRepository.vue', () => {
     const wrapper = mount(GitHubRepository, {
       props: {
         editing: true,
-        repositorySetting: setting
+        repositorySetting: setting,
       },
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
-      }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
+      },
     })
 
     const inputs = wrapper.findAll('span.preference-input')
@@ -97,13 +97,13 @@ describe('GitHubRepository.vue', () => {
     const wrapper = mount(GitHubRepository, {
       props: {
         editing: true,
-        repositorySetting: setting
+        repositorySetting: setting,
       },
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
-      }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
+      },
     })
 
     const inputs = wrapper.findAll('span.preference-input')
@@ -137,13 +137,13 @@ describe('GitHubRepository.vue', () => {
     const wrapper = mount(GitHubRepository, {
       props: {
         editing: true,
-        repositorySetting: setting
+        repositorySetting: setting,
       },
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
-      }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
+      },
     })
     const inputs = wrapper.findAll('span.preference-input')
     expect(inputs).toHaveLength(4)
@@ -176,13 +176,13 @@ describe('GitHubRepository.vue', () => {
     const wrapper = mount(GitHubRepository, {
       props: {
         editing: true,
-        repositorySetting: setting
+        repositorySetting: setting,
       },
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
-      }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
+      },
     })
     const inputs = wrapper.findAll('span.preference-input')
     expect(inputs).toHaveLength(4)

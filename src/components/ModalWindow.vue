@@ -1,26 +1,17 @@
 <template>
   <!-- https://v3.vuejs.org/examples/modal.html -->
   <div class="modal-mask">
-    <div class="modal-wrapper" ref="wrapper">
+    <div ref="wrapper" class="modal-wrapper">
       <div class="modal-container">
-
         <div class="modal-header">
-          <slot name="header">
-            header
-          </slot>
+          <slot name="header"> header </slot>
         </div>
         <div class="modal-body">
-          <slot name="body">
-            body
-          </slot>
+          <slot name="body"> body </slot>
         </div>
 
-        <button class="modal-button" @click="$emit('ok')">
-          OK
-        </button>
-        <button class="modal-button" @click="$emit('cancel')">
-          Cancel
-        </button>
+        <button class="modal-button" @click="$emit('ok')">OK</button>
+        <button class="modal-button" @click="$emit('cancel')">Cancel</button>
       </div>
     </div>
   </div>
@@ -33,10 +24,10 @@ export default defineComponent({
   name: 'ModalWindow',
   emits: {
     cancel: null,
-    ok: null
+    ok: null,
   },
-  setup (_, context: SetupContext) {
-    const wrapper: Ref<HTMLElement|null> = ref(null)
+  setup(_, context: SetupContext) {
+    const wrapper: Ref<HTMLElement | null> = ref(null)
 
     const clickListener = (event: MouseEvent) => {
       if (event.target === wrapper.value) {
@@ -47,9 +38,9 @@ export default defineComponent({
     onUnmounted(() => document.removeEventListener('click', clickListener))
 
     return {
-      wrapper
+      wrapper,
     }
-  }
+  },
 })
 </script>
 

@@ -1,15 +1,26 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable vue/one-component-per-file */
 
 import { defineComponent, h } from 'vue'
 import { matchedRouteKey } from 'vue-router'
 import { shallowMount } from '@vue/test-utils'
-import { AccountSettingUseCaseFactoryKey, RepositorySettingUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import {
+  AccountSettingUseCaseFactoryKey,
+  RepositorySettingUseCaseFactoryKey,
+  WebBrowserUserCaseKey,
+} from '@/plugins/di/types'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import { AccountSettingUseCase, AccountSettingUseCaseFactory } from '@/application/usecase/accountSetting'
-import { RepositorySettingUseCase, RepositorySettingUseCaseFactory } from '@/application/usecase/repositorySetting'
+import {
+  AccountSettingUseCase,
+  AccountSettingUseCaseFactory,
+} from '@/application/usecase/accountSetting'
+import {
+  RepositorySettingUseCase,
+  RepositorySettingUseCaseFactory,
+} from '@/application/usecase/repositorySetting'
 import ModalWindow from '@/components/ModalWindow.vue'
 import AccountSetting from '@/views/settings/AccountSetting.vue'
 import GitHubRepositories from '@/views/settings/GitHubRepositories.vue'
@@ -23,7 +34,7 @@ const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
 const openUrlMock = jest.fn()
 MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
   return {
-    openUrl: (url: string) => openUrlMock(url)
+    openUrl: (url: string) => openUrlMock(url),
   }
 })
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
@@ -38,29 +49,38 @@ MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
   return {
     setAccount: (account: Account) => jest.fn(),
     getAccount: () => account,
-    deleteSetting: () => deleteSettingMock()
+    deleteSetting: () => deleteSettingMock(),
   }
 })
 
 // AccountSettingUseCaseFactory mock
-const createAccountSettingMock = (func: () => AccountSettingUseCase): AccountSettingUseCaseFactory => {
+const createAccountSettingMock = (
+  func: () => AccountSettingUseCase
+): AccountSettingUseCaseFactory => {
   return {
-    newAccountSettingUseCase: (setting: ApplicationSetting) => func()
+    newAccountSettingUseCase: (setting: ApplicationSetting) => func(),
   }
 }
 
-const MockedRepositorySettingUseCase = jest.fn<RepositorySettingUseCase, [Array<RepositorySetting>]>()
-MockedRepositorySettingUseCase.mockImplementation((arr: Array<RepositorySetting>): RepositorySettingUseCase => {
-  return {
-    addRepositorySetting: (s: RepositorySetting) => addRepositorySettingMock(),
-    deleteRepositorySetting: (s: RepositorySetting) => deleteRepositorySettingMock(),
-    getRepositorySettings: () => arr,
-    setRepositorySettings: (s: Array<RepositorySetting>) => setRepositorySettingsMock()
+const MockedRepositorySettingUseCase = jest.fn<
+  RepositorySettingUseCase,
+  [Array<RepositorySetting>]
+>()
+MockedRepositorySettingUseCase.mockImplementation(
+  (arr: Array<RepositorySetting>): RepositorySettingUseCase => {
+    return {
+      addRepositorySetting: (s: RepositorySetting) => addRepositorySettingMock(),
+      deleteRepositorySetting: (s: RepositorySetting) => deleteRepositorySettingMock(),
+      getRepositorySettings: () => arr,
+      setRepositorySettings: (s: Array<RepositorySetting>) => setRepositorySettingsMock(),
+    }
   }
-})
-const createRepositorySettingMock = (func: () => RepositorySettingUseCase): RepositorySettingUseCaseFactory => {
+)
+const createRepositorySettingMock = (
+  func: () => RepositorySettingUseCase
+): RepositorySettingUseCaseFactory => {
   return {
-    newRepositorySettingUseCase: (setting: ApplicationSetting) => func()
+    newRepositorySettingUseCase: (setting: ApplicationSetting) => func(),
   }
 }
 
@@ -68,23 +88,23 @@ const createRepositorySettingMock = (func: () => RepositorySettingUseCase): Repo
 const GitHubRepositoriesMock = defineComponent({
   name: 'GitHubRepositories',
   emits: ['edit'],
-  render: () => h('div', {}, '')
+  render: () => h('div', {}, ''),
 })
 
 // ModalWindow Mock
 const ModalWindowMock = defineComponent({
   name: 'ModalWindow',
   emits: ['cancel', 'ok'],
-  render: () => h('div', {}, '')
+  render: () => h('div', {}, ''),
 })
 
 // vue router (onBeforeRouteLeave) mock
 const mockRoute = {
   value: {
     leaveGuards: {
-      add: () => jest.fn()
-    }
-  }
+      add: () => jest.fn(),
+    },
+  },
 }
 
 describe('AccountSetting.vue', () => {
@@ -100,14 +120,18 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
-          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase([])),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
+            () => new MockedAccountSettingUseCase()
+          ),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
+            () => new MockedRepositorySettingUseCase([])
+          ),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
-        setting
-      }
+        setting,
+      },
     })
 
     await wrapper.vm.$nextTick()
@@ -122,17 +146,21 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
-          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase(repos)),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
+            () => new MockedAccountSettingUseCase()
+          ),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
+            () => new MockedRepositorySettingUseCase(repos)
+          ),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
         stubs: {
-          GitHubRepositories: GitHubRepositoriesMock
-        }
+          GitHubRepositories: GitHubRepositoriesMock,
+        },
       },
       props: {
-        setting
-      }
+        setting,
+      },
     })
     await wrapper.vm.$nextTick()
 
@@ -156,17 +184,21 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
-          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase(repos)),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
+            () => new MockedAccountSettingUseCase()
+          ),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
+            () => new MockedRepositorySettingUseCase(repos)
+          ),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
         stubs: {
-          GitHubRepositories: GitHubRepositoriesMock
-        }
+          GitHubRepositories: GitHubRepositoriesMock,
+        },
       },
       props: {
-        setting
-      }
+        setting,
+      },
     })
 
     await wrapper.vm.$nextTick()
@@ -201,14 +233,18 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
-          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase([])),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
+            () => new MockedAccountSettingUseCase()
+          ),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
+            () => new MockedRepositorySettingUseCase([])
+          ),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
-        setting
-      }
+        setting,
+      },
     })
     await wrapper.find('span.text-strong').trigger('click')
     expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi')
@@ -219,14 +255,18 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
-          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase([])),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
+            () => new MockedAccountSettingUseCase()
+          ),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
+            () => new MockedRepositorySettingUseCase([])
+          ),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
-        setting
-      }
+        setting,
+      },
     })
     expect(wrapper.findComponent(ModalWindow).exists()).toBe(false)
     await wrapper.find('i.fa-trash-alt').trigger('click')
@@ -238,17 +278,21 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
-          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase([])),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
+            () => new MockedAccountSettingUseCase()
+          ),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
+            () => new MockedRepositorySettingUseCase([])
+          ),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
         stubs: {
-          ModalWindow: ModalWindowMock
-        }
+          ModalWindow: ModalWindowMock,
+        },
       },
       props: {
-        setting
-      }
+        setting,
+      },
     })
 
     await wrapper.find('i.fa-trash-alt').trigger('click')
@@ -263,17 +307,21 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(() => new MockedAccountSettingUseCase()),
-          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(() => new MockedRepositorySettingUseCase([])),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
+            () => new MockedAccountSettingUseCase()
+          ),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
+            () => new MockedRepositorySettingUseCase([])
+          ),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
         stubs: {
-          ModalWindow: ModalWindowMock
-        }
+          ModalWindow: ModalWindowMock,
+        },
       },
       props: {
-        setting
-      }
+        setting,
+      },
     })
 
     await wrapper.find('i.fa-trash-alt').trigger('click')

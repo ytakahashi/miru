@@ -1,5 +1,10 @@
 <template>
-  <input v-model="filterText" :placeholder="placeholder" class="form-input" ref="repositoryFilter" />
+  <input
+    ref="repositoryFilter"
+    v-model="filterText"
+    :placeholder="placeholder"
+    class="form-input"
+  />
 </template>
 
 <script lang="ts">
@@ -12,29 +17,29 @@ export default defineComponent({
     placeholder: {
       type: String,
       requred: false,
-      default: 'filter repositories'
-    }
+      default: 'filter repositories',
+    },
   },
-  setup () {
+  setup() {
     const filterText = ref('')
     const isVisible = (repository: RepositorySetting) =>
       repository.displayName().includes(filterText.value)
 
-    const repositoryFilter: Ref<HTMLElement|null> = ref(null)
+    const repositoryFilter: Ref<HTMLElement | null> = ref(null)
     const listener = (event: KeyboardEvent) => {
       if (['Key', 'Digit'].some(v => event.code.startsWith(v))) {
         repositoryFilter.value?.focus()
       }
     }
-    onMounted(() => (window.addEventListener('keydown', listener)))
-    onUnmounted(() => (window.removeEventListener('keydown', listener)))
+    onMounted(() => window.addEventListener('keydown', listener))
+    onUnmounted(() => window.removeEventListener('keydown', listener))
 
     return {
       repositoryFilter,
       filterText,
-      isVisible
+      isVisible,
     }
-  }
+  },
 })
 </script>
 

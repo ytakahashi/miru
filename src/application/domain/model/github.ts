@@ -14,17 +14,18 @@ export class GitHubUrl {
   #url: URL
   #apiEndpoint: string
 
-  static from = (url?: string): GitHubUrl|undefined => {
+  static from = (url?: string): GitHubUrl | undefined => {
     try {
       const urlObject = url ? new URL(url) : new URL(githubEndpoint)
-      const apiEndpoint = urlObject.origin === githubEndpoint ? githubApiEndpoint : `${urlObject.origin}/api/graphql`
+      const apiEndpoint =
+        urlObject.origin === githubEndpoint ? githubApiEndpoint : `${urlObject.origin}/api/graphql`
       return new GitHubUrl(urlObject.origin, apiEndpoint)
     } catch (e) {
       return undefined
     }
   }
 
-  constructor (url: string, apiEndpoint: string) {
+  constructor(url: string, apiEndpoint: string) {
     this.#url = new URL(url)
     this.#apiEndpoint = apiEndpoint
   }
@@ -53,7 +54,7 @@ export class Account {
   public readonly githubUrl: GitHubUrl
   public readonly personalAccessToken: string
 
-  constructor (
+  constructor(
     userName: string,
     profileUrl: string,
     avatarUrl: string,
@@ -77,7 +78,7 @@ export class Label {
   public readonly color: string
   public readonly isLight: boolean
 
-  constructor (name: string, color: string) {
+  constructor(name: string, color: string) {
     this.name = name
     const t = tinycolor(color)
     this.color = t.toHexString()
@@ -92,7 +93,7 @@ export class BaseContent {
   public readonly createdAt: string
   public readonly updatedAt: string
 
-  constructor (
+  constructor(
     authorName: string,
     title: string,
     url: string,
@@ -131,7 +132,7 @@ export class Issue extends BaseContent {
   public readonly isAssigned: boolean
   public readonly viewerDidAuthor: boolean
 
-  constructor (
+  constructor(
     authorName: string,
     title: string,
     url: string,
@@ -144,13 +145,7 @@ export class Issue extends BaseContent {
     isAssigned: boolean,
     viewerDidAuthor: boolean
   ) {
-    super(
-      authorName,
-      title,
-      url,
-      createdAt,
-      updatedAt
-    )
+    super(authorName, title, url, createdAt, updatedAt)
     this.issueNumber = issueNumber
     this.labels = labels
     this.numberOfComments = numberOfComments
@@ -164,10 +159,7 @@ export class TagReference {
   public readonly abbreviatedObjectId: string
   public readonly commitUrl: string
 
-  constructor (
-    abbreviatedObjectId: string,
-    commitUrl: string
-  ) {
+  constructor(abbreviatedObjectId: string, commitUrl: string) {
     this.abbreviatedObjectId = abbreviatedObjectId
     this.commitUrl = commitUrl
   }
@@ -179,7 +171,7 @@ export class Release extends BaseContent {
   public readonly tagName?: string
   public readonly tag?: TagReference
 
-  constructor (
+  constructor(
     authorName: string,
     name: string,
     url: string,
@@ -191,13 +183,7 @@ export class Release extends BaseContent {
     tagName?: string,
     tag?: TagReference
   ) {
-    super(
-      authorName,
-      name,
-      url,
-      createdAt,
-      updatedAt
-    )
+    super(authorName, name, url, createdAt, updatedAt)
     this.isDraft = isDraft
     this.isPrerelease = isPrerelease
     this.releaseAssetCount = releaseAssetCount
@@ -210,10 +196,7 @@ export class PullRequestReviews {
   public readonly reviewCount: number
   public readonly hasRemainedItem: boolean
 
-  constructor (
-    reviewCount: number,
-    hasRemainedItem: boolean
-  ) {
+  constructor(reviewCount: number, hasRemainedItem: boolean) {
     this.reviewCount = reviewCount
     this.hasRemainedItem = hasRemainedItem
   }
@@ -232,7 +215,7 @@ export class PullRequest extends BaseContent {
   public readonly isReviewRequested: boolean
   public readonly viewerDidAuthor: boolean
 
-  constructor (
+  constructor(
     authorName: string,
     title: string,
     url: string,
@@ -251,13 +234,7 @@ export class PullRequest extends BaseContent {
     isReviewRequested: boolean,
     viewerDidAuthor: boolean
   ) {
-    super(
-      authorName,
-      title,
-      url,
-      createdAt,
-      updatedAt
-    )
+    super(authorName, title, url, createdAt, updatedAt)
     this.issueNumber = issueNumber
     this.labels = labels
     this.numberOfComments = numberOfComments
@@ -282,11 +259,11 @@ export class Commit {
   public readonly changedFiles: number
   public readonly authorName?: string
   public readonly authoredDate: string
-  public readonly committerName? :string
+  public readonly committerName?: string
   public readonly committedDate: string
   public readonly pushedDate?: string
 
-  constructor (
+  constructor(
     message: string,
     commitUrl: string,
     additions: number,
@@ -294,7 +271,7 @@ export class Commit {
     changedFiles: number,
     authorName: string | undefined,
     authoredDate: string,
-    committerName :string | undefined,
+    committerName: string | undefined,
     committedDate: string,
     pushedDate: string | undefined
   ) {
@@ -311,9 +288,7 @@ export class Commit {
   }
 
   getPushedRelativeDate = (): string => {
-    return this.pushedDate === undefined
-      ? ''
-      : dayjs(this.pushedDate).fromNow()
+    return this.pushedDate === undefined ? '' : dayjs(this.pushedDate).fromNow()
   }
 
   getAuthoredRelativeDate = (): string => {
@@ -363,11 +338,7 @@ class ResultListHolder<T> {
   public readonly results: Array<T>
   public readonly totalCount?: number
 
-  constructor (
-    repositorySetting: RepositorySetting,
-    results: Array<T>,
-    totalCount?: number
-  ) {
+  constructor(repositorySetting: RepositorySetting, results: Array<T>, totalCount?: number) {
     this.fetchedAt = dayjs().unix()
     this.repositoryUrl = repositorySetting.getUrl()
     this.results = results
@@ -387,14 +358,10 @@ class ResultListHolder<T> {
   }
 }
 
-export class Issues extends ResultListHolder<Issue> {
-}
+export class Issues extends ResultListHolder<Issue> {}
 
-export class PullRequests extends ResultListHolder<PullRequest> {
-}
+export class PullRequests extends ResultListHolder<PullRequest> {}
 
-export class Releases extends ResultListHolder<Release> {
-}
+export class Releases extends ResultListHolder<Release> {}
 
-export class CommitHistory extends ResultListHolder<Commit> {
-}
+export class CommitHistory extends ResultListHolder<Commit> {}

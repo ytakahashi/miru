@@ -5,8 +5,8 @@ describe('QueryOption.vue', () => {
   it('shows/hides option', async () => {
     const wrapper = shallowMount(QueryOption, {
       props: {
-        viewType: 'issues'
-      }
+        viewType: 'issues',
+      },
     })
     expect(wrapper.find('.open-button').exists()).toBe(true)
     expect(wrapper.find('.fa-cog').exists()).toBe(true)
@@ -33,8 +33,8 @@ describe('QueryOption.vue', () => {
   it('shows correct option values for issues', async () => {
     const wrapper = shallowMount(QueryOption, {
       props: {
-        viewType: 'issues'
-      }
+        viewType: 'issues',
+      },
     })
     await wrapper.find('.fa-cog').trigger('click')
     await wrapper.vm.$nextTick()
@@ -52,8 +52,8 @@ describe('QueryOption.vue', () => {
   it('shows correct option values for pullRequests', async () => {
     const wrapper = shallowMount(QueryOption, {
       props: {
-        viewType: 'pullRequests'
-      }
+        viewType: 'pullRequests',
+      },
     })
     await wrapper.find('.fa-cog').trigger('click')
     await wrapper.vm.$nextTick()
@@ -71,8 +71,8 @@ describe('QueryOption.vue', () => {
   it('shows correct option values for releases', async () => {
     const wrapper = shallowMount(QueryOption, {
       props: {
-        viewType: 'releases'
-      }
+        viewType: 'releases',
+      },
     })
     await wrapper.find('.fa-cog').trigger('click')
     await wrapper.vm.$nextTick()
@@ -90,8 +90,8 @@ describe('QueryOption.vue', () => {
   it('can update option values', async () => {
     const wrapper = shallowMount(QueryOption, {
       props: {
-        viewType: 'issues'
-      }
+        viewType: 'issues',
+      },
     })
 
     // check default value
@@ -99,7 +99,7 @@ describe('QueryOption.vue', () => {
     expect(actual1).toEqual({
       count: 10,
       sortField: 'UPDATED_AT',
-      sortDirection: 'DESC'
+      sortDirection: 'DESC',
     })
 
     await wrapper.find('.fa-cog').trigger('click')
@@ -111,7 +111,7 @@ describe('QueryOption.vue', () => {
     expect(actual2).toEqual({
       count: 3,
       sortField: 'CREATED_AT',
-      sortDirection: 'DESC'
+      sortDirection: 'DESC',
     })
 
     // update options (2)
@@ -121,7 +121,7 @@ describe('QueryOption.vue', () => {
     expect(actual3).toEqual({
       count: 20,
       sortField: 'COMMENTS',
-      sortDirection: 'ASC'
+      sortDirection: 'ASC',
     })
   })
 })

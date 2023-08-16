@@ -3,7 +3,10 @@
 import { LocalStorageAccessor } from '@/application/domain/interface/localStorageAccessor'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { GitHubAccount, RepositorySetting as RepositorySettingType } from '@/application/infrastructure/dto/local'
+import {
+  GitHubAccount,
+  RepositorySetting as RepositorySettingType,
+} from '@/application/infrastructure/dto/local'
 import { RepositorySettingUseCaseInteractor } from '@/application/usecase/interactor/repositorySettingUseCaseInteractor'
 
 describe('RepositorySettingUseCaseInteractor', () => {
@@ -68,23 +71,23 @@ describe('RepositorySettingUseCaseInteractor', () => {
 class MockedLocalStorageAccessor implements LocalStorageAccessor {
   settings: RepositorySettingType[] = []
 
-  getPath (): string {
+  getPath(): string {
     throw new Error('Method not implemented.')
   }
 
-  setApplicationSettings (settings: ApplicationSetting[]): void {
+  setApplicationSettings(settings: ApplicationSetting[]): void {
     throw new Error('Method not implemented.')
   }
 
-  getApplicationSettings (): ApplicationSetting[] {
+  getApplicationSettings(): ApplicationSetting[] {
     throw new Error('Method not implemented.')
   }
 
-  setGitHubAccount (account: GitHubAccount): void {
+  setGitHubAccount(account: GitHubAccount): void {
     throw new Error('Method not implemented.')
   }
 
-  getGitHubAccount (): GitHubAccount | undefined {
+  getGitHubAccount(): GitHubAccount | undefined {
     throw new Error('Method not implemented.')
   }
 

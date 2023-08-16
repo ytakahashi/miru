@@ -6,25 +6,25 @@ const elem = document.createElement('div')
 document.body.appendChild(elem)
 
 const mockRoute = {
-  path: '/'
+  path: '/',
 }
 
 describe('AppHeader.vue', () => {
   it('renders', async () => {
     const mockRouter = {
-      push: jest.fn()
+      push: jest.fn(),
     }
 
     const wrapper = shallowMount(AppHeader, {
       global: {
         provide: {
           [routerKey as symbol]: mockRouter,
-          [routeLocationKey as symbol]: mockRoute
+          [routeLocationKey as symbol]: mockRoute,
         },
         stubs: {
-          RouterLink: true
-        }
-      }
+          RouterLink: true,
+        },
+      },
     })
 
     expect(wrapper.findAll('router-link-stub')).toHaveLength(5)
@@ -32,7 +32,7 @@ describe('AppHeader.vue', () => {
 
   it('pushes / on keydown', async () => {
     const mockRouter = {
-      push: jest.fn()
+      push: jest.fn(),
     }
 
     const wrapper = shallowMount(AppHeader, {
@@ -41,13 +41,13 @@ describe('AppHeader.vue', () => {
         provide: {
           [routerKey as symbol]: mockRouter,
           [routeLocationKey as symbol]: {
-            path: '/issues'
-          }
+            path: '/issues',
+          },
         },
         stubs: {
-          RouterLink: true
-        }
-      }
+          RouterLink: true,
+        },
+      },
     })
 
     await wrapper.trigger('keydown.ctrl.s')
@@ -56,7 +56,7 @@ describe('AppHeader.vue', () => {
 
   it('does not push / on keydown', async () => {
     const mockRouter = {
-      push: jest.fn()
+      push: jest.fn(),
     }
 
     const wrapper = shallowMount(AppHeader, {
@@ -64,12 +64,12 @@ describe('AppHeader.vue', () => {
       global: {
         provide: {
           [routerKey as symbol]: mockRouter,
-          [routeLocationKey as symbol]: mockRoute
+          [routeLocationKey as symbol]: mockRoute,
         },
         stubs: {
-          RouterLink: true
-        }
-      }
+          RouterLink: true,
+        },
+      },
     })
 
     await wrapper.trigger('keydown.ctrl.s')
@@ -78,7 +78,7 @@ describe('AppHeader.vue', () => {
 
   it('pushes /commits on keydown', async () => {
     const mockRouter = {
-      push: jest.fn()
+      push: jest.fn(),
     }
 
     const wrapper = shallowMount(AppHeader, {
@@ -86,12 +86,12 @@ describe('AppHeader.vue', () => {
       global: {
         provide: {
           [routerKey as symbol]: mockRouter,
-          [routeLocationKey as symbol]: mockRoute
+          [routeLocationKey as symbol]: mockRoute,
         },
         stubs: {
-          RouterLink: true
-        }
-      }
+          RouterLink: true,
+        },
+      },
     })
 
     await wrapper.trigger('keydown.ctrl.c')
@@ -100,7 +100,7 @@ describe('AppHeader.vue', () => {
 
   it('pushes /issues on keydown', async () => {
     const mockRouter = {
-      push: jest.fn()
+      push: jest.fn(),
     }
 
     const wrapper = shallowMount(AppHeader, {
@@ -108,12 +108,12 @@ describe('AppHeader.vue', () => {
       global: {
         provide: {
           [routerKey as symbol]: mockRouter,
-          [routeLocationKey as symbol]: mockRoute
+          [routeLocationKey as symbol]: mockRoute,
         },
         stubs: {
-          RouterLink: true
-        }
-      }
+          RouterLink: true,
+        },
+      },
     })
 
     await wrapper.trigger('keydown.ctrl.i')
@@ -122,7 +122,7 @@ describe('AppHeader.vue', () => {
 
   it('pushes /pulls on keydown', async () => {
     const mockRouter = {
-      push: jest.fn()
+      push: jest.fn(),
     }
 
     const wrapper = shallowMount(AppHeader, {
@@ -130,12 +130,12 @@ describe('AppHeader.vue', () => {
       global: {
         provide: {
           [routerKey as symbol]: mockRouter,
-          [routeLocationKey as symbol]: mockRoute
+          [routeLocationKey as symbol]: mockRoute,
         },
         stubs: {
-          RouterLink: true
-        }
-      }
+          RouterLink: true,
+        },
+      },
     })
 
     await wrapper.trigger('keydown.ctrl.p')
@@ -144,7 +144,7 @@ describe('AppHeader.vue', () => {
 
   it('pushes /releases on keydown', async () => {
     const mockRouter = {
-      push: jest.fn()
+      push: jest.fn(),
     }
 
     const wrapper = shallowMount(AppHeader, {
@@ -152,12 +152,12 @@ describe('AppHeader.vue', () => {
       global: {
         provide: {
           [routerKey as symbol]: mockRouter,
-          [routeLocationKey as symbol]: mockRoute
+          [routeLocationKey as symbol]: mockRoute,
         },
         stubs: {
-          RouterLink: true
-        }
-      }
+          RouterLink: true,
+        },
+      },
     })
 
     await wrapper.trigger('keydown.ctrl.r')

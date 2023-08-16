@@ -13,7 +13,7 @@ MockedPullRequests.mockImplementation((url: RepositorySetting): PullRequests => 
     belongsTo: (r: string): boolean => {
       return url.getUrl() === r
     },
-    hasContents: (): boolean => true
+    hasContents: (): boolean => true,
   }
 })
 

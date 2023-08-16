@@ -8,7 +8,7 @@ const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
 const openUrlMock = jest.fn()
 MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
   return {
-    openUrl: (url: string) => openUrlMock(url)
+    openUrl: (url: string) => openUrlMock(url),
   }
 })
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
@@ -37,12 +37,12 @@ describe('CommitContent.vue', () => {
     const wrapper = mount(CommitContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
-        commit
-      }
+        commit,
+      },
     })
 
     expect(wrapper.text()).toMatch(/ytakahashi authored .+ .+ ago/)
@@ -54,12 +54,12 @@ describe('CommitContent.vue', () => {
     const wrapper = mount(CommitContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
-        commit
-      }
+        commit,
+      },
     })
 
     await wrapper.find('div.commit-box').trigger('click')

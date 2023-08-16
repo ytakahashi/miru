@@ -5,7 +5,7 @@ import { GitHubAccountUseCase } from '@/application/usecase/githubAccount'
 export class GitHubAccountUseCaseInteractor implements GitHubAccountUseCase {
   #githubUrl: GitHubUrl
 
-  constructor (githubUrl: GitHubUrl) {
+  constructor(githubUrl: GitHubUrl) {
     this.#githubUrl = githubUrl
   }
 

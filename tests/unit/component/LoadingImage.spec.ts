@@ -5,8 +5,8 @@ describe('LoadingImage.vue', () => {
   it('appears during loading', () => {
     const wrapper = mount(LoadingImage, {
       props: {
-        loading: true
-      }
+        loading: true,
+      },
     })
 
     expect(wrapper.find('div').exists()).toBe(true)
@@ -20,8 +20,8 @@ describe('LoadingImage.vue', () => {
     const wrapper = mount(LoadingImage, {
       attachTo: elem,
       props: {
-        loading: true
-      }
+        loading: true,
+      },
     })
 
     await wrapper.find('div').trigger('click')
@@ -31,8 +31,8 @@ describe('LoadingImage.vue', () => {
   it('renders nothing when not loading', () => {
     const wrapper = mount(LoadingImage, {
       props: {
-        loading: false
-      }
+        loading: false,
+      },
     })
 
     expect(wrapper.find('div').exists()).toBe(false)

@@ -2,25 +2,39 @@
 
 import { nextTick } from 'vue'
 import { shallowMount } from '@vue/test-utils'
-import { Account, Commit, CommitHistory as CommitHistoryModel, GitHubUrl } from '@/application/domain/model/github'
+import {
+  Account,
+  Commit,
+  CommitHistory as CommitHistoryModel,
+  GitHubUrl,
+} from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { GetCommitHistoryUseCase, GetCommitHistoryUseCaseFactory } from '@/application/usecase/githubRepository'
+import {
+  GetCommitHistoryUseCase,
+  GetCommitHistoryUseCaseFactory,
+} from '@/application/usecase/githubRepository'
 import { LogUseCase } from '@/application/usecase/log'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import { GetCommitHistoryUseCaseFactoryKey, LogUseCaseKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import {
+  GetCommitHistoryUseCaseFactoryKey,
+  LogUseCaseKey,
+  WebBrowserUserCaseKey,
+} from '@/plugins/di/types'
 import CommitContent from '@/views/commits/CommitContent.vue'
 import CommitHistory from '@/views/commits/CommitHistory.vue'
 
 // GetCommitHistoryUseCase mock
 const MockedGetCommitHistoryUseCase = jest.fn<GetCommitHistoryUseCase, [() => CommitHistoryModel]>()
-MockedGetCommitHistoryUseCase.mockImplementation((cb: () => CommitHistoryModel): GetCommitHistoryUseCase => {
-  return {
-    execute: async (): Promise<CommitHistoryModel> => cb()
+MockedGetCommitHistoryUseCase.mockImplementation(
+  (cb: () => CommitHistoryModel): GetCommitHistoryUseCase => {
+    return {
+      execute: async (): Promise<CommitHistoryModel> => cb(),
+    }
   }
-})
+)
 const createMock = (func: () => GetCommitHistoryUseCase): GetCommitHistoryUseCaseFactory => {
   return {
-    create: (githubUrl: GitHubUrl, personalAccessToken: string) => func()
+    create: (githubUrl: GitHubUrl, personalAccessToken: string) => func(),
   }
 }
 
@@ -29,7 +43,7 @@ const errorMock = jest.fn()
 const MockedLogUseCase = jest.fn<LogUseCase, []>()
 MockedLogUseCase.mockImplementation((): LogUseCase => {
   return {
-    error: (e: Error) => errorMock(e)
+    error: (e: Error) => errorMock(e),
   }
 })
 const mockedLogUseCase = new MockedLogUseCase()
@@ -39,7 +53,7 @@ const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
 const openUrlMock = jest.fn()
 MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
   return {
-    openUrl: (url: string) => openUrlMock(url)
+    openUrl: (url: string) => openUrlMock(url),
   }
 })
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
@@ -82,16 +96,18 @@ describe('CommitHistory.vue', () => {
     const wrapper = shallowMount(CommitHistory, {
       global: {
         provide: {
-          [GetCommitHistoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGetCommitHistoryUseCase(() => commitHistory)),
+          [GetCommitHistoryUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetCommitHistoryUseCase(() => commitHistory)
+          ),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
         account,
         repositorySetting: setting,
-        option: {}
-      }
+        option: {},
+      },
     })
 
     // when: click button
@@ -122,20 +138,25 @@ describe('CommitHistory.vue', () => {
     const wrapper = shallowMount(CommitHistory, {
       global: {
         provide: {
-          [GetCommitHistoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGetCommitHistoryUseCase(supplier)),
+          [GetCommitHistoryUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetCommitHistoryUseCase(supplier)
+          ),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
         account,
         repositorySetting: setting,
-        option: {}
-      }
+        option: {},
+      },
     })
 
     // when: click clear button
-    await wrapper.find('.get-button').trigger('click').then(() => nextTick())
+    await wrapper
+      .find('.get-button')
+      .trigger('click')
+      .then(() => nextTick())
 
     // then: error mock is called
     expect(errorMock).toHaveBeenCalledWith(err)
@@ -146,16 +167,18 @@ describe('CommitHistory.vue', () => {
     const wrapper = shallowMount(CommitHistory, {
       global: {
         provide: {
-          [GetCommitHistoryUseCaseFactoryKey as symbol]: createMock(() => new MockedGetCommitHistoryUseCase(() => commitHistory)),
+          [GetCommitHistoryUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetCommitHistoryUseCase(() => commitHistory)
+          ),
           [LogUseCaseKey as symbol]: mockedLogUseCase,
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
         account,
         repositorySetting: setting,
-        option: {}
-      }
+        option: {},
+      },
     })
 
     // when: click header text

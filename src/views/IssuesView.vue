@@ -1,12 +1,12 @@
 <template>
   <RepositoryFilter ref="repositoryFilter" />
-  <QueryOption :viewType="'issues'" />
+  <QueryOption :view-type="'issues'" />
   <div v-for="(t, index) in tuples" :key="index">
     <div v-for="repositorySetting in t.repositorySettings" :key="repositorySetting.getUrl()">
       <GitHubIssue
         v-show="isVisible(repositorySetting)"
         :account="t.account"
-        :repositorySetting="repositorySetting"
+        :repository-setting="repositorySetting"
       />
     </div>
   </div>
@@ -24,12 +24,16 @@ import QueryOption from '@/components/QueryOption.vue'
 import RepositoryFilter from '@/components/RepositoryFilter.vue'
 import ScrollToTopButton from '@/components/ScrollToTopButton.vue'
 import { inject } from '@/plugins/di/injector'
-import { AccountSettingUseCaseFactoryKey, ApplicationSettingUseCaseKey, RepositorySettingUseCaseFactoryKey } from '@/plugins/di/types'
+import {
+  AccountSettingUseCaseFactoryKey,
+  ApplicationSettingUseCaseKey,
+  RepositorySettingUseCaseFactoryKey,
+} from '@/plugins/di/types'
 import GitHubIssue from '@/views/issues/GitHubIssue.vue'
 
 type RepositoryTuple = {
-  account: Account;
-  repositorySettings: Array<RepositorySetting>;
+  account: Account
+  repositorySettings: Array<RepositorySetting>
 }
 
 export default defineComponent({
@@ -38,9 +42,9 @@ export default defineComponent({
     GitHubIssue,
     QueryOption,
     RepositoryFilter,
-    ScrollToTopButton
+    ScrollToTopButton,
   },
-  setup () {
+  setup() {
     const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)
     const applicationSettingUseCase = inject(ApplicationSettingUseCaseKey)
     const repositorySettingUseCaseFactory = inject(RepositorySettingUseCaseFactoryKey)
@@ -52,12 +56,13 @@ export default defineComponent({
       const settings = applicationSettingUseCase.getSettings()
       for (const s of settings) {
         const accountSettingUseCase = accountSettingUseCaseFactory.newAccountSettingUseCase(s)
-        const repositorySettingUseCase = repositorySettingUseCaseFactory.newRepositorySettingUseCase(s)
+        const repositorySettingUseCase =
+          repositorySettingUseCaseFactory.newRepositorySettingUseCase(s)
         const account = accountSettingUseCase.getAccount()
         const repositorySettings = repositorySettingUseCase.getRepositorySettings()
         tuples.value.push({
           account,
-          repositorySettings: repositorySettings.filter(s => s.showsIssues())
+          repositorySettings: repositorySettings.filter(s => s.showsIssues()),
         })
       }
     }
@@ -81,8 +86,8 @@ export default defineComponent({
       isVisible,
       isAccountConfigured,
       total,
-      tuples
+      tuples,
     }
-  }
+  },
 })
 </script>

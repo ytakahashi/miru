@@ -1,5 +1,5 @@
 <template>
-  <div v-if="scrollY > 150" v-on:click="scrollToTop()" class="top-button">
+  <div v-if="scrollY > 150" class="top-button" @click="scrollToTop()">
     <i class="fas fa-chevron-up"></i>
   </div>
 </template>
@@ -9,11 +9,11 @@ import { defineComponent, onMounted, ref } from 'vue'
 
 export default defineComponent({
   name: 'ScrollToTopButton',
-  setup () {
+  setup() {
     const scrollToTop = () => {
       window.scrollTo({
         top: 0,
-        behavior: 'smooth'
+        behavior: 'smooth',
       })
     }
 
@@ -23,9 +23,9 @@ export default defineComponent({
 
     return {
       scrollToTop,
-      scrollY
+      scrollY,
     }
-  }
+  },
 })
 </script>
 

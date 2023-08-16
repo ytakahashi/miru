@@ -9,11 +9,11 @@ describe('GitHubRepositories.vue', () => {
     const wrapper = mount(GitHubRepositories, {
       props: {
         editing: false,
-        repositorySettings: [setting]
+        repositorySettings: [setting],
       },
       global: {
-        stubs: ['GitHubRepository']
-      }
+        stubs: ['GitHubRepository'],
+      },
     })
     expect(wrapper.find('i.fa-edit').exists()).toBe(true)
     expect(wrapper.find('i.fa-save').exists()).toBe(false)
@@ -32,11 +32,11 @@ describe('GitHubRepositories.vue', () => {
     const wrapper = mount(GitHubRepositories, {
       props: {
         editing: true,
-        repositorySettings: [setting]
+        repositorySettings: [setting],
       },
       global: {
-        stubs: ['GitHubRepository']
-      }
+        stubs: ['GitHubRepository'],
+      },
     })
     expect(wrapper.find('i.fa-edit').exists()).toBe(false)
     expect(wrapper.find('i.fa-save').exists()).toBe(true)

@@ -1,12 +1,12 @@
 <template>
-  <div :class="boxStyle" v-on:click="openRelease()">
+  <div :class="boxStyle" @click="openRelease()">
     <div class="release-information">
       <span>
         <span class="tooltip" :data-tooltip="release.getUpdatedLocalDate()">
           <i class="fas fa-clock"></i>{{ release.getUpdatedRelativeDate() }}
         </span>
-        <span class="draft-mark" v-if="release.isDraft">Draft</span>
-        <span class="prerelease-mark" v-if="release.isPrerelease">Pre-release</span>
+        <span v-if="release.isDraft" class="draft-mark">Draft</span>
+        <span v-if="release.isPrerelease" class="prerelease-mark">Pre-release</span>
       </span>
       <span v-if="release.tagName"><i class="fas fa-tag"></i>{{ release.tagName }}</span>
     </div>
@@ -38,30 +38,37 @@ export default defineComponent({
   props: {
     release: {
       type: Release,
-      required: true
-    }
+      required: true,
+    },
   },
-  setup (props: PropsType) {
+  setup(props: PropsType) {
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
     const openRelease = () => webBrowserUserCase.openUrl(props.release.url)
 
     const boxStyle = computed(() => ({
       'content-box-open': !props.release.isDraft && !props.release.isPrerelease,
       'content-box-release-draft': props.release.isDraft,
-      'content-box-pre-release': props.release.isPrerelease
+      'content-box-pre-release': props.release.isPrerelease,
     }))
 
-    const releaseTitle = props.release.isDraft === true
-      ? props.release.title === '' ? 'Draft' : props.release.title
-      : props.release.title === '' ? props.release.tagName : props.release.title
+    const releaseTitle =
+      props.release.isDraft === true
+        ? props.release.title === ''
+          ? 'Draft'
+          : props.release.title
+        : props.release.title === ''
+        ? props.release.tagName
+        : props.release.title
 
     const releaseType = props.release.isDraft === true ? 'drafted' : 'published'
-    const releaseLocalTime = props.release.isDraft === true
-      ? props.release.getUpdatedLocalDate()
-      : props.release.getCreatedLocalDate()
-    const releaseRelativeTime = props.release.isDraft === true
-      ? props.release.getUpdatedRelativeDate()
-      : props.release.getCreatedRelativeDate()
+    const releaseLocalTime =
+      props.release.isDraft === true
+        ? props.release.getUpdatedLocalDate()
+        : props.release.getCreatedLocalDate()
+    const releaseRelativeTime =
+      props.release.isDraft === true
+        ? props.release.getUpdatedRelativeDate()
+        : props.release.getCreatedRelativeDate()
 
     return {
       boxStyle,
@@ -69,9 +76,9 @@ export default defineComponent({
       releaseTitle,
       releaseType,
       releaseLocalTime,
-      releaseRelativeTime
+      releaseRelativeTime,
     }
-  }
+  },
 })
 </script>
 

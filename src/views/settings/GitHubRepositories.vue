@@ -2,16 +2,20 @@
   <div class="spacer" />
   <span>
     <span class="text-strong">Repositories</span>
-    <i v-if="!editing" class="fas fa-edit clickable" v-on:click="emitEdit(true)"></i>
-    <i v-if="editing" class="fas fa-save clickable" v-on:click="emitEdit(false)"></i>
+    <i v-if="!editing" class="fas fa-edit clickable" @click="emitEdit(true)"></i>
+    <i v-if="editing" class="fas fa-save clickable" @click="emitEdit(false)"></i>
   </span>
   <div class="spacer" />
 
   <div v-for="repositorySetting in repositorySettings" :key="repositorySetting.getUrl()">
     <div>
-      <i class="fas fa-times delete-button" v-if="editing" v-on:click="emitDelete(repositorySetting)"></i>
+      <i
+        v-if="editing"
+        class="fas fa-times delete-button"
+        @click="emitDelete(repositorySetting)"
+      ></i>
       <span>
-        <GitHubRepository :editing="editing" :repositorySetting="repositorySetting" />
+        <GitHubRepository :editing="editing" :repository-setting="repositorySetting" />
       </span>
     </div>
   </div>
@@ -25,28 +29,29 @@ import GitHubRepository from '@/views/settings/GitHubRepository.vue'
 export default defineComponent({
   name: 'GitHubRepositories',
   components: {
-    GitHubRepository
+    GitHubRepository,
   },
-  emits: ['edit', 'deleteRepository'],
   props: {
     editing: {
       type: Boolean,
-      requred: true
+      requred: true,
     },
     repositorySettings: {
       type: Array as PropType<RepositorySetting[]>,
-      required: true
-    }
+      required: true,
+    },
   },
-  setup (_, context: SetupContext) {
-    const emitDelete = (repository: RepositorySetting) => context.emit('deleteRepository', repository)
+  emits: ['edit', 'deleteRepository'],
+  setup(_, context: SetupContext) {
+    const emitDelete = (repository: RepositorySetting) =>
+      context.emit('deleteRepository', repository)
     const emitEdit = (editing: boolean) => context.emit('edit', editing)
 
     return {
       emitDelete,
-      emitEdit
+      emitEdit,
     }
-  }
+  },
 })
 </script>
 

@@ -10,7 +10,7 @@ const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
 const openUrlMock = jest.fn()
 MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
   return {
-    openUrl: (url: string) => openUrlMock(url)
+    openUrl: (url: string) => openUrlMock(url),
   }
 })
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
@@ -51,12 +51,12 @@ describe('ReleaseContent.vue', () => {
     const wrapper = shallowMount(ReleaseContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
-        release
-      }
+        release,
+      },
     })
 
     expect(wrapper.text()).toContain(author)
@@ -69,12 +69,12 @@ describe('ReleaseContent.vue', () => {
     const wrapper = shallowMount(ReleaseContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
-        release: draftRelease
-      }
+        release: draftRelease,
+      },
     })
 
     expect(wrapper.text()).toContain(author)
@@ -87,12 +87,12 @@ describe('ReleaseContent.vue', () => {
     const wrapper = shallowMount(ReleaseContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
-        release
-      }
+        release,
+      },
     })
 
     await wrapper.find('div.content-box-open').trigger('click')
@@ -103,12 +103,12 @@ describe('ReleaseContent.vue', () => {
     const wrapper = shallowMount(ReleaseContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase
-        }
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
       },
       props: {
-        release: draftRelease
-      }
+        release: draftRelease,
+      },
     })
 
     await wrapper.find('div.content-box-release-draft').trigger('click')

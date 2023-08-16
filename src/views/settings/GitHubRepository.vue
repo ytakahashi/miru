@@ -1,30 +1,30 @@
 <template>
-  <span :class="editing ? 'draggable' : 'clickable'"  v-on:click="openRepository()">
+  <span :class="editing ? 'draggable' : 'clickable'" @click="openRepository()">
     {{ repositorySetting.displayName() }}
   </span>
 
   <span v-if="editing" class="preference-input-block">
-    <span class="preference-input clickable" v-on:click="toggleCommitPreference()">
-      <i class="fas fa-square" v-if="!showsCommits"></i>
-      <i class="fas fa-check-square" v-if="showsCommits"></i>
+    <span class="preference-input clickable" @click="toggleCommitPreference()">
+      <i v-if="!showsCommits" class="fas fa-square"></i>
+      <i v-if="showsCommits" class="fas fa-check-square"></i>
       <span class="margin-left">Commit</span>
     </span>
 
-    <span class="preference-input clickable" v-on:click="toggleIssuePreference()">
-      <i class="fas fa-square" v-if="!showsIssues"></i>
-      <i class="fas fa-check-square" v-if="showsIssues"></i>
+    <span class="preference-input clickable" @click="toggleIssuePreference()">
+      <i v-if="!showsIssues" class="fas fa-square"></i>
+      <i v-if="showsIssues" class="fas fa-check-square"></i>
       <span class="margin-left">Issue</span>
     </span>
 
-    <span class="preference-input clickable" v-on:click="togglePullRequestPreference()">
-      <i class="fas fa-square" v-if="!showsPullRequests"></i>
-      <i class="fas fa-check-square" v-if="showsPullRequests"></i>
+    <span class="preference-input clickable" @click="togglePullRequestPreference()">
+      <i v-if="!showsPullRequests" class="fas fa-square"></i>
+      <i v-if="showsPullRequests" class="fas fa-check-square"></i>
       <span class="margin-left">PR</span>
     </span>
 
-    <span class="preference-input clickable" v-on:click="toggleReleasePreference()">
-      <i class="fas fa-square" v-if="!showsReleases"></i>
-      <i class="fas fa-check-square" v-if="showsReleases"></i>
+    <span class="preference-input clickable" @click="toggleReleasePreference()">
+      <i v-if="!showsReleases" class="fas fa-square"></i>
+      <i v-if="showsReleases" class="fas fa-check-square"></i>
       <span class="margin-left">Release</span>
     </span>
   </span>
@@ -37,8 +37,8 @@ import { inject } from '@/plugins/di/injector'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 
 type PropsType = {
-  editing: boolean;
-  repositorySetting: RepositorySetting;
+  editing: boolean
+  repositorySetting: RepositorySetting
 }
 
 export default defineComponent({
@@ -46,14 +46,14 @@ export default defineComponent({
   props: {
     editing: {
       type: Boolean,
-      requred: true
+      requred: true,
     },
     repositorySetting: {
       type: RepositorySetting,
-      required: true
-    }
+      required: true,
+    },
   },
-  setup (props: PropsType) {
+  setup(props: PropsType) {
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
     const openRepository = () => {
       if (props.editing) {
@@ -71,7 +71,9 @@ export default defineComponent({
     const toggleIssuePreference = () => (showsIssues.value = !showsIssues.value)
 
     const showsPullRequests = ref(props.repositorySetting.showsPullRequests())
-    watch(showsPullRequests, (next: boolean) => props.repositorySetting.setPullRequestPreference(next))
+    watch(showsPullRequests, (next: boolean) =>
+      props.repositorySetting.setPullRequestPreference(next)
+    )
     const togglePullRequestPreference = () => (showsPullRequests.value = !showsPullRequests.value)
 
     const showsReleases = ref(props.repositorySetting.showsReleases())
@@ -87,9 +89,9 @@ export default defineComponent({
       showsPullRequests,
       togglePullRequestPreference,
       showsReleases,
-      toggleReleasePreference
+      toggleReleasePreference,
     }
-  }
+  },
 })
 </script>
 

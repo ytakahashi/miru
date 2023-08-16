@@ -1,9 +1,9 @@
 <template>
   <div class="themeSwitch">
-    <input type="checkbox" id="checkbox" v-model="isDark" />
+    <input id="checkbox" v-model="isDark" type="checkbox" />
     <label for="checkbox">
-      <i class="fas fa-sun theme-symbol" v-if="!isDark"></i>
-      <i class="fas fa-moon theme-symbol" v-if="isDark"></i>
+      <i v-if="!isDark" class="fas fa-sun theme-symbol"></i>
+      <i v-if="isDark" class="fas fa-moon theme-symbol"></i>
     </label>
     <div id="pointer" />
   </div>
@@ -15,7 +15,7 @@ import { getTheme, mutations } from '@/store/theme'
 
 export default defineComponent({
   name: 'ThemeSwitch',
-  setup () {
+  setup() {
     const isDark = ref(true)
 
     onMounted(() => {
@@ -31,9 +31,9 @@ export default defineComponent({
     })
 
     return {
-      isDark
+      isDark,
     }
-  }
+  },
 })
 </script>
 
@@ -68,7 +68,7 @@ $button-size: 26px;
     transition: 0.2s;
   }
 
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     display: none;
 
     &:checked {
