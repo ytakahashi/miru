@@ -60,8 +60,9 @@
     "@achrinza/node-ipc": "^9.2.7"
   },
   "scripts": {
+    "clean": "node -e 'fs.rmSync(`dist_electron`, {recursive:true, force:true})'",
     "electron:build": "vue-cli-service electron:build --dir",
-    "electron:release": "vue-cli-service electron:build --mac dmg --win portable --publish onTagOrDraft",
+    "electron:release": "vue-cli-service electron:build --mac dmg --publish onTagOrDraft",
     "electron:serve": "vue-cli-service electron:serve",
     "lint": "eslint src/ tests/",
     "lint:fix": "eslint --fix src/ tests/",
