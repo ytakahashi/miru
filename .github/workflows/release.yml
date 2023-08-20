@@ -2,8 +2,8 @@ name: Release
 
 on:
   push:
-    branches:
-      - '**'
+    tags:
+      - 'v*'
 
 jobs:
   release:
@@ -28,9 +28,9 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          name: ${{ github.ref }}
           body: ${{ github.ref }}
           draft: true
+          generate_release_notes: true
 
       - name: Upload Release Asset
         env:
