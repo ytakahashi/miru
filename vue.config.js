@@ -17,11 +17,12 @@ try {
 
 module.exports = {
   configureWebpack: {
-    target: 'electron-renderer',
+    target: 'web',
   },
   pluginOptions: {
     electronBuilder: {
-      nodeIntegration: true,
+      preload: 'src/preload.js',
+      // nodeIntegration: true,
       builderOptions: {
         productName: 'Miru',
         appId: 'net.ytakahashi.miru',
