@@ -37,22 +37,19 @@
     "vue-tsc": "^1.8.5"
   },
   "license": "MIT",
+  "main": "dist/electron/main/main.js",
   "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/ytakahashi/miru"
   },
   "scripts": {
+    "electron:build": "yarn vite:build && yarn ts && electron-builder --config electron-builder.js",
+    "electron:dev": "ELECTRON_DISABLE_SECURITY_WARNINGS=true yarn ts && concurrently vite \" electron --trace-warnings .\" \"yarn ts -w\"",
+    "electron:preview": "yarn vite:build && yarn ts && electron .",
+    "lint": "eslint -c .eslintrc.js --ext .ts ./src",
     "rm-dist": "node -e 'fs.rmSync(`dist`, {recursive:true, force:true}); fs.rmSync(`dist_electron`, {recursive:true, force:true})'",
-    "vite:dev": "vite",
-    "vite:build": "vue-tsc --noEmit && vite build",
-    "vite:preview": "vite preview",
     "ts": "tsc -p tsconfig.build.json",
-    "watch": "tsc -p tsconfig.build.json -w",
-    "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "app:dev": "ELECTRON_DISABLE_SECURITY_WARNINGS=true tsc -p tsconfig.build.json && concurrently vite \" electron --trace-warnings .\" \"tsc -p tsconfig.build.json -w\"",
-    "app:build": "npm run vite:build && tsc -p tsconfig.build.json && electron-builder --config electron-builder.js",
-    "app:preview": "npm run vite:build && tsc -p tsconfig.build.json && electron ."
-  },
-  "main": "dist/electron/main/main.js"
+    "vite:build": "vue-tsc --noEmit && vite build"
+  }
 }

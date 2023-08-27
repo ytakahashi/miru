@@ -4,11 +4,9 @@ import Store from 'electron-store'
 
 Store.initRenderer()
 
-const isDev = process.env.npm_lifecycle_event === 'app:dev' ? true : false
+const isDev = process.env.npm_lifecycle_event === 'electron:dev' ? true : false
 
 function createWindow() {
-  console.log('preload:')
-  console.log(join(__dirname, '../preload/preload.js'))
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
