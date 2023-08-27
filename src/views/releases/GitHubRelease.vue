@@ -33,7 +33,7 @@
 
     <div v-if="isFailed">
       Failed to list releases of
-      <span class="clickable" @click="openIssueUrl(repositorySetting)">{{
+      <span class="clickable" @click="openReleaseUrl(repositorySetting)">{{
         repositorySetting.getUrl()
       }}</span
       >.<br />

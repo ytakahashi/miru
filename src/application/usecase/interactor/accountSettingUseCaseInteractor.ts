@@ -1,4 +1,3 @@
-import { unlinkSync } from 'fs'
 import { LocalStorageAccessor } from '@/application/domain/interface/localStorageAccessor'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
 import { GitHubAccount } from '@/application/infrastructure/dto/local'
@@ -40,12 +39,5 @@ export class AccountSettingUseCaseInteractor implements AccountSettingUseCase {
     )
   }
 
-  deleteSetting = (): void => {
-    const path = this.#localStorageAccessor.getPath()
-    try {
-      unlinkSync(path)
-    } catch (err) {
-      this.#logger.error(err as Error)
-    }
-  }
+  deleteSetting = (): void => {}
 }
