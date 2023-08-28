@@ -1,8 +1,9 @@
+import { vi } from 'vitest'
 import { CommitHistory } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { getters, mutations } from '@/store/commits'
 
-const MockedCommitHistory = jest.fn<CommitHistory, [RepositorySetting]>()
+const MockedCommitHistory = vi.fn()
 MockedCommitHistory.mockImplementation((s: RepositorySetting): CommitHistory => {
   return {
     fetchedAt: 1,

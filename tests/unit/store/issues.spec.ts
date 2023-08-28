@@ -1,8 +1,9 @@
+import { vi } from 'vitest'
 import { Issues } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { getters, mutations } from '@/store/issues'
 
-const MockedIssues = jest.fn<Issues, [RepositorySetting]>()
+const MockedIssues = vi.fn()
 MockedIssues.mockImplementation((s: RepositorySetting): Issues => {
   return {
     fetchedAt: 1,

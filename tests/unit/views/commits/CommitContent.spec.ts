@@ -1,11 +1,12 @@
 import { mount } from '@vue/test-utils'
+import { vi } from 'vitest'
 import { Commit } from '@/application/domain/model/github'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 import CommitContent from '@/views/commits/CommitContent.vue'
 
-const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
-const openUrlMock = jest.fn()
+const MockedWebBrowserUserCase = vi.fn()
+const openUrlMock = vi.fn()
 MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
   return {
     openUrl: (url: string) => openUrlMock(url),

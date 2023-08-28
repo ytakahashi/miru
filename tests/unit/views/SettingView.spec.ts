@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { defineComponent, h } from 'vue'
 import { shallowMount } from '@vue/test-utils'
+import { vi } from 'vitest'
 import {
   AccountSettingUseCaseFactoryKey,
   ApplicationSettingUseCaseKey,
@@ -16,10 +14,7 @@ import {
   AccountSettingUseCaseFactory,
 } from '@/application/usecase/accountSetting'
 import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting'
-import {
-  GitHubAccountUseCase,
-  GitHubAccountUseCaseFactory,
-} from '@/application/usecase/githubAccount'
+import { GitHubAccountUseCase } from '@/application/usecase/githubAccount'
 import { LogUseCase } from '@/application/usecase/log'
 import SettingView from '@/views/SettingView.vue'
 import AccountSetting from '@/views/settings/AccountSetting.vue'
@@ -28,11 +23,11 @@ const url = new GitHubUrl('https://github.com', 'https://api.github.com/graphql'
 const account = new Account('name', 'https://github.com/ytakahashi', 'avatar', url, 'pat')
 
 // AccountSettingUseCase mock
-const MockedAccountSettingUseCase = jest.fn<AccountSettingUseCase, []>()
-const newAccountSettingUseCaseMock = jest.fn()
+const MockedAccountSettingUseCase = vi.fn()
+const newAccountSettingUseCaseMock = vi.fn()
 MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
   return {
-    setAccount(account: Account): void {},
+    setAccount(_account: Account): void {},
     getAccount(): Account {
       return account
     },
@@ -47,42 +42,39 @@ const mockedAccountSettingUseCaseFactory: AccountSettingUseCaseFactory = {
 }
 
 // ApplicationSettingUseCase mock
-const addSettingMock = jest.fn()
-const removeSettingMock = jest.fn()
-const MockedApplicationSettingUseCase = jest.fn<
-  ApplicationSettingUseCase,
-  [Array<ApplicationSetting>]
->()
+const addSettingMock = vi.fn()
+const removeSettingMock = vi.fn()
+const MockedApplicationSettingUseCase = vi.fn()
 MockedApplicationSettingUseCase.mockImplementation(
   (settings: Array<ApplicationSetting>): ApplicationSettingUseCase => {
     return {
       hasSetting: (setting: ApplicationSetting) => settings.some(s => s.equals(setting)),
       getSettings: () => settings,
-      addSetting: (setting: ApplicationSetting) => addSettingMock(),
-      removeSetting: (setting: ApplicationSetting) => removeSettingMock(),
+      addSetting: (_setting: ApplicationSetting) => addSettingMock(),
+      removeSetting: (_setting: ApplicationSetting) => removeSettingMock(),
     }
   }
 )
 
 // GitHubAccountUseCase mock
-const MockedGitHubAccountUseCase = jest.fn<GitHubAccountUseCase, []>()
+const MockedGitHubAccountUseCase = vi.fn()
 MockedGitHubAccountUseCase.mockImplementation((): GitHubAccountUseCase => {
   return {
-    resolvePersonalAccessToken: async (personalAccessToken: string) => account,
+    resolvePersonalAccessToken: async (_personalAccessToken: string) => account,
   }
 })
 
-const MockedGitHubAccountUseCaseFactory = jest.fn<GitHubAccountUseCaseFactory, []>()
+const MockedGitHubAccountUseCaseFactory = vi.fn()
 MockedGitHubAccountUseCaseFactory.mockImplementation(() => {
   return {
-    newGitHubAccountUseCase: (githubUrl: GitHubUrl) => new MockedGitHubAccountUseCase(),
+    newGitHubAccountUseCase: (_githubUrl: GitHubUrl) => new MockedGitHubAccountUseCase(),
   }
 })
 const mockedGitHubAccountUseCaseFactory = new MockedGitHubAccountUseCaseFactory()
 
 // LogUseCase mock
-const errorMock = jest.fn()
-const MockedLogUseCase = jest.fn<LogUseCase, []>()
+const errorMock = vi.fn()
+const MockedLogUseCase = vi.fn()
 MockedLogUseCase.mockImplementation((): LogUseCase => {
   return {
     error: errorMock,

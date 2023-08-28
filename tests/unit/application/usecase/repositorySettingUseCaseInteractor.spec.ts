@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { LocalStorageAccessor } from '@/application/domain/interface/localStorageAccessor'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
@@ -75,7 +73,7 @@ class MockedLocalStorageAccessor implements LocalStorageAccessor {
     throw new Error('Method not implemented.')
   }
 
-  setApplicationSettings(settings: ApplicationSetting[]): void {
+  setApplicationSettings(_settings: ApplicationSetting[]): void {
     throw new Error('Method not implemented.')
   }
 
@@ -83,7 +81,7 @@ class MockedLocalStorageAccessor implements LocalStorageAccessor {
     throw new Error('Method not implemented.')
   }
 
-  setGitHubAccount(account: GitHubAccount): void {
+  setGitHubAccount(_account: GitHubAccount): void {
     throw new Error('Method not implemented.')
   }
 

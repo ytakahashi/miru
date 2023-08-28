@@ -28,6 +28,7 @@
     "eslint": "^8.47.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-vue": "^9.17.0",
+    "jsdom": "^22.1.0",
     "prettier": "^3.0.2",
     "sass": "^1.32.12",
     "sass-loader": "^10.1.1",
@@ -47,8 +48,9 @@
     "electron:build": "yarn vite:build && yarn ts && electron-builder --config electron-builder.js",
     "electron:dev": "ELECTRON_DISABLE_SECURITY_WARNINGS=true yarn ts && concurrently vite \" electron --trace-warnings .\" \"yarn ts -w\"",
     "electron:preview": "yarn vite:build && yarn ts && electron .",
-    "lint": "eslint -c .eslintrc.js --ext .ts ./src",
+    "lint": "NODE_ENV=production eslint -c .eslintrc.js --ext .ts ./src ./tests",
     "rm-dist": "node -e 'fs.rmSync(`dist`, {recursive:true, force:true}); fs.rmSync(`dist_electron`, {recursive:true, force:true})'",
+    "test:unit": "vitest run",
     "ts": "tsc -p tsconfig.build.json",
     "vite:build": "vue-tsc --noEmit && vite build"
   }

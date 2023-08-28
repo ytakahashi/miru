@@ -1,15 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { nextTick } from 'vue'
 import { shallowMount } from '@vue/test-utils'
-import {
-  Account,
-  GitHubUrl,
-  Issues,
-  PullRequests,
-  Release,
-  Releases,
-} from '@/application/domain/model/github'
+import { vi } from 'vitest'
+import { Account, GitHubUrl, Release, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import {
   GetReleasesUseCase,
@@ -26,7 +18,7 @@ import GitHubRelease from '@/views/releases/GitHubRelease.vue'
 import ReleaseContent from '@/views/releases/ReleaseContent.vue'
 
 // GetReleasesUseCase mock
-const MockedGetReleasesUseCase = jest.fn<GetReleasesUseCase, [() => Releases]>()
+const MockedGetReleasesUseCase = vi.fn()
 MockedGetReleasesUseCase.mockImplementation((cb: () => Releases): GetReleasesUseCase => {
   return {
     execute: async (): Promise<Releases> => cb(),
@@ -34,13 +26,13 @@ MockedGetReleasesUseCase.mockImplementation((cb: () => Releases): GetReleasesUse
 })
 const createMock = (func: () => GetReleasesUseCase): GetReleasesUseCaseFactory => {
   return {
-    create: (githubUrl: GitHubUrl, personalAccessToken: string) => func(),
+    create: (_githubUrl: GitHubUrl, _personalAccessToken: string) => func(),
   }
 }
 
 // LogUseCase mock
-const errorMock = jest.fn()
-const MockedLogUseCase = jest.fn<LogUseCase, []>()
+const errorMock = vi.fn()
+const MockedLogUseCase = vi.fn()
 MockedLogUseCase.mockImplementation((): LogUseCase => {
   return {
     error: errorMock,
@@ -49,8 +41,8 @@ MockedLogUseCase.mockImplementation((): LogUseCase => {
 const mockedLogUseCase = new MockedLogUseCase()
 
 // WebBrowserUserCase mock
-const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
-const openUrlMock = jest.fn()
+const MockedWebBrowserUserCase = vi.fn()
+const openUrlMock = vi.fn()
 MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
   return {
     openUrl: (url: string) => openUrlMock(url),
@@ -58,7 +50,8 @@ MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
 })
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 
-const account = new Account('name', 'profile', 'avatar', jest.fn<GitHubUrl, []>()(), 'pat')
+const githubUrl = GitHubUrl.from('https://github.com')
+const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
 const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
 
 describe('GitHubRelease.vue', () => {
