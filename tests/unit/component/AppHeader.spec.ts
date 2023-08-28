@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
+import { vi } from 'vitest'
 import AppHeader from '@/components/AppHeader.vue'
 import { routerKey, routeLocationKey } from 'vue-router'
 
@@ -12,7 +13,7 @@ const mockRoute = {
 describe('AppHeader.vue', () => {
   it('renders', async () => {
     const mockRouter = {
-      push: jest.fn(),
+      push: vi.fn(),
     }
 
     const wrapper = shallowMount(AppHeader, {
@@ -32,7 +33,7 @@ describe('AppHeader.vue', () => {
 
   it('pushes / on keydown', async () => {
     const mockRouter = {
-      push: jest.fn(),
+      push: vi.fn(),
     }
 
     const wrapper = shallowMount(AppHeader, {
@@ -56,7 +57,7 @@ describe('AppHeader.vue', () => {
 
   it('does not push / on keydown', async () => {
     const mockRouter = {
-      push: jest.fn(),
+      push: vi.fn(),
     }
 
     const wrapper = shallowMount(AppHeader, {
@@ -78,7 +79,7 @@ describe('AppHeader.vue', () => {
 
   it('pushes /commits on keydown', async () => {
     const mockRouter = {
-      push: jest.fn(),
+      push: vi.fn(),
     }
 
     const wrapper = shallowMount(AppHeader, {
@@ -100,7 +101,7 @@ describe('AppHeader.vue', () => {
 
   it('pushes /issues on keydown', async () => {
     const mockRouter = {
-      push: jest.fn(),
+      push: vi.fn(),
     }
 
     const wrapper = shallowMount(AppHeader, {
@@ -122,7 +123,7 @@ describe('AppHeader.vue', () => {
 
   it('pushes /pulls on keydown', async () => {
     const mockRouter = {
-      push: jest.fn(),
+      push: vi.fn(),
     }
 
     const wrapper = shallowMount(AppHeader, {
@@ -144,7 +145,7 @@ describe('AppHeader.vue', () => {
 
   it('pushes /releases on keydown', async () => {
     const mockRouter = {
-      push: jest.fn(),
+      push: vi.fn(),
     }
 
     const wrapper = shallowMount(AppHeader, {

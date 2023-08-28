@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { GitHubAccessor } from '@/application/domain/interface/githubAccessor'
 import {
   GetCommitHistoryUseCaseInteractor,
@@ -25,27 +22,27 @@ describe('GitHubRepositoryUseCaseInteractor.ts', () => {
   const commitHistoryConnection: CommitHistoryConnection = require('../../resources/commit-history.json')
 
   const mock: GitHubAccessor = {
-    async getViewer(personalAccessToken: string): Promise<Viewer> {
+    async getViewer(_personalAccessToken: string): Promise<Viewer> {
       return viewer
     },
-    async getIssues(personalAccessToken: string, s: RepositorySetting): Promise<IssueConnection> {
+    async getIssues(_personalAccessToken: string, _s: RepositorySetting): Promise<IssueConnection> {
       return issueConnection
     },
     async getPullRequests(
-      personalAccessToken: string,
-      s: RepositorySetting
+      _personalAccessToken: string,
+      _s: RepositorySetting
     ): Promise<PullRequestConnection> {
       return pullRequestConnection
     },
     async getReleases(
-      personalAccessToken: string,
-      s: RepositorySetting
+      _personalAccessToken: string,
+      _s: RepositorySetting
     ): Promise<ReleaseConnection> {
       return releaseConnection
     },
     async getCommits(
-      personalAccessToken: string,
-      s: RepositorySetting
+      _personalAccessToken: string,
+      _s: RepositorySetting
     ): Promise<CommitHistoryConnection> {
       return commitHistoryConnection
     },

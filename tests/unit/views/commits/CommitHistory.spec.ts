@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { nextTick } from 'vue'
 import { shallowMount } from '@vue/test-utils'
+import { vi } from 'vitest'
 import {
   Account,
   Commit,
@@ -24,7 +23,7 @@ import CommitContent from '@/views/commits/CommitContent.vue'
 import CommitHistory from '@/views/commits/CommitHistory.vue'
 
 // GetCommitHistoryUseCase mock
-const MockedGetCommitHistoryUseCase = jest.fn<GetCommitHistoryUseCase, [() => CommitHistoryModel]>()
+const MockedGetCommitHistoryUseCase = vi.fn()
 MockedGetCommitHistoryUseCase.mockImplementation(
   (cb: () => CommitHistoryModel): GetCommitHistoryUseCase => {
     return {
@@ -34,13 +33,13 @@ MockedGetCommitHistoryUseCase.mockImplementation(
 )
 const createMock = (func: () => GetCommitHistoryUseCase): GetCommitHistoryUseCaseFactory => {
   return {
-    create: (githubUrl: GitHubUrl, personalAccessToken: string) => func(),
+    create: (_githubUrl: GitHubUrl, _personalAccessToken: string) => func(),
   }
 }
 
 // LogUseCase mock
-const errorMock = jest.fn()
-const MockedLogUseCase = jest.fn<LogUseCase, []>()
+const errorMock = vi.fn()
+const MockedLogUseCase = vi.fn()
 MockedLogUseCase.mockImplementation((): LogUseCase => {
   return {
     error: (e: Error) => errorMock(e),
@@ -49,8 +48,8 @@ MockedLogUseCase.mockImplementation((): LogUseCase => {
 const mockedLogUseCase = new MockedLogUseCase()
 
 // WebBrowserUserCase mock
-const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
-const openUrlMock = jest.fn()
+const MockedWebBrowserUserCase = vi.fn()
+const openUrlMock = vi.fn()
 MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
   return {
     openUrl: (url: string) => openUrlMock(url),
@@ -58,7 +57,8 @@ MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
 })
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 
-const account = new Account('name', 'profile', 'avatar', jest.fn<GitHubUrl, []>()(), 'pat')
+const githubUrl = GitHubUrl.from('https://github.com')
+const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
 const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
 
 describe('CommitHistory.vue', () => {

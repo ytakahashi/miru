@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable vue/one-component-per-file */
-
 import { defineComponent, h } from 'vue'
 import { matchedRouteKey } from 'vue-router'
 import { shallowMount } from '@vue/test-utils'
+import { vi } from 'vitest'
 import {
   AccountSettingUseCaseFactoryKey,
   RepositorySettingUseCaseFactoryKey,
@@ -30,8 +28,8 @@ const account = new Account('name', 'https://github.com/ytakahashi', 'avatar', u
 const setting = new ApplicationSetting('foo')
 
 // WebBrowserUserCase mock
-const MockedWebBrowserUserCase = jest.fn<WebBrowserUserCase, []>()
-const openUrlMock = jest.fn()
+const MockedWebBrowserUserCase = vi.fn()
+const openUrlMock = vi.fn()
 MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
   return {
     openUrl: (url: string) => openUrlMock(url),
@@ -40,14 +38,14 @@ MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 
 // AccountSettingUseCase mock
-const addRepositorySettingMock = jest.fn()
-const deleteRepositorySettingMock = jest.fn()
-const setRepositorySettingsMock = jest.fn()
-const deleteSettingMock = jest.fn()
-const MockedAccountSettingUseCase = jest.fn<AccountSettingUseCase, []>()
+const addRepositorySettingMock = vi.fn()
+const deleteRepositorySettingMock = vi.fn()
+const setRepositorySettingsMock = vi.fn()
+const deleteSettingMock = vi.fn()
+const MockedAccountSettingUseCase = vi.fn()
 MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
   return {
-    setAccount: (account: Account) => jest.fn(),
+    setAccount: (_account: Account) => vi.fn(),
     getAccount: () => account,
     deleteSetting: () => deleteSettingMock(),
   }
@@ -58,21 +56,18 @@ const createAccountSettingMock = (
   func: () => AccountSettingUseCase
 ): AccountSettingUseCaseFactory => {
   return {
-    newAccountSettingUseCase: (setting: ApplicationSetting) => func(),
+    newAccountSettingUseCase: (_setting: ApplicationSetting) => func(),
   }
 }
 
-const MockedRepositorySettingUseCase = jest.fn<
-  RepositorySettingUseCase,
-  [Array<RepositorySetting>]
->()
+const MockedRepositorySettingUseCase = vi.fn()
 MockedRepositorySettingUseCase.mockImplementation(
   (arr: Array<RepositorySetting>): RepositorySettingUseCase => {
     return {
-      addRepositorySetting: (s: RepositorySetting) => addRepositorySettingMock(),
-      deleteRepositorySetting: (s: RepositorySetting) => deleteRepositorySettingMock(),
+      addRepositorySetting: (_s: RepositorySetting) => addRepositorySettingMock(),
+      deleteRepositorySetting: (_s: RepositorySetting) => deleteRepositorySettingMock(),
       getRepositorySettings: () => arr,
-      setRepositorySettings: (s: Array<RepositorySetting>) => setRepositorySettingsMock(),
+      setRepositorySettings: (_s: Array<RepositorySetting>) => setRepositorySettingsMock(),
     }
   }
 )
@@ -80,7 +75,7 @@ const createRepositorySettingMock = (
   func: () => RepositorySettingUseCase
 ): RepositorySettingUseCaseFactory => {
   return {
-    newRepositorySettingUseCase: (setting: ApplicationSetting) => func(),
+    newRepositorySettingUseCase: (_setting: ApplicationSetting) => func(),
   }
 }
 
@@ -102,7 +97,7 @@ const ModalWindowMock = defineComponent({
 const mockRoute = {
   value: {
     leaveGuards: {
-      add: () => jest.fn(),
+      add: () => vi.fn(),
     },
   },
 }

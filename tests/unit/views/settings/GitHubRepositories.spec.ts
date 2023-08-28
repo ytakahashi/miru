@@ -22,7 +22,7 @@ describe('GitHubRepositories.vue', () => {
     wrapper.find('i.fa-edit').trigger('click')
     const editEvent = wrapper.emitted('edit')
     if (editEvent === undefined) {
-      fail()
+      expect.unreachable('editEvent should not be undefined')
     }
     expect(editEvent).toHaveLength(1)
     expect(editEvent[0]).toEqual([true])
@@ -45,7 +45,7 @@ describe('GitHubRepositories.vue', () => {
     wrapper.find('i.delete-button').trigger('click')
     const deleteEvent = wrapper.emitted('deleteRepository')
     if (deleteEvent === undefined) {
-      fail()
+      expect.unreachable('deleteEvent should not be undefined')
     }
     expect(deleteEvent).toHaveLength(1)
     expect(deleteEvent[0]).toEqual([setting])
@@ -53,7 +53,7 @@ describe('GitHubRepositories.vue', () => {
     wrapper.find('i.fa-save').trigger('click')
     const editEvent = wrapper.emitted('edit')
     if (editEvent === undefined) {
-      fail()
+      expect.unreachable('editEvent should not be undefined')
     }
     expect(editEvent).toHaveLength(1)
     expect(editEvent[0]).toEqual([false])

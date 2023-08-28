@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { defineComponent, h } from 'vue'
 import { shallowMount } from '@vue/test-utils'
+import { vi } from 'vitest'
 import {
   AccountSettingUseCaseFactoryKey,
   ApplicationSettingUseCaseKey,
@@ -23,27 +21,25 @@ import {
 import CommitsView from '@/views/CommitsView.vue'
 import CommitHistory from '@/views/commits/CommitHistory.vue'
 
-const account = new Account('name', 'profile', 'avatar', jest.fn<GitHubUrl, []>()(), 'pat')
+const githubUrl = GitHubUrl.from('https://github.com')
+const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
 
-const MockedApplicationSettingUseCase = jest.fn<
-  ApplicationSettingUseCase,
-  [Array<ApplicationSetting>]
->()
+const MockedApplicationSettingUseCase = vi.fn()
 MockedApplicationSettingUseCase.mockImplementation(
   (arr: Array<ApplicationSetting>): ApplicationSettingUseCase => {
     return {
-      hasSetting: (setting: ApplicationSetting) => true,
+      hasSetting: (_setting: ApplicationSetting) => true,
       getSettings: () => arr,
-      addSetting: (setting: ApplicationSetting) => {},
-      removeSetting: (setting: ApplicationSetting) => {},
+      addSetting: (_setting: ApplicationSetting) => {},
+      removeSetting: (_setting: ApplicationSetting) => {},
     }
   }
 )
 
-const MockedAccountSettingUseCase = jest.fn<AccountSettingUseCase, []>()
+const MockedAccountSettingUseCase = vi.fn()
 MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
   return {
-    setAccount(account: Account): void {},
+    setAccount(_account: Account): void {},
     getAccount(): Account {
       return account
     },
@@ -51,22 +47,19 @@ MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
   }
 })
 
-const MockedRepositorySettingUseCase = jest.fn<
-  RepositorySettingUseCase,
-  [Array<RepositorySetting>]
->()
+const MockedRepositorySettingUseCase = vi.fn()
 MockedRepositorySettingUseCase.mockImplementation(
   (arr: Array<RepositorySetting>): RepositorySettingUseCase => {
     return {
-      addRepositorySetting: (s: RepositorySetting) => true,
-      deleteRepositorySetting: (s: RepositorySetting) => {},
+      addRepositorySetting: (_s: RepositorySetting) => true,
+      deleteRepositorySetting: (_s: RepositorySetting) => {},
       getRepositorySettings: () => arr,
-      setRepositorySettings: (s: Array<RepositorySetting>) => {},
+      setRepositorySettings: (_s: Array<RepositorySetting>) => {},
     }
   }
 )
 const mockedAccountSettingUseCaseFactory: AccountSettingUseCaseFactory = {
-  newAccountSettingUseCase: (setting: ApplicationSetting): AccountSettingUseCase => {
+  newAccountSettingUseCase: (_setting: ApplicationSetting): AccountSettingUseCase => {
     return new MockedAccountSettingUseCase()
   },
 }
@@ -82,7 +75,7 @@ const RepositoryFilterMock = defineComponent({
 describe('CommitsView.vue', () => {
   it('renders when account is not configured', async () => {
     const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
-      newRepositorySettingUseCase: (setting: ApplicationSetting) =>
+      newRepositorySettingUseCase: (_setting: ApplicationSetting) =>
         new MockedRepositorySettingUseCase([]),
     }
 
@@ -105,7 +98,7 @@ describe('CommitsView.vue', () => {
 
   it('renders when no repositories are configured', async () => {
     const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
-      newRepositorySettingUseCase: (setting: ApplicationSetting) =>
+      newRepositorySettingUseCase: (_setting: ApplicationSetting) =>
         new MockedRepositorySettingUseCase([]),
     }
 
@@ -132,7 +125,7 @@ describe('CommitsView.vue', () => {
     const repository1 = new RepositorySetting('https://github.com/a/b')
     const repository2 = new RepositorySetting('https://github.com/c/d')
     const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
-      newRepositorySettingUseCase: (setting: ApplicationSetting) =>
+      newRepositorySettingUseCase: (_setting: ApplicationSetting) =>
         new MockedRepositorySettingUseCase([repository1, repository2]),
     }
 
