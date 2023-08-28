@@ -48,7 +48,7 @@
     "electron:build": "yarn vite:build && yarn ts && electron-builder --config electron-builder.js",
     "electron:dev": "ELECTRON_DISABLE_SECURITY_WARNINGS=true yarn ts && concurrently vite \" electron --trace-warnings .\" \"yarn ts -w\"",
     "electron:preview": "yarn vite:build && yarn ts && electron .",
-    "lint": "eslint -c .eslintrc.js --ext .ts ./src ./tests",
+    "lint": "NODE_ENV=production eslint -c .eslintrc.js --ext .ts ./src ./tests",
     "rm-dist": "node -e 'fs.rmSync(`dist`, {recursive:true, force:true}); fs.rmSync(`dist_electron`, {recursive:true, force:true})'",
     "test:unit": "vitest run",
     "ts": "tsc -p tsconfig.build.json",
