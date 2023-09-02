@@ -69,10 +69,6 @@ describe('RepositorySettingUseCaseInteractor', () => {
 class MockedLocalStorageAccessor implements LocalStorageAccessor {
   settings: RepositorySettingType[] = []
 
-  getPath(): string {
-    throw new Error('Method not implemented.')
-  }
-
   setApplicationSettings(_settings: ApplicationSetting[]): void {
     throw new Error('Method not implemented.')
   }
@@ -95,5 +91,9 @@ class MockedLocalStorageAccessor implements LocalStorageAccessor {
 
   getRepositorySettings = (): RepositorySettingType[] => {
     return this.settings
+  }
+
+  deleteSettings(): void {
+    // do nothing
   }
 }

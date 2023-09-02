@@ -23,10 +23,6 @@ import {
   GetReleasesUseCase,
   GetReleasesUseCaseFactory,
 } from '@/application/usecase/githubRepository'
-import {
-  RepositorySettingUseCase,
-  RepositorySettingUseCaseFactory,
-} from '@/application/usecase/repositorySetting'
 import { AccountSettingUseCaseInteractor } from '@/application/usecase/interactor/accountSettingUseCaseInteractor'
 import { ApplicationSettingUseCaseInteractor } from '@/application/usecase/interactor/applicationSettingUseCaseInteractor'
 import { GitHubAccountUseCaseInteractor } from '@/application/usecase/interactor/githubAccountUseCaseInteractor'
@@ -36,15 +32,15 @@ import {
   GetPullRequestsUseCaseInteractor,
   GetReleasesUseCaseInteractor,
 } from '@/application/usecase/interactor/githubRepositoryUseCaseInteractor'
-import { LogUseCaseInteractor } from '@/application/usecase/interactor/LogUseCaseInteractor'
 import { RepositorySettingUseCaseInteractor } from '@/application/usecase/interactor/repositorySettingUseCaseInteractor'
+import {
+  RepositorySettingUseCase,
+  RepositorySettingUseCaseFactory,
+} from '@/application/usecase/repositorySetting'
 
 export class AccountSettingUseCaseFactoryImpl implements AccountSettingUseCaseFactory {
   newAccountSettingUseCase = (setting: ApplicationSetting): AccountSettingUseCase => {
-    return new AccountSettingUseCaseInteractor(
-      newLocalStorageAccessor(setting.configPostfix),
-      new LogUseCaseInteractor()
-    )
+    return new AccountSettingUseCaseInteractor(newLocalStorageAccessor(setting.configPostfix))
   }
 }
 
