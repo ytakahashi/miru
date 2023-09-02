@@ -1,18 +1,24 @@
 import { contextBridge, shell } from 'electron'
-import { ElectronStoreWrapper } from '../../application/infrastructure/impl/electronStoreWrapper'
 import { LocalStorageAccessor } from '../../application/domain/interface/localStorageAccessor'
+import { LogUseCase } from '../../application/usecase/log'
+import { ElectronStoreWrapper } from './electronStoreWrapper'
+import { logger } from './logger'
 
 export interface IPreloadAPI {
   openUrl: (url: string) => void
-  initElectronStoreWrapper: (namePostfix?: string) => LocalStorageAccessor
+  initLocalStorageAccessor: (namePostfix?: string) => LocalStorageAccessor
+  initLogger: () => LogUseCase
 }
 
 const preloadApi: IPreloadAPI = {
   openUrl: (url: string) => {
     shell.openExternal(url)
   },
-  initElectronStoreWrapper: (namePostfix?: string) => {
+  initLocalStorageAccessor: (namePostfix?: string) => {
     return new ElectronStoreWrapper(namePostfix)
+  },
+  initLogger: () => {
+    return logger
   },
 }
 

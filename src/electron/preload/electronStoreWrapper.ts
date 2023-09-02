@@ -1,7 +1,9 @@
 import Store from 'electron-store'
-import { LocalStorageAccessor } from '@/application/domain/interface/localStorageAccessor'
-import { ApplicationSetting } from '@/application/domain/model/application'
-import { GitHubAccount, RepositorySetting } from '@/application/infrastructure/dto/local'
+import { unlinkSync } from 'fs'
+import { LocalStorageAccessor } from '../../application/domain/interface/localStorageAccessor'
+import { ApplicationSetting } from '../../application/domain/model/application'
+import { GitHubAccount, RepositorySetting } from '../../application/infrastructure/dto/local'
+import { logger } from './logger'
 
 type StoreType = {
   account?: GitHubAccount
@@ -17,10 +19,7 @@ export class ElectronStoreWrapper implements LocalStorageAccessor {
     this.#store = new Store<StoreType>({
       name,
     })
-  }
-
-  getPath = (): string => {
-    return this.#store.path
+    logger.verbose(`config location: ${this.#store.path}`)
   }
 
   setApplicationSettings = (settings: Array<ApplicationSetting>): void => {
@@ -47,5 +46,14 @@ export class ElectronStoreWrapper implements LocalStorageAccessor {
   getRepositorySettings = (): Array<RepositorySetting> => {
     const settings = this.#store.get('repositorySettings')
     return settings === undefined ? [] : settings
+  }
+
+  deleteSettings = (): void => {
+    try {
+      unlinkSync(this.#store.path)
+      logger.info(`delete "${this.#store.path}"`)
+    } catch (err) {
+      logger.error(err as Error)
+    }
   }
 }

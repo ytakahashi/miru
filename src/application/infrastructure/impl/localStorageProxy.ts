@@ -3,37 +3,37 @@ import { ApplicationSetting } from '@/application/domain/model/application'
 import { GitHubAccount, RepositorySetting } from '@/application/infrastructure/dto/local'
 
 export class LocalStorageProxy implements LocalStorageAccessor {
-  #wrapper: LocalStorageAccessor
+  #localStorageAccessor: LocalStorageAccessor
 
   constructor(namePostfix?: string) {
-    this.#wrapper = window.preloadApi.initElectronStoreWrapper(namePostfix)
-  }
-
-  getPath = (): string => {
-    return this.#wrapper.getPath()
+    this.#localStorageAccessor = window.preloadApi.initLocalStorageAccessor(namePostfix)
   }
 
   setApplicationSettings = (settings: Array<ApplicationSetting>): void => {
-    this.#wrapper.setApplicationSettings(settings)
+    this.#localStorageAccessor.setApplicationSettings(settings)
   }
 
   getApplicationSettings = (): Array<ApplicationSetting> => {
-    return this.#wrapper.getApplicationSettings()
+    return this.#localStorageAccessor.getApplicationSettings()
   }
 
   setGitHubAccount = (account: GitHubAccount): void => {
-    this.#wrapper.setGitHubAccount(account)
+    this.#localStorageAccessor.setGitHubAccount(account)
   }
 
   getGitHubAccount = (): GitHubAccount | undefined => {
-    return this.#wrapper.getGitHubAccount()
+    return this.#localStorageAccessor.getGitHubAccount()
   }
 
   setRepositorySettings = (settings: Array<RepositorySetting>): void => {
-    this.#wrapper.setRepositorySettings(settings)
+    this.#localStorageAccessor.setRepositorySettings(settings)
   }
 
   getRepositorySettings = (): Array<RepositorySetting> => {
-    return this.#wrapper.getRepositorySettings()
+    return this.#localStorageAccessor.getRepositorySettings()
+  }
+
+  deleteSettings = (): void => {
+    this.#localStorageAccessor.deleteSettings()
   }
 }

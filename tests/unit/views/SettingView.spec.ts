@@ -78,6 +78,8 @@ const MockedLogUseCase = vi.fn()
 MockedLogUseCase.mockImplementation((): LogUseCase => {
   return {
     error: errorMock,
+    info: (_: string) => {},
+    verbose: (_: string) => {},
   }
 })
 const mockedLogUseCase = new MockedLogUseCase()
