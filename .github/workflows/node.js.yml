@@ -28,9 +28,5 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: yarn --frozen-lockfile
       - run: yarn lint
+      - run: yarn build
       - run: yarn test:unit
-      - run: yarn electron:build --mac dir
-      - uses: actions/upload-artifact@v3
-        with:
-          name: miru
-          path: dist_electron/
