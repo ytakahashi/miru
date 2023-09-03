@@ -160,12 +160,12 @@ describe('AccountSetting.vue', () => {
     await wrapper.vm.$nextTick()
 
     const repositoriesStub = wrapper.findComponent(GitHubRepositories)
-    await repositoriesStub.vm.$emit('edit', true)
+    await repositoriesStub.vm.$emit('edit', true, [])
     await wrapper.vm.$nextTick()
     expect(wrapper.find('input').exists()).toBe(true)
     expect(setRepositorySettingsMock).not.toHaveBeenCalled()
 
-    await repositoriesStub.vm.$emit('edit', false)
+    await repositoriesStub.vm.$emit('edit', false, [])
     await wrapper.vm.$nextTick()
     expect(wrapper.find('input').exists()).toBe(false)
     expect(setRepositorySettingsMock).toHaveBeenCalled()
@@ -198,7 +198,7 @@ describe('AccountSetting.vue', () => {
 
     await wrapper.vm.$nextTick()
     const repositoriesStub = wrapper.findComponent(GitHubRepositories)
-    await repositoriesStub.vm.$emit('edit', true)
+    await repositoriesStub.vm.$emit('edit', true, [])
     await wrapper.vm.$nextTick()
 
     const urlInput = wrapper.find('input')

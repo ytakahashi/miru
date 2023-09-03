@@ -25,7 +25,7 @@ describe('GitHubRepositories.vue', () => {
       expect.unreachable('editEvent should not be undefined')
     }
     expect(editEvent).toHaveLength(1)
-    expect(editEvent[0]).toEqual([true])
+    expect(editEvent[0]).toEqual([true, ['ytakahashi/miru']])
   })
 
   it('renders when editing', () => {
@@ -56,6 +56,6 @@ describe('GitHubRepositories.vue', () => {
       expect.unreachable('editEvent should not be undefined')
     }
     expect(editEvent).toHaveLength(1)
-    expect(editEvent[0]).toEqual([false])
+    expect(editEvent[0]).toEqual([false, ['ytakahashi/miru']])
   })
 })

@@ -7,24 +7,43 @@
   </span>
   <div class="spacer" />
 
-  <div v-for="repositorySetting in repositorySettings" :key="repositorySetting.getUrl()">
+  <div v-for="(displayName, index) in orderedRepositories" :key="index">
     <div>
       <i
         v-if="editing"
         class="fas fa-times delete-button"
-        @click="emitDelete(repositorySetting)"
+        @click="emitDelete(findSettingFrom(displayName))"
       ></i>
-      <span>
-        <GitHubRepository :editing="editing" :repository-setting="repositorySetting" />
+      <span
+        :draggable="editing"
+        @dragstart="() => saveFromIndex(index)"
+        @drop="() => moveItem(index)"
+        @dragover.prevent
+      >
+        <GitHubRepository :editing="editing" :repository-setting="findSettingFrom(displayName)" />
       </span>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, SetupContext, PropType } from 'vue'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import GitHubRepository from '@/views/settings/GitHubRepository.vue'
+import { PropType, Ref, SetupContext, defineComponent, ref, watch } from 'vue'
+
+// ref. https://zenn.dev/kazuwombat/articles/f23b47f168f1d0
+const moveIndex = <T,>(original: T[], from: number, to: number) => {
+  const arr = [...original]
+  const target = arr[from]
+  arr.splice(from, 1)
+  arr.splice(to, 0, target)
+  return arr
+}
+
+type PropsType = {
+  editing: boolean
+  repositorySettings: RepositorySetting[]
+}
 
 export default defineComponent({
   name: 'GitHubRepositories',
@@ -34,7 +53,7 @@ export default defineComponent({
   props: {
     editing: {
       type: Boolean,
-      requred: true,
+      required: true,
     },
     repositorySettings: {
       type: Array as PropType<RepositorySetting[]>,
@@ -42,14 +61,49 @@ export default defineComponent({
     },
   },
   emits: ['edit', 'deleteRepository'],
-  setup(_, context: SetupContext) {
+  setup(props: PropsType, context: SetupContext) {
     const emitDelete = (repository: RepositorySetting) =>
       context.emit('deleteRepository', repository)
-    const emitEdit = (editing: boolean) => context.emit('edit', editing)
+    const emitEdit = (editing: boolean) => context.emit('edit', editing, orderedRepositories.value)
+
+    const orderedRepositories: Ref<string[]> = ref(
+      props.repositorySettings.map(r => r.displayName())
+    )
+    watch(
+      () => props.repositorySettings,
+      () => (orderedRepositories.value = props.repositorySettings.map(r => r.displayName()))
+    )
+
+    const dragFromIndex = ref<number | null>(null)
+    const saveFromIndex = (fromIndex: number) => {
+      dragFromIndex.value = fromIndex
+    }
+    const moveItem = (targetIndex: number) => {
+      if (dragFromIndex.value === null) {
+        return
+      }
+      orderedRepositories.value = moveIndex(
+        orderedRepositories.value,
+        dragFromIndex.value,
+        targetIndex
+      )
+    }
+
+    const findSettingFrom = (displayName: string): RepositorySetting => {
+      const found = props.repositorySettings.find(r => r.displayName() === displayName)
+      if (found === undefined) {
+        throw Error(`Unexpected : ${displayName}`)
+      }
+      return found
+    }
 
     return {
       emitDelete,
       emitEdit,
+      orderedRepositories,
+      saveFromIndex,
+      moveItem,
+      findSettingFrom,
     }
   },
 })

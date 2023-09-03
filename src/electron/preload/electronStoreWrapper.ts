@@ -41,6 +41,7 @@ export class ElectronStoreWrapper implements LocalStorageAccessor {
 
   setRepositorySettings = (settings: Array<RepositorySetting>): void => {
     this.#store.set('repositorySettings', settings)
+    logger.verbose(`RepositorySettings updated: ${JSON.stringify(settings)}`)
   }
 
   getRepositorySettings = (): Array<RepositorySetting> => {
