@@ -125,10 +125,17 @@ export default defineComponent({
       context.emit('accountDeleted', props.setting)
     }
 
-    const editHandler = (b: boolean) => {
+    const editHandler = (b: boolean, orderedRepositories: string[]) => {
       isEditing.value = b
       if (!isEditing.value) {
-        repositorySettingUseCase.setRepositorySettings(githubRepositorySettings.value)
+        const newRepositories = orderedRepositories.map(repo => {
+          const found = githubRepositorySettings.value.find(r => r.displayName() === repo)
+          if (found === undefined) {
+            throw Error(`Unexpected : ${repo}`)
+          }
+          return found
+        })
+        repositorySettingUseCase.setRepositorySettings(newRepositories)
       }
     }
 
