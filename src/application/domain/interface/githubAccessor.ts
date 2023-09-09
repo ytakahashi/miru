@@ -1,3 +1,4 @@
+import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import {
   CommitHistoryConnection,
   IssueConnection,
@@ -5,15 +6,18 @@ import {
   ReleaseConnection,
   Viewer,
 } from '@/application/infrastructure/dto/githubApi'
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
 
 export type SortField = 'COMMENTS' | 'CREATED_AT' | 'UPDATED_AT' | 'NAME'
 export type SortDirection = 'ASC' | 'DESC'
+export type IssueState = 'OPEN' | 'CLOSED'
+export type PullRequestState = 'OPEN' | 'CLOSED' | 'MERGED'
+export type QueryState = IssueState | PullRequestState
 
 export type Option = {
   count?: number
   sortField?: SortField
   sortDirection?: SortDirection
+  states?: QueryState
 }
 
 export interface GitHubAccessor {

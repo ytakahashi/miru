@@ -22,13 +22,26 @@
         </option>
       </select>
     </div>
+    <div v-if="isStateSpecifiable" class="option-line">
+      <span class="option-title">State:</span>
+      <select v-model="viewModel.queryState" class="state-input">
+        <option v-for="name in states" :key="name">
+          {{ name }}
+        </option>
+      </select>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, watch, PropType, Ref } from 'vue'
-import { Option, SortDirection, SortField } from '@/application/usecase/githubRepository'
+import {
+  Option,
+  QueryState,
+  SortDirection,
+  SortField,
+} from '@/application/usecase/githubRepository'
 import { getters, mutations } from '@/store/queryOption'
+import { PropType, Ref, defineComponent, onMounted, reactive, ref, watch } from 'vue'
 
 type ViewType = 'commits' | 'issues' | 'pullRequests' | 'releases'
 
@@ -108,6 +121,24 @@ const namedSortList: Array<NamedSort> = [
   },
 ]
 
+const stateList: {
+  state: QueryState
+  supportedBy: ViewType[]
+}[] = [
+  {
+    state: 'OPEN',
+    supportedBy: ['issues', 'pullRequests'],
+  },
+  {
+    state: 'CLOSED',
+    supportedBy: ['issues', 'pullRequests'],
+  },
+  {
+    state: 'MERGED',
+    supportedBy: ['pullRequests'],
+  },
+]
+
 class OptionViewModel {
   #defaultSort: NamedSort
 
@@ -115,12 +146,14 @@ class OptionViewModel {
   sortField: Ref<SortField>
   sortDirection: Ref<SortDirection>
   selectedValue: Ref<SortName>
+  queryState: Ref<QueryState | undefined>
 
-  constructor() {
+  constructor(defaultState?: QueryState) {
     this.#defaultSort = namedSortList[0]
     this.sortField = ref(this.#defaultSort.sortField)
     this.sortDirection = ref(this.#defaultSort.sortDirection)
     this.selectedValue = ref(this.#defaultSort.sortName)
+    this.queryState = ref(defaultState)
   }
 
   setOption = (option: Option): void => {
@@ -150,6 +183,7 @@ class OptionViewModel {
       count: this.itemCount.value,
       sortField: sort.sortField,
       sortDirection: sort.sortDirection,
+      states: this.queryState.value,
     }
   }
 }
@@ -163,12 +197,16 @@ export default defineComponent({
     },
   },
   setup(props: PropsType) {
-    const viewModel = reactive(new OptionViewModel())
+    const isStateSpecifiable = props.viewType === 'issues' || props.viewType === 'pullRequests'
+    const viewModel = reactive(new OptionViewModel(isStateSpecifiable ? 'OPEN' : undefined))
     const itemCounts = ref(definedCounts)
     const sortNames = ref(
       namedSortList.filter(v => v.supportedBy.includes(props.viewType)).map(v => v.sortName)
     )
     const open = ref(false)
+    const states = ref(
+      stateList.filter(v => v.supportedBy.includes(props.viewType)).map(v => v.state)
+    )
     const isSortable = ['issues', 'pullRequests', 'releases'].includes(props.viewType)
 
     const updateViewModel = () => {
@@ -192,7 +230,9 @@ export default defineComponent({
       sortNames,
       itemCounts,
       open,
+      states,
       isSortable,
+      isStateSpecifiable,
     }
   },
 })
@@ -234,6 +274,11 @@ export default defineComponent({
 .sort-input {
   @include app.base-input-form();
   width: 167px;
+}
+
+.state-input {
+  @include app.base-input-form();
+  width: 161px;
 }
 
 .option-line {

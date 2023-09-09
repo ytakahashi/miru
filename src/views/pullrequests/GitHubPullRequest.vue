@@ -23,7 +23,7 @@
         class="clickable"
         @click="openPullRequestUrl(repositorySetting)"
       >
-        There aren’t any open pull requests.
+        There aren't any {{ queryState }} pull requests.
       </div>
     </div>
 
@@ -45,8 +45,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, readonly, ref } from 'vue'
-import { Account, PullRequests, GitHubUrl } from '@/application/domain/model/github'
+import { Account, GitHubUrl, PullRequests } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
@@ -58,6 +57,7 @@ import {
 import { getters, mutations } from '@/store/pullRequests'
 import { getters as queryOption } from '@/store/queryOption'
 import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
+import { computed, defineComponent, readonly, ref } from 'vue'
 
 type PropsType = {
   account: Account
@@ -94,11 +94,13 @@ export default defineComponent({
     const getPullRequestsUseCase = getPullRequestsUseCaseFactory.create(githubUrl, accessToken)
     const loading = ref(false)
 
+    const queryState = ref('')
     const isFailed = ref(false)
     const getPullRequests = async (): Promise<void> => {
       loading.value = true
       const { repositorySetting } = props
       const option = queryOption.pullRequests()
+      queryState.value = option.states?.toLocaleLowerCase() || ''
       isFailed.value = await getPullRequestsUseCase
         .execute(repositorySetting, option)
         .then((prs: PullRequests) => mutations.replace(prs))
@@ -127,6 +129,7 @@ export default defineComponent({
     return {
       clearPRs,
       getPullRequests,
+      queryState,
       isFailed,
       openPullRequestUrl,
       pullRequests,
