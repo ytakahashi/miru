@@ -1,10 +1,15 @@
 import log from 'electron-log'
-import { LogUseCase } from '../../application/usecase/log'
 
 log.transports.console.level = false
 log.transports.file.level = process.env.npm_lifecycle_event === 'electron:dev' ? 'verbose' : 'info'
 
-class Logger implements LogUseCase {
+export interface Logger {
+  error(e: Error): void
+  info(message: string): void
+  verbose(message: string): void
+}
+
+class LoggerImpl implements Logger {
   error = (e: Error): void => {
     log.error(e)
   }
@@ -18,5 +23,5 @@ class Logger implements LogUseCase {
   }
 }
 
-export const logger = new Logger()
+export const logger = new LoggerImpl()
 logger.verbose(`log level: ${log.transports.file.level}`)

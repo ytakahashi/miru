@@ -1,13 +1,8 @@
 import { Account, GitHubUrl, Issue, Issues } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { GetIssuesUseCase, GetIssuesUseCaseFactory } from '@/application/usecase/githubRepository'
-import { LogUseCase } from '@/application/usecase/log'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import {
-  GetIssuesUseCaseFactoryKey,
-  LogUseCaseKey,
-  WebBrowserUserCaseKey,
-} from '@/plugins/di/types'
+import { GetIssuesUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { getters as queryOption } from '@/store/queryOption'
 import GitHubIssue from '@/views/issues/GitHubIssue.vue'
 import IssueContent from '@/views/issues/IssueContent.vue'
@@ -28,17 +23,15 @@ const createMock = (func: () => GetIssuesUseCase): GetIssuesUseCaseFactory => {
   }
 }
 
-// LogUseCase mock
+// logger mock
 const errorMock = vi.fn()
-const MockedLogUseCase = vi.fn()
-MockedLogUseCase.mockImplementation((): LogUseCase => {
-  return {
+vi.mock('@/application/core/logger', () => ({
+  logger: {
     error: (e: Error) => errorMock(e),
     info: (_: string) => {},
     verbose: (_: string) => {},
-  }
-})
-const mockedLogUseCase = new MockedLogUseCase()
+  },
+}))
 
 // WebBrowserUserCase mock
 const MockedWebBrowserUserCase = vi.fn()
@@ -78,7 +71,6 @@ describe('GitHubIssue.vue', () => {
           [GetIssuesUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetIssuesUseCase(() => issues)
           ),
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
       },
@@ -133,7 +125,6 @@ describe('GitHubIssue.vue', () => {
           [GetIssuesUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetIssuesUseCase(() => issues)
           ),
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
       },
@@ -176,7 +167,6 @@ describe('GitHubIssue.vue', () => {
           [GetIssuesUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetIssuesUseCase(supplier)
           ),
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
       },
@@ -204,7 +194,6 @@ describe('GitHubIssue.vue', () => {
           [GetIssuesUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetIssuesUseCase(() => issues)
           ),
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
       },
@@ -229,7 +218,6 @@ describe('GitHubIssue.vue', () => {
           [GetIssuesUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetIssuesUseCase(() => issues)
           ),
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
       },

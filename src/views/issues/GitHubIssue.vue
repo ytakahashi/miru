@@ -41,15 +41,12 @@
 </template>
 
 <script lang="ts">
+import { logger } from '@/application/core/logger'
 import { Account, GitHubUrl, Issues } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
-import {
-  GetIssuesUseCaseFactoryKey,
-  LogUseCaseKey,
-  WebBrowserUserCaseKey,
-} from '@/plugins/di/types'
+import { GetIssuesUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { getters, mutations } from '@/store/issues'
 import { getters as queryOption } from '@/store/queryOption'
 import IssueContent from '@/views/issues/IssueContent.vue'
@@ -78,7 +75,6 @@ export default defineComponent({
   },
   setup(props: PropsType) {
     const getIssuesUseCaseFactory = inject(GetIssuesUseCaseFactoryKey)
-    const logUseCase = inject(LogUseCaseKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
     const openIssueUrl = (val: RepositorySetting) =>
@@ -102,7 +98,7 @@ export default defineComponent({
         .then((i: Issues) => mutations.replace(i))
         .then(() => false)
         .catch((e: Error) => {
-          logUseCase.error(e)
+          logger.error(e)
           return true
         })
         .finally(() => {

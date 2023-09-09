@@ -1,3 +1,4 @@
+import { logger } from '@/application/core/logger'
 import { GitHubAccessor, Option } from '@/application/domain/interface/githubAccessor'
 import { GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
@@ -9,7 +10,6 @@ import {
   Repository,
   Viewer,
 } from '@/application/infrastructure/dto/githubApi'
-import { logger } from '@/application/usecase/interactor/LogUseCaseInteractor'
 import { GraphQLClient, gql } from 'graphql-request'
 
 export class GitHubGraphQLClient implements GitHubAccessor {

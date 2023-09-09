@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch, Ref } from 'vue'
+import { logger } from '@/application/core/logger'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
 import LoadingImage from '@/components/LoadingImage.vue'
@@ -49,9 +49,9 @@ import {
   AccountSettingUseCaseFactoryKey,
   ApplicationSettingUseCaseKey,
   GitHubAccountUseCaseFactoryKey,
-  LogUseCaseKey,
 } from '@/plugins/di/types'
 import AccountSetting from '@/views/settings/AccountSetting.vue'
+import { Ref, defineComponent, onMounted, ref, watch } from 'vue'
 
 export default defineComponent({
   name: 'SettingView',
@@ -64,7 +64,6 @@ export default defineComponent({
     const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)
     const applicationSettingUseCase = inject(ApplicationSettingUseCaseKey)
     const githubAccountUseCaseFactory = inject(GitHubAccountUseCaseFactoryKey)
-    const logUseCase = inject(LogUseCaseKey)
 
     const githubUrlInput = ref('https://github.com')
     const personalAccessTokenInput = ref('')
@@ -92,7 +91,7 @@ export default defineComponent({
       }
     }
     const onFailure = (err: Error) => {
-      logUseCase.error(err)
+      logger.error(err)
       isInvalidAccessToken.value = true
       errorMessage.value = `Failed to resolve access token: ${personalAccessTokenInput.value}`
     }

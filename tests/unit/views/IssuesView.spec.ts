@@ -1,11 +1,3 @@
-import { defineComponent, h } from 'vue'
-import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
-import {
-  AccountSettingUseCaseFactoryKey,
-  ApplicationSettingUseCaseKey,
-  RepositorySettingUseCaseFactoryKey,
-} from '@/plugins/di/types'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
@@ -18,8 +10,16 @@ import {
   RepositorySettingUseCase,
   RepositorySettingUseCaseFactory,
 } from '@/application/usecase/repositorySetting'
+import {
+  AccountSettingUseCaseFactoryKey,
+  ApplicationSettingUseCaseKey,
+  RepositorySettingUseCaseFactoryKey,
+} from '@/plugins/di/types'
 import IssuesView from '@/views/IssuesView.vue'
 import GitHubIssue from '@/views/issues/GitHubIssue.vue'
+import { shallowMount } from '@vue/test-utils'
+import { vi } from 'vitest'
+import { defineComponent, h } from 'vue'
 
 const githubUrl = GitHubUrl.from('https://github.com')
 const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
@@ -71,6 +71,11 @@ const RepositoryFilterMock = defineComponent({
   },
   render: () => h('input', {}, ''),
 })
+
+// logger mock
+vi.mock('@/application/core/logger', () => ({
+  logger: vi.fn(),
+}))
 
 describe('IssuesView.vue', () => {
   it('renders when account is not configured', async () => {

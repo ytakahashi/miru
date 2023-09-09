@@ -1,6 +1,3 @@
-import { nextTick } from 'vue'
-import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
 import {
   Account,
   Commit,
@@ -12,15 +9,13 @@ import {
   GetCommitHistoryUseCase,
   GetCommitHistoryUseCaseFactory,
 } from '@/application/usecase/githubRepository'
-import { LogUseCase } from '@/application/usecase/log'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import {
-  GetCommitHistoryUseCaseFactoryKey,
-  LogUseCaseKey,
-  WebBrowserUserCaseKey,
-} from '@/plugins/di/types'
+import { GetCommitHistoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import CommitContent from '@/views/commits/CommitContent.vue'
 import CommitHistory from '@/views/commits/CommitHistory.vue'
+import { shallowMount } from '@vue/test-utils'
+import { vi } from 'vitest'
+import { nextTick } from 'vue'
 
 // GetCommitHistoryUseCase mock
 const MockedGetCommitHistoryUseCase = vi.fn()
@@ -37,17 +32,15 @@ const createMock = (func: () => GetCommitHistoryUseCase): GetCommitHistoryUseCas
   }
 }
 
-// LogUseCase mock
+// logger mock
 const errorMock = vi.fn()
-const MockedLogUseCase = vi.fn()
-MockedLogUseCase.mockImplementation((): LogUseCase => {
-  return {
+vi.mock('@/application/core/logger', () => ({
+  logger: {
     error: (e: Error) => errorMock(e),
     info: (_: string) => {},
     verbose: (_: string) => {},
-  }
-})
-const mockedLogUseCase = new MockedLogUseCase()
+  },
+}))
 
 // WebBrowserUserCase mock
 const MockedWebBrowserUserCase = vi.fn()
@@ -101,7 +94,6 @@ describe('CommitHistory.vue', () => {
           [GetCommitHistoryUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetCommitHistoryUseCase(() => commitHistory)
           ),
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
       },
@@ -143,7 +135,6 @@ describe('CommitHistory.vue', () => {
           [GetCommitHistoryUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetCommitHistoryUseCase(supplier)
           ),
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
       },
@@ -172,7 +163,6 @@ describe('CommitHistory.vue', () => {
           [GetCommitHistoryUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetCommitHistoryUseCase(() => commitHistory)
           ),
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
       },
