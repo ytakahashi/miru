@@ -1,16 +1,3 @@
-import { App } from 'vue'
-import {
-  AccountSettingUseCaseFactoryKey,
-  ApplicationSettingUseCaseKey,
-  GitHubAccountUseCaseFactoryKey,
-  GetCommitHistoryUseCaseFactoryKey,
-  GetIssuesUseCaseFactoryKey,
-  GetPullRequestsUseCaseFactoryKey,
-  GetReleasesUseCaseFactoryKey,
-  LogUseCaseKey,
-  RepositorySettingUseCaseFactoryKey,
-  WebBrowserUserCaseKey,
-} from '@/plugins/di/types'
 import {
   AccountSettingUseCaseFactoryImpl,
   ApplicationSettingUseCaseFactoryImpl,
@@ -21,12 +8,22 @@ import {
   GitHubAccountUseCaseFactoryImpl,
   RepositorySettingUseCaseFactoryImpl,
 } from '@/application/usecase/factory/useCaseFactory'
-import { LogUseCaseInteractor } from '@/application/usecase/interactor/LogUseCaseInteractor'
 import { WebBrowserUserCaseInteractor } from '@/application/usecase/interactor/WebBrowserUserCaseInteractor'
+import {
+  AccountSettingUseCaseFactoryKey,
+  ApplicationSettingUseCaseKey,
+  GetCommitHistoryUseCaseFactoryKey,
+  GetIssuesUseCaseFactoryKey,
+  GetPullRequestsUseCaseFactoryKey,
+  GetReleasesUseCaseFactoryKey,
+  GitHubAccountUseCaseFactoryKey,
+  RepositorySettingUseCaseFactoryKey,
+  WebBrowserUserCaseKey,
+} from '@/plugins/di/types'
+import { App } from 'vue'
 
 const accountSettingUseCaseFactory = new AccountSettingUseCaseFactoryImpl()
 const webBrowserUserCaseInteractor = new WebBrowserUserCaseInteractor()
-const logUseCaseInteractor = new LogUseCaseInteractor()
 
 const applicationSettingUseCase =
   new ApplicationSettingUseCaseFactoryImpl().newApplicationSettingUseCase()
@@ -47,7 +44,6 @@ export default {
     app.provide(GetIssuesUseCaseFactoryKey, getIssuesUseCaseFactory)
     app.provide(GetPullRequestsUseCaseFactoryKey, getPullRequestsUseCaseFactory)
     app.provide(GetReleasesUseCaseFactoryKey, getReleasesUseCaseFactory)
-    app.provide(LogUseCaseKey, logUseCaseInteractor)
     app.provide(WebBrowserUserCaseKey, webBrowserUserCaseInteractor)
     app.provide(RepositorySettingUseCaseFactoryKey, repositorySettingUseCaseFactory)
   },

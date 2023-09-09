@@ -45,19 +45,16 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, readonly, ref } from 'vue'
+import { logger } from '@/application/core/logger'
 import { Account, GitHubUrl, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
-import {
-  GetReleasesUseCaseFactoryKey,
-  LogUseCaseKey,
-  WebBrowserUserCaseKey,
-} from '@/plugins/di/types'
+import { GetReleasesUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { getters as queryOption } from '@/store/queryOption'
 import { getters, mutations } from '@/store/releases'
 import ReleaseContent from '@/views/releases/ReleaseContent.vue'
+import { computed, defineComponent, readonly, ref } from 'vue'
 
 type PropsType = {
   account: Account
@@ -82,7 +79,6 @@ export default defineComponent({
   },
   setup(props: PropsType) {
     const getReleasesUseCaseFactory = inject(GetReleasesUseCaseFactoryKey)
-    const logUseCase = inject(LogUseCaseKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
     const openReleaseUrl = (val: RepositorySetting) =>
@@ -104,7 +100,7 @@ export default defineComponent({
         .then((r: Releases) => mutations.replace(r))
         .then(() => false)
         .catch((e: Error) => {
-          logUseCase.error(e)
+          logger.error(e)
           return true
         })
         .finally(() => {

@@ -45,15 +45,12 @@
 </template>
 
 <script lang="ts">
+import { logger } from '@/application/core/logger'
 import { Account, GitHubUrl, PullRequests } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
-import {
-  GetPullRequestsUseCaseFactoryKey,
-  LogUseCaseKey,
-  WebBrowserUserCaseKey,
-} from '@/plugins/di/types'
+import { GetPullRequestsUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { getters, mutations } from '@/store/pullRequests'
 import { getters as queryOption } from '@/store/queryOption'
 import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
@@ -82,7 +79,6 @@ export default defineComponent({
   },
   setup(props: PropsType) {
     const getPullRequestsUseCaseFactory = inject(GetPullRequestsUseCaseFactoryKey)
-    const logUseCase = inject(LogUseCaseKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
     const openPullRequestUrl = (val: RepositorySetting) =>
@@ -106,7 +102,7 @@ export default defineComponent({
         .then((prs: PullRequests) => mutations.replace(prs))
         .then(() => false)
         .catch((e: Error) => {
-          logUseCase.error(e)
+          logger.error(e)
           return true
         })
         .finally(() => {

@@ -1,12 +1,3 @@
-import { defineComponent, h } from 'vue'
-import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
-import {
-  AccountSettingUseCaseFactoryKey,
-  ApplicationSettingUseCaseKey,
-  GitHubAccountUseCaseFactoryKey,
-  LogUseCaseKey,
-} from '@/plugins/di/types'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
 import {
@@ -15,9 +6,16 @@ import {
 } from '@/application/usecase/accountSetting'
 import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting'
 import { GitHubAccountUseCase } from '@/application/usecase/githubAccount'
-import { LogUseCase } from '@/application/usecase/log'
+import {
+  AccountSettingUseCaseFactoryKey,
+  ApplicationSettingUseCaseKey,
+  GitHubAccountUseCaseFactoryKey,
+} from '@/plugins/di/types'
 import SettingView from '@/views/SettingView.vue'
 import AccountSetting from '@/views/settings/AccountSetting.vue'
+import { shallowMount } from '@vue/test-utils'
+import { vi } from 'vitest'
+import { defineComponent, h } from 'vue'
 
 const url = new GitHubUrl('https://github.com', 'https://api.github.com/graphql')
 const account = new Account('name', 'https://github.com/ytakahashi', 'avatar', url, 'pat')
@@ -72,17 +70,10 @@ MockedGitHubAccountUseCaseFactory.mockImplementation(() => {
 })
 const mockedGitHubAccountUseCaseFactory = new MockedGitHubAccountUseCaseFactory()
 
-// LogUseCase mock
-const errorMock = vi.fn()
-const MockedLogUseCase = vi.fn()
-MockedLogUseCase.mockImplementation((): LogUseCase => {
-  return {
-    error: errorMock,
-    info: (_: string) => {},
-    verbose: (_: string) => {},
-  }
-})
-const mockedLogUseCase = new MockedLogUseCase()
+// logger mock
+vi.mock('@/application/core/logger', () => ({
+  logger: vi.fn(),
+}))
 
 const AccountSettingMock = defineComponent({
   name: 'AccountSetting',
@@ -104,7 +95,6 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
         },
       },
     })
@@ -125,7 +115,6 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
         },
       },
     })
@@ -142,7 +131,6 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
         },
       },
     })
@@ -171,7 +159,6 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
         },
       },
     })
@@ -208,7 +195,6 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
         },
         stubs: {
           AccountSetting: AccountSettingMock,
@@ -235,7 +221,6 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
         },
       },
     })
@@ -259,7 +244,6 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
         },
       },
     })
@@ -288,7 +272,6 @@ describe('SettingView.vue', () => {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
           [ApplicationSettingUseCaseKey as symbol]: mockedApplicationSettingUseCase,
           [GitHubAccountUseCaseFactoryKey as symbol]: mockedGitHubAccountUseCaseFactory,
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
         },
       },
     })

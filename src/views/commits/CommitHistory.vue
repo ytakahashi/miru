@@ -33,19 +33,16 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, readonly, ref } from 'vue'
+import { logger } from '@/application/core/logger'
 import { Account, CommitHistory, GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
-import {
-  GetCommitHistoryUseCaseFactoryKey,
-  LogUseCaseKey,
-  WebBrowserUserCaseKey,
-} from '@/plugins/di/types'
+import { GetCommitHistoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { getters, mutations } from '@/store/commits'
 import { getters as queryOption } from '@/store/queryOption'
 import CommitContent from '@/views/commits/CommitContent.vue'
+import { computed, defineComponent, readonly, ref } from 'vue'
 
 type PropsType = {
   account: Account
@@ -70,7 +67,6 @@ export default defineComponent({
   },
   setup(props: PropsType) {
     const getCommitHistoryUseCaseFactory = inject(GetCommitHistoryUseCaseFactoryKey)
-    const logUseCase = inject(LogUseCaseKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
     const openCommitsUrl = (val: RepositorySetting) =>
@@ -92,7 +88,7 @@ export default defineComponent({
         .then((ch: CommitHistory) => mutations.replace(ch))
         .then(() => false)
         .catch((e: Error) => {
-          logUseCase.error(e)
+          logger.error(e)
           return true
         })
         .finally(() => {

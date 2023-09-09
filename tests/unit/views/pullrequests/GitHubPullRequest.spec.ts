@@ -10,13 +10,8 @@ import {
   GetPullRequestsUseCase,
   GetPullRequestsUseCaseFactory,
 } from '@/application/usecase/githubRepository'
-import { LogUseCase } from '@/application/usecase/log'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import {
-  GetPullRequestsUseCaseFactoryKey,
-  LogUseCaseKey,
-  WebBrowserUserCaseKey,
-} from '@/plugins/di/types'
+import { GetPullRequestsUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { getters as queryOption } from '@/store/queryOption'
 import GitHubPullRequest from '@/views/pullrequests/GitHubPullRequest.vue'
 import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
@@ -39,17 +34,15 @@ const createMock = (func: () => GetPullRequestsUseCase): GetPullRequestsUseCaseF
   }
 }
 
-// LogUseCase mock
+// logger mock
 const errorMock = vi.fn()
-const MockedLogUseCase = vi.fn()
-MockedLogUseCase.mockImplementation((): LogUseCase => {
-  return {
-    error: errorMock,
+vi.mock('@/application/core/logger', () => ({
+  logger: {
+    error: (e: Error) => errorMock(e),
     info: (_: string) => {},
     verbose: (_: string) => {},
-  }
-})
-const mockedLogUseCase = new MockedLogUseCase()
+  },
+}))
 
 // WebBrowserUserCase mock
 const MockedWebBrowserUserCase = vi.fn()
@@ -89,7 +82,6 @@ describe('GitHubPullRequest.vue', () => {
           [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetPullRequestsUseCase(() => pullRequests)
           ),
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
       },
@@ -155,7 +147,6 @@ describe('GitHubPullRequest.vue', () => {
           [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetPullRequestsUseCase(() => pullRequests)
           ),
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
       },
@@ -199,7 +190,6 @@ describe('GitHubPullRequest.vue', () => {
           [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetPullRequestsUseCase(supplier)
           ),
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
       },
@@ -227,7 +217,6 @@ describe('GitHubPullRequest.vue', () => {
           [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetPullRequestsUseCase(() => pullRequests)
           ),
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
       },
@@ -252,7 +241,6 @@ describe('GitHubPullRequest.vue', () => {
           [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetPullRequestsUseCase(() => pullRequests)
           ),
-          [LogUseCaseKey as symbol]: mockedLogUseCase,
           [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
         },
       },
