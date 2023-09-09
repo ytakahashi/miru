@@ -19,7 +19,7 @@
       </div>
 
       <div v-if="!issues.hasContents()" class="clickable" @click="openIssueUrl(repositorySetting)">
-        There aren’t any open issues.
+        There aren't any {{ queryState }} issues.
       </div>
     </div>
 
@@ -41,8 +41,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, readonly, ref } from 'vue'
-import { Account, Issues, GitHubUrl } from '@/application/domain/model/github'
+import { Account, GitHubUrl, Issues } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
@@ -54,6 +53,7 @@ import {
 import { getters, mutations } from '@/store/issues'
 import { getters as queryOption } from '@/store/queryOption'
 import IssueContent from '@/views/issues/IssueContent.vue'
+import { computed, defineComponent, readonly, ref } from 'vue'
 
 type PropsType = {
   account: Account
@@ -90,11 +90,13 @@ export default defineComponent({
     const getIssuesUseCase = getIssuesUseCaseFactory.create(githubUrl, accessToken)
     const loading = ref(false)
 
+    const queryState = ref('')
     const isFailed = ref(false)
     const getIssues = async (): Promise<void> => {
       loading.value = true
       const { repositorySetting } = props
       const option = queryOption.issues()
+      queryState.value = option.states?.toLocaleLowerCase() || ''
       isFailed.value = await getIssuesUseCase
         .execute(repositorySetting, option)
         .then((i: Issues) => mutations.replace(i))
@@ -123,6 +125,7 @@ export default defineComponent({
     return {
       clearIssues,
       getIssues,
+      queryState,
       isFailed,
       openIssueUrl,
       issues,

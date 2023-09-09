@@ -1,3 +1,4 @@
+import { Option } from '@/application/domain/interface/githubAccessor'
 import {
   CommitHistory,
   GitHubUrl,
@@ -6,8 +7,14 @@ import {
   Releases,
 } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { Option } from '@/application/domain/interface/githubAccessor'
-export { Option, SortDirection, SortField } from '@/application/domain/interface/githubAccessor'
+export {
+  IssueState,
+  Option,
+  PullRequestState,
+  QueryState,
+  SortDirection,
+  SortField,
+} from '@/application/domain/interface/githubAccessor'
 
 export interface GetIssuesUseCase {
   execute(setting: RepositorySetting, opts?: Option): Promise<Issues>

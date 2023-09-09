@@ -100,21 +100,29 @@ describe('QueryOption.vue', () => {
       count: 10,
       sortField: 'UPDATED_AT',
       sortDirection: 'DESC',
+      states: 'OPEN',
     })
 
     await wrapper.find('.fa-cog').trigger('click')
 
     // update options (1)
+    // - count -> 3
+    // - sort -> Newest
+    // - state -> CLOSED
     await wrapper.find('select.number-input').setValue(3)
     await wrapper.find('select.sort-input').setValue('Newest')
+    await wrapper.find('select.state-input').setValue('CLOSED')
     const actual2 = wrapper.vm.viewModel.getOption()
     expect(actual2).toEqual({
       count: 3,
       sortField: 'CREATED_AT',
       sortDirection: 'DESC',
+      states: 'CLOSED',
     })
 
     // update options (2)
+    // - count -> 20
+    // - sort -> Least commented
     await wrapper.find('select.number-input').setValue(20)
     await wrapper.find('select.sort-input').setValue('Least commented')
     const actual3 = wrapper.vm.viewModel.getOption()
@@ -122,6 +130,7 @@ describe('QueryOption.vue', () => {
       count: 20,
       sortField: 'COMMENTS',
       sortDirection: 'ASC',
+      states: 'CLOSED',
     })
   })
 })

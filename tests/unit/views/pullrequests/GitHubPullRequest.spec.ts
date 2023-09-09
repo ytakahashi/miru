@@ -1,12 +1,9 @@
-import { nextTick } from 'vue'
-import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
 import {
   Account,
   GitHubUrl,
   PullRequest,
-  PullRequests,
   PullRequestReviews,
+  PullRequests,
 } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import {
@@ -20,8 +17,12 @@ import {
   LogUseCaseKey,
   WebBrowserUserCaseKey,
 } from '@/plugins/di/types'
+import { getters as queryOption } from '@/store/queryOption'
 import GitHubPullRequest from '@/views/pullrequests/GitHubPullRequest.vue'
 import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
+import { shallowMount } from '@vue/test-utils'
+import { Mocked, vi } from 'vitest'
+import { nextTick } from 'vue'
 
 // GetPullRequestsUseCase mock
 const MockedGetPullRequestsUseCase = vi.fn()
@@ -60,6 +61,16 @@ MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
 })
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 
+// queryOption mock
+vi.mock('@/store/queryOption')
+const mockedQueryOption = queryOption as Mocked<typeof queryOption>
+mockedQueryOption.pullRequests.mockReturnValue({
+  count: 10,
+  sortField: 'UPDATED_AT',
+  sortDirection: 'DESC',
+  states: 'OPEN',
+})
+
 const githubUrl = GitHubUrl.from('https://github.com')
 const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
 const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
@@ -85,7 +96,6 @@ describe('GitHubPullRequest.vue', () => {
       props: {
         account,
         repositorySetting: setting,
-        option: {},
       },
     })
 
@@ -95,7 +105,7 @@ describe('GitHubPullRequest.vue', () => {
 
     // then: message appears
     expect(wrapper.text()).toContain('ytakahashi/miru')
-    expect(wrapper.text()).toContain('There aren’t any open pull requests.')
+    expect(wrapper.text()).toContain("There aren't any open pull requests.")
     expect(wrapper.findAllComponents(PullRequestContent)).toHaveLength(0)
   })
 
@@ -152,7 +162,6 @@ describe('GitHubPullRequest.vue', () => {
       props: {
         account,
         repositorySetting: setting,
-        option: {},
       },
     })
 
@@ -197,7 +206,6 @@ describe('GitHubPullRequest.vue', () => {
       props: {
         account,
         repositorySetting: setting,
-        option: {},
       },
     })
 
@@ -226,7 +234,6 @@ describe('GitHubPullRequest.vue', () => {
       props: {
         account,
         repositorySetting: setting,
-        option: {},
       },
     })
 
@@ -252,7 +259,6 @@ describe('GitHubPullRequest.vue', () => {
       props: {
         account,
         repositorySetting: setting,
-        option: {},
       },
     })
 

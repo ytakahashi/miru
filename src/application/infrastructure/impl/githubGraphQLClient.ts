@@ -1,6 +1,5 @@
-import { GraphQLClient, gql } from 'graphql-request'
-import { GitHubUrl } from '@/application/domain/model/github'
 import { GitHubAccessor, Option } from '@/application/domain/interface/githubAccessor'
+import { GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import {
   CommitHistoryConnection,
@@ -10,6 +9,8 @@ import {
   Repository,
   Viewer,
 } from '@/application/infrastructure/dto/githubApi'
+import { logger } from '@/application/usecase/interactor/LogUseCaseInteractor'
+import { GraphQLClient, gql } from 'graphql-request'
 
 export class GitHubGraphQLClient implements GitHubAccessor {
   #graphQLClient: GraphQLClient
@@ -47,13 +48,14 @@ export class GitHubGraphQLClient implements GitHubAccessor {
         $owner: String!
         $name: String!
         $firstIssueNumber: Int!
+        $state: [IssueState!]
         $sortField: IssueOrderField!
         $sortDirection: OrderDirection!
       ) {
         repository(owner: $owner, name: $name) {
           issues(
             first: $firstIssueNumber
-            states: OPEN
+            states: $state
             orderBy: { field: $sortField, direction: $sortDirection }
           ) {
             totalCount
@@ -100,9 +102,11 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       owner: setting.getOwner(),
       name: setting.getRepositoryName(),
       firstIssueNumber: opts?.count !== undefined ? opts.count : 10,
+      state: opts?.states,
       sortField: opts?.sortField !== undefined ? opts.sortField : 'UPDATED_AT',
       sortDirection: opts?.sortDirection !== undefined ? opts.sortDirection : 'DESC',
     }
+    logger.verbose(`Issues variable: ${JSON.stringify(variables)}`)
     const takeIssues = (r: Repository): IssueConnection => {
       if (r.repository?.issues) {
         return r.repository.issues
@@ -128,13 +132,14 @@ export class GitHubGraphQLClient implements GitHubAccessor {
         $owner: String!
         $name: String!
         $firstIssueNumber: Int!
+        $state: [PullRequestState!]
         $sortField: IssueOrderField!
         $sortDirection: OrderDirection!
       ) {
         repository(owner: $owner, name: $name) {
           pullRequests(
             first: $firstIssueNumber
-            states: OPEN
+            states: $state
             orderBy: { field: $sortField, direction: $sortDirection }
           ) {
             totalCount
@@ -203,9 +208,11 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       owner: setting.getOwner(),
       name: setting.getRepositoryName(),
       firstIssueNumber: opts?.count !== undefined ? opts.count : 10,
+      state: opts?.states,
       sortField: opts?.sortField !== undefined ? opts.sortField : 'UPDATED_AT',
       sortDirection: opts?.sortDirection !== undefined ? opts.sortDirection : 'DESC',
     }
+    logger.verbose(`PullRequests variable: ${JSON.stringify(variables)}`)
     const takePullRequests = (r: Repository): PullRequestConnection => {
       if (r.repository?.pullRequests) {
         return r.repository.pullRequests

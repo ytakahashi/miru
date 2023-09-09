@@ -1,6 +1,6 @@
 import { LogUseCase } from '@/application/usecase/log'
 
-const logger = window.preloadApi.initLogger()
+export const logger = window.preloadApi.initLogger()
 
 export class LogUseCaseInteractor implements LogUseCase {
   error = (e: Error): void => {

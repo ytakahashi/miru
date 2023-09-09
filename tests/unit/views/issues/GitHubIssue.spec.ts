@@ -1,6 +1,3 @@
-import { nextTick } from 'vue'
-import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
 import { Account, GitHubUrl, Issue, Issues } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { GetIssuesUseCase, GetIssuesUseCaseFactory } from '@/application/usecase/githubRepository'
@@ -11,8 +8,12 @@ import {
   LogUseCaseKey,
   WebBrowserUserCaseKey,
 } from '@/plugins/di/types'
+import { getters as queryOption } from '@/store/queryOption'
 import GitHubIssue from '@/views/issues/GitHubIssue.vue'
 import IssueContent from '@/views/issues/IssueContent.vue'
+import { shallowMount } from '@vue/test-utils'
+import { Mocked, vi } from 'vitest'
+import { nextTick } from 'vue'
 
 // GetIssuesUseCase mock
 const MockedGetIssuesUseCase = vi.fn()
@@ -49,6 +50,16 @@ MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
 })
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 
+// queryOption mock
+vi.mock('@/store/queryOption')
+const mockedQueryOption = queryOption as Mocked<typeof queryOption>
+mockedQueryOption.issues.mockReturnValue({
+  count: 10,
+  sortField: 'UPDATED_AT',
+  sortDirection: 'DESC',
+  states: 'OPEN',
+})
+
 const githubUrl = GitHubUrl.from('https://github.com')
 const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
 const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
@@ -74,7 +85,6 @@ describe('GitHubIssue.vue', () => {
       props: {
         account,
         repositorySetting: setting,
-        option: {},
       },
     })
 
@@ -84,7 +94,7 @@ describe('GitHubIssue.vue', () => {
 
     // then: message appears
     expect(wrapper.text()).toContain('ytakahashi/miru')
-    expect(wrapper.text()).toContain('There aren’t any open issues.')
+    expect(wrapper.text()).toContain("There aren't any open issues.")
     expect(wrapper.findAllComponents(IssueContent)).toHaveLength(0)
     expect(openUrlMock).not.toHaveBeenCalled()
   })
@@ -130,7 +140,6 @@ describe('GitHubIssue.vue', () => {
       props: {
         account,
         repositorySetting: setting,
-        option: {},
       },
     })
 
@@ -174,7 +183,6 @@ describe('GitHubIssue.vue', () => {
       props: {
         account,
         repositorySetting: setting,
-        option: {},
       },
     })
 
@@ -203,7 +211,6 @@ describe('GitHubIssue.vue', () => {
       props: {
         account,
         repositorySetting: setting,
-        option: {},
       },
     })
 
@@ -229,7 +236,6 @@ describe('GitHubIssue.vue', () => {
       props: {
         account,
         repositorySetting: setting,
-        option: {},
       },
     })
 
