@@ -58,7 +58,8 @@ export class GetIssuesUseCaseInteractor implements GetIssuesUseCase {
               v.comments.totalCount,
               v.participants.totalCount,
               v.assignees.nodes.some(a => a.isViewer),
-              v.viewerDidAuthor
+              v.viewerDidAuthor,
+              v.state
             )
         )
       return new Issues(setting, issues, i.totalCount)
@@ -119,7 +120,8 @@ export class GetPullRequestsUseCaseInteractor implements GetPullRequestsUseCase 
               countReviewComments(v.reviews),
               v.assignees.nodes.some(a => a.isViewer),
               v.reviewRequests.nodes.some(r => r.requestedReviewer?.isViewer),
-              v.viewerDidAuthor
+              v.viewerDidAuthor,
+              v.state
             )
         )
       return new PullRequests(setting, prs, v.totalCount)

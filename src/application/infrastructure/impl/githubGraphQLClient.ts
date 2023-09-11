@@ -91,6 +91,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                   totalCount
                 }
                 viewerDidAuthor
+                state
               }
             }
           }
@@ -197,6 +198,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                   }
                 }
                 viewerDidAuthor
+                state
               }
             }
           }
