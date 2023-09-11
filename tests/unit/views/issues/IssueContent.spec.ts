@@ -1,18 +1,18 @@
-import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
 import { Issue, Label } from '@/application/domain/model/github'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 import IssueContent from '@/views/issues/IssueContent.vue'
+import { shallowMount } from '@vue/test-utils'
+import { vi } from 'vitest'
 
-const MockedWebBrowserUserCase = vi.fn()
+const MockedWebBrowserUseCase = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
+MockedWebBrowserUseCase.mockImplementation((): WebBrowserUserCase => {
   return {
     openUrl: (url: string) => openUrlMock(url),
   }
 })
-const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
+const mockedWebBrowserUseCase = new MockedWebBrowserUseCase()
 
 const author = 'ytakahashi'
 const title = 'issue title'
@@ -37,13 +37,14 @@ describe('IssueContent.vue', () => {
       2,
       3,
       false,
-      true
+      true,
+      'OPEN'
     )
 
     const wrapper = shallowMount(IssueContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
         },
       },
       props: {
@@ -70,13 +71,14 @@ describe('IssueContent.vue', () => {
       2,
       3,
       true,
-      false
+      false,
+      'OPEN'
     )
 
     const wrapper = shallowMount(IssueContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
         },
       },
       props: {
@@ -103,13 +105,14 @@ describe('IssueContent.vue', () => {
       2,
       3,
       false,
-      true
+      true,
+      'OPEN'
     )
 
     const wrapper = shallowMount(IssueContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
         },
       },
       props: {
