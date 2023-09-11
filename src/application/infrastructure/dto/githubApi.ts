@@ -46,6 +46,7 @@ export type Issue = {
   labels: IssueLabelEdge
   number: number
   participants: UserConnection
+  state: string
   viewerDidAuthor: boolean
 }
 
@@ -102,6 +103,7 @@ export type PullRequest = {
   reviews: PillRequestReviewConnection
   reviewRequests: ReviewRequestConnection
   viewerDidAuthor: boolean
+  state: string
 }
 
 export type PullRequestEdge = {

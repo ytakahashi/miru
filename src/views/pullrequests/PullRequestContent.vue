@@ -66,10 +66,16 @@ export default defineComponent({
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
     const openPullRequest = () => webBrowserUserCase.openUrl(props.pullRequest.url)
 
-    const boxStyle = computed(() => ({
-      'content-box-open': !props.pullRequest.isDraft,
-      'content-box-pr-draft': props.pullRequest.isDraft,
-    }))
+    const boxStyle = computed(() => {
+      const { pullRequest } = props
+      const state = props.pullRequest.state
+      return state === 'OPEN'
+        ? pullRequest.isDraft
+          ? 'content-box-pr-draft'
+          : 'content-box-open'
+        : `content-box-pr-${state.toLowerCase()}`
+    })
+
     const getLabelColor = (label: Label) => ({
       color: label.isLight ? '#2e2d2d' : '#fdfdfd',
       backgroundColor: label.color,
@@ -103,6 +109,14 @@ export default defineComponent({
 <style scoped lang="scss">
 @use '@/assets/app';
 @use '@/assets/contents';
+
+.content-box-pr-merged {
+  @include contents.content-box(var(--color-merged-pr));
+}
+
+.content-box-pr-closed {
+  @include contents.content-box(var(--color-closed-pr));
+}
 
 .content-box-pr-draft {
   @include contents.content-box(var(--color-draft-pr));

@@ -13,6 +13,7 @@
   --color-green-light: #4bc243;
   --color-green-dark: #278120;
   --color-blue: #108fd8;
+  --color-purple: #8a2be2;
   --color-light-blue: #c8ebfb;
 
   /* [app-theme="light"] */
@@ -41,11 +42,14 @@
   --color-open: var(--color-green-light);
   --color-draft-release: var(--color-red);
   --color-prerelease: var(--color-orange);
+  --color-closed-issue: var(--color-purple);
+  --color-closed-pr: var(--color-red);
   --color-draft-pr: var(--color-dark-gray);
+  --color-merged-pr: var(--color-purple);
   --color-commit: var(--color-light-gray);
 }
 
-[app-theme="dark"] {
+[app-theme='dark'] {
   --main-font-color: var(--color-white);
   --sub-font-color: var(--color-bright-gray);
   --main-background-color: var(--color-black);
@@ -71,6 +75,9 @@
   --color-open: var(--color-green-dark);
   --color-draft-release: var(--color-red);
   --color-prerelease: var(--color-orange);
+  --color-closed-issue: var(--color-purple);
+  --color-closed-pr: var(--color-red);
   --color-draft-pr: var(--color-dark-gray);
+  --color-merged-pr: var(--color-purple);
   --color-commit: var(--color-gray);
 }

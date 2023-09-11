@@ -1,18 +1,18 @@
-import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
 import { Issue, Label } from '@/application/domain/model/github'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 import IssueContent from '@/views/issues/IssueContent.vue'
+import { shallowMount } from '@vue/test-utils'
+import { vi } from 'vitest'
 
-const MockedWebBrowserUserCase = vi.fn()
+const MockedWebBrowserUseCase = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
+MockedWebBrowserUseCase.mockImplementation((): WebBrowserUserCase => {
   return {
     openUrl: (url: string) => openUrlMock(url),
   }
 })
-const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
+const mockedWebBrowserUseCase = new MockedWebBrowserUseCase()
 
 const author = 'ytakahashi'
 const title = 'issue title'
@@ -37,13 +37,14 @@ describe('IssueContent.vue', () => {
       2,
       3,
       false,
-      true
+      true,
+      'OPEN'
     )
 
     const wrapper = shallowMount(IssueContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
         },
       },
       props: {
@@ -51,6 +52,8 @@ describe('IssueContent.vue', () => {
       },
     })
 
+    expect(wrapper.classes()).to.contain('content-box-open')
+    expect(wrapper.classes()).not.to.contain('content-box-closed')
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
     expect(wrapper.text()).toContain('My Issue')
@@ -70,13 +73,14 @@ describe('IssueContent.vue', () => {
       2,
       3,
       true,
-      false
+      false,
+      'OPEN'
     )
 
     const wrapper = shallowMount(IssueContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
         },
       },
       props: {
@@ -84,6 +88,44 @@ describe('IssueContent.vue', () => {
       },
     })
 
+    expect(wrapper.classes()).to.contain('content-box-open')
+    expect(wrapper.classes()).not.to.contain('content-box-closed')
+    expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
+    expect(wrapper.text()).toContain(title)
+    expect(wrapper.text()).not.toContain('My Issue')
+    expect(wrapper.text()).toContain('Assigned')
+    expect(wrapper.findAll('span.github-label')).toHaveLength(2)
+  })
+
+  it('renders issue (closed)', async () => {
+    const issue = new Issue(
+      author,
+      title,
+      url,
+      '2020-12-15T21:23:56Z',
+      '2021-01-02T23:44:14Z',
+      123,
+      [label1, label2],
+      2,
+      3,
+      true,
+      false,
+      'CLOSED'
+    )
+
+    const wrapper = shallowMount(IssueContent, {
+      global: {
+        provide: {
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
+        },
+      },
+      props: {
+        issue,
+      },
+    })
+
+    expect(wrapper.classes()).not.to.contain('content-box-open')
+    expect(wrapper.classes()).to.contain('content-box-closed')
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
     expect(wrapper.text()).not.toContain('My Issue')
@@ -103,13 +145,14 @@ describe('IssueContent.vue', () => {
       2,
       3,
       false,
-      true
+      true,
+      'OPEN'
     )
 
     const wrapper = shallowMount(IssueContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
         },
       },
       props: {

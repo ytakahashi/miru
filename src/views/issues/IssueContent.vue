@@ -1,5 +1,5 @@
 <template>
-  <div class="content-box-open" @click="openIssue()">
+  <div :class="boxStyle" @click="openIssue()">
     <div class="issue-information">
       <span class="tooltip" :data-tooltip="issue.getUpdatedLocalDate()">
         <i class="fas fa-clock"></i>{{ issue.getUpdatedRelativeDate() }}
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { Issue, Label } from '@/application/domain/model/github'
 import { inject } from '@/plugins/di/injector'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
@@ -53,12 +53,16 @@ export default defineComponent({
   setup(props: PropsType) {
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
     const openIssue = () => webBrowserUserCase.openUrl(props.issue.url)
+
+    const boxStyle = computed(() => `content-box-${props.issue.state.toLowerCase()}`)
+
     const getLabelColor = (label: Label) => ({
       color: label.isLight ? '#2e2d2d' : '#fdfdfd',
       backgroundColor: label.color,
     })
 
     return {
+      boxStyle,
       openIssue,
       getLabelColor,
     }
@@ -69,6 +73,10 @@ export default defineComponent({
 <style scoped lang="scss">
 @use '@/assets/app';
 @use '@/assets/contents';
+
+.content-box-closed {
+  @include contents.content-box(var(--color-closed-issue));
+}
 
 .github-label {
   @include app.badge-box();

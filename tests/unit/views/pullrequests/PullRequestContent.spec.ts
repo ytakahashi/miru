@@ -1,18 +1,18 @@
-import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
-import { PullRequest, PullRequestReviews, Label } from '@/application/domain/model/github'
+import { Label, PullRequest, PullRequestReviews } from '@/application/domain/model/github'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
+import { shallowMount } from '@vue/test-utils'
+import { vi } from 'vitest'
 
-const MockedWebBrowserUserCase = vi.fn()
+const MockedWebBrowserUseCase = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
+MockedWebBrowserUseCase.mockImplementation((): WebBrowserUserCase => {
   return {
     openUrl: (url: string) => openUrlMock(url),
   }
 })
-const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
+const mockedWebBrowserUseCase = new MockedWebBrowserUseCase()
 
 const author = 'ytakahashi'
 const title = 'issue title'
@@ -43,13 +43,14 @@ describe('PullRequestContent.vue', () => {
       new PullRequestReviews(20, true),
       true,
       false,
-      false
+      false,
+      'OPEN'
     )
 
     const wrapper = shallowMount(PullRequestContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
         },
       },
       props: {
@@ -57,6 +58,10 @@ describe('PullRequestContent.vue', () => {
       },
     })
 
+    expect(wrapper.classes()).to.contain('content-box-open')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-draft')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-closed')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-merged')
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
     expect(wrapper.text()).not.toContain('My PR')
@@ -88,13 +93,14 @@ describe('PullRequestContent.vue', () => {
       new PullRequestReviews(20, true),
       false,
       true,
-      false
+      false,
+      'OPEN'
     )
 
     const wrapper = shallowMount(PullRequestContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
         },
       },
       props: {
@@ -102,6 +108,10 @@ describe('PullRequestContent.vue', () => {
       },
     })
 
+    expect(wrapper.classes()).to.contain('content-box-open')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-draft')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-closed')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-merged')
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
     expect(wrapper.text()).not.toContain('My PR')
@@ -133,13 +143,14 @@ describe('PullRequestContent.vue', () => {
       new PullRequestReviews(10, false),
       false,
       false,
-      true
+      true,
+      'OPEN'
     )
 
     const wrapper = shallowMount(PullRequestContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
         },
       },
       props: {
@@ -147,6 +158,109 @@ describe('PullRequestContent.vue', () => {
       },
     })
 
+    expect(wrapper.classes()).not.to.contain('content-box-open')
+    expect(wrapper.classes()).to.contain('content-box-pr-draft')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-closed')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-merged')
+    expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
+    expect(wrapper.text()).toContain(title)
+    expect(wrapper.text()).toContain('My PR')
+    expect(wrapper.text()).not.toContain('Assigned')
+    expect(wrapper.text()).not.toContain('Review Requested')
+    const tooltips = wrapper.find('div.pr-description').findAll('span.tooltip')
+    expect(tooltips).toHaveLength(2)
+    expect(tooltips[1].text()).toBe('12')
+    expect(tooltips[1].attributes('data-tooltip')).toBe('2 comments, 10 reviews')
+    expect(wrapper.findAll('span.github-label')).toHaveLength(2)
+  })
+
+  it('renders draft pull request (closed)', async () => {
+    const draftPr = new PullRequest(
+      author,
+      title,
+      url,
+      '2020-12-15T21:23:56Z',
+      '2021-01-02T23:44:14Z',
+      123,
+      [label1, label2],
+      2,
+      3,
+      12,
+      23,
+      4,
+      true,
+      new PullRequestReviews(10, false),
+      false,
+      false,
+      true,
+      'CLOSED'
+    )
+
+    const wrapper = shallowMount(PullRequestContent, {
+      global: {
+        provide: {
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
+        },
+      },
+      props: {
+        pullRequest: draftPr,
+      },
+    })
+
+    expect(wrapper.classes()).not.to.contain('content-box-open')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-draft')
+    expect(wrapper.classes()).to.contain('content-box-pr-closed')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-merged')
+    expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
+    expect(wrapper.text()).toContain(title)
+    expect(wrapper.text()).toContain('My PR')
+    expect(wrapper.text()).not.toContain('Assigned')
+    expect(wrapper.text()).not.toContain('Review Requested')
+    const tooltips = wrapper.find('div.pr-description').findAll('span.tooltip')
+    expect(tooltips).toHaveLength(2)
+    expect(tooltips[1].text()).toBe('12')
+    expect(tooltips[1].attributes('data-tooltip')).toBe('2 comments, 10 reviews')
+    expect(wrapper.findAll('span.github-label')).toHaveLength(2)
+  })
+
+  it('renders draft pull request (merged)', async () => {
+    const draftPr = new PullRequest(
+      author,
+      title,
+      url,
+      '2020-12-15T21:23:56Z',
+      '2021-01-02T23:44:14Z',
+      123,
+      [label1, label2],
+      2,
+      3,
+      12,
+      23,
+      4,
+      true,
+      new PullRequestReviews(10, false),
+      false,
+      false,
+      true,
+      'MERGED'
+    )
+
+    const wrapper = shallowMount(PullRequestContent, {
+      global: {
+        provide: {
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
+        },
+      },
+      props: {
+        pullRequest: draftPr,
+      },
+    })
+
+    expect(wrapper.classes()).not.to.contain('content-box-open')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-draft')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-draft')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-closed')
+    expect(wrapper.classes()).to.contain('content-box-pr-merged')
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
     expect(wrapper.text()).toContain('My PR')
@@ -177,13 +291,14 @@ describe('PullRequestContent.vue', () => {
       new PullRequestReviews(20, true),
       false,
       false,
-      false
+      false,
+      'OPEN'
     )
 
     const wrapper = shallowMount(PullRequestContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
         },
       },
       props: {

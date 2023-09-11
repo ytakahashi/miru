@@ -131,6 +131,7 @@ export class Issue extends BaseContent {
   public readonly numberOfParticipants: number
   public readonly isAssigned: boolean
   public readonly viewerDidAuthor: boolean
+  public readonly state: string
 
   constructor(
     authorName: string,
@@ -143,7 +144,8 @@ export class Issue extends BaseContent {
     numberOfComments: number,
     numberOfParticipants: number,
     isAssigned: boolean,
-    viewerDidAuthor: boolean
+    viewerDidAuthor: boolean,
+    state: string
   ) {
     super(authorName, title, url, createdAt, updatedAt)
     this.issueNumber = issueNumber
@@ -152,6 +154,7 @@ export class Issue extends BaseContent {
     this.numberOfParticipants = numberOfParticipants
     this.isAssigned = isAssigned
     this.viewerDidAuthor = viewerDidAuthor
+    this.state = state
   }
 }
 
@@ -214,6 +217,7 @@ export class PullRequest extends BaseContent {
   public readonly isAssigned: boolean
   public readonly isReviewRequested: boolean
   public readonly viewerDidAuthor: boolean
+  public readonly state: string
 
   constructor(
     authorName: string,
@@ -232,7 +236,8 @@ export class PullRequest extends BaseContent {
     reviews: PullRequestReviews,
     isAssigned: boolean,
     isReviewRequested: boolean,
-    viewerDidAuthor: boolean
+    viewerDidAuthor: boolean,
+    state: string
   ) {
     super(authorName, title, url, createdAt, updatedAt)
     this.issueNumber = issueNumber
@@ -248,6 +253,7 @@ export class PullRequest extends BaseContent {
     this.isAssigned = isAssigned
     this.isReviewRequested = isReviewRequested
     this.viewerDidAuthor = viewerDidAuthor
+    this.state = state
   }
 }
 

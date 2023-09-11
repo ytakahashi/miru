@@ -103,7 +103,8 @@ describe('GitHubIssue.vue', () => {
       2,
       3,
       false,
-      false
+      false,
+      'OPEN'
     )
     const issue2 = new Issue(
       'author 2',
@@ -116,7 +117,8 @@ describe('GitHubIssue.vue', () => {
       2,
       3,
       false,
-      false
+      false,
+      'OPEN'
     )
     const issues = new Issues(setting, [issue1, issue2], 2)
     const wrapper = shallowMount(GitHubIssue, {
