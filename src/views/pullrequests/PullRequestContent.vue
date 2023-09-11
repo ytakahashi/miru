@@ -22,8 +22,6 @@
       {{ pullRequest.title }}
     </span>
 
-    <span>state: {{ pullRequest.state }}</span>
-
     <div class="pr-description">
       <span>
         {{ pullRequest.authorName }} opened

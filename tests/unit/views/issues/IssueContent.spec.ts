@@ -52,6 +52,8 @@ describe('IssueContent.vue', () => {
       },
     })
 
+    expect(wrapper.classes()).to.contain('content-box-open')
+    expect(wrapper.classes()).not.to.contain('content-box-closed')
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
     expect(wrapper.text()).toContain('My Issue')
@@ -86,6 +88,44 @@ describe('IssueContent.vue', () => {
       },
     })
 
+    expect(wrapper.classes()).to.contain('content-box-open')
+    expect(wrapper.classes()).not.to.contain('content-box-closed')
+    expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
+    expect(wrapper.text()).toContain(title)
+    expect(wrapper.text()).not.toContain('My Issue')
+    expect(wrapper.text()).toContain('Assigned')
+    expect(wrapper.findAll('span.github-label')).toHaveLength(2)
+  })
+
+  it('renders issue (closed)', async () => {
+    const issue = new Issue(
+      author,
+      title,
+      url,
+      '2020-12-15T21:23:56Z',
+      '2021-01-02T23:44:14Z',
+      123,
+      [label1, label2],
+      2,
+      3,
+      true,
+      false,
+      'CLOSED'
+    )
+
+    const wrapper = shallowMount(IssueContent, {
+      global: {
+        provide: {
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
+        },
+      },
+      props: {
+        issue,
+      },
+    })
+
+    expect(wrapper.classes()).not.to.contain('content-box-open')
+    expect(wrapper.classes()).to.contain('content-box-closed')
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
     expect(wrapper.text()).not.toContain('My Issue')

@@ -78,6 +78,7 @@ describe('Issue', () => {
     expect(actual.isAssigned).toBe(false)
     expect(actual.viewerDidAuthor).toBe(false)
     expect(actual.labels).toHaveLength(0)
+    expect(actual.state).toBe('OPEN')
   })
 })
 

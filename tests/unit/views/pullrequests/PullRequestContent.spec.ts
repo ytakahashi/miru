@@ -58,6 +58,10 @@ describe('PullRequestContent.vue', () => {
       },
     })
 
+    expect(wrapper.classes()).to.contain('content-box-open')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-draft')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-closed')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-merged')
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
     expect(wrapper.text()).not.toContain('My PR')
@@ -104,6 +108,10 @@ describe('PullRequestContent.vue', () => {
       },
     })
 
+    expect(wrapper.classes()).to.contain('content-box-open')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-draft')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-closed')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-merged')
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
     expect(wrapper.text()).not.toContain('My PR')
@@ -150,6 +158,109 @@ describe('PullRequestContent.vue', () => {
       },
     })
 
+    expect(wrapper.classes()).not.to.contain('content-box-open')
+    expect(wrapper.classes()).to.contain('content-box-pr-draft')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-closed')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-merged')
+    expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
+    expect(wrapper.text()).toContain(title)
+    expect(wrapper.text()).toContain('My PR')
+    expect(wrapper.text()).not.toContain('Assigned')
+    expect(wrapper.text()).not.toContain('Review Requested')
+    const tooltips = wrapper.find('div.pr-description').findAll('span.tooltip')
+    expect(tooltips).toHaveLength(2)
+    expect(tooltips[1].text()).toBe('12')
+    expect(tooltips[1].attributes('data-tooltip')).toBe('2 comments, 10 reviews')
+    expect(wrapper.findAll('span.github-label')).toHaveLength(2)
+  })
+
+  it('renders draft pull request (closed)', async () => {
+    const draftPr = new PullRequest(
+      author,
+      title,
+      url,
+      '2020-12-15T21:23:56Z',
+      '2021-01-02T23:44:14Z',
+      123,
+      [label1, label2],
+      2,
+      3,
+      12,
+      23,
+      4,
+      true,
+      new PullRequestReviews(10, false),
+      false,
+      false,
+      true,
+      'CLOSED'
+    )
+
+    const wrapper = shallowMount(PullRequestContent, {
+      global: {
+        provide: {
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
+        },
+      },
+      props: {
+        pullRequest: draftPr,
+      },
+    })
+
+    expect(wrapper.classes()).not.to.contain('content-box-open')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-draft')
+    expect(wrapper.classes()).to.contain('content-box-pr-closed')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-merged')
+    expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
+    expect(wrapper.text()).toContain(title)
+    expect(wrapper.text()).toContain('My PR')
+    expect(wrapper.text()).not.toContain('Assigned')
+    expect(wrapper.text()).not.toContain('Review Requested')
+    const tooltips = wrapper.find('div.pr-description').findAll('span.tooltip')
+    expect(tooltips).toHaveLength(2)
+    expect(tooltips[1].text()).toBe('12')
+    expect(tooltips[1].attributes('data-tooltip')).toBe('2 comments, 10 reviews')
+    expect(wrapper.findAll('span.github-label')).toHaveLength(2)
+  })
+
+  it('renders draft pull request (merged)', async () => {
+    const draftPr = new PullRequest(
+      author,
+      title,
+      url,
+      '2020-12-15T21:23:56Z',
+      '2021-01-02T23:44:14Z',
+      123,
+      [label1, label2],
+      2,
+      3,
+      12,
+      23,
+      4,
+      true,
+      new PullRequestReviews(10, false),
+      false,
+      false,
+      true,
+      'MERGED'
+    )
+
+    const wrapper = shallowMount(PullRequestContent, {
+      global: {
+        provide: {
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
+        },
+      },
+      props: {
+        pullRequest: draftPr,
+      },
+    })
+
+    expect(wrapper.classes()).not.to.contain('content-box-open')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-draft')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-draft')
+    expect(wrapper.classes()).not.to.contain('content-box-pr-closed')
+    expect(wrapper.classes()).to.contain('content-box-pr-merged')
     expect(wrapper.text()).toMatch(/ytakahashi opened .+ .+ ago/)
     expect(wrapper.text()).toContain(title)
     expect(wrapper.text()).toContain('My PR')
