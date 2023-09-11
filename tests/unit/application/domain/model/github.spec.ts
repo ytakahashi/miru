@@ -1,4 +1,4 @@
-import { Commit, GitHubUrl, Label, Issue, Issues } from '@/application/domain/model/github'
+import { Commit, GitHubUrl, Issue, Issues, Label } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 
 describe('GitHubUrl', () => {
@@ -65,7 +65,8 @@ describe('Issue', () => {
       2,
       3,
       false,
-      false
+      false,
+      'OPEN'
     )
 
     expect(actual.title).toBe('issue title')

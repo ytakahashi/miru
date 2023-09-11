@@ -119,7 +119,8 @@ describe('GitHubPullRequest.vue', () => {
       new PullRequestReviews(15, false),
       false,
       false,
-      false
+      false,
+      'OPEN'
     )
     const pr2 = new PullRequest(
       'author 2',
@@ -138,7 +139,8 @@ describe('GitHubPullRequest.vue', () => {
       new PullRequestReviews(5, false),
       false,
       false,
-      false
+      false,
+      'OPEN'
     )
     const pullRequests = new PullRequests(setting, [pr1, pr2], 2)
     const wrapper = shallowMount(GitHubPullRequest, {
