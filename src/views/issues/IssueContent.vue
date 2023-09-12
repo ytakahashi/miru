@@ -33,10 +33,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
 import { Issue, Label } from '@/application/domain/model/github'
 import { inject } from '@/plugins/di/injector'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { computed, defineComponent } from 'vue'
 
 type PropsType = {
   issue: Issue
@@ -54,7 +54,11 @@ export default defineComponent({
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
     const openIssue = () => webBrowserUserCase.openUrl(props.issue.url)
 
-    const boxStyle = computed(() => `content-box-${props.issue.state.toLowerCase()}`)
+    const boxStyle = computed(() =>
+      props.issue.state === 'OPEN'
+        ? 'content-box-open'
+        : `content-box-closed-${props.issue.stateReason?.toLowerCase()}`
+    )
 
     const getLabelColor = (label: Label) => ({
       color: label.isLight ? '#2e2d2d' : '#fdfdfd',
@@ -74,8 +78,12 @@ export default defineComponent({
 @use '@/assets/app';
 @use '@/assets/contents';
 
-.content-box-closed {
-  @include contents.content-box(var(--color-closed-issue));
+.content-box-closed-completed {
+  @include contents.content-box(var(--color-closed-completed-issue));
+}
+
+.content-box-closed-not_planned {
+  @include contents.content-box(var(--color-closed-not_planned-issue));
 }
 
 .github-label {

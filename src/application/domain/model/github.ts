@@ -1,8 +1,8 @@
+import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
 import tinycolor from 'tinycolor2'
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
 
 dayjs.extend(relativeTime)
 dayjs.extend(utc)
@@ -132,6 +132,7 @@ export class Issue extends BaseContent {
   public readonly isAssigned: boolean
   public readonly viewerDidAuthor: boolean
   public readonly state: string
+  public readonly stateReason?: string
 
   constructor(
     authorName: string,
@@ -145,7 +146,8 @@ export class Issue extends BaseContent {
     numberOfParticipants: number,
     isAssigned: boolean,
     viewerDidAuthor: boolean,
-    state: string
+    state: string,
+    stateReason?: string
   ) {
     super(authorName, title, url, createdAt, updatedAt)
     this.issueNumber = issueNumber
@@ -155,6 +157,7 @@ export class Issue extends BaseContent {
     this.isAssigned = isAssigned
     this.viewerDidAuthor = viewerDidAuthor
     this.state = state
+    this.stateReason = stateReason
   }
 }
 

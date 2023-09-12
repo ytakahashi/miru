@@ -59,7 +59,8 @@ export class GetIssuesUseCaseInteractor implements GetIssuesUseCase {
               v.participants.totalCount,
               v.assignees.nodes.some(a => a.isViewer),
               v.viewerDidAuthor,
-              v.state
+              v.state,
+              v.stateReason
             )
         )
       return new Issues(setting, issues, i.totalCount)
