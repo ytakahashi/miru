@@ -47,6 +47,7 @@ export type Issue = {
   number: number
   participants: UserConnection
   state: string
+  stateReason: string
   viewerDidAuthor: boolean
 }
 

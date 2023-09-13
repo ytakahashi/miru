@@ -42,7 +42,8 @@
   --color-open: var(--color-green-light);
   --color-draft-release: var(--color-red);
   --color-prerelease: var(--color-orange);
-  --color-closed-issue: var(--color-purple);
+  --color-closed-completed-issue: var(--color-purple);
+  --color-closed-not_planned-issue: var(--color-dark-gray);
   --color-closed-pr: var(--color-red);
   --color-draft-pr: var(--color-dark-gray);
   --color-merged-pr: var(--color-purple);
@@ -75,7 +76,8 @@
   --color-open: var(--color-green-dark);
   --color-draft-release: var(--color-red);
   --color-prerelease: var(--color-orange);
-  --color-closed-issue: var(--color-purple);
+  --color-closed-completed-issue: var(--color-purple);
+  --color-closed-not_planned-issue: var(--color-dark-gray);
   --color-closed-pr: var(--color-red);
   --color-draft-pr: var(--color-dark-gray);
   --color-merged-pr: var(--color-purple);

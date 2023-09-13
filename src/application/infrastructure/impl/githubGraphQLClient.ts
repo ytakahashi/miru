@@ -92,6 +92,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                 }
                 viewerDidAuthor
                 state
+                stateReason
               }
             }
           }
