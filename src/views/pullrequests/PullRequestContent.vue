@@ -5,9 +5,17 @@
         <span class="tooltip" :data-tooltip="pullRequest.getUpdatedLocalDate()">
           <i class="fas fa-clock"></i>{{ pullRequest.getUpdatedRelativeDate() }}
         </span>
-        <span v-if="pullRequest.isDraft" class="draft-mark">Draft</span>
       </span>
-      <span>#{{ pullRequest.issueNumber }}</span>
+      <span>
+        <span v-if="pullRequest.isDraft" class="draft-mark">Draft</span>
+        <span v-if="pullRequest.state === 'MERGED'" class="merged-mark">
+          <i class="far fa-check-circle"></i>Merged
+        </span>
+        <span v-if="pullRequest.state === 'CLOSED'" class="closed-mark">
+          <i class="fas fa-ban fa-rotate-90"></i>Closed
+        </span>
+        #{{ pullRequest.issueNumber }}</span
+      >
     </div>
     <div class="pr-information">
       <span v-if="pullRequest.viewerDidAuthor" class="info-badge">My PR</span>
@@ -122,8 +130,20 @@ export default defineComponent({
   @include contents.content-box(var(--color-draft-pr));
 }
 
+.open-mark {
+  @include app.badge-box(var(--color-open), var(--color-open));
+}
+
 .draft-mark {
   @include app.badge-box();
+}
+
+.merged-mark {
+  @include app.badge-box(var(--color-merged-pr), var(--color-merged-pr));
+}
+
+.closed-mark {
+  @include app.badge-box(var(--color-closed-pr), var(--color-closed-pr));
 }
 
 .info-badge {

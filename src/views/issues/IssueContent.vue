@@ -4,7 +4,15 @@
       <span class="tooltip" :data-tooltip="issue.getUpdatedLocalDate()">
         <i class="fas fa-clock"></i>{{ issue.getUpdatedRelativeDate() }}
       </span>
-      <span>#{{ issue.issueNumber }}</span>
+      <span>
+        <span v-if="issue.stateReason === 'COMPLETED'" class="completed-mark">
+          <i class="far fa-check-circle"></i>Closed
+        </span>
+        <span v-if="issue.stateReason === 'NOT_PLANNED'" class="not_planned-mark">
+          <i class="fas fa-ban fa-rotate-90"></i> Closed
+        </span>
+        #{{ issue.issueNumber }}
+      </span>
     </div>
     <div class="issue-information">
       <span v-if="issue.viewerDidAuthor" class="info-badge">My Issue</span>
@@ -84,6 +92,14 @@ export default defineComponent({
 
 .content-box-closed-not_planned {
   @include contents.content-box(var(--color-closed-not_planned-issue));
+}
+
+.not_planned-mark {
+  @include app.badge-box();
+}
+
+.completed-mark {
+  @include app.badge-box(var(--color-closed-completed-issue), var(--color-closed-completed-issue));
 }
 
 .github-label {
