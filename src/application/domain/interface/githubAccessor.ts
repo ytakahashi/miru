@@ -17,7 +17,7 @@ export type Option = {
   count?: number
   sortField?: SortField
   sortDirection?: SortDirection
-  states?: QueryState
+  states?: QueryState[]
 }
 
 export interface GitHubAccessor {

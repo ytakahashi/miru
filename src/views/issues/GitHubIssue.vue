@@ -92,7 +92,7 @@ export default defineComponent({
       loading.value = true
       const { repositorySetting } = props
       const option = queryOption.issues()
-      queryState.value = option.states?.toLocaleLowerCase() || ''
+      queryState.value = option.states?.join('/').toLowerCase() || ''
       isFailed.value = await getIssuesUseCase
         .execute(repositorySetting, option)
         .then((i: Issues) => mutations.replace(i))

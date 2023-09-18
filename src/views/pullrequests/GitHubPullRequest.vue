@@ -96,7 +96,7 @@ export default defineComponent({
       loading.value = true
       const { repositorySetting } = props
       const option = queryOption.pullRequests()
-      queryState.value = option.states?.toLocaleLowerCase() || ''
+      queryState.value = option.states?.join('/').toLowerCase() || ''
       isFailed.value = await getPullRequestsUseCase
         .execute(repositorySetting, option)
         .then((prs: PullRequests) => mutations.replace(prs))
