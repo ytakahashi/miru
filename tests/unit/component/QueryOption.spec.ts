@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils'
 import QueryOption from '@/components/QueryOption.vue'
+import { shallowMount } from '@vue/test-utils'
 
 describe('QueryOption.vue', () => {
   it('shows/hides option', async () => {
@@ -100,10 +100,13 @@ describe('QueryOption.vue', () => {
       count: 10,
       sortField: 'UPDATED_AT',
       sortDirection: 'DESC',
-      states: 'OPEN',
+      states: ['OPEN'],
     })
 
     await wrapper.find('.fa-cog').trigger('click')
+
+    const checkboxes = wrapper.findAll('input[type="checkbox"]')
+    expect(checkboxes).toHaveLength(2)
 
     // update options (1)
     // - count -> 3
@@ -111,26 +114,30 @@ describe('QueryOption.vue', () => {
     // - state -> CLOSED
     await wrapper.find('select.number-input').setValue(3)
     await wrapper.find('select.sort-input').setValue('Newest')
-    await wrapper.find('select.state-input').setValue('CLOSED')
+    await checkboxes[0].setValue(false)
+    await checkboxes[1].setValue(true)
+
     const actual2 = wrapper.vm.viewModel.getOption()
     expect(actual2).toEqual({
       count: 3,
       sortField: 'CREATED_AT',
       sortDirection: 'DESC',
-      states: 'CLOSED',
+      states: ['CLOSED'],
     })
 
     // update options (2)
     // - count -> 20
     // - sort -> Least commented
+    // - state -> OPEN, CLOSED
     await wrapper.find('select.number-input').setValue(20)
     await wrapper.find('select.sort-input').setValue('Least commented')
+    await checkboxes[0].setValue(true)
     const actual3 = wrapper.vm.viewModel.getOption()
     expect(actual3).toEqual({
       count: 20,
       sortField: 'COMMENTS',
       sortDirection: 'ASC',
-      states: 'CLOSED',
+      states: ['CLOSED', 'OPEN'],
     })
   })
 })

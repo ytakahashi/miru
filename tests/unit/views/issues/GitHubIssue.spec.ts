@@ -50,7 +50,7 @@ mockedQueryOption.issues.mockReturnValue({
   count: 10,
   sortField: 'UPDATED_AT',
   sortDirection: 'DESC',
-  states: 'OPEN',
+  states: ['OPEN'],
 })
 
 const githubUrl = GitHubUrl.from('https://github.com')

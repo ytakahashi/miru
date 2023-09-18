@@ -9,14 +9,14 @@ const issueOption = reactive<Option>({
   count: 10,
   sortField: 'UPDATED_AT',
   sortDirection: 'DESC',
-  states: 'OPEN',
+  states: ['OPEN'],
 })
 
 const prOption = reactive<Option>({
   count: 10,
   sortField: 'UPDATED_AT',
   sortDirection: 'DESC',
-  states: 'OPEN',
+  states: ['OPEN'],
 })
 
 const releaseOption = reactive<Option>({

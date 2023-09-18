@@ -24,11 +24,12 @@
     </div>
     <div v-if="isStateSpecifiable" class="option-line">
       <span class="option-title">State:</span>
-      <select v-model="viewModel.queryState" class="state-input">
-        <option v-for="name in states" :key="name">
-          {{ name }}
-        </option>
-      </select>
+      <p class="state-checkbox">
+        <span v-for="(state, index) in states" :key="index">
+          <input :id="state" v-model="viewModel.checkedStates" type="checkbox" :value="state" />
+          <label :for="state">{{ state.toLowerCase() }}</label>
+        </span>
+      </p>
     </div>
   </div>
 </template>
@@ -146,14 +147,13 @@ class OptionViewModel {
   sortField: Ref<SortField>
   sortDirection: Ref<SortDirection>
   selectedValue: Ref<SortName>
-  queryState: Ref<QueryState | undefined>
+  checkedStates: Ref<QueryState[]> = ref(['OPEN'])
 
-  constructor(defaultState?: QueryState) {
+  constructor() {
     this.#defaultSort = namedSortList[0]
     this.sortField = ref(this.#defaultSort.sortField)
     this.sortDirection = ref(this.#defaultSort.sortDirection)
     this.selectedValue = ref(this.#defaultSort.sortName)
-    this.queryState = ref(defaultState)
   }
 
   setOption = (option: Option): void => {
@@ -183,7 +183,7 @@ class OptionViewModel {
       count: this.itemCount.value,
       sortField: sort.sortField,
       sortDirection: sort.sortDirection,
-      states: this.queryState.value,
+      states: this.checkedStates.value,
     }
   }
 }
@@ -198,7 +198,7 @@ export default defineComponent({
   },
   setup(props: PropsType) {
     const isStateSpecifiable = props.viewType === 'issues' || props.viewType === 'pullRequests'
-    const viewModel = reactive(new OptionViewModel(isStateSpecifiable ? 'OPEN' : undefined))
+    const viewModel = reactive(new OptionViewModel())
     const itemCounts = ref(definedCounts)
     const sortNames = ref(
       namedSortList.filter(v => v.supportedBy.includes(props.viewType)).map(v => v.sortName)
@@ -287,5 +287,12 @@ export default defineComponent({
   & + & {
     margin-top: 10px;
   }
+}
+
+.state-checkbox {
+  text-transform: capitalize;
+  text-align: right;
+  margin: 0;
+  padding-right: 10px;
 }
 </style>
