@@ -1,11 +1,17 @@
 <template>
   <div class="commit-box" @click="openCommit()">
-    <div v-if="commit.pushedDate" class="commit-information">
-      <span class="tooltip" :data-tooltip="commit.getPushedLocalDate()">
-        <i class="fas fa-clock"></i>{{ commit.getPushedRelativeDate() }}
+    <div class="commit-information">
+      <span class="tooltip" :data-tooltip="commit.committedDate">
+        <i class="fas fa-clock"></i>{{ commit.getCommittedRelativeDate() }}
+      </span>
+      <span class="tooltip" :data-tooltip="commitHash">
+        <span>{{ commitHash?.slice(0, 8) }}</span>
       </span>
     </div>
-    <div class="commit-message">{{ commit.message }}</div>
+    <div>
+      <p class="commit-message_headline">{{ commitMessage.firstLine }}</p>
+      <p class="commit-message">{{ commitMessage.other }}</p>
+    </div>
     <span class="commit-description">
       <span class="tooltip" :data-tooltip="commit.getAuthoredLocalDate()">
         {{ commit.getAuthorInformation() }},
@@ -18,10 +24,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
 import { Commit } from '@/application/domain/model/github'
 import { inject } from '@/plugins/di/injector'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { computed, defineComponent } from 'vue'
 
 type PropsType = {
   commit: Commit
@@ -39,8 +45,21 @@ export default defineComponent({
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
     const openCommit = () => webBrowserUserCase.openUrl(props.commit.commitUrl)
 
+    const commitMessage = computed(() => {
+      const message = props.commit.message
+      const firstLine = message.split('\n', 1)[0]
+      const other = message.replace(firstLine, '')
+      return {
+        firstLine,
+        other: other.startsWith('\n') ? other.replace('\n', '') : other,
+      }
+    })
+    const commitHash = computed(() => props.commit.commitUrl.split('/').pop())
+
     return {
       openCommit,
+      commitMessage,
+      commitHash,
     }
   },
 })
@@ -58,9 +77,11 @@ export default defineComponent({
   white-space: pre-wrap;
   text-align: left;
   padding-left: 20px;
-  font-weight: bold;
-  font-size: 95%;
-  margin: 15px 0;
+  font-size: 90%;
+  &_headline {
+    text-align: center;
+    font-weight: bold;
+  }
 }
 
 .commit-information {

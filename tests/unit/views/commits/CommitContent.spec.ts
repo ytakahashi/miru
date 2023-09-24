@@ -1,9 +1,9 @@
-import { mount } from '@vue/test-utils'
-import { vi } from 'vitest'
 import { Commit } from '@/application/domain/model/github'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 import CommitContent from '@/views/commits/CommitContent.vue'
+import { mount } from '@vue/test-utils'
+import { vi } from 'vitest'
 
 const MockedWebBrowserUserCase = vi.fn()
 const openUrlMock = vi.fn()
@@ -20,7 +20,7 @@ describe('CommitContent.vue', () => {
   })
 
   const commitMessage = 'commit message'
-  const commitUrl = 'https://github.com/ytakahashi/miru/commits/1234'
+  const commitUrl = 'https://github.com/ytakahashi/miru/commits/1234567898765432'
   const commit = new Commit(
     commitMessage,
     commitUrl,
@@ -34,7 +34,7 @@ describe('CommitContent.vue', () => {
     '2021-03-13T00:00:02Z'
   )
 
-  it('renders issue (opened)', async () => {
+  it('renders commit', async () => {
     const wrapper = mount(CommitContent, {
       global: {
         provide: {
@@ -46,9 +46,15 @@ describe('CommitContent.vue', () => {
       },
     })
 
-    expect(wrapper.text()).toMatch(/ytakahashi authored .+ .+ ago/)
-    expect(wrapper.text()).toMatch(/ytakahashi committed .+ .+ ago/)
-    expect(wrapper.text()).toContain(commitMessage)
+    const spans = wrapper.findAll('span.tooltip')
+    expect(spans).toHaveLength(4)
+    expect(spans[0].text()).toMatch(/.+ ago/)
+    expect(spans[1].text()).toBe('12345678')
+    expect(spans[2].text()).toMatch(/ytakahashi authored .+ .+ ago/)
+    expect(spans[3].text()).toMatch(/ytakahashi committed .+ .+ ago/)
+
+    expect(wrapper.find('p.commit-message_headline').text()).toBe('commit message')
+    expect(wrapper.find('p.commit-message').text()).toBe('')
   })
 
   it('can open url', async () => {
