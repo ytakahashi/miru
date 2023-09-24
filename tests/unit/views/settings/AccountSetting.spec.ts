@@ -1,16 +1,6 @@
-import { defineComponent, h } from 'vue'
-import { matchedRouteKey } from 'vue-router'
-import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
-import {
-  AccountSettingUseCaseFactoryKey,
-  RepositorySettingUseCaseFactoryKey,
-  WebBrowserUserCaseKey,
-} from '@/plugins/di/types'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 import {
   AccountSettingUseCase,
   AccountSettingUseCaseFactory,
@@ -19,9 +9,19 @@ import {
   RepositorySettingUseCase,
   RepositorySettingUseCaseFactory,
 } from '@/application/usecase/repositorySetting'
+import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 import ModalWindow from '@/components/ModalWindow.vue'
+import {
+  AccountSettingUseCaseFactoryKey,
+  RepositorySettingUseCaseFactoryKey,
+  WebBrowserUserCaseKey,
+} from '@/plugins/di/types'
 import AccountSetting from '@/views/settings/AccountSetting.vue'
 import GitHubRepositories from '@/views/settings/GitHubRepositories.vue'
+import { shallowMount } from '@vue/test-utils'
+import { vi } from 'vitest'
+import { defineComponent, h } from 'vue'
+import { matchedRouteKey } from 'vue-router'
 
 const url = new GitHubUrl('https://github.com', 'https://api.github.com/graphql')
 const account = new Account('name', 'https://github.com/ytakahashi', 'avatar', url, 'pat')
@@ -42,14 +42,16 @@ const addRepositorySettingMock = vi.fn()
 const deleteRepositorySettingMock = vi.fn()
 const setRepositorySettingsMock = vi.fn()
 const deleteSettingMock = vi.fn()
+const setAccountMock = vi.fn()
 const MockedAccountSettingUseCase = vi.fn()
 MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
   return {
-    setAccount: (_account: Account) => vi.fn(),
+    setAccount: (account: Account) => setAccountMock(account),
     getAccount: () => account,
     deleteSetting: () => deleteSettingMock(),
   }
 })
+const mockedAccountSettingUseCase = new MockedAccountSettingUseCase()
 
 // AccountSettingUseCaseFactory mock
 const createAccountSettingMock = (
@@ -106,6 +108,7 @@ describe('AccountSetting.vue', () => {
   beforeEach(() => {
     addRepositorySettingMock.mockClear()
     setRepositorySettingsMock.mockClear()
+    setAccountMock.mockClear()
     deleteSettingMock.mockClear()
     openUrlMock.mockClear()
   })
@@ -243,6 +246,37 @@ describe('AccountSetting.vue', () => {
     })
     await wrapper.find('span.text-strong').trigger('click')
     expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi')
+  })
+
+  it('can edit access token', async () => {
+    const wrapper = shallowMount(AccountSetting, {
+      global: {
+        provide: {
+          [matchedRouteKey as symbol]: mockRoute,
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
+            () => mockedAccountSettingUseCase
+          ),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
+            () => new MockedRepositorySettingUseCase([])
+          ),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
+      },
+      props: {
+        setting,
+      },
+    })
+
+    // save button is not visible at first
+    expect(wrapper.find('i.fa-save').exists()).toBe(false)
+
+    // after clicking edit button, save button becomes visible
+    await wrapper.find('i.fa-edit').trigger('click')
+    expect(wrapper.find('i.fa-save').exists()).toBe(true)
+
+    // when clicking the save button, setAccount method should be called
+    await wrapper.find('i.fa-save').trigger('click')
+    expect(setAccountMock).toHaveBeenCalledWith(account)
   })
 
   it('can open modal', async () => {

@@ -33,6 +33,7 @@ export class ElectronStoreWrapper implements LocalStorageAccessor {
 
   setGitHubAccount = (account: GitHubAccount): void => {
     this.#store.set('account', account)
+    logger.verbose(`Account updated: ${JSON.stringify(account)}`)
   }
 
   getGitHubAccount = (): GitHubAccount | undefined => {

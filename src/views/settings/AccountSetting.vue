@@ -5,7 +5,29 @@
     </div>
     <div class="block">
       <span class="text-strong clickable" @click="openProfile()">{{ profile }}</span>
+      <span class="account-edit-toggle">
+        <i v-if="!showsPatInput" class="fas fa-edit clickable" @click="showsPatInput = true"></i>
+        <i
+          v-if="showsPatInput"
+          class="fas fa-save clickable"
+          @click="updatePersonalAccessToken()"
+        ></i>
+      </span>
+
       <i class="fas fa-trash-alt clickable" @click="showModal = true"></i>
+
+      <div v-if="showsPatInput">
+        <label class="input-label" for="pat-input"
+          >GitHub Personal Access Token
+          <i v-if="!isPatVisible" class="fas fa-eye" @click="isPatVisible = true"></i>
+          <i v-if="isPatVisible" class="fas fa-eye-slash" @click="isPatVisible = false"></i>
+        </label>
+        <input
+          v-model="account.personalAccessToken"
+          class="pat-input"
+          :type="isPatVisible ? 'text' : 'password'"
+        />
+      </div>
     </div>
 
     <div class="block">
@@ -41,8 +63,6 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch, PropType, Ref, SetupContext } from 'vue'
-import { onBeforeRouteLeave } from 'vue-router'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import ModalWindow from '@/components/ModalWindow.vue'
@@ -53,6 +73,8 @@ import {
   WebBrowserUserCaseKey,
 } from '@/plugins/di/types'
 import GitHubRepositories from '@/views/settings/GitHubRepositories.vue'
+import { PropType, Ref, SetupContext, computed, defineComponent, onMounted, ref, watch } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 
 type PropsType = {
   setting: ApplicationSetting
@@ -87,7 +109,13 @@ export default defineComponent({
 
     const account = accountSettingUseCase.getAccount()
     const profile = computed(() => `${account.userName}@${account.githubUrl.getDomain()}`)
+    const showsPatInput = ref(false)
+    const isPatVisible = ref(false)
     const openProfile = () => webBrowserUserCase.openUrl(account.profileUrl)
+    const updatePersonalAccessToken = () => {
+      accountSettingUseCase.setAccount(account)
+      showsPatInput.value = false
+    }
 
     const githubRepositoryUrlInput = ref('')
     const githubRepositorySettings: Ref<Array<RepositorySetting>> = ref([])
@@ -154,7 +182,10 @@ export default defineComponent({
     return {
       account,
       profile,
+      showsPatInput,
+      isPatVisible,
       openProfile,
+      updatePersonalAccessToken,
 
       githubRepositoryUrlInput,
       githubRepositorySettings,
@@ -204,6 +235,16 @@ $card-border-radius: 7px;
 .block {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+.account-edit-toggle {
+  margin-right: 5px;
+}
+
+.pat-input {
+  @include app.base-input-form();
+  width: 80%;
+  margin-right: 10px;
 }
 
 .url-input {
