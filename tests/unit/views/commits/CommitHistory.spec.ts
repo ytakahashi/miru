@@ -72,8 +72,7 @@ describe('CommitHistory.vue', () => {
       'ytakahashi',
       '2021-03-13T00:00:00Z',
       'ytakahashi',
-      '2021-03-13T00:00:01Z',
-      '2021-03-13T00:00:02Z'
+      '2021-03-13T00:00:01Z'
     )
     const commit2 = new Commit(
       'commitMessage 2',
@@ -84,8 +83,7 @@ describe('CommitHistory.vue', () => {
       'ytakahashi',
       '2021-03-10T00:00:00Z',
       'ytakahashi',
-      '2021-03-10T00:00:01Z',
-      '2021-03-10T00:00:02Z'
+      '2021-03-10T00:00:01Z'
     )
     const commitHistory = new CommitHistoryModel(setting, [commit1, commit2], 2)
     const wrapper = shallowMount(CommitHistory, {
