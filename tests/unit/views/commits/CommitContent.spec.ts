@@ -30,8 +30,7 @@ describe('CommitContent.vue', () => {
     'ytakahashi',
     '2021-03-13T00:00:00Z',
     'ytakahashi',
-    '2021-03-13T00:00:01Z',
-    '2021-03-13T00:00:02Z'
+    '2021-03-13T00:00:01Z'
   )
 
   it('renders commit', async () => {

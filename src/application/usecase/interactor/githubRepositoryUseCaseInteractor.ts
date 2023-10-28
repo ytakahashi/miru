@@ -202,12 +202,11 @@ export class GetCommitHistoryUseCaseInteractor implements GetCommitHistoryUseCas
             c.commitUrl,
             c.additions,
             c.deletions,
-            c.changedFiles,
+            c.changedFilesIfAvailable,
             c.author?.user?.login,
             c.authoredDate,
             c.committer?.user?.login,
-            c.committedDate,
-            c.pushedDate
+            c.committedDate
           )
       )
       return new CommitHistory(setting, history, v.nodes.length)

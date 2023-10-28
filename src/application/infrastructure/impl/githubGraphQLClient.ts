@@ -321,7 +321,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                       }
                     }
                     authoredDate
-                    changedFiles
+                    changedFilesIfAvailable
                     commitUrl
                     committedDate
                     committer {
@@ -331,7 +331,6 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                     }
                     deletions
                     message
-                    pushedDate
                   }
                 }
               }

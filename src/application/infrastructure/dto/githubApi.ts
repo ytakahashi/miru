@@ -126,13 +126,12 @@ export type CommitNode = {
   additions: number
   author?: GitActor
   authoredDate: string
-  changedFiles: number
+  changedFilesIfAvailable?: number
   commitUrl: string
   committedDate: string
   committer?: GitActor
   deletions: number
   message: string
-  pushedDate?: string
 }
 
 export type CommitHistoryConnection = {

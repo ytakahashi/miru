@@ -270,34 +270,27 @@ export class Commit {
   public readonly authoredDate: string
   public readonly committerName?: string
   public readonly committedDate: string
-  public readonly pushedDate?: string
 
   constructor(
     message: string,
     commitUrl: string,
     additions: number,
     deletions: number,
-    changedFiles: number,
+    changedFiles: number | undefined,
     authorName: string | undefined,
     authoredDate: string,
     committerName: string | undefined,
-    committedDate: string,
-    pushedDate: string | undefined
+    committedDate: string
   ) {
     this.message = message
     this.commitUrl = commitUrl
     this.additions = additions
     this.deletions = deletions
-    this.changedFiles = changedFiles
+    this.changedFiles = changedFiles === undefined ? 0 : changedFiles
     this.authorName = authorName
     this.authoredDate = authoredDate
     this.committerName = committerName
     this.committedDate = committedDate
-    this.pushedDate = pushedDate
-  }
-
-  getPushedRelativeDate = (): string => {
-    return this.pushedDate === undefined ? '' : dayjs(this.pushedDate).fromNow()
   }
 
   getAuthoredRelativeDate = (): string => {
@@ -306,12 +299,6 @@ export class Commit {
 
   getCommittedRelativeDate = (): string => {
     return dayjs(this.committedDate).fromNow()
-  }
-
-  getPushedLocalDate = (): string => {
-    return this.pushedDate === undefined
-      ? ''
-      : dayjs(this.pushedDate).local().format('YYYY-MM-DD HH:mm:ssZ')
   }
 
   getAuthoredLocalDate = (): string => {
