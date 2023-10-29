@@ -29,7 +29,7 @@
 <script lang="ts">
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import GitHubRepository from '@/views/settings/GitHubRepository.vue'
-import { PropType, Ref, SetupContext, defineComponent, ref, watch } from 'vue'
+import { PropType, Ref, defineComponent, ref, watch } from 'vue'
 
 // ref. https://zenn.dev/kazuwombat/articles/f23b47f168f1d0
 const moveIndex = <T,>(original: T[], from: number, to: number) => {
@@ -61,10 +61,9 @@ export default defineComponent({
     },
   },
   emits: ['edit', 'deleteRepository'],
-  setup(props: PropsType, context: SetupContext) {
-    const emitDelete = (repository: RepositorySetting) =>
-      context.emit('deleteRepository', repository)
-    const emitEdit = (editing: boolean) => context.emit('edit', editing, orderedRepositories.value)
+  setup(props: PropsType, { emit }) {
+    const emitDelete = (repository: RepositorySetting) => emit('deleteRepository', repository)
+    const emitEdit = (editing: boolean) => emit('edit', editing, orderedRepositories.value)
 
     const orderedRepositories: Ref<string[]> = ref(
       props.repositorySettings.map(r => r.displayName())

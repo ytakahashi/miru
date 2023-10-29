@@ -73,7 +73,7 @@ import {
   WebBrowserUserCaseKey,
 } from '@/plugins/di/types'
 import GitHubRepositories from '@/views/settings/GitHubRepositories.vue'
-import { PropType, Ref, SetupContext, computed, defineComponent, onMounted, ref, watch } from 'vue'
+import { PropType, Ref, computed, defineComponent, onMounted, ref, watch } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 
 type PropsType = {
@@ -95,7 +95,7 @@ export default defineComponent({
   emits: {
     accountDeleted: null,
   },
-  setup(props: PropsType, context: SetupContext) {
+  setup(props: PropsType, { emit }) {
     const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)
     const repositorySettingUseCaseFactory = inject(RepositorySettingUseCaseFactoryKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
@@ -150,7 +150,7 @@ export default defineComponent({
     const deleteSetting = () => {
       showModal.value = false
       accountSettingUseCase.deleteSetting()
-      context.emit('accountDeleted', props.setting)
+      emit('accountDeleted', props.setting)
     }
 
     const editHandler = (b: boolean, orderedRepositories: string[]) => {
