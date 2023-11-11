@@ -1,4 +1,4 @@
-import log from 'electron-log'
+import log from 'electron-log/main'
 
 log.transports.console.level = false
 log.transports.file.level = process.env.npm_lifecycle_event === 'electron:dev' ? 'verbose' : 'info'
