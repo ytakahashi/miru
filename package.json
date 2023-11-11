@@ -6,7 +6,7 @@
   "dependencies": {
     "core-js": "^3.33.1",
     "dayjs": "^1.11.10",
-    "electron-log": "^4.4.8",
+    "electron-log": "^5.0.0",
     "electron-store": "^8.1.0",
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
