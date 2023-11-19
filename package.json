@@ -4,32 +4,32 @@
   "version": "1.0.1",
   "author": "ytakahashi",
   "dependencies": {
-    "core-js": "^3.33.1",
+    "core-js": "^3.33.2",
     "dayjs": "^1.11.10",
     "electron-log": "^5.0.0",
     "electron-store": "^8.1.0",
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
     "tinycolor2": "^1.6.0",
-    "vue": "^3.3.7",
+    "vue": "^3.3.8",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
-    "@types/tinycolor2": "^1.4.5",
-    "@typescript-eslint/eslint-plugin": "^6.9.0",
-    "@typescript-eslint/parser": "^6.9.0",
-    "@vitejs/plugin-vue": "^4.4.0",
+    "@types/tinycolor2": "^1.4.6",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0",
+    "@vitejs/plugin-vue": "^4.5.0",
     "@vue/eslint-config-prettier": "^8.0.0",
     "@vue/eslint-config-typescript": "^12.0.0",
-    "@vue/test-utils": "^2.4.1",
+    "@vue/test-utils": "^2.4.2",
     "concurrently": "^8.2.2",
-    "electron": "^26.4.2",
+    "electron": "^27.1.0",
     "electron-builder": "^24.6.4",
-    "eslint": "^8.52.0",
+    "eslint": "^8.54.0",
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-vue": "^9.18.1",
     "jsdom": "^22.1.0",
-    "prettier": "^3.0.3",
+    "prettier": "^3.1.0",
     "sass": "^1.69.5",
     "sass-loader": "^13.3.2",
     "typescript": "~5.2.2",
@@ -43,6 +43,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ytakahashi/miru"
+  },
+  "resolutions": {
+    "strip-ansi": "^6.0.1"
   },
   "scripts": {
     "build": "yarn vite:build && yarn ts",
