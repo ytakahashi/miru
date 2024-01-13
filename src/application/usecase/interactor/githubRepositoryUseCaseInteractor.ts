@@ -2,23 +2,23 @@ import { GitHubAccessor, Option } from '@/application/domain/interface/githubAcc
 import {
   Commit,
   CommitHistory,
-  Issues,
   Issue,
+  Issues,
   Label,
   PullRequest,
-  PullRequests,
   PullRequestReviews,
-  TagReference,
+  PullRequests,
   Release,
   Releases,
+  TagReference,
 } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import {
   CommitHistoryConnection,
   IssueConnection,
   PullRequestConnection,
-  PillRequestReview,
-  PillRequestReviewConnection,
+  PullRequestReview,
+  PullRequestReviewConnection,
   ReleaseConnection,
 } from '@/application/infrastructure/dto/githubApi'
 import {
@@ -89,12 +89,12 @@ export class GetPullRequestsUseCaseInteractor implements GetPullRequestsUseCase 
       throw new Error('Invalid GitHub URL.')
     }
 
-    const reviewCommentMapper = (reviewNodes: PillRequestReview): number =>
+    const reviewCommentMapper = (reviewNodes: PullRequestReview): number =>
       reviewNodes.body !== ''
         ? reviewNodes.comments.totalCount + 1
         : reviewNodes.comments.totalCount
 
-    const countReviewComments = (review: PillRequestReviewConnection): PullRequestReviews => {
+    const countReviewComments = (review: PullRequestReviewConnection): PullRequestReviews => {
       const remained = review.totalCount !== review.nodes.length
       const result = review.nodes.map(reviewCommentMapper).reduce((a, b) => a + b, 0)
       return new PullRequestReviews(result, remained)
