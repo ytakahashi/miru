@@ -66,14 +66,14 @@ export type PullRequestReviewCommentConnection = {
   totalCount: number
 }
 
-export type PillRequestReview = {
+export type PullRequestReview = {
   body: string
   comments: PullRequestReviewCommentConnection
 }
 
-export type PillRequestReviewConnection = {
+export type PullRequestReviewConnection = {
   totalCount: number
-  nodes: PillRequestReview[]
+  nodes: PullRequestReview[]
 }
 
 export type UserRequestedReviewer = User
@@ -101,7 +101,7 @@ export type PullRequest = {
   deletions: number
   changedFiles: number
   isDraft: boolean
-  reviews: PillRequestReviewConnection
+  reviews: PullRequestReviewConnection
   reviewRequests: ReviewRequestConnection
   viewerDidAuthor: boolean
   state: string
