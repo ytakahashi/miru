@@ -1,5 +1,9 @@
 import { logger } from '@/application/core/logger'
-import { GitHubAccessor, Option } from '@/application/domain/interface/githubAccessor'
+import {
+  GitHubAccessError,
+  GitHubAccessor,
+  Option,
+} from '@/application/domain/interface/githubAccessor'
 import { GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import {
@@ -11,6 +15,13 @@ import {
   Viewer,
 } from '@/application/infrastructure/dto/githubApi'
 import { GraphQLClient, gql } from 'graphql-request'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const makeGitHubAccessError = (e: any) =>
+  new GitHubAccessError(
+    e.response.status === 200 ? e.response.errors[0].message : e.response.message,
+    { cause: e }
+  )
 
 export class GitHubGraphQLClient implements GitHubAccessor {
   #graphQLClient: GraphQLClient
@@ -119,6 +130,9 @@ export class GitHubGraphQLClient implements GitHubAccessor {
     return this.#graphQLClient
       .request<Repository>(query, variables, requestHeaders)
       .then(takeIssues)
+      .catch(e => {
+        throw makeGitHubAccessError(e)
+      })
   }
 
   public getPullRequests = async (
@@ -226,6 +240,9 @@ export class GitHubGraphQLClient implements GitHubAccessor {
     return this.#graphQLClient
       .request<Repository>(query, variables, requestHeaders)
       .then(takePullRequests)
+      .catch(e => {
+        throw makeGitHubAccessError(e)
+      })
   }
 
   public getReleases = async (
@@ -296,6 +313,9 @@ export class GitHubGraphQLClient implements GitHubAccessor {
     return this.#graphQLClient
       .request<Repository>(query, variables, requestHeaders)
       .then(takeReleases)
+      .catch(e => {
+        throw makeGitHubAccessError(e)
+      })
   }
 
   public getCommits = async (
@@ -355,5 +375,8 @@ export class GitHubGraphQLClient implements GitHubAccessor {
     return this.#graphQLClient
       .request<Repository>(query, variables, requestHeaders)
       .then(takeCommitHistories)
+      .catch(e => {
+        throw makeGitHubAccessError(e)
+      })
   }
 }

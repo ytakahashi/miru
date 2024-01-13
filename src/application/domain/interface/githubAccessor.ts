@@ -43,3 +43,12 @@ export interface GitHubAccessor {
     opts?: Option
   ): Promise<CommitHistoryConnection>
 }
+
+export class GitHubAccessError extends Error {
+  static {
+    this.prototype.name = 'GitHubAccessError'
+  }
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options)
+  }
+}
