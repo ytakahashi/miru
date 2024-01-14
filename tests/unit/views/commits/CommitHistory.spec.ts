@@ -1,3 +1,4 @@
+import { GitHubAccessError } from '@/application/domain/interface/githubAccessor'
 import {
   Account,
   Commit,
@@ -122,7 +123,8 @@ describe('CommitHistory.vue', () => {
   })
 
   it('fails to get commits', async () => {
-    const err = new Error('error')
+    const cause = new Error('cause')
+    const err = new GitHubAccessError('error', { cause: cause })
     const supplier = () => {
       throw err
     }
@@ -150,7 +152,7 @@ describe('CommitHistory.vue', () => {
       .then(() => nextTick())
 
     // then: error mock is called
-    expect(errorMock).toHaveBeenCalledWith(err)
+    expect(errorMock).toHaveBeenCalledWith(cause)
   })
 
   it('opens commits url (repository name)', async () => {

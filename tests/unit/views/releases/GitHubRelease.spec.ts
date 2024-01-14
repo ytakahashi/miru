@@ -1,3 +1,4 @@
+import { GitHubAccessError } from '@/application/domain/interface/githubAccessor'
 import { Account, GitHubUrl, Release, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import {
@@ -146,7 +147,8 @@ describe('GitHubRelease.vue', () => {
   })
 
   it('fails to get releases', async () => {
-    const err = new Error('error')
+    const cause = new Error('cause')
+    const err = new GitHubAccessError('error', { cause: cause })
     const supplier = () => {
       throw err
     }
@@ -174,7 +176,7 @@ describe('GitHubRelease.vue', () => {
       .then(() => nextTick())
 
     // then: error mock is called
-    expect(errorMock).toHaveBeenCalledWith(err)
+    expect(errorMock).toHaveBeenCalledWith(cause)
   })
 
   it('opens release url (repository name)', async () => {

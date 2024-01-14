@@ -1,3 +1,4 @@
+import { GitHubAccessError } from '@/application/domain/interface/githubAccessor'
 import {
   Account,
   GitHubUrl,
@@ -181,7 +182,8 @@ describe('GitHubPullRequest.vue', () => {
   })
 
   it('fails to get PRs', async () => {
-    const err = new Error('error')
+    const cause = new Error('cause')
+    const err = new GitHubAccessError('error', { cause: cause })
     const supplier = () => {
       throw err
     }
@@ -208,7 +210,7 @@ describe('GitHubPullRequest.vue', () => {
       .then(() => nextTick())
 
     // then: error mock is called
-    expect(errorMock).toHaveBeenCalledWith(err)
+    expect(errorMock).toHaveBeenCalledWith(cause)
   })
 
   it('opens pull requests url (repository name)', async () => {
