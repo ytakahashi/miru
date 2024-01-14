@@ -46,7 +46,8 @@
     "url": "https://github.com/ytakahashi/miru"
   },
   "resolutions": {
-    "strip-ansi": "^6.0.1"
+    "strip-ansi": "6.0.1",
+    "jackspeak": "2.1.1"
   },
   "scripts": {
     "build": "yarn vite:build && yarn ts",
