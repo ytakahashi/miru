@@ -1,3 +1,4 @@
+import { GitHubAccessError } from '@/application/domain/interface/githubAccessor'
 import { Account, GitHubUrl, Issue, Issues } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { GetIssuesUseCase, GetIssuesUseCaseFactory } from '@/application/usecase/githubRepository'
@@ -158,7 +159,8 @@ describe('GitHubIssue.vue', () => {
   })
 
   it('fails to get issues', async () => {
-    const err = new Error('error')
+    const cause = new Error('cause')
+    const err = new GitHubAccessError('error', { cause: cause })
     const supplier = () => {
       throw err
     }
@@ -185,7 +187,7 @@ describe('GitHubIssue.vue', () => {
       .then(() => nextTick())
 
     // then: error mock is called
-    expect(errorMock).toHaveBeenCalledWith(err)
+    expect(errorMock).toHaveBeenCalledWith(cause)
   })
 
   it('opens issues url (repository name)', async () => {

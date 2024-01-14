@@ -25,7 +25,7 @@
         repositorySetting.getUrl()
       }}</span
       >.<br />
-      The repository does not exist or not visible with provided pesonal access token.
+      {{ failedMessage }}
     </div>
 
     <LoadingImage :loading="loading" @cancel="loading = false" />
@@ -79,6 +79,7 @@ export default defineComponent({
     const loading = ref(false)
 
     const isFailed = ref(false)
+    const failedMessage = ref('')
     const getCommits = async (): Promise<void> => {
       loading.value = true
       const { repositorySetting } = props
@@ -88,7 +89,8 @@ export default defineComponent({
         .then((ch: CommitHistory) => mutations.replace(ch))
         .then(() => false)
         .catch((e: Error) => {
-          logger.error(e)
+          logger.error(e.cause as Error)
+          failedMessage.value = e.message
           return true
         })
         .finally(() => {
@@ -103,6 +105,7 @@ export default defineComponent({
       clearCommits,
       getCommits,
       isFailed,
+      failedMessage,
       openCommitsUrl,
       commits,
       loading,

@@ -33,7 +33,7 @@
         repositorySetting.getUrl()
       }}</span
       >.<br />
-      The repository does not exist or not visible with provided pesonal access token.
+      {{ failedMessage }}
     </div>
 
     <LoadingImage :loading="loading" @cancel="loading = false" />
@@ -88,6 +88,7 @@ export default defineComponent({
 
     const queryState = ref('')
     const isFailed = ref(false)
+    const failedMessage = ref('')
     const getIssues = async (): Promise<void> => {
       loading.value = true
       const { repositorySetting } = props
@@ -98,7 +99,8 @@ export default defineComponent({
         .then((i: Issues) => mutations.replace(i))
         .then(() => false)
         .catch((e: Error) => {
-          logger.error(e)
+          logger.error(e.cause as Error)
+          failedMessage.value = e.message
           return true
         })
         .finally(() => {
@@ -123,6 +125,7 @@ export default defineComponent({
       getIssues,
       queryState,
       isFailed,
+      failedMessage,
       openIssueUrl,
       issues,
       loading,
