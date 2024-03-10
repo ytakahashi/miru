@@ -12,9 +12,15 @@
           class="fas fa-save clickable"
           @click="updatePersonalAccessToken()"
         ></i>
-      </span>
 
-      <i class="fas fa-trash-alt clickable" @click="showModal = true"></i>
+        <i class="fas fa-trash-alt clickable" @click="showModal = true"></i>
+
+        <i
+          v-if="showsPatInput"
+          class="far fa-window-close clickable"
+          @click="showsPatInput = false"
+        ></i>
+      </span>
 
       <div v-if="showsPatInput">
         <label class="input-label" for="pat-input"
@@ -238,7 +244,9 @@ $card-border-radius: 7px;
 }
 
 .account-edit-toggle {
-  margin-right: 5px;
+  i {
+    margin-right: 5px;
+  }
 }
 
 .pat-input {
