@@ -57,8 +57,8 @@ export default defineComponent({
           ? 'Draft'
           : props.release.title
         : props.release.title === ''
-        ? props.release.tagName
-        : props.release.title
+          ? props.release.tagName
+          : props.release.title
 
     const releaseType = props.release.isDraft === true ? 'drafted' : 'published'
     const releaseLocalTime =
