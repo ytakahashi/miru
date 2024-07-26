@@ -9,7 +9,7 @@
     "electron-log": "5.1.7",
     "electron-store": "8.2.0",
     "graphql": "16.9.0",
-    "graphql-request": "7.1.0",
+    "graphql-request": "6.1.0",
     "tinycolor2": "^1.6.0",
     "vue": "3.4.34",
     "vue-router": "4.4.0"
