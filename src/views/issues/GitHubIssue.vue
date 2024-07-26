@@ -145,11 +145,15 @@ export default defineComponent({
 
 .get-button {
   @include app.rotate-button(8px);
-  padding: 5px 7px;
+  & {
+    padding: 5px 7px;
+  }
 }
 
 .clear-button {
   @include app.base-button(2px);
-  font-size: 90%;
+  & {
+    font-size: 90%;
+  }
 }
 </style>
