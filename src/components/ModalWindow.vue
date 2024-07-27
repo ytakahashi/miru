@@ -55,10 +55,12 @@ export default defineComponent({
 
 .modal-button {
   @include app.base-button(10px);
-  padding: 8px;
-  margin-top: 20px;
-  + .modal-button {
-    margin-left: 10px;
+  & {
+    padding: 8px;
+    margin-top: 20px;
+    + .modal-button {
+      margin-left: 10px;
+    }
   }
 }
 

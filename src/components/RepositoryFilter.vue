@@ -48,6 +48,8 @@ export default defineComponent({
 
 .form-input {
   @include app.base-input-form;
-  width: 40%;
+  & {
+    width: 40%;
+  }
 }
 </style>

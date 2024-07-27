@@ -251,20 +251,26 @@ $card-border-radius: 7px;
 
 .pat-input {
   @include app.base-input-form();
-  width: 80%;
-  margin-right: 10px;
+  & {
+    width: 80%;
+    margin-right: 10px;
+  }
 }
 
 .url-input {
   @include app.base-input-form();
-  width: 50%;
-  margin-right: 10px;
+  & {
+    width: 50%;
+    margin-right: 10px;
+  }
 }
 
 .add-repository-button {
   @include app.base-button(10px);
-  font-size: 12px;
-  padding: 3px 8px;
+  & {
+    font-size: 12px;
+    padding: 3px 8px;
+  }
 }
 
 .input-invalid {

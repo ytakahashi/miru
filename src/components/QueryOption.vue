@@ -268,17 +268,23 @@ export default defineComponent({
 
 .number-input {
   @include app.base-input-form();
-  width: 85px;
+  & {
+    width: 85px;
+  }
 }
 
 .sort-input {
   @include app.base-input-form();
-  width: 167px;
+  & {
+    width: 167px;
+  }
 }
 
 .state-input {
   @include app.base-input-form();
-  width: 161px;
+  & {
+    width: 161px;
+  }
 }
 
 .option-line {

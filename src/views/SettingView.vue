@@ -170,15 +170,19 @@ export default defineComponent({
 
 .open-form-button {
   @include app.base-button(15px);
-  font-size: 15px;
-  padding: 5px 10px;
+  & {
+    font-size: 15px;
+    padding: 5px 10px;
+  }
 }
 
 .add-account-button {
   @include app.base-button(3px);
-  padding: 5px;
-  + button {
-    margin-left: 10px;
+  & {
+    padding: 5px;
+    + button {
+      margin-left: 10px;
+    }
   }
 }
 
@@ -194,7 +198,9 @@ export default defineComponent({
 
 .setting-input {
   @include app.base-input-form();
-  width: inherit;
+  & {
+    width: inherit;
+  }
 }
 
 .input-invalid {
