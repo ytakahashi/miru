@@ -1,5 +1,5 @@
-import { ApplicationSetting } from '@/application/domain/model/application'
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import { ApplicationSetting } from '@/application/domain/model/application.js'
+import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 
 export interface RepositorySettingUseCase {
   addRepositorySetting(url: RepositorySetting): boolean

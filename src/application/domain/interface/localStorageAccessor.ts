@@ -1,5 +1,5 @@
-import { ApplicationSetting } from '@/application/domain/model/application'
-import { GitHubAccount, RepositorySetting } from '@/application/infrastructure/dto/local'
+import { ApplicationSetting } from '@/application/domain/model/application.js'
+import { GitHubAccount, RepositorySetting } from '@/application/infrastructure/dto/local.js'
 
 export interface LocalStorageAccessor {
   setApplicationSettings(settings: Array<ApplicationSetting>): void

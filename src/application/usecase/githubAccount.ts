@@ -1,4 +1,4 @@
-import { Account, GitHubUrl } from '@/application/domain/model/github'
+import { Account, GitHubUrl } from '@/application/domain/model/github.js'
 
 export interface GitHubAccountUseCase {
   resolvePersonalAccessToken(personalAccessToken: string): Promise<Account>

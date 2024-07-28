@@ -1,4 +1,4 @@
-import { GitHubAccessor, Option } from '@/application/domain/interface/githubAccessor'
+import { GitHubAccessor, Option } from '@/application/domain/interface/githubAccessor.js'
 import {
   Commit,
   CommitHistory,
@@ -11,8 +11,8 @@ import {
   Release,
   Releases,
   TagReference,
-} from '@/application/domain/model/github'
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
+} from '@/application/domain/model/github.js'
+import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 import {
   CommitHistoryConnection,
   IssueConnection,
@@ -20,13 +20,13 @@ import {
   PullRequestReview,
   PullRequestReviewConnection,
   ReleaseConnection,
-} from '@/application/infrastructure/dto/githubApi'
+} from '@/application/infrastructure/dto/githubApi.js'
 import {
   GetCommitHistoryUseCase,
   GetIssuesUseCase,
   GetPullRequestsUseCase,
   GetReleasesUseCase,
-} from '@/application/usecase/githubRepository'
+} from '@/application/usecase/githubRepository.js'
 
 export class GetIssuesUseCaseInteractor implements GetIssuesUseCase {
   #githubAccessor: GitHubAccessor

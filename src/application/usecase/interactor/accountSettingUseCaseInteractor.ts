@@ -1,7 +1,7 @@
-import { LocalStorageAccessor } from '@/application/domain/interface/localStorageAccessor'
-import { Account, GitHubUrl } from '@/application/domain/model/github'
-import { GitHubAccount } from '@/application/infrastructure/dto/local'
-import { AccountSettingUseCase } from '@/application/usecase/accountSetting'
+import { LocalStorageAccessor } from '@/application/domain/interface/localStorageAccessor.js'
+import { Account, GitHubUrl } from '@/application/domain/model/github.js'
+import { GitHubAccount } from '@/application/infrastructure/dto/local.js'
+import { AccountSettingUseCase } from '@/application/usecase/accountSetting.js'
 
 export class AccountSettingUseCaseInteractor implements AccountSettingUseCase {
   #localStorageAccessor: LocalStorageAccessor

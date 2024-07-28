@@ -1,4 +1,4 @@
-import { Option } from '@/application/usecase/githubRepository'
+import { Option } from '@/application/usecase/githubRepository.js'
 import { reactive } from 'vue'
 
 const commitOption = reactive<Option>({

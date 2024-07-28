@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
-import { Releases } from '@/application/domain/model/github'
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import { Releases } from '@/application/domain/model/github.js'
+import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 
 const store = reactive<Array<Releases>>([])
 

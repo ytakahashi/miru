@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
-import { PullRequests } from '@/application/domain/model/github'
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import { PullRequests } from '@/application/domain/model/github.js'
+import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 
 const store = reactive<Array<PullRequests>>([])
 

@@ -2,6 +2,12 @@ import { join } from 'path'
 import { app, BrowserWindow } from 'electron'
 import Store from 'electron-store'
 
+import { fileURLToPath } from 'node:url'
+import path from 'node:path'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
 Store.initRenderer()
 
 const isDev = process.env.npm_lifecycle_event === 'electron:dev' ? true : false
@@ -13,7 +19,7 @@ function createWindow() {
     height: 600,
     webPreferences: {
       sandbox: false,
-      preload: join(__dirname, '../preload/preload.js'),
+      preload: join(__dirname, '../preload/preload.mjs'),
     },
   })
 

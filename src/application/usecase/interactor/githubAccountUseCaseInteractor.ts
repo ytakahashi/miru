@@ -1,6 +1,6 @@
-import { newGitHubAccessor } from '@/application/domain/interface/factory'
-import { Account, GitHubUrl } from '@/application/domain/model/github'
-import { GitHubAccountUseCase } from '@/application/usecase/githubAccount'
+import { newGitHubAccessor } from '@/application/domain/interface/factory.js'
+import { Account, GitHubUrl } from '@/application/domain/model/github.js'
+import { GitHubAccountUseCase } from '@/application/usecase/githubAccount.js'
 
 export class GitHubAccountUseCaseInteractor implements GitHubAccountUseCase {
   #githubUrl: GitHubUrl

@@ -1,18 +1,21 @@
-import { newGitHubAccessor, newLocalStorageAccessor } from '@/application/domain/interface/factory'
-import { ApplicationSetting } from '@/application/domain/model/application'
-import { GitHubUrl } from '@/application/domain/model/github'
+import {
+  newGitHubAccessor,
+  newLocalStorageAccessor,
+} from '@/application/domain/interface/factory.js'
+import { ApplicationSetting } from '@/application/domain/model/application.js'
+import { GitHubUrl } from '@/application/domain/model/github.js'
 import {
   AccountSettingUseCase,
   AccountSettingUseCaseFactory,
-} from '@/application/usecase/accountSetting'
+} from '@/application/usecase/accountSetting.js'
 import {
   ApplicationSettingUseCase,
   ApplicationSettingUseCaseFactory,
-} from '@/application/usecase/applicationSetting'
+} from '@/application/usecase/applicationSetting.js'
 import {
   GitHubAccountUseCase,
   GitHubAccountUseCaseFactory,
-} from '@/application/usecase/githubAccount'
+} from '@/application/usecase/githubAccount.js'
 import {
   GetCommitHistoryUseCase,
   GetCommitHistoryUseCaseFactory,
@@ -22,21 +25,21 @@ import {
   GetPullRequestsUseCaseFactory,
   GetReleasesUseCase,
   GetReleasesUseCaseFactory,
-} from '@/application/usecase/githubRepository'
-import { AccountSettingUseCaseInteractor } from '@/application/usecase/interactor/accountSettingUseCaseInteractor'
-import { ApplicationSettingUseCaseInteractor } from '@/application/usecase/interactor/applicationSettingUseCaseInteractor'
-import { GitHubAccountUseCaseInteractor } from '@/application/usecase/interactor/githubAccountUseCaseInteractor'
+} from '@/application/usecase/githubRepository.js'
+import { AccountSettingUseCaseInteractor } from '@/application/usecase/interactor/accountSettingUseCaseInteractor.js'
+import { ApplicationSettingUseCaseInteractor } from '@/application/usecase/interactor/applicationSettingUseCaseInteractor.js'
+import { GitHubAccountUseCaseInteractor } from '@/application/usecase/interactor/githubAccountUseCaseInteractor.js'
 import {
   GetCommitHistoryUseCaseInteractor,
   GetIssuesUseCaseInteractor,
   GetPullRequestsUseCaseInteractor,
   GetReleasesUseCaseInteractor,
-} from '@/application/usecase/interactor/githubRepositoryUseCaseInteractor'
-import { RepositorySettingUseCaseInteractor } from '@/application/usecase/interactor/repositorySettingUseCaseInteractor'
+} from '@/application/usecase/interactor/githubRepositoryUseCaseInteractor.js'
+import { RepositorySettingUseCaseInteractor } from '@/application/usecase/interactor/repositorySettingUseCaseInteractor.js'
 import {
   RepositorySettingUseCase,
   RepositorySettingUseCaseFactory,
-} from '@/application/usecase/repositorySetting'
+} from '@/application/usecase/repositorySetting.js'
 
 export class AccountSettingUseCaseFactoryImpl implements AccountSettingUseCaseFactory {
   newAccountSettingUseCase = (setting: ApplicationSetting): AccountSettingUseCase => {

@@ -1,14 +1,14 @@
-import { AccountSettingUseCaseFactory } from '@/application/usecase/accountSetting'
-import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting'
-import { GitHubAccountUseCaseFactory } from '@/application/usecase/githubAccount'
+import { AccountSettingUseCaseFactory } from '@/application/usecase/accountSetting.js'
+import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting.js'
+import { GitHubAccountUseCaseFactory } from '@/application/usecase/githubAccount.js'
 import {
   GetCommitHistoryUseCaseFactory,
   GetIssuesUseCaseFactory,
   GetPullRequestsUseCaseFactory,
   GetReleasesUseCaseFactory,
-} from '@/application/usecase/githubRepository'
-import { RepositorySettingUseCaseFactory } from '@/application/usecase/repositorySetting'
-import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
+} from '@/application/usecase/githubRepository.js'
+import { RepositorySettingUseCaseFactory } from '@/application/usecase/repositorySetting.js'
+import { WebBrowserUserCase } from '@/application/usecase/webBrowser.js'
 import { InjectionKey } from 'vue'
 
 export const AccountSettingUseCaseFactoryKey: InjectionKey<AccountSettingUseCaseFactory> = Symbol(
