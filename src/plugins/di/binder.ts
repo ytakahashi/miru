@@ -7,8 +7,8 @@ import {
   GetReleasesUseCaseFactoryImpl,
   GitHubAccountUseCaseFactoryImpl,
   RepositorySettingUseCaseFactoryImpl,
-} from '@/application/usecase/factory/useCaseFactory'
-import { WebBrowserUserCaseInteractor } from '@/application/usecase/interactor/WebBrowserUserCaseInteractor'
+} from '@/application/usecase/factory/useCaseFactory.js'
+import { WebBrowserUserCaseInteractor } from '@/application/usecase/interactor/WebBrowserUserCaseInteractor.js'
 import {
   AccountSettingUseCaseFactoryKey,
   ApplicationSettingUseCaseKey,
@@ -19,7 +19,7 @@ import {
   GitHubAccountUseCaseFactoryKey,
   RepositorySettingUseCaseFactoryKey,
   WebBrowserUserCaseKey,
-} from '@/plugins/di/types'
+} from '@/plugins/di/types.js'
 import { App } from 'vue'
 
 const accountSettingUseCaseFactory = new AccountSettingUseCaseFactoryImpl()

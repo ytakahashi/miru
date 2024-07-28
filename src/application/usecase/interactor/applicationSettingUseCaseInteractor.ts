@@ -1,6 +1,6 @@
-import { LocalStorageAccessor } from '@/application/domain/interface/localStorageAccessor'
-import { ApplicationSetting } from '@/application/domain/model/application'
-import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting'
+import { LocalStorageAccessor } from '@/application/domain/interface/localStorageAccessor.js'
+import { ApplicationSetting } from '@/application/domain/model/application.js'
+import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting.js'
 
 export class ApplicationSettingUseCaseInteractor implements ApplicationSettingUseCase {
   #localStorageAccessor: LocalStorageAccessor

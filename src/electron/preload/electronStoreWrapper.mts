@@ -1,9 +1,9 @@
 import Store from 'electron-store'
 import { unlinkSync } from 'fs'
-import { LocalStorageAccessor } from '../../application/domain/interface/localStorageAccessor'
-import { ApplicationSetting } from '../../application/domain/model/application'
-import { GitHubAccount, RepositorySetting } from '../../application/infrastructure/dto/local'
-import { logger } from './logger'
+import { LocalStorageAccessor } from '../../application/domain/interface/localStorageAccessor.js'
+import { ApplicationSetting } from '../../application/domain/model/application.js'
+import { GitHubAccount, RepositorySetting } from '../../application/infrastructure/dto/local.js'
+import { logger } from './logger.mjs'
 
 type StoreType = {
   account?: GitHubAccount

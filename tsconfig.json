@@ -2,10 +2,10 @@
   "compilerOptions": {
     "target": "esnext",
     "useDefineForClassFields": true,
-    "module": "commonjs",
+    "module": "nodenext",
     "strict": true,
     "jsx": "preserve",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "sourceMap": true,
@@ -19,7 +19,7 @@
     },
     "types": ["vite/client", "vitest/globals"]
   },
-  "include": ["src/**/*.ts", "src/**/*.vue", "tests/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.vue", "tests/**/*.ts", "src/**/*.mts"],
   "exclude": ["node_modules"],
   "references": [
     {

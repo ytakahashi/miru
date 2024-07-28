@@ -1,7 +1,7 @@
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import utc from 'dayjs/plugin/utc'
+import relativeTime from 'dayjs/plugin/relativeTime.js'
+import utc from 'dayjs/plugin/utc.js'
 import tinycolor from 'tinycolor2'
 
 dayjs.extend(relativeTime)

@@ -1,6 +1,6 @@
-import { LocalStorageAccessor } from '@/application/domain/interface/localStorageAccessor'
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { RepositorySettingUseCase } from '@/application/usecase/repositorySetting'
+import { LocalStorageAccessor } from '@/application/domain/interface/localStorageAccessor.js'
+import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
+import { RepositorySettingUseCase } from '@/application/usecase/repositorySetting.js'
 
 export class RepositorySettingUseCaseInteractor implements RepositorySettingUseCase {
   #localStorageAccessor: LocalStorageAccessor

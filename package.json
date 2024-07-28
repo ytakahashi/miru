@@ -37,9 +37,9 @@
     "vitest": "2.0.4",
     "vue-tsc": "2.0.29"
   },
-  "packageManager": "yarn@1.22.21",
   "license": "MIT",
   "main": "dist/electron/main/main.js",
+  "packageManager": "yarn@1.22.21",
   "private": true,
   "repository": {
     "type": "git",
@@ -51,15 +51,16 @@
   },
   "scripts": {
     "build": "yarn vite:build && yarn ts",
-    "electron:build": "yarn build && electron-builder --config electron-builder.js",
+    "electron:build": "yarn build && electron-builder --config electron-builder.json",
     "electron:dev": "ELECTRON_DISABLE_SECURITY_WARNINGS=true yarn ts && concurrently vite \" electron --trace-warnings .\" \"yarn ts -w\"",
     "electron:preview": "yarn build && electron .",
-    "electron:release": "yarn build && electron-builder --config electron-builder.js --mac dmg --publish onTagOrDraft",
+    "electron:release": "yarn build && electron-builder --config electron-builder.json --mac dmg --publish onTagOrDraft",
     "lint": "NODE_ENV=production eslint ./src ./tests",
     "rm-dist": "node -e 'fs.rmSync(`dist`, {recursive:true, force:true}); fs.rmSync(`dist_electron`, {recursive:true, force:true})'",
     "test:unit": "vitest run",
     "ts": "tsc -p tsconfig.build.json",
-    "vite:build": "vue-tsc --noEmit && vite build",
+    "vite:build": "vue-tsc -p tsconfig.build.json --noEmit && vite build",
     "vitest": "vitest"
-  }
+  },
+  "type": "module"
 }

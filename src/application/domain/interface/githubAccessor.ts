@@ -1,11 +1,11 @@
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 import {
   CommitHistoryConnection,
   IssueConnection,
   PullRequestConnection,
   ReleaseConnection,
   Viewer,
-} from '@/application/infrastructure/dto/githubApi'
+} from '@/application/infrastructure/dto/githubApi.js'
 
 export type SortField = 'COMMENTS' | 'CREATED_AT' | 'UPDATED_AT' | 'NAME'
 export type SortDirection = 'ASC' | 'DESC'

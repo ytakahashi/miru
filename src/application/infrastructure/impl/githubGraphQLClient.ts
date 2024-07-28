@@ -1,11 +1,11 @@
-import { logger } from '@/application/core/logger'
+import { logger } from '@/application/core/logger.js'
 import {
   GitHubAccessError,
   GitHubAccessor,
   Option,
-} from '@/application/domain/interface/githubAccessor'
-import { GitHubUrl } from '@/application/domain/model/github'
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
+} from '@/application/domain/interface/githubAccessor.js'
+import { GitHubUrl } from '@/application/domain/model/github.js'
+import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 import {
   CommitHistoryConnection,
   IssueConnection,
@@ -13,7 +13,7 @@ import {
   ReleaseConnection,
   Repository,
   Viewer,
-} from '@/application/infrastructure/dto/githubApi'
+} from '@/application/infrastructure/dto/githubApi.js'
 import { GraphQLClient, gql } from 'graphql-request'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
