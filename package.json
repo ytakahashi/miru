@@ -9,21 +9,21 @@
     "electron-log": "5.1.7",
     "electron-store": "8.2.0",
     "graphql": "16.9.0",
-    "graphql-request": "6.1.0",
+    "graphql-request": "7.1.0",
     "tinycolor2": "^1.6.0",
-    "vue": "3.4.34",
+    "vue": "3.4.35",
     "vue-router": "4.4.0"
   },
   "devDependencies": {
     "@types/tinycolor2": "^1.4.6",
-    "@typescript-eslint/eslint-plugin": "7.17.0",
-    "@typescript-eslint/parser": "7.17.0",
+    "@typescript-eslint/eslint-plugin": "7.18.0",
+    "@typescript-eslint/parser": "7.18.0",
     "@vitejs/plugin-vue": "5.1.1",
     "@vue/eslint-config-prettier": "9.0.0",
     "@vue/eslint-config-typescript": "13.0.0",
     "@vue/test-utils": "2.4.6",
     "concurrently": "^8.2.2",
-    "electron": "31.3.0",
+    "electron": "31.3.1",
     "electron-builder": "24.13.3",
     "eslint": "9.8.0",
     "eslint-plugin-prettier": "5.2.1",
@@ -39,15 +39,11 @@
   },
   "license": "MIT",
   "main": "dist/electron/main/main.js",
-  "packageManager": "yarn@1.22.21",
+  "packageManager": "yarn@1.22.22",
   "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/ytakahashi/miru"
-  },
-  "resolutions": {
-    "strip-ansi": "6.0.1",
-    "jackspeak": "2.1.1"
   },
   "scripts": {
     "build": "yarn vite:build && yarn ts",
