@@ -2,25 +2,31 @@
   <div class="spacer" />
   <span>
     <span class="text-strong">Repositories</span>
-    <i v-if="!editing" class="fas fa-edit clickable" @click="emitEdit(true)"></i>
-    <i v-if="editing" class="fas fa-save clickable" @click="emitEdit(false)"></i>
+    <span class="repository-edit-toggle">
+      <i v-if="!showEditMenu" class="fas fa-edit clickable" @click="emitEditStart()"></i>
+      <i v-if="showEditMenu" class="fas fa-save clickable" @click="emitEditComplete()"></i>
+      <i v-if="showEditMenu" class="far fa-window-close clickable" @click="emitEditCancel()"></i>
+    </span>
   </span>
   <div class="spacer" />
 
   <div v-for="(displayName, index) in orderedRepositories" :key="index">
     <div>
       <i
-        v-if="editing"
+        v-if="showEditMenu"
         class="fas fa-times delete-button"
         @click="emitDelete(findSettingFrom(displayName))"
       ></i>
       <span
-        :draggable="editing"
+        :draggable="showEditMenu"
         @dragstart="() => saveFromIndex(index)"
         @drop="() => moveItem(index)"
         @dragover.prevent
       >
-        <GitHubRepository :editing="editing" :repository-setting="findSettingFrom(displayName)" />
+        <GitHubRepository
+          :editing="showEditMenu"
+          :repository-setting="findSettingFrom(displayName)"
+        />
       </span>
     </div>
   </div>
@@ -41,7 +47,6 @@ const moveIndex = <T,>(original: T[], from: number, to: number) => {
 }
 
 type PropsType = {
-  editing: boolean
   repositorySettings: RepositorySetting[]
 }
 
@@ -51,20 +56,28 @@ export default defineComponent({
     GitHubRepository,
   },
   props: {
-    editing: {
-      type: Boolean,
-      required: true,
-    },
     repositorySettings: {
       type: Array as PropType<RepositorySetting[]>,
       required: true,
     },
   },
-  emits: ['edit', 'deleteRepository'],
+  emits: ['deleteRepository', 'editCancel', 'editComplete', 'editStart'],
   setup(props: PropsType, { emit }) {
-    const emitDelete = (repository: RepositorySetting) => emit('deleteRepository', repository)
-    const emitEdit = (editing: boolean) => emit('edit', editing, orderedRepositories.value)
+    const showEditMenu = ref(false)
 
+    const emitDelete = (repository: RepositorySetting) => emit('deleteRepository', repository)
+    const emitEditCancel = () => {
+      showEditMenu.value = false
+      emit('editCancel')
+    }
+    const emitEditComplete = () => {
+      showEditMenu.value = false
+      emit('editComplete', orderedRepositories.value)
+    }
+    const emitEditStart = () => {
+      showEditMenu.value = true
+      emit('editStart')
+    }
     const orderedRepositories: Ref<string[]> = ref(
       props.repositorySettings.map(r => r.displayName())
     )
@@ -98,9 +111,12 @@ export default defineComponent({
 
     return {
       emitDelete,
-      emitEdit,
+      emitEditCancel,
+      emitEditComplete,
+      emitEditStart,
       orderedRepositories,
       saveFromIndex,
+      showEditMenu,
       moveItem,
       findSettingFrom,
     }
@@ -122,5 +138,11 @@ export default defineComponent({
 .ghost {
   opacity: 0.5;
   background: var(--focused-color);
+}
+
+.repository-edit-toggle {
+  i {
+    margin-right: 5px;
+  }
 }
 </style>
