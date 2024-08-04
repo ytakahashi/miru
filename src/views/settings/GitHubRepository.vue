@@ -46,7 +46,7 @@ export default defineComponent({
   props: {
     editing: {
       type: Boolean,
-      requred: true,
+      required: true,
     },
     repositorySetting: {
       type: RepositorySetting,

@@ -84,7 +84,7 @@ const createRepositorySettingMock = (
 // GitHubRepositories Mock
 const GitHubRepositoriesMock = defineComponent({
   name: 'GitHubRepositories',
-  emits: ['edit'],
+  emits: ['deleteRepository', 'editCancel', 'editComplete', 'editStart'],
   render: () => h('div', {}, ''),
 })
 
@@ -136,7 +136,7 @@ describe('AccountSetting.vue', () => {
     expect(wrapper.findAllComponents(GitHubRepositories)).toHaveLength(1)
   })
 
-  it('input form appears/disappears after child component emits edit event', async () => {
+  it('input form appears/disappears after child component emits editStart/Complete event', async () => {
     const repo1 = new RepositorySetting('https://github.com/a/b')
     const repo2 = new RepositorySetting('https://github.com/c/d')
     const repos = [repo1, repo2]
@@ -163,15 +163,53 @@ describe('AccountSetting.vue', () => {
     await wrapper.vm.$nextTick()
 
     const repositoriesStub = wrapper.findComponent(GitHubRepositories)
-    await repositoriesStub.vm.$emit('edit', true, [])
+    await repositoriesStub.vm.$emit('editStart')
     await wrapper.vm.$nextTick()
     expect(wrapper.find('input').exists()).toBe(true)
     expect(setRepositorySettingsMock).not.toHaveBeenCalled()
 
-    await repositoriesStub.vm.$emit('edit', false, [])
+    await repositoriesStub.vm.$emit('editComplete', [])
     await wrapper.vm.$nextTick()
     expect(wrapper.find('input').exists()).toBe(false)
     expect(setRepositorySettingsMock).toHaveBeenCalled()
+  })
+
+  it('input form appears/disappears after child component emits editStart/Cancel event', async () => {
+    const repo1 = new RepositorySetting('https://github.com/a/b')
+    const repo2 = new RepositorySetting('https://github.com/c/d')
+    const repos = [repo1, repo2]
+    const wrapper = shallowMount(AccountSetting, {
+      global: {
+        provide: {
+          [matchedRouteKey as symbol]: mockRoute,
+          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
+            () => new MockedAccountSettingUseCase()
+          ),
+          [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
+            () => new MockedRepositorySettingUseCase(repos)
+          ),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
+        stubs: {
+          GitHubRepositories: GitHubRepositoriesMock,
+        },
+      },
+      props: {
+        setting,
+      },
+    })
+    await wrapper.vm.$nextTick()
+
+    const repositoriesStub = wrapper.findComponent(GitHubRepositories)
+    await repositoriesStub.vm.$emit('editStart')
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('input').exists()).toBe(true)
+    expect(setRepositorySettingsMock).not.toHaveBeenCalled()
+
+    await repositoriesStub.vm.$emit('editCancel')
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('input').exists()).toBe(false)
+    expect(setRepositorySettingsMock).not.toHaveBeenCalled()
   })
 
   it('validates input', async () => {
@@ -201,7 +239,7 @@ describe('AccountSetting.vue', () => {
 
     await wrapper.vm.$nextTick()
     const repositoriesStub = wrapper.findComponent(GitHubRepositories)
-    await repositoriesStub.vm.$emit('edit', true, [])
+    await repositoriesStub.vm.$emit('editStart')
     await wrapper.vm.$nextTick()
 
     const urlInput = wrapper.find('input')

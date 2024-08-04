@@ -39,9 +39,10 @@
     <div class="block">
       <GitHubRepositories
         :repository-settings="githubRepositorySettings"
-        :editing="isEditing"
-        @edit="editHandler"
         @delete-repository="deleteRepository"
+        @edit-cancel="editCancelHandler"
+        @edit-complete="editCompleteHandler"
+        @edit-start="editStartHandler"
       />
     </div>
 
@@ -159,19 +160,19 @@ export default defineComponent({
       emit('accountDeleted', props.setting)
     }
 
-    const editHandler = (b: boolean, orderedRepositories: string[]) => {
-      isEditing.value = b
-      if (!isEditing.value) {
-        const newRepositories = orderedRepositories.map(repo => {
-          const found = githubRepositorySettings.value.find(r => r.displayName() === repo)
-          if (found === undefined) {
-            throw Error(`Unexpected : ${repo}`)
-          }
-          return found
-        })
-        repositorySettingUseCase.setRepositorySettings(newRepositories)
-      }
+    const editCancelHandler = () => (isEditing.value = false)
+    const editCompleteHandler = (orderedRepositories: string[]) => {
+      isEditing.value = false
+      const newRepositories = orderedRepositories.map(repo => {
+        const found = githubRepositorySettings.value.find(r => r.displayName() === repo)
+        if (found === undefined) {
+          throw Error(`Unexpected : ${repo}`)
+        }
+        return found
+      })
+      repositorySettingUseCase.setRepositorySettings(newRepositories)
     }
+    const editStartHandler = () => (isEditing.value = true)
 
     watch(githubRepositoryUrlInput, () => (validationMessage.value = ''))
     onMounted(
@@ -201,7 +202,9 @@ export default defineComponent({
       addGitHubRepository,
       deleteRepository,
       deleteSetting,
-      editHandler,
+      editCancelHandler,
+      editStartHandler,
+      editCompleteHandler,
 
       showModal,
     }
