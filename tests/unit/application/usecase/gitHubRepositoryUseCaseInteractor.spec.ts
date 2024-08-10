@@ -1,18 +1,18 @@
-import { GitHubAccessor } from '@/application/domain/interface/githubAccessor'
+import { GitHubAccessor } from '@/application/domain/interface/githubAccessor.js'
 import {
   GetCommitHistoryUseCaseInteractor,
   GetIssuesUseCaseInteractor,
   GetPullRequestsUseCaseInteractor,
   GetReleasesUseCaseInteractor,
-} from '@/application/usecase/interactor/githubRepositoryUseCaseInteractor'
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
+} from '@/application/usecase/interactor/githubRepositoryUseCaseInteractor.js'
+import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 import {
   CommitHistoryConnection,
   IssueConnection,
   PullRequestConnection,
   ReleaseConnection,
   Viewer,
-} from '@/application/infrastructure/dto/githubApi'
+} from '@/application/infrastructure/dto/githubApi.js'
 
 describe('GitHubRepositoryUseCaseInteractor.ts', () => {
   const viewer: Viewer = require('../../resources/viewer.json')

@@ -1,11 +1,11 @@
-import { LocalStorageAccessor } from '@/application/domain/interface/localStorageAccessor'
-import { ApplicationSetting } from '@/application/domain/model/application'
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import { LocalStorageAccessor } from '@/application/domain/interface/localStorageAccessor.js'
+import { ApplicationSetting } from '@/application/domain/model/application.js'
+import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 import {
   GitHubAccount,
   RepositorySetting as RepositorySettingType,
-} from '@/application/infrastructure/dto/local'
-import { RepositorySettingUseCaseInteractor } from '@/application/usecase/interactor/repositorySettingUseCaseInteractor'
+} from '@/application/infrastructure/dto/local.js'
+import { RepositorySettingUseCaseInteractor } from '@/application/usecase/interactor/repositorySettingUseCaseInteractor.js'
 
 describe('RepositorySettingUseCaseInteractor', () => {
   describe('addRepositorySetting method', () => {

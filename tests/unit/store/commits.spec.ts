@@ -1,7 +1,7 @@
 import { vi } from 'vitest'
-import { CommitHistory } from '@/application/domain/model/github'
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { getters, mutations } from '@/store/commits'
+import { CommitHistory } from '@/application/domain/model/github.js'
+import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
+import { getters, mutations } from '@/store/commits.js'
 
 const MockedCommitHistory = vi.fn()
 MockedCommitHistory.mockImplementation((s: RepositorySetting): CommitHistory => {

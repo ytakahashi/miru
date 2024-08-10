@@ -1,4 +1,4 @@
-import { ApplicationSetting } from '@/application/domain/model/application'
+import { ApplicationSetting } from '@/application/domain/model/application.js'
 
 describe('ApplicationSetting', () => {
   it('equals', () => {

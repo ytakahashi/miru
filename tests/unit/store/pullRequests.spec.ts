@@ -1,7 +1,7 @@
 import { vi } from 'vitest'
-import { PullRequests } from '@/application/domain/model/github'
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { getters, mutations } from '@/store/pullRequests'
+import { PullRequests } from '@/application/domain/model/github.js'
+import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
+import { getters, mutations } from '@/store/pullRequests.js'
 
 const MockedPullRequests = vi.fn()
 MockedPullRequests.mockImplementation((url: RepositorySetting): PullRequests => {

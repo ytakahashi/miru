@@ -1,5 +1,5 @@
-import { Commit, GitHubUrl, Issue, Issues, Label } from '@/application/domain/model/github'
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import { Commit, GitHubUrl, Issue, Issues, Label } from '@/application/domain/model/github.js'
+import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 
 describe('GitHubUrl', () => {
   it('can initialize (empty)', () => {
