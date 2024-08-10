@@ -1,4 +1,4 @@
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 
 describe('RepositorySetting', () => {
   it('can initialize', () => {

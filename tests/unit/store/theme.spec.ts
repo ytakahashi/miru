@@ -1,4 +1,4 @@
-import { getTheme, mutations } from '@/store/theme'
+import { getTheme, mutations } from '@/store/theme.js'
 
 describe('theme store', () => {
   it('stores theme', () => {

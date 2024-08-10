@@ -1,7 +1,7 @@
 import { vi } from 'vitest'
-import { Releases } from '@/application/domain/model/github'
-import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { getters, mutations } from '@/store/releases'
+import { Releases } from '@/application/domain/model/github.js'
+import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
+import { getters, mutations } from '@/store/releases.js'
 
 const MockedReleases = vi.fn()
 MockedReleases.mockImplementation((s: RepositorySetting): Releases => {
