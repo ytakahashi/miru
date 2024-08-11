@@ -4,7 +4,7 @@
       <span class="text-strong clickable" @click="openReleaseUrl(repositorySetting)">{{
         repositorySetting.displayName()
       }}</span>
-      <button type="button" class="get-button" @click="getReleases()">
+      <button type="button" class="get-button" @click="getReleases().catch(errorHandler)">
         <i class="fas fa-sync-alt"></i>
       </button>
     </div>
@@ -96,19 +96,20 @@ export default defineComponent({
       loading.value = true
       const { repositorySetting } = props
       const option = queryOption.releases()
-      isFailed.value = await getReleasesUseCase
+      await getReleasesUseCase
         .execute(repositorySetting, option)
         .then((r: Releases) => mutations.replace(r))
-        .then(() => false)
-        .catch((e: Error) => {
-          logger.error(e.cause as Error)
-          failedMessage.value = e.message
-          return true
-        })
-        .finally(() => {
+        .then(() => {
           ;(document.activeElement as HTMLElement).blur()
           loading.value = false
+          isFailed.value = false
         })
+    }
+    const errorHandler = (e: Error) => {
+      logger.error(e)
+      failedMessage.value = e.message
+      loading.value = false
+      isFailed.value = true
     }
     const clearReleases = (): void => mutations.remove(props.repositorySetting)
     const releases = computed(() => getters.of(props.repositorySetting))
@@ -124,6 +125,7 @@ export default defineComponent({
 
     return {
       clearReleases,
+      errorHandler,
       getReleases,
       isFailed,
       failedMessage,

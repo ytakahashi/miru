@@ -1,4 +1,3 @@
-import { GitHubAccessError } from '@/application/domain/interface/githubAccessor'
 import { Account, GitHubUrl, Release, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import {
@@ -27,10 +26,10 @@ const createMock = (func: () => GetReleasesUseCase): GetReleasesUseCaseFactory =
 }
 
 // logger mock
-const errorMock = vi.fn()
+const loggerErrorMock = vi.fn()
 vi.mock('@/application/core/logger', () => ({
   logger: {
-    error: (e: Error) => errorMock(e),
+    error: (e: Error) => loggerErrorMock(e),
     info: (_: string) => {},
     verbose: (_: string) => {},
   },
@@ -52,7 +51,7 @@ const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
 
 describe('GitHubRelease.vue', () => {
   beforeEach(() => {
-    errorMock.mockClear()
+    loggerErrorMock.mockClear()
     openUrlMock.mockClear()
   })
 
@@ -147,8 +146,7 @@ describe('GitHubRelease.vue', () => {
   })
 
   it('fails to get releases', async () => {
-    const cause = new Error('cause')
-    const err = new GitHubAccessError('error', { cause: cause })
+    const err = new Error('cause')
     const supplier = () => {
       throw err
     }
@@ -176,7 +174,7 @@ describe('GitHubRelease.vue', () => {
       .then(() => nextTick())
 
     // then: error mock is called
-    expect(errorMock).toHaveBeenCalledWith(cause)
+    expect(loggerErrorMock).toHaveBeenCalledWith(err)
   })
 
   it('opens release url (repository name)', async () => {

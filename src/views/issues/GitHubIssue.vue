@@ -4,7 +4,7 @@
       <span class="text-strong clickable" @click="openIssueUrl(repositorySetting)">{{
         repositorySetting.displayName()
       }}</span>
-      <button type="button" class="get-button" @click="getIssues()">
+      <button type="button" class="get-button" @click="getIssues().catch(errorHandler)">
         <i class="fas fa-sync-alt"></i>
       </button>
     </div>
@@ -94,19 +94,20 @@ export default defineComponent({
       const { repositorySetting } = props
       const option = queryOption.issues()
       queryState.value = option.states?.join('/').toLowerCase() || ''
-      isFailed.value = await getIssuesUseCase
+      await getIssuesUseCase
         .execute(repositorySetting, option)
         .then((i: Issues) => mutations.replace(i))
-        .then(() => false)
-        .catch((e: Error) => {
-          logger.error(e.cause as Error)
-          failedMessage.value = e.message
-          return true
-        })
-        .finally(() => {
+        .then(() => {
           ;(document.activeElement as HTMLElement).blur()
           loading.value = false
+          isFailed.value = false
         })
+    }
+    const errorHandler = (e: Error) => {
+      logger.error(e)
+      failedMessage.value = e.message
+      loading.value = false
+      isFailed.value = true
     }
     const clearIssues = (): void => mutations.remove(props.repositorySetting)
     const issues = computed(() => getters.of(props.repositorySetting))
@@ -122,6 +123,7 @@ export default defineComponent({
 
     return {
       clearIssues,
+      errorHandler,
       getIssues,
       queryState,
       isFailed,
