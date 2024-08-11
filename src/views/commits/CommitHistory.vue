@@ -4,7 +4,7 @@
       <span class="text-strong clickable" @click="openCommitsUrl(repositorySetting)">{{
         repositorySetting.displayName()
       }}</span>
-      <button type="button" class="get-button" @click="getCommits()">
+      <button type="button" class="get-button" @click="getCommits().catch(errorHandler)">
         <i class="fas fa-sync-alt"></i>
       </button>
     </div>
@@ -84,25 +84,27 @@ export default defineComponent({
       loading.value = true
       const { repositorySetting } = props
       const option = queryOption.commits()
-      isFailed.value = await getCommitHistoryUseCase
+      await getCommitHistoryUseCase
         .execute(repositorySetting, option)
         .then((ch: CommitHistory) => mutations.replace(ch))
-        .then(() => false)
-        .catch((e: Error) => {
-          logger.error(e.cause as Error)
-          failedMessage.value = e.message
-          return true
-        })
-        .finally(() => {
+        .then(() => {
           ;(document.activeElement as HTMLElement).blur()
           loading.value = false
+          isFailed.value = false
         })
+    }
+    const errorHandler = (e: Error) => {
+      logger.error(e)
+      failedMessage.value = e.message
+      loading.value = false
+      isFailed.value = true
     }
     const clearCommits = (): void => mutations.remove(props.repositorySetting)
     const commits = computed(() => getters.of(props.repositorySetting))
 
     return {
       clearCommits,
+      errorHandler,
       getCommits,
       isFailed,
       failedMessage,

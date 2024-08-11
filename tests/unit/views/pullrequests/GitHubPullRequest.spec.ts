@@ -1,4 +1,3 @@
-import { GitHubAccessError } from '@/application/domain/interface/githubAccessor'
 import {
   Account,
   GitHubUrl,
@@ -36,10 +35,10 @@ const createMock = (func: () => GetPullRequestsUseCase): GetPullRequestsUseCaseF
 }
 
 // logger mock
-const errorMock = vi.fn()
+const loggerErrorMock = vi.fn()
 vi.mock('@/application/core/logger', () => ({
   logger: {
-    error: (e: Error) => errorMock(e),
+    error: (e: Error) => loggerErrorMock(e),
     info: (_: string) => {},
     verbose: (_: string) => {},
   },
@@ -71,7 +70,7 @@ const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
 
 describe('GitHubPullRequest.vue', () => {
   beforeEach(() => {
-    errorMock.mockClear()
+    loggerErrorMock.mockClear()
     openUrlMock.mockClear()
   })
 
@@ -182,8 +181,7 @@ describe('GitHubPullRequest.vue', () => {
   })
 
   it('fails to get PRs', async () => {
-    const cause = new Error('cause')
-    const err = new GitHubAccessError('error', { cause: cause })
+    const err = new Error('cause')
     const supplier = () => {
       throw err
     }
@@ -210,7 +208,7 @@ describe('GitHubPullRequest.vue', () => {
       .then(() => nextTick())
 
     // then: error mock is called
-    expect(errorMock).toHaveBeenCalledWith(cause)
+    expect(loggerErrorMock).toHaveBeenCalledWith(err)
   })
 
   it('opens pull requests url (repository name)', async () => {

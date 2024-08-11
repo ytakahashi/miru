@@ -42,6 +42,10 @@ export class GetIssuesUseCaseInteractor implements GetIssuesUseCase {
       throw new Error('Invalid GitHub URL.')
     }
 
+    if (!this.#personalAccessToken) {
+      throw new Error('Personal Access Token is not set.')
+    }
+
     const mapToIssues = (i: IssueConnection): Issues => {
       const issues = i.edges
         .map(v => v.node)
@@ -87,6 +91,10 @@ export class GetPullRequestsUseCaseInteractor implements GetPullRequestsUseCase 
   execute = (setting: RepositorySetting, opts?: Option): Promise<PullRequests> => {
     if (!setting.isValid()) {
       throw new Error('Invalid GitHub URL.')
+    }
+
+    if (!this.#personalAccessToken) {
+      throw new Error('Personal Access Token is not set.')
     }
 
     const reviewCommentMapper = (reviewNodes: PullRequestReview): number =>
@@ -151,6 +159,10 @@ export class GetReleasesUseCaseInteractor implements GetReleasesUseCase {
       throw new Error('Invalid GitHub URL.')
     }
 
+    if (!this.#personalAccessToken) {
+      throw new Error('Personal Access Token is not set.')
+    }
+
     const mapToReleases = (v: ReleaseConnection): Releases => {
       const releases = v.edges
         .map(v => v.node)
@@ -192,6 +204,10 @@ export class GetCommitHistoryUseCaseInteractor implements GetCommitHistoryUseCas
   execute = (setting: RepositorySetting, opts?: Option): Promise<CommitHistory> => {
     if (!setting.isValid()) {
       throw new Error('Invalid GitHub URL.')
+    }
+
+    if (!this.#personalAccessToken) {
+      throw new Error('Personal Access Token is not set.')
     }
 
     const mapToCommitHistory = (v: CommitHistoryConnection): CommitHistory => {
