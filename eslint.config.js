@@ -1,6 +1,7 @@
 import pluginVue from 'eslint-plugin-vue'
 import js from '@eslint/js'
 import { FlatCompat } from '@eslint/eslintrc'
+import vitest from '@vitest/eslint-plugin'
 
 const compat = new FlatCompat()
 
@@ -34,6 +35,16 @@ export default [
     rules: {
       '@typescript-eslint/no-var-requires': 'off',
       'vue/one-component-per-file': 'off',
+    },
+  },
+  {
+    files: ['tests/unit/**'],
+    plugins: {
+      vitest,
+    },
+    rules: {
+      ...vitest.configs.recommended.rules,
+      'vitest/valid-expect': ['off'],
     },
   },
 ]
