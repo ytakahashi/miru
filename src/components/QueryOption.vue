@@ -51,7 +51,7 @@ type PropsType = {
 }
 
 const definedCounts = [1, 3, 5, 10, 20]
-const definedSorts = [
+const _definedSorts = [
   'Newest',
   'Oldest',
   'Most commented',
@@ -62,7 +62,7 @@ const definedSorts = [
   'Reverse alphabetical',
 ] as const
 
-type SortName = (typeof definedSorts)[number]
+type SortName = (typeof _definedSorts)[number]
 
 type NamedSort = {
   sortName: SortName
