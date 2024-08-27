@@ -20,7 +20,7 @@ export class GitHubUrl {
       const apiEndpoint =
         urlObject.origin === githubEndpoint ? githubApiEndpoint : `${urlObject.origin}/api/graphql`
       return new GitHubUrl(urlObject.origin, apiEndpoint)
-    } catch (e) {
+    } catch (_e) {
       return undefined
     }
   }

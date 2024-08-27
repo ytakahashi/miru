@@ -15,11 +15,13 @@ import {
 } from '@/application/infrastructure/dto/githubApi.js'
 
 describe('GitHubRepositoryUseCaseInteractor.ts', () => {
+  /* eslint-disable @typescript-eslint/no-require-imports */
   const viewer: Viewer = require('../../resources/viewer.json')
   const issueConnection: IssueConnection = require('../../resources/issues.json')
   const pullRequestConnection: PullRequestConnection = require('../../resources/pull-requests.json')
   const releaseConnection: ReleaseConnection = require('../../resources/releases.json')
   const commitHistoryConnection: CommitHistoryConnection = require('../../resources/commit-history.json')
+  /* eslint-enable @typescript-eslint/no-require-imports */
 
   const mock: GitHubAccessor = {
     async getViewer(_personalAccessToken: string): Promise<Viewer> {
