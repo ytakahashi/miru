@@ -25,7 +25,7 @@ describe('IssueContent.vue', () => {
     openUrlMock.mockClear()
   })
 
-  it('renders issue (opened)', async () => {
+  it('renders issue (opened / my issue)', async () => {
     const issue = new Issue(
       author,
       title,
@@ -63,7 +63,7 @@ describe('IssueContent.vue', () => {
     expect(wrapper.findAll('span.github-label')).toHaveLength(2)
   })
 
-  it('renders issue (opened)', async () => {
+  it('renders issue (opened / assigned)', async () => {
     const issue = new Issue(
       author,
       title,
