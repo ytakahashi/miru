@@ -1,22 +1,20 @@
+import eslint from '@eslint/js'
+import tseslint from 'typescript-eslint'
 import pluginVue from 'eslint-plugin-vue'
-import js from '@eslint/js'
-import { FlatCompat } from '@eslint/eslintrc'
+import vueTsEslintConfig from '@vue/eslint-config-typescript'
+import vueEsPrettierConfig from '@vue/eslint-config-prettier'
 import vitest from '@vitest/eslint-plugin'
 
-const compat = new FlatCompat()
-
-export default [
+export default tseslint.config(
+  // https://typescript-eslint.io/getting-started
+  eslint.configs.recommended,
+  ...tseslint.configs.recommended,
   // https://eslint.vuejs.org/user-guide/
   ...pluginVue.configs['flat/recommended'],
-  // https://eslint.org/docs/latest/use/configure/configuration-files#using-predefined-configurations
-  js.configs.recommended,
-  ...compat.extends(
-    'plugin:vue/vue3-recommended',
-    '@vue/typescript/recommended',
-    '@vue/prettier',
-    '@vue/eslint-config-typescript',
-    '@vue/eslint-config-prettier'
-  ),
+  // https://github.com/vuejs/eslint-config-typescript
+  ...vueTsEslintConfig(),
+  ...pluginVue.configs['flat/recommended'],
+  vueEsPrettierConfig,
   {
     rules: {
       '@typescript-eslint/no-unused-vars': [
@@ -46,5 +44,5 @@ export default [
       ...vitest.configs.recommended.rules,
       'vitest/valid-expect': ['off'],
     },
-  },
-]
+  }
+)
