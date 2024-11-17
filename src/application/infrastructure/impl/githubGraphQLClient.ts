@@ -131,6 +131,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       .request<Repository>(query, variables, requestHeaders)
       .then(takeIssues)
       .catch(e => {
+        logger.error(e)
         throw makeGitHubAccessError(e)
       })
   }
@@ -241,6 +242,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       .request<Repository>(query, variables, requestHeaders)
       .then(takePullRequests)
       .catch(e => {
+        logger.error(e)
         throw makeGitHubAccessError(e)
       })
   }
@@ -314,6 +316,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       .request<Repository>(query, variables, requestHeaders)
       .then(takeReleases)
       .catch(e => {
+        logger.error(e)
         throw makeGitHubAccessError(e)
       })
   }
@@ -376,6 +379,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       .request<Repository>(query, variables, requestHeaders)
       .then(takeCommitHistories)
       .catch(e => {
+        logger.error(e)
         throw makeGitHubAccessError(e)
       })
   }
