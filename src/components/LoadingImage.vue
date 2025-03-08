@@ -74,12 +74,8 @@ span.loading01:after {
   width: 60px;
   height: 60px;
   background-repeat: no-repeat;
-  background-image: radial-gradient(
-      $circle-size $circle-size at 10% 50%,
-      $color-off,
-      $color-off 95%,
-      transparent
-    ),
+  background-image:
+    radial-gradient($circle-size $circle-size at 10% 50%, $color-off, $color-off 95%, transparent),
     radial-gradient($circle-size $circle-size at 50% 10%, $color-off, $color-off 95%, transparent),
     radial-gradient($circle-size $circle-size at 90% 50%, $color-off, $color-off 95%, transparent),
     radial-gradient($circle-size $circle-size at 50% 90%, $color-off, $color-off 95%, transparent);
