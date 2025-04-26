@@ -29,7 +29,7 @@ describe('GitHubRepository.vue', () => {
       },
     })
 
-    expect(wrapper.text()).toBe('ytakahashi/miru')
+    expect(wrapper.text()).toBe('ytakahashi/miru(default)')
   })
 
   it('renders when editing', async () => {
