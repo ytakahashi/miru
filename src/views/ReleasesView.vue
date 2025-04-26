@@ -2,12 +2,21 @@
   <RepositoryFilter ref="repositoryFilter" />
   <QueryOption :view-type="'releases'" />
   <div v-for="(t, index) in tuples" :key="index">
-    <div v-for="repositorySetting in t.repositorySettings" :key="repositorySetting.getUrl()">
-      <GitHubRelease
-        v-show="isVisible(repositorySetting)"
-        :account="t.account"
-        :repository-setting="repositorySetting"
-      />
+    <div v-for="category in t.repositoriesPerCategory.keys()" :key="category" class="category-box">
+      <details open>
+        <summary class="category-list-header">{{ category }}</summary>
+        <div
+          v-for="repositorySetting in t.repositoriesPerCategory.get(category)"
+          :key="repositorySetting.getUrl()"
+        >
+          <GitHubRelease
+            v-show="isVisible(repositorySetting)"
+            :account="t.account"
+            :repository-setting="repositorySetting"
+          />
+        </div>
+      </details>
+      <hr class="category-list-hr" />
     </div>
   </div>
   <div v-if="!isAccountConfigured">Account is not configured.</div>
@@ -33,7 +42,7 @@ import GitHubRelease from '@/views/releases/GitHubRelease.vue'
 
 type RepositoryTuple = {
   account: Account
-  repositorySettings: Array<RepositorySetting>
+  repositoriesPerCategory: Map<string, Array<RepositorySetting>>
 }
 
 export default defineComponent({
@@ -55,22 +64,35 @@ export default defineComponent({
     const initAccounts = () => {
       const settings = applicationSettingUseCase.getSettings()
       for (const s of settings) {
+        const repositoriesPerCategory: Map<string, Array<RepositorySetting>> = new Map()
+
         const accountSettingUseCase = accountSettingUseCaseFactory.newAccountSettingUseCase(s)
         const repositorySettingUseCase =
           repositorySettingUseCaseFactory.newRepositorySettingUseCase(s)
         const account = accountSettingUseCase.getAccount()
         const repositorySettings = repositorySettingUseCase.getRepositorySettings()
+        for (const repositorySetting of repositorySettings) {
+          if (repositorySetting.showsReleases()) {
+            const category = repositorySetting.getCategory()
+            const repositories = repositoriesPerCategory.get(category)
+            if (repositories === undefined) {
+              repositoriesPerCategory.set(category, [repositorySetting])
+            } else {
+              repositories.push(repositorySetting)
+            }
+          }
+        }
         tuples.value.push({
           account,
-          repositorySettings: repositorySettings.filter(s => s.showsReleases()),
+          repositoriesPerCategory,
         })
       }
     }
 
     const total = computed(() =>
       tuples.value
-        .map(v => v.repositorySettings)
-        .map(v => v.length)
+        .map(v => v.repositoriesPerCategory)
+        .map(v => v.size)
         .reduce((a, b) => a + b, 0)
     )
 
@@ -91,3 +113,23 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped lang="scss">
+.category-box {
+  border-left: 1px solid;
+  border-width: 4px;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.category-list-header {
+  text-align: left;
+  padding-left: 3%;
+  padding-bottom: 2%;
+}
+
+.category-list-hr {
+  border-width: 1px;
+  margin-bottom: 2%;
+}
+</style>
