@@ -3,6 +3,16 @@
     {{ repositorySetting.displayName() }}
   </span>
 
+  <span :class="editing ? 'draggable' : 'clickable'" @click="() => (isEditingCategory = true)">
+    ({{ repositorySetting.getCategory() }})
+  </span>
+
+  <div v-if="isEditingCategory" class="block">
+    <input v-model="category" class="category-input" />
+    <button class="add-category-button" @click="updateCategory()">
+      <i class="fas fa-plus"></i>
+    </button>
+  </div>
   <span v-if="editing" class="preference-input-block">
     <span class="preference-input clickable" @click="toggleCommitPreference()">
       <i v-if="!showsCommits" class="fas fa-square"></i>
@@ -62,6 +72,14 @@ export default defineComponent({
       webBrowserUserCase.openUrl(props.repositorySetting.getUrl())
     }
 
+    const isEditingCategory = ref(false)
+    const category = ref(props.repositorySetting.getCategory())
+    const updateCategory = () => {
+      console.log('updateCategory', category.value)
+      props.repositorySetting.setCategory(category.value)
+      isEditingCategory.value = false
+    }
+
     const showsCommits = ref(props.repositorySetting.showsCommits())
     watch(showsCommits, (next: boolean) => props.repositorySetting.setCommitPreference(next))
     const toggleCommitPreference = () => (showsCommits.value = !showsCommits.value)
@@ -82,6 +100,9 @@ export default defineComponent({
 
     return {
       openRepository,
+      isEditingCategory,
+      category,
+      updateCategory,
       showsCommits,
       toggleCommitPreference,
       showsIssues,
@@ -110,5 +131,21 @@ export default defineComponent({
 
 .margin-left {
   margin-left: 5px;
+}
+
+.category-input {
+  @include app.base-input-form();
+  & {
+    width: 25%;
+    margin-right: 3px;
+  }
+}
+
+.add-category-button {
+  @include app.base-button(10px);
+  & {
+    font-size: 12px;
+    padding: 3px 8px;
+  }
 }
 </style>

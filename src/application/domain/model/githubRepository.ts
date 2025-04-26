@@ -10,6 +10,7 @@ export class RepositorySetting {
   readonly #origin?: string
   readonly #owner?: string
   readonly #repositoryName?: string
+  #category: string
   #preference: Preference = {
     showsCommits: true,
     showsIssues: true,
@@ -17,7 +18,7 @@ export class RepositorySetting {
     showsReleases: true,
   }
 
-  constructor(url: string, preference?: Preference) {
+  constructor(url: string, preference?: Preference, category?: string) {
     const result = url.match(urlRegex)
     if (result?.groups !== undefined) {
       this.#origin = result.groups.origin
@@ -26,6 +27,11 @@ export class RepositorySetting {
       if (preference !== undefined) {
         this.#preference = preference
       }
+    }
+    if (category !== undefined) {
+      this.#category = category
+    } else {
+      this.#category = 'default'
     }
   }
 
@@ -57,6 +63,10 @@ export class RepositorySetting {
     return `${this.#owner}${separator}${this.#repositoryName}`
   }
 
+  public setCategory = (category: string): void => {
+    this.#category = category
+  }
+
   public setCommitPreference = (b: boolean): void => {
     this.#preference.showsCommits = b
   }
@@ -71,6 +81,10 @@ export class RepositorySetting {
 
   public setReleasePreference = (b: boolean): void => {
     this.#preference.showsReleases = b
+  }
+
+  public getCategory = (): string => {
+    return this.#category ?? 'default'
   }
 
   public showsCommits = (): boolean => {
