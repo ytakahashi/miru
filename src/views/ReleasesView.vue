@@ -115,21 +115,5 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.category-box {
-  border-left: 1px solid;
-  border-width: 4px;
-  width: 80%;
-  margin: 0 auto;
-}
-
-.category-list-header {
-  text-align: left;
-  padding-left: 3%;
-  padding-bottom: 2%;
-}
-
-.category-list-hr {
-  border-width: 1px;
-  margin-bottom: 2%;
-}
+@use '@/assets/category';
 </style>
