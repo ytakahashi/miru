@@ -2,12 +2,21 @@
   <RepositoryFilter ref="repositoryFilter" />
   <QueryOption :view-type="'pullRequests'" />
   <div v-for="(t, index) in tuples" :key="index">
-    <div v-for="repositorySetting in t.repositorySettings" :key="repositorySetting.getUrl()">
-      <GitHubPullRequest
-        v-show="isVisible(repositorySetting)"
-        :account="t.account"
-        :repository-setting="repositorySetting"
-      />
+    <div v-for="category in t.repositoriesPerCategory.keys()" :key="category" class="category-box">
+      <details open>
+        <summary class="category-list-header">{{ category }}</summary>
+        <div
+          v-for="repositorySetting in t.repositoriesPerCategory.get(category)"
+          :key="repositorySetting.getUrl()"
+        >
+          <GitHubPullRequest
+            v-show="isVisible(repositorySetting)"
+            :account="t.account"
+            :repository-setting="repositorySetting"
+          />
+        </div>
+      </details>
+      <hr class="category-list-hr" />
     </div>
   </div>
   <div v-if="!isAccountConfigured">Account is not configured.</div>
@@ -33,7 +42,7 @@ import GitHubPullRequest from '@/views/pullrequests/GitHubPullRequest.vue'
 
 type RepositoryTuple = {
   account: Account
-  repositorySettings: Array<RepositorySetting>
+  repositoriesPerCategory: Map<string, Array<RepositorySetting>>
 }
 
 export default defineComponent({
@@ -55,22 +64,34 @@ export default defineComponent({
     const initAccounts = () => {
       const settings = applicationSettingUseCase.getSettings()
       for (const s of settings) {
+        const repositoriesPerCategory: Map<string, Array<RepositorySetting>> = new Map()
+
         const accountSettingUseCase = accountSettingUseCaseFactory.newAccountSettingUseCase(s)
         const repositorySettingUseCase =
           repositorySettingUseCaseFactory.newRepositorySettingUseCase(s)
         const account = accountSettingUseCase.getAccount()
         const repositorySettings = repositorySettingUseCase.getRepositorySettings()
+        for (const repositorySetting of repositorySettings) {
+          if (!repositorySetting.showsPullRequests()) {
+            continue
+          }
+          const category = repositorySetting.getCategory()
+          if (!repositoriesPerCategory.has(category)) {
+            repositoriesPerCategory.set(category, [])
+          }
+          repositoriesPerCategory.get(category)?.push(repositorySetting)
+        }
         tuples.value.push({
           account,
-          repositorySettings: repositorySettings.filter(s => s.showsPullRequests()),
+          repositoriesPerCategory,
         })
       }
     }
 
     const total = computed(() =>
       tuples.value
-        .map(v => v.repositorySettings)
-        .map(v => v.length)
+        .map(v => v.repositoriesPerCategory)
+        .map(v => v.size)
         .reduce((a, b) => a + b, 0)
     )
 
@@ -91,3 +112,7 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped lang="scss">
+@use '@/assets/category';
+</style>
