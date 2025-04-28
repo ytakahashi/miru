@@ -81,7 +81,7 @@ export default defineComponent({
     const getPullRequestsUseCaseFactory = inject(GetPullRequestsUseCaseFactoryKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
-    const openPullRequestUrl = (val: RepositorySetting) =>
+    const openPullRequestUrl = (val: RepositorySetting): void =>
       webBrowserUserCase.openUrl(`${val.getUrl()}/pulls`)
 
     const account = readonly(props.account)
@@ -107,7 +107,7 @@ export default defineComponent({
           isFailed.value = false
         })
     }
-    const errorHandler = (e: Error) => {
+    const errorHandler = (e: Error): void => {
       logger.error(e)
       failedMessage.value = e.message
       loading.value = false

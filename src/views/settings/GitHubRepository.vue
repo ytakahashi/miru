@@ -65,7 +65,7 @@ export default defineComponent({
   },
   setup(props: PropsType) {
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
-    const openRepository = () => {
+    const openRepository = (): void => {
       if (props.editing) {
         return
       }
@@ -74,29 +74,36 @@ export default defineComponent({
 
     const isEditingCategory = ref(false)
     const category = ref(props.repositorySetting.getCategory())
-    const updateCategory = () => {
-      console.log('updateCategory', category.value)
+    const updateCategory = (): void => {
       props.repositorySetting.setCategory(category.value)
       isEditingCategory.value = false
     }
 
     const showsCommits = ref(props.repositorySetting.showsCommits())
     watch(showsCommits, (next: boolean) => props.repositorySetting.setCommitPreference(next))
-    const toggleCommitPreference = () => (showsCommits.value = !showsCommits.value)
+    const toggleCommitPreference = (): void => {
+      showsCommits.value = !showsCommits.value
+    }
 
     const showsIssues = ref(props.repositorySetting.showsIssues())
     watch(showsIssues, (next: boolean) => props.repositorySetting.setIssuePreference(next))
-    const toggleIssuePreference = () => (showsIssues.value = !showsIssues.value)
+    const toggleIssuePreference = (): void => {
+      showsIssues.value = !showsIssues.value
+    }
 
     const showsPullRequests = ref(props.repositorySetting.showsPullRequests())
     watch(showsPullRequests, (next: boolean) =>
       props.repositorySetting.setPullRequestPreference(next)
     )
-    const togglePullRequestPreference = () => (showsPullRequests.value = !showsPullRequests.value)
+    const togglePullRequestPreference = (): void => {
+      showsPullRequests.value = !showsPullRequests.value
+    }
 
     const showsReleases = ref(props.repositorySetting.showsReleases())
     watch(showsReleases, (next: boolean) => props.repositorySetting.setReleasePreference(next))
-    const toggleReleasePreference = () => (showsReleases.value = !showsReleases.value)
+    const toggleReleasePreference = (): void => {
+      showsReleases.value = !showsReleases.value
+    }
 
     return {
       openRepository,

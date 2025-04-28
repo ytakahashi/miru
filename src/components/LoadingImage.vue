@@ -24,7 +24,7 @@ export default defineComponent({
     const mask: Ref<HTMLElement | null> = ref(null)
     const wrapper: Ref<HTMLElement | null> = ref(null)
 
-    const clickListener = (event: MouseEvent) => {
+    const clickListener = (event: MouseEvent): void => {
       if (event.target === null) {
         return
       }

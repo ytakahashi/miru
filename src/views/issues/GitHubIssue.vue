@@ -77,7 +77,7 @@ export default defineComponent({
     const getIssuesUseCaseFactory = inject(GetIssuesUseCaseFactoryKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
-    const openIssueUrl = (val: RepositorySetting) =>
+    const openIssueUrl = (val: RepositorySetting): void =>
       webBrowserUserCase.openUrl(`${val.getUrl()}/issues`)
 
     const account = readonly(props.account)
@@ -103,7 +103,7 @@ export default defineComponent({
           isFailed.value = false
         })
     }
-    const errorHandler = (e: Error) => {
+    const errorHandler = (e: Error): void => {
       logger.error(e)
       failedMessage.value = e.message
       loading.value = false

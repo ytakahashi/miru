@@ -76,7 +76,7 @@ export default defineComponent({
     const errorMessage = ref('')
     const loading = ref(false)
 
-    const onSuccess = (resolved: Account) => {
+    const onSuccess = (resolved: Account): void => {
       const setting = new ApplicationSetting(resolved.getId())
       if (applicationSettingUseCase.hasSetting(setting)) {
         isDuplicated.value = true
@@ -90,12 +90,12 @@ export default defineComponent({
         errorMessage.value = ''
       }
     }
-    const onFailure = (err: Error) => {
+    const onFailure = (err: Error): void => {
       logger.error(err)
       isInvalidAccessToken.value = true
       errorMessage.value = `Failed to resolve access token: ${personalAccessTokenInput.value}`
     }
-    const addAccount = () => {
+    const addAccount = (): void => {
       loading.value = true
       if (!personalAccessTokenInput.value) {
         isInvalidAccessToken.value = true
@@ -116,7 +116,7 @@ export default defineComponent({
         .finally(() => (loading.value = false))
     }
 
-    const refreshAccounts = () => {
+    const refreshAccounts = (): void => {
       accountSettings.value.splice(0)
       const settings = applicationSettingUseCase.getSettings()
       for (const setting of settings) {
@@ -124,12 +124,12 @@ export default defineComponent({
       }
     }
 
-    const deleteAccount = (setting: ApplicationSetting) => {
+    const deleteAccount = (setting: ApplicationSetting): void => {
       applicationSettingUseCase.removeSetting(setting)
       refreshAccounts()
     }
 
-    const viewPersonalAccessToken = () => {
+    const viewPersonalAccessToken = (): void => {
       isPatVisible.value = !isPatVisible.value
     }
 

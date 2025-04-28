@@ -29,7 +29,7 @@ export default defineComponent({
   setup(_, context: SetupContext) {
     const wrapper: Ref<HTMLElement | null> = ref(null)
 
-    const clickListener = (event: MouseEvent) => {
+    const clickListener = (event: MouseEvent): void => {
       if (event.target === wrapper.value) {
         context.emit('cancel')
       }

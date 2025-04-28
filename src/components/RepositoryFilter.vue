@@ -22,11 +22,11 @@ export default defineComponent({
   },
   setup() {
     const filterText = ref('')
-    const isVisible = (repository: RepositorySetting) =>
+    const isVisible = (repository: RepositorySetting): boolean =>
       repository.displayName().includes(filterText.value)
 
     const repositoryFilter: Ref<HTMLElement | null> = ref(null)
-    const listener = (event: KeyboardEvent) => {
+    const listener = (event: KeyboardEvent): void => {
       if (['Key', 'Digit'].some(v => event.code.startsWith(v))) {
         repositoryFilter.value?.focus()
       }

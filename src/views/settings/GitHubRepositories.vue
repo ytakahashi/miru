@@ -38,7 +38,7 @@ import GitHubRepository from '@/views/settings/GitHubRepository.vue'
 import { PropType, Ref, defineComponent, ref, watch } from 'vue'
 
 // ref. https://zenn.dev/kazuwombat/articles/f23b47f168f1d0
-const moveIndex = <T,>(original: T[], from: number, to: number) => {
+const moveIndex = <T,>(original: T[], from: number, to: number): T[] => {
   const arr = [...original]
   const target = arr[from]
   arr.splice(from, 1)
@@ -65,16 +65,16 @@ export default defineComponent({
   setup(props: PropsType, { emit }) {
     const showEditMenu = ref(false)
 
-    const emitDelete = (repository: RepositorySetting) => emit('deleteRepository', repository)
-    const emitEditCancel = () => {
+    const emitDelete = (repository: RepositorySetting): void => emit('deleteRepository', repository)
+    const emitEditCancel = (): void => {
       showEditMenu.value = false
       emit('editCancel')
     }
-    const emitEditComplete = () => {
+    const emitEditComplete = (): void => {
       showEditMenu.value = false
       emit('editComplete', orderedRepositories.value)
     }
-    const emitEditStart = () => {
+    const emitEditStart = (): void => {
       showEditMenu.value = true
       emit('editStart')
     }
@@ -87,10 +87,10 @@ export default defineComponent({
     )
 
     const dragFromIndex = ref<number | null>(null)
-    const saveFromIndex = (fromIndex: number) => {
+    const saveFromIndex = (fromIndex: number): void => {
       dragFromIndex.value = fromIndex
     }
-    const moveItem = (targetIndex: number) => {
+    const moveItem = (targetIndex: number): void => {
       if (dragFromIndex.value === null) {
         return
       }
