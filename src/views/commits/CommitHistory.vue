@@ -69,7 +69,7 @@ export default defineComponent({
     const getCommitHistoryUseCaseFactory = inject(GetCommitHistoryUseCaseFactoryKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
-    const openCommitsUrl = (val: RepositorySetting) =>
+    const openCommitsUrl = (val: RepositorySetting): void =>
       webBrowserUserCase.openUrl(`${val.getUrl()}/commits`)
 
     const account = readonly(props.account)
@@ -93,7 +93,7 @@ export default defineComponent({
           isFailed.value = false
         })
     }
-    const errorHandler = (e: Error) => {
+    const errorHandler = (e: Error): void => {
       logger.error(e)
       failedMessage.value = e.message
       loading.value = false

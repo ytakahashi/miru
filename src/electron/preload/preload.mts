@@ -10,8 +10,8 @@ export interface IPreloadAPI {
 }
 
 const preloadApi: IPreloadAPI = {
-  openUrl: (url: string) => {
-    shell.openExternal(url)
+  openUrl: async (url: string) => {
+    await shell.openExternal(url)
   },
   initLocalStorageAccessor: (namePostfix?: string) => {
     return new ElectronStoreWrapper(namePostfix)

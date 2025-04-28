@@ -30,13 +30,13 @@ export default defineComponent({
     const route = useRoute()
     const router = useRouter()
 
-    const keyHandler = (event: KeyboardEvent) => {
+    const keyHandler = async (event: KeyboardEvent): Promise<void> => {
       if (!event.ctrlKey) {
         return
       }
       const path = shortcut.get(event.key)
       if (path !== undefined && path !== route.path) {
-        router.push(path)
+        await router.push(path)
       }
     }
 

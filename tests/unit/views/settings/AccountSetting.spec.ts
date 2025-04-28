@@ -246,19 +246,19 @@ describe('AccountSetting.vue', () => {
     const addButton = wrapper.find('button')
 
     // click without input
-    addButton.trigger('click')
+    await addButton.trigger('click')
     await wrapper.vm.$nextTick()
     expect(wrapper.text()).toContain('GitHub repository URL is not specified.')
 
     // set invalid input
     await urlInput.setValue('foo')
-    addButton.trigger('click')
+    await addButton.trigger('click')
     await wrapper.vm.$nextTick()
     expect(wrapper.text()).toContain('Invalid URL: foo')
 
     // set valid input
     await urlInput.setValue('https://github.com/ytakahashi/miru')
-    addButton.trigger('click')
+    await addButton.trigger('click')
     await wrapper.vm.$nextTick()
     expect(wrapper.text()).not.toContain('Invalid URL')
     expect(addRepositorySettingMock).toHaveBeenCalledTimes(1)

@@ -10,7 +10,7 @@ import { defineComponent, onMounted, ref } from 'vue'
 export default defineComponent({
   name: 'ScrollToTopButton',
   setup() {
-    const scrollToTop = () => {
+    const scrollToTop = (): void => {
       window.scrollTo({
         top: 0,
         behavior: 'smooth',
@@ -18,7 +18,9 @@ export default defineComponent({
     }
 
     const scrollY = ref(0)
-    const setScrollValue = () => (scrollY.value = window.scrollY)
+    const setScrollValue = (): void => {
+      scrollY.value = window.scrollY
+    }
     onMounted(() => window.addEventListener('scroll', setScrollValue))
 
     return {

@@ -12,7 +12,7 @@ Store.initRenderer()
 
 const isDev = process.env.npm_lifecycle_event === 'electron:dev' ? true : false
 
-function createWindow() {
+async function createWindow(): Promise<void> {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -25,10 +25,10 @@ function createWindow() {
 
   // and load the index.html of the app.
   if (isDev) {
-    mainWindow.loadURL('http://localhost:5173/')
+    await mainWindow.loadURL('http://localhost:5173/')
     mainWindow.webContents.openDevTools() // Open the DevTools.
   } else {
-    mainWindow.loadFile(join(__dirname, '../../index.html'))
+    await mainWindow.loadFile(join(__dirname, '../../index.html'))
   }
   // mainWindow.loadURL( //this doesn't work on macOS in build and preview mode
   //     isDev ?
@@ -40,12 +40,13 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
-  createWindow()
-  app.on('activate', function () {
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+app.whenReady().then(async () => {
+  await createWindow()
+  app.on('activate', async function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) await createWindow()
   })
 })
 

@@ -53,7 +53,7 @@ describe('GitHubRepositories.vue', () => {
     expect(wrapper.find('i.fa-window-close').exists()).toBe(true)
     expect(wrapper.find('i.fa-times').exists()).toBe(true)
 
-    wrapper.find('i.delete-button').trigger('click')
+    await wrapper.find('i.delete-button').trigger('click')
     const deleteEvent = wrapper.emitted('deleteRepository')
     if (deleteEvent === undefined) {
       expect.unreachable('deleteEvent should not be undefined')

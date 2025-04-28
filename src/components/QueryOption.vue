@@ -209,13 +209,13 @@ export default defineComponent({
     )
     const isSortable = ['issues', 'pullRequests', 'releases'].includes(props.viewType)
 
-    const updateViewModel = () => {
+    const updateViewModel = (): void => {
       const { viewType } = props
       const option = getters[viewType]()
       viewModel.setOption(option)
     }
 
-    const updateOption = () => {
+    const updateOption = (): void => {
       const { viewType } = props
       const newOption = viewModel.getOption()
       mutations[viewType](newOption)

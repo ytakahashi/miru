@@ -118,8 +118,8 @@ export default defineComponent({
     const profile = computed(() => `${account.userName}@${account.githubUrl.getDomain()}`)
     const showsPatInput = ref(false)
     const isPatVisible = ref(false)
-    const openProfile = () => webBrowserUserCase.openUrl(account.profileUrl)
-    const updatePersonalAccessToken = () => {
+    const openProfile = (): void => webBrowserUserCase.openUrl(account.profileUrl)
+    const updatePersonalAccessToken = (): void => {
       accountSettingUseCase.setAccount(account)
       showsPatInput.value = false
     }
@@ -129,7 +129,7 @@ export default defineComponent({
     const isEditing = ref(false)
     const validationMessage = ref('')
 
-    const addGitHubRepository = () => {
+    const addGitHubRepository = (): void => {
       if (githubRepositoryUrlInput.value === '') {
         validationMessage.value = 'GitHub repository URL is not specified.'
         return
@@ -149,19 +149,21 @@ export default defineComponent({
       }
     }
 
-    const deleteRepository = (url: RepositorySetting) => {
+    const deleteRepository = (url: RepositorySetting): void => {
       repositorySettingUseCase.deleteRepositorySetting(url)
       githubRepositorySettings.value = repositorySettingUseCase.getRepositorySettings()
     }
 
-    const deleteSetting = () => {
+    const deleteSetting = (): void => {
       showModal.value = false
       accountSettingUseCase.deleteSetting()
       emit('accountDeleted', props.setting)
     }
 
-    const editCancelHandler = () => (isEditing.value = false)
-    const editCompleteHandler = (orderedRepositories: string[]) => {
+    const editCancelHandler = (): void => {
+      isEditing.value = false
+    }
+    const editCompleteHandler = (orderedRepositories: string[]): void => {
       isEditing.value = false
       const newRepositories = orderedRepositories.map(repo => {
         const found = githubRepositorySettings.value.find(r => r.displayName() === repo)
@@ -172,7 +174,9 @@ export default defineComponent({
       })
       repositorySettingUseCase.setRepositorySettings(newRepositories)
     }
-    const editStartHandler = () => (isEditing.value = true)
+    const editStartHandler = (): void => {
+      isEditing.value = true
+    }
 
     watch(githubRepositoryUrlInput, () => (validationMessage.value = ''))
     onMounted(

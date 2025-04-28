@@ -50,6 +50,11 @@ type PropsType = {
   issue: Issue
 }
 
+type LabelStyle = {
+  color: string
+  backgroundColor: string
+}
+
 export default defineComponent({
   name: 'IssueContent',
   props: {
@@ -60,7 +65,7 @@ export default defineComponent({
   },
   setup(props: PropsType) {
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
-    const openIssue = () => webBrowserUserCase.openUrl(props.issue.url)
+    const openIssue = (): void => webBrowserUserCase.openUrl(props.issue.url)
 
     const boxStyle = computed(() =>
       props.issue.state === 'OPEN'
@@ -68,7 +73,7 @@ export default defineComponent({
         : `content-box-closed-${props.issue.stateReason?.toLowerCase()}`
     )
 
-    const getLabelColor = (label: Label) => ({
+    const getLabelColor = (label: Label): LabelStyle => ({
       color: label.isLight ? '#2e2d2d' : '#fdfdfd',
       backgroundColor: label.color,
     })

@@ -43,7 +43,7 @@ export default defineComponent({
   },
   setup(props: PropsType) {
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
-    const openRelease = () => webBrowserUserCase.openUrl(props.release.url)
+    const openRelease = (): void => webBrowserUserCase.openUrl(props.release.url)
 
     const boxStyle = computed(() => ({
       'content-box-open': !props.release.isDraft && !props.release.isPrerelease,

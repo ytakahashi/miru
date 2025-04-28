@@ -81,7 +81,7 @@ export default defineComponent({
     const getReleasesUseCaseFactory = inject(GetReleasesUseCaseFactoryKey)
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
 
-    const openReleaseUrl = (val: RepositorySetting) =>
+    const openReleaseUrl = (val: RepositorySetting): void =>
       webBrowserUserCase.openUrl(`${val.getUrl()}/releases`)
 
     const account = readonly(props.account)
@@ -105,7 +105,7 @@ export default defineComponent({
           isFailed.value = false
         })
     }
-    const errorHandler = (e: Error) => {
+    const errorHandler = (e: Error): void => {
       logger.error(e)
       failedMessage.value = e.message
       loading.value = false

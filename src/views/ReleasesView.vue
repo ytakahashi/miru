@@ -61,7 +61,7 @@ export default defineComponent({
     const tuples: Ref<RepositoryTuple[]> = ref([])
     const repositoryFilter = ref()
 
-    const initAccounts = () => {
+    const initAccounts = (): void => {
       const settings = applicationSettingUseCase.getSettings()
       for (const s of settings) {
         const repositoriesPerCategory: Map<string, Array<RepositorySetting>> = new Map()
@@ -98,7 +98,7 @@ export default defineComponent({
 
     const isAccountConfigured = computed(() => tuples.value.length !== 0)
 
-    const isVisible = (repository: RepositorySetting) =>
+    const isVisible = (repository: RepositorySetting): boolean =>
       (repositoryFilter.value as typeof RepositoryFilter).isVisible(repository)
 
     onMounted(initAccounts)

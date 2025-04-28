@@ -61,6 +61,10 @@ import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 type PropsType = {
   pullRequest: PullRequest
 }
+type LabelStyle = {
+  color: string
+  backgroundColor: string
+}
 
 export default defineComponent({
   name: 'PullRequestContent',
@@ -72,7 +76,7 @@ export default defineComponent({
   },
   setup(props: PropsType) {
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
-    const openPullRequest = () => webBrowserUserCase.openUrl(props.pullRequest.url)
+    const openPullRequest = (): void => webBrowserUserCase.openUrl(props.pullRequest.url)
 
     const boxStyle = computed(() => {
       const { pullRequest } = props
@@ -84,7 +88,7 @@ export default defineComponent({
         : `content-box-pr-${state.toLowerCase()}`
     })
 
-    const getLabelColor = (label: Label) => ({
+    const getLabelColor = (label: Label): LabelStyle => ({
       color: label.isLight ? '#2e2d2d' : '#fdfdfd',
       backgroundColor: label.color,
     })

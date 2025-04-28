@@ -43,7 +43,7 @@ export default defineComponent({
   },
   setup(props: PropsType) {
     const webBrowserUserCase = inject(WebBrowserUserCaseKey)
-    const openCommit = () => webBrowserUserCase.openUrl(props.commit.commitUrl)
+    const openCommit = (): void => webBrowserUserCase.openUrl(props.commit.commitUrl)
 
     const commitMessage = computed(() => {
       const message = props.commit.message

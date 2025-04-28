@@ -17,7 +17,7 @@ import {
 import { GraphQLClient, gql } from 'graphql-request'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const makeGitHubAccessError = (e: any) =>
+const makeGitHubAccessError = (e: any): GitHubAccessError =>
   new GitHubAccessError(
     e.response.status === 200 ? e.response.errors[0].message : e.response.message,
     { cause: e }
