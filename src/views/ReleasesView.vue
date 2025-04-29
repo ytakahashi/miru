@@ -4,7 +4,13 @@
   <div v-for="(t, index) in tuples" :key="index">
     <div v-for="category in t.repositoriesPerCategory.keys()" :key="category" class="category-box">
       <details open>
-        <summary class="category-list-header">{{ category }}</summary>
+        <summary class="category-list-header">
+          {{ category }}
+          <button type="button" class="get-button" @click="fetchAll(category)">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </summary>
+        <div class="space"></div>
         <div
           v-for="repositorySetting in t.repositoriesPerCategory.get(category)"
           :key="repositorySetting.getUrl()"
@@ -13,6 +19,7 @@
             v-show="isVisible(repositorySetting)"
             :account="t.account"
             :repository-setting="repositorySetting"
+            :fetch-trigger="fetchTrigger"
           />
         </div>
       </details>
@@ -101,11 +108,18 @@ export default defineComponent({
     const isVisible = (repository: RepositorySetting): boolean =>
       (repositoryFilter.value as typeof RepositoryFilter).isVisible(repository)
 
+    const fetchTrigger = ref('')
+    const fetchAll = (category: string): void => {
+      fetchTrigger.value = category
+    }
+
     onMounted(initAccounts)
 
     return {
       repositoryFilter,
       isVisible,
+      fetchTrigger,
+      fetchAll,
       isAccountConfigured,
       total,
       tuples,
@@ -115,5 +129,18 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use '@/assets/app';
 @use '@/assets/category';
+
+.get-button {
+  @include app.rotate-button(8px);
+  & {
+    padding: 5px 7px;
+    margin-left: 1%;
+  }
+}
+
+.space {
+  margin: 2%;
+}
 </style>
