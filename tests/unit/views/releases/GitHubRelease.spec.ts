@@ -48,6 +48,7 @@ const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 const githubUrl = GitHubUrl.from('https://github.com')
 const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
 const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
+setting.setCategory('category1')
 
 describe('GitHubRelease.vue', () => {
   beforeEach(() => {
@@ -69,6 +70,7 @@ describe('GitHubRelease.vue', () => {
       props: {
         account,
         repositorySetting: setting,
+        fetchTrigger: '',
         option: {},
       },
     })
@@ -81,6 +83,74 @@ describe('GitHubRelease.vue', () => {
     expect(wrapper.text()).toContain('ytakahashi/miru')
     expect(wrapper.text()).toContain('There aren’t any releases.')
     expect(wrapper.text()).toMatch(/Last fetched: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)
+    expect(wrapper.findAllComponents(ReleaseContent)).toHaveLength(0)
+    expect(openUrlMock).not.toHaveBeenCalled()
+  })
+
+  it('renders when fetchTrigger is updated', async () => {
+    const release1 = new Release(
+      'author 1',
+      'issue title 1',
+      'issue url 1',
+      '2020-12-15T21:23:56Z',
+      '2021-01-02T23:44:14Z',
+      false,
+      false,
+      3
+    )
+    const release2 = new Release(
+      'author 2',
+      'issue title 2',
+      'issue url 2',
+      '2020-12-15T21:23:56Z',
+      '2021-01-02T23:44:14Z',
+      false,
+      false,
+      0
+    )
+    const releases = new Releases(setting, [release1, release2], 2)
+    const wrapper = shallowMount(GitHubRelease, {
+      global: {
+        provide: {
+          [GetReleasesUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetReleasesUseCase(() => releases)
+          ),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
+      },
+      props: {
+        account,
+        repositorySetting: setting,
+        fetchTrigger: '',
+        option: {},
+      },
+    })
+
+    // when: fetchTrigger unmatches
+    await wrapper.setProps({ fetchTrigger: 'categoryX' })
+    await wrapper.vm.$nextTick()
+
+    // then: releases don't appear
+    expect(wrapper.findAllComponents(ReleaseContent)).toHaveLength(0)
+
+    // when: correct fetchTrigger is sent
+    await wrapper.setProps({ fetchTrigger: 'category1' })
+    await wrapper.vm.$nextTick()
+
+    // then: releases appear
+    expect(wrapper.text()).toContain('ytakahashi/miru')
+    expect(wrapper.text()).toMatch(/Last fetched: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)
+    expect(wrapper.text()).not.toContain('There aren’t any open issues.')
+    expect(wrapper.find('.clear-button').exists()).toBe(true)
+    expect(wrapper.findAllComponents(ReleaseContent)).toHaveLength(2)
+    expect(wrapper.text()).toContain('showing 2 of 2 releases')
+    expect(openUrlMock).not.toHaveBeenCalled()
+
+    // when: click clear button
+    await wrapper.find('.clear-button').trigger('click')
+    await wrapper.vm.$nextTick()
+
+    // then: releases disappears
     expect(wrapper.findAllComponents(ReleaseContent)).toHaveLength(0)
     expect(openUrlMock).not.toHaveBeenCalled()
   })
@@ -119,6 +189,7 @@ describe('GitHubRelease.vue', () => {
       props: {
         account,
         repositorySetting: setting,
+        fetchTrigger: '',
         option: {},
       },
     })
@@ -163,6 +234,7 @@ describe('GitHubRelease.vue', () => {
       props: {
         account,
         repositorySetting: setting,
+        fetchTrigger: '',
         option: {},
       },
     })
@@ -191,6 +263,7 @@ describe('GitHubRelease.vue', () => {
       props: {
         account,
         repositorySetting: setting,
+        fetchTrigger: '',
         option: {},
       },
     })
@@ -216,6 +289,7 @@ describe('GitHubRelease.vue', () => {
       props: {
         account,
         repositorySetting: setting,
+        fetchTrigger: '',
         option: {},
       },
     })
