@@ -67,6 +67,7 @@ mockedQueryOption.pullRequests.mockReturnValue({
 const githubUrl = GitHubUrl.from('https://github.com')
 const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
 const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
+setting.setCategory('category1')
 
 describe('GitHubPullRequest.vue', () => {
   beforeEach(() => {
@@ -88,6 +89,7 @@ describe('GitHubPullRequest.vue', () => {
       props: {
         account,
         repositorySetting: setting,
+        fetchTrigger: '',
       },
     })
 
@@ -155,6 +157,7 @@ describe('GitHubPullRequest.vue', () => {
       props: {
         account,
         repositorySetting: setting,
+        fetchTrigger: '',
       },
     })
 
@@ -180,6 +183,93 @@ describe('GitHubPullRequest.vue', () => {
     expect(openUrlMock).not.toHaveBeenCalled()
   })
 
+  it('renders when fetchTrigger is updated', async () => {
+    const pr1 = new PullRequest(
+      'author 1',
+      'pr title 1',
+      'pr url 1',
+      '2020-12-15T21:23:56Z',
+      '2021-01-02T23:44:14Z',
+      123,
+      [],
+      2,
+      3,
+      123,
+      456,
+      7,
+      false,
+      new PullRequestReviews(15, false),
+      false,
+      false,
+      false,
+      'OPEN'
+    )
+    const pr2 = new PullRequest(
+      'author 2',
+      'pr title 2',
+      'pr url 2',
+      '2020-12-15T21:23:56Z',
+      '2021-01-02T23:44:14Z',
+      124,
+      [],
+      2,
+      3,
+      234,
+      567,
+      8,
+      false,
+      new PullRequestReviews(5, false),
+      false,
+      false,
+      false,
+      'OPEN'
+    )
+    const pullRequests = new PullRequests(setting, [pr1, pr2], 2)
+    const wrapper = shallowMount(GitHubPullRequest, {
+      global: {
+        provide: {
+          [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetPullRequestsUseCase(() => pullRequests)
+          ),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
+      },
+      props: {
+        account,
+        repositorySetting: setting,
+        fetchTrigger: '',
+      },
+    })
+
+    // when: fetchTrigger unmatches
+    await wrapper.setProps({ fetchTrigger: 'categoryX' })
+    await wrapper.vm.$nextTick()
+
+    // then: pull requests don't appear
+    expect(wrapper.findAllComponents(PullRequestContent)).toHaveLength(0)
+
+    // when: fetchTrigger matches
+    await wrapper.setProps({ fetchTrigger: 'category1' })
+    await wrapper.vm.$nextTick()
+
+    // then: pull requests appear
+    expect(wrapper.text()).toContain('ytakahashi/miru')
+    expect(wrapper.text()).toMatch(/Last fetched: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)
+    expect(wrapper.text()).not.toContain('There aren’t any open pull requests.')
+    expect(wrapper.text()).toContain('showing 2 of 2 pull requests')
+    expect(wrapper.find('.clear-button').exists()).toBe(true)
+    expect(wrapper.findAllComponents(PullRequestContent)).toHaveLength(2)
+    expect(openUrlMock).not.toHaveBeenCalled()
+
+    // when: click clear button
+    await wrapper.find('.clear-button').trigger('click')
+    await wrapper.vm.$nextTick()
+
+    // then: pull requests disappear
+    expect(wrapper.findAllComponents(PullRequestContent)).toHaveLength(0)
+    expect(openUrlMock).not.toHaveBeenCalled()
+  })
+
   it('fails to get PRs', async () => {
     const err = new Error('cause')
     const supplier = () => {
@@ -198,6 +288,7 @@ describe('GitHubPullRequest.vue', () => {
       props: {
         account,
         repositorySetting: setting,
+        fetchTrigger: '',
       },
     })
 
@@ -225,6 +316,7 @@ describe('GitHubPullRequest.vue', () => {
       props: {
         account,
         repositorySetting: setting,
+        fetchTrigger: '',
       },
     })
 
@@ -249,6 +341,7 @@ describe('GitHubPullRequest.vue', () => {
       props: {
         account,
         repositorySetting: setting,
+        fetchTrigger: '',
       },
     })
 

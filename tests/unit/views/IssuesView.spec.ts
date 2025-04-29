@@ -206,7 +206,7 @@ describe('IssuesView.vue', () => {
       },
     })
     await wrapper.vm.$nextTick()
-    expect(wrapper.text()).toBe('category1category2')
+    expect(wrapper.text()).toBe('category1 category2')
     expect(wrapper.findAllComponents(GitHubIssue)).toHaveLength(2)
   })
 })

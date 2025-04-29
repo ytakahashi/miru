@@ -6,7 +6,7 @@
       <details open>
         <summary class="category-list-header">
           {{ category }}
-          <button type="button" class="get-button" @click="fetchAll(category)">
+          <button type="button" class="fetch-button" @click="fetchAll(category)">
             <i class="fas fa-sync-alt"></i>
           </button>
         </summary>
@@ -132,7 +132,7 @@ export default defineComponent({
 @use '@/assets/app';
 @use '@/assets/category';
 
-.get-button {
+.fetch-button {
   @include app.rotate-button(8px);
   & {
     padding: 5px 7px;

@@ -55,6 +55,7 @@ const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 const githubUrl = GitHubUrl.from('https://github.com')
 const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
 const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
+setting.setCategory('category1')
 
 describe('CommitHistory.vue', () => {
   beforeEach(() => {
@@ -98,6 +99,7 @@ describe('CommitHistory.vue', () => {
       props: {
         account,
         repositorySetting: setting,
+        fetchTrigger: '',
         option: {},
       },
     })
@@ -121,6 +123,74 @@ describe('CommitHistory.vue', () => {
     expect(openUrlMock).not.toHaveBeenCalled()
   })
 
+  it('renders when fetchTrigger is updated', async () => {
+    const commit1 = new Commit(
+      'commitMessage 1',
+      'commitUrl 1',
+      10,
+      20,
+      1,
+      'ytakahashi',
+      '2021-03-13T00:00:00Z',
+      'ytakahashi',
+      '2021-03-13T00:00:01Z'
+    )
+    const commit2 = new Commit(
+      'commitMessage 2',
+      'commitUrl 2',
+      110,
+      40,
+      2,
+      'ytakahashi',
+      '2021-03-10T00:00:00Z',
+      'ytakahashi',
+      '2021-03-10T00:00:01Z'
+    )
+    const commitHistory = new CommitHistoryModel(setting, [commit1, commit2], 2)
+    const wrapper = shallowMount(CommitHistory, {
+      global: {
+        provide: {
+          [GetCommitHistoryUseCaseFactoryKey as symbol]: createMock(
+            () => new MockedGetCommitHistoryUseCase(() => commitHistory)
+          ),
+          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+        },
+      },
+      props: {
+        account,
+        repositorySetting: setting,
+        fetchTrigger: '',
+        option: {},
+      },
+    })
+
+    // when: fetchTrigger unmatches
+    await wrapper.setProps({ fetchTrigger: 'categoryX' })
+    await wrapper.vm.$nextTick()
+
+    // then: commits don't appear
+    expect(wrapper.findAllComponents(CommitContent)).toHaveLength(0)
+    expect(openUrlMock).not.toHaveBeenCalled()
+
+    // when: fetchTrigger matches
+    await wrapper.setProps({ fetchTrigger: 'category1' })
+    await wrapper.vm.$nextTick()
+
+    // then: commits appear
+    expect(wrapper.text()).toContain('ytakahashi/miru')
+    expect(wrapper.find('.clear-button').exists()).toBe(true)
+    expect(wrapper.findAllComponents(CommitContent)).toHaveLength(2)
+    expect(openUrlMock).not.toHaveBeenCalled()
+
+    // when: click clear button
+    await wrapper.find('.clear-button').trigger('click')
+    await wrapper.vm.$nextTick()
+
+    // then: commits disappear
+    expect(wrapper.findAllComponents(CommitContent)).toHaveLength(0)
+    expect(openUrlMock).not.toHaveBeenCalled()
+  })
+
   it('fails to get commits', async () => {
     const err = new Error('cause')
     const supplier = () => {
@@ -139,6 +209,7 @@ describe('CommitHistory.vue', () => {
       props: {
         account,
         repositorySetting: setting,
+        fetchTrigger: '',
         option: {},
       },
     })
@@ -167,6 +238,7 @@ describe('CommitHistory.vue', () => {
       props: {
         account,
         repositorySetting: setting,
+        fetchTrigger: '',
         option: {},
       },
     })
