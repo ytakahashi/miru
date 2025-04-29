@@ -130,9 +130,9 @@ export default defineComponent({
 
     watch(
       () => props.fetchTrigger,
-      (newVal, _) => {
+      async (newVal, _) => {
         if (newVal === props.repositorySetting.getCategory()) {
-          getReleases().catch(errorHandler)
+          await getReleases().catch(errorHandler)
         }
       }
     )

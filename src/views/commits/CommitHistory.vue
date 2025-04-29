@@ -42,11 +42,12 @@ import { GetCommitHistoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plug
 import { getters, mutations } from '@/store/commits'
 import { getters as queryOption } from '@/store/queryOption'
 import CommitContent from '@/views/commits/CommitContent.vue'
-import { computed, defineComponent, readonly, ref } from 'vue'
+import { computed, defineComponent, readonly, ref, watch } from 'vue'
 
 type PropsType = {
   account: Account
   repositorySetting: RepositorySetting
+  fetchTrigger: string
 }
 
 export default defineComponent({
@@ -62,6 +63,10 @@ export default defineComponent({
     },
     repositorySetting: {
       type: RepositorySetting,
+      required: true,
+    },
+    fetchTrigger: {
+      type: String,
       required: true,
     },
   },
@@ -101,6 +106,15 @@ export default defineComponent({
     }
     const clearCommits = (): void => mutations.remove(props.repositorySetting)
     const commits = computed(() => getters.of(props.repositorySetting))
+
+    watch(
+      () => props.fetchTrigger,
+      async (newVal, _) => {
+        if (newVal === props.repositorySetting.getCategory()) {
+          await getCommits().catch(errorHandler)
+        }
+      }
+    )
 
     return {
       clearCommits,
