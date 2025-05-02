@@ -3,14 +3,17 @@
     {{ repositorySetting.displayName() }}
   </span>
 
-  <span :class="editing ? 'draggable' : 'clickable'" @click="() => (isEditingCategory = true)">
+  <span :class="editing ? 'clickable' : 'default-cursor'" @click="startEditCategory()">
     ({{ repositorySetting.getCategory() }})
   </span>
 
   <div v-if="isEditingCategory" class="block">
     <input v-model="category" class="category-input" />
     <button class="add-category-button" @click="updateCategory()">
-      <i class="fas fa-plus"></i>
+      <i class="far fa-save"></i>
+    </button>
+    <button class="cancel-category-edit-button" @click="updateCategory()">
+      <i class="far fa-times-circle"></i>
     </button>
   </div>
   <span v-if="editing" class="preference-input-block">
@@ -74,10 +77,20 @@ export default defineComponent({
 
     const isEditingCategory = ref(false)
     const category = ref(props.repositorySetting.getCategory())
+    const startEditCategory = (): void => {
+      if (!props.editing) {
+        return
+      }
+      isEditingCategory.value = true
+    }
     const updateCategory = (): void => {
       props.repositorySetting.setCategory(category.value)
       isEditingCategory.value = false
     }
+    watch(
+      () => props.editing,
+      () => (isEditingCategory.value = false)
+    )
 
     const showsCommits = ref(props.repositorySetting.showsCommits())
     watch(showsCommits, (next: boolean) => props.repositorySetting.setCommitPreference(next))
@@ -109,6 +122,7 @@ export default defineComponent({
       openRepository,
       isEditingCategory,
       category,
+      startEditCategory,
       updateCategory,
       showsCommits,
       toggleCommitPreference,
@@ -125,6 +139,10 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @use '@/assets/app';
+
+.default-cursor {
+  cursor: default;
+}
 
 .preference-input-block {
   display: block;
@@ -150,9 +168,32 @@ export default defineComponent({
 
 .add-category-button {
   @include app.base-button(10px);
+  border-color: var(--main-background-color);
   & {
-    font-size: 12px;
-    padding: 3px 8px;
+    font-size: 100%;
+    padding-top: 5px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+    padding-right: 0px;
+  }
+  &:hover {
+    color: var(--main-font-color);
+    background-color: var(--main-background-color);
+  }
+}
+
+.cancel-category-edit-button {
+  @include app.base-button(10px);
+  border-color: var(--main-background-color);
+  & {
+    font-size: 100%;
+    padding-top: 5px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+  }
+  &:hover {
+    color: var(--main-font-color);
+    background-color: var(--main-background-color);
   }
 }
 </style>
