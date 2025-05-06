@@ -1,8 +1,17 @@
+import { defineComponent, h } from 'vue'
 import { mount } from '@vue/test-utils'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import ModalWindow from '@/components/ModalWindow.vue'
 import GitHubRepositories from '@/views/settings/GitHubRepositories.vue'
 
 const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
+
+// ModalWindow Mock
+const ModalWindowMock = defineComponent({
+  name: 'ModalWindow',
+  emits: ['cancel', 'ok'],
+  render: () => h('div', {}, ''),
+})
 
 describe('GitHubRepositories.vue', () => {
   it('renders when not editing and start editing', async () => {
@@ -11,7 +20,10 @@ describe('GitHubRepositories.vue', () => {
         repositorySettings: [setting],
       },
       global: {
-        stubs: ['GitHubRepository'],
+        stubs: {
+          GitHubRepository: true,
+          ModalWindow: ModalWindowMock,
+        },
       },
     })
     wrapper.vm.showEditMenu = false
@@ -20,6 +32,7 @@ describe('GitHubRepositories.vue', () => {
     expect(wrapper.find('i.fa-save').exists()).toBe(false)
     expect(wrapper.find('i.fa-window-close').exists()).toBe(false)
     expect(wrapper.find('i.fa-times').exists()).toBe(false)
+    expect(wrapper.findComponent(ModalWindow).exists()).toBe(false)
 
     await wrapper.find('i.fa-edit').trigger('click')
     expect(wrapper.vm.showEditMenu).toBe(true)
@@ -42,7 +55,10 @@ describe('GitHubRepositories.vue', () => {
         repositorySettings: [setting],
       },
       global: {
-        stubs: ['GitHubRepository'],
+        stubs: {
+          GitHubRepository: true,
+          ModalWindow: ModalWindowMock,
+        },
       },
     })
     wrapper.vm.showEditMenu = true
@@ -52,27 +68,24 @@ describe('GitHubRepositories.vue', () => {
     expect(wrapper.find('i.fa-save').exists()).toBe(true)
     expect(wrapper.find('i.fa-window-close').exists()).toBe(true)
     expect(wrapper.find('i.fa-times').exists()).toBe(true)
+    expect(wrapper.findComponent(ModalWindow).exists()).toBe(false)
 
+    // When the delete button is clicked
     await wrapper.find('i.delete-button').trigger('click')
-    const deleteEvent = wrapper.emitted('deleteRepository')
-    if (deleteEvent === undefined) {
-      expect.unreachable('deleteEvent should not be undefined')
-    }
-    expect(deleteEvent).toHaveLength(1)
-    expect(deleteEvent[0]).toEqual([setting])
+    // The confirmation modal should be displayed
+    const modal = wrapper.findComponent(ModalWindow)
+    expect(modal.exists()).toBe(true)
 
-    await wrapper.find('i.fa-save').trigger('click')
-    const editCompleteEvent = wrapper.emitted('editComplete')
-    if (editCompleteEvent === undefined) {
-      expect.unreachable('editComplete should not be undefined')
-    }
-    expect(editCompleteEvent).toHaveLength(1)
-    expect(editCompleteEvent[0]).toEqual([['ytakahashi/miru']])
+    // When the ok button is clicled
+    await modal.vm.$emit('ok')
 
-    expect(wrapper.find('i.fa-edit').exists()).toBe(true)
-    expect(wrapper.find('i.fa-save').exists()).toBe(false)
-    expect(wrapper.find('i.fa-window-close').exists()).toBe(false)
-    expect(wrapper.find('i.fa-times').exists()).toBe(false)
+    // The deleteRepository event should be emitted
+    expect(wrapper.emitted().deleteRepository).toBeTruthy()
+    expect(wrapper.emitted().deleteRepository.length).toBe(1)
+    expect(wrapper.emitted().deleteRepository[0]).toStrictEqual([setting])
+
+    // The modail should be closed
+    expect(wrapper.findComponent(ModalWindow).exists()).toBe(false)
   })
 
   it('renders when cancel editing', async () => {
@@ -81,7 +94,10 @@ describe('GitHubRepositories.vue', () => {
         repositorySettings: [setting],
       },
       global: {
-        stubs: ['GitHubRepository'],
+        stubs: {
+          GitHubRepository: true,
+          ModalWindow: ModalWindowMock,
+        },
       },
     })
     wrapper.vm.showEditMenu = true
@@ -91,18 +107,19 @@ describe('GitHubRepositories.vue', () => {
     expect(wrapper.find('i.fa-save').exists()).toBe(true)
     expect(wrapper.find('i.fa-window-close').exists()).toBe(true)
     expect(wrapper.find('i.fa-times').exists()).toBe(true)
+    expect(wrapper.findComponent(ModalWindow).exists()).toBe(false)
 
-    await wrapper.find('i.fa-window-close').trigger('click')
-    const editCancelEvent = wrapper.emitted('editCancel')
-    if (editCancelEvent === undefined) {
-      expect.unreachable('editCancelEvent should not be undefined')
-    }
-    expect(editCancelEvent).toHaveLength(1)
-    expect(editCancelEvent[0]).toEqual([])
+    // When the delete button is clicked
+    await wrapper.find('i.delete-button').trigger('click')
+    // The confirmation modal should be displayed
+    const modal = wrapper.findComponent(ModalWindow)
+    expect(modal.exists()).toBe(true)
 
-    expect(wrapper.find('i.fa-edit').exists()).toBe(true)
-    expect(wrapper.find('i.fa-save').exists()).toBe(false)
-    expect(wrapper.find('i.fa-window-close').exists()).toBe(false)
-    expect(wrapper.find('i.fa-times').exists()).toBe(false)
+    // When the cancel button is clicled
+    await modal.vm.$emit('cancel')
+    // The deleteRepository event should not be emitted
+    expect(wrapper.emitted().deleteRepository).toBeFalsy()
+    // The modail should be closed
+    expect(wrapper.findComponent(ModalWindow).exists()).toBe(false)
   })
 })
