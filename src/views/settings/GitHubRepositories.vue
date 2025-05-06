@@ -15,7 +15,7 @@
       <i
         v-if="showEditMenu"
         class="fas fa-times delete-button"
-        @click="emitDelete(findSettingFrom(displayName))"
+        @click="deleteCandidate = displayName"
       ></i>
       <span
         :draggable="showEditMenu"
@@ -30,10 +30,22 @@
       </span>
     </div>
   </div>
+
+  <ModalWindow
+    v-if="deleteCandidate"
+    @cancel="() => (deleteCandidate = '')"
+    @ok="emitDelete(deleteCandidate)"
+  >
+    <template #header> Are you sure to remove this repository? </template>
+    <template #body>
+      {{ deleteCandidate }}
+    </template>
+  </ModalWindow>
 </template>
 
 <script lang="ts">
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
+import ModalWindow from '@/components/ModalWindow.vue'
 import GitHubRepository from '@/views/settings/GitHubRepository.vue'
 import { PropType, Ref, defineComponent, ref, watch } from 'vue'
 
@@ -54,6 +66,7 @@ export default defineComponent({
   name: 'GitHubRepositories',
   components: {
     GitHubRepository,
+    ModalWindow,
   },
   props: {
     repositorySettings: {
@@ -65,7 +78,11 @@ export default defineComponent({
   setup(props: PropsType, { emit }) {
     const showEditMenu = ref(false)
 
-    const emitDelete = (repository: RepositorySetting): void => emit('deleteRepository', repository)
+    const emitDelete = (repository: string): void => {
+      const target = findSettingFrom(repository)
+      emit('deleteRepository', target)
+      deleteCandidate.value = ''
+    }
     const emitEditCancel = (): void => {
       showEditMenu.value = false
       emit('editCancel')
@@ -109,6 +126,8 @@ export default defineComponent({
       return found
     }
 
+    const deleteCandidate = ref('')
+
     return {
       emitDelete,
       emitEditCancel,
@@ -119,6 +138,7 @@ export default defineComponent({
       showEditMenu,
       moveItem,
       findSettingFrom,
+      deleteCandidate,
     }
   },
 })
