@@ -3,7 +3,7 @@
     {{ repositorySetting.displayName() }}
   </span>
 
-  <span :class="editing ? 'clickable' : 'default-cursor'" @click="startEditCategory()">
+  <span :class="editing ? 'clickable' : 'default-cursor'" @click="toggleEditCategory()">
     ({{ repositorySetting.getCategory() }})
   </span>
 
@@ -77,11 +77,11 @@ export default defineComponent({
 
     const isEditingCategory = ref(false)
     const category = ref(props.repositorySetting.getCategory())
-    const startEditCategory = (): void => {
+    const toggleEditCategory = (): void => {
       if (!props.editing) {
         return
       }
-      isEditingCategory.value = true
+      isEditingCategory.value = !isEditingCategory.value
     }
     const updateCategory = (): void => {
       props.repositorySetting.setCategory(category.value)
@@ -122,7 +122,7 @@ export default defineComponent({
       openRepository,
       isEditingCategory,
       category,
-      startEditCategory,
+      toggleEditCategory,
       updateCategory,
       showsCommits,
       toggleCommitPreference,
