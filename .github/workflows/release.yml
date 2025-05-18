@@ -28,7 +28,7 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          draft: false
+          draft: true
           generate_release_notes: true
           make_latest: true
 
