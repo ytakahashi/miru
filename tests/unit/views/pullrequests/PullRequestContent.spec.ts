@@ -316,6 +316,6 @@ describe('PullRequestContent.vue', () => {
     })
 
     await wrapper.find('div.content-box-open').trigger('click')
-    expect(openUrlMock).toHaveBeenCalledWith(url)
+    expect(openUrlMock).toHaveBeenCalledExactlyOnceWith(url)
   })
 })

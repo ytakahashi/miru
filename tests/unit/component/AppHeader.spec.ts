@@ -52,7 +52,7 @@ describe('AppHeader.vue', () => {
     })
 
     await wrapper.trigger('keydown.ctrl.s')
-    expect(mockRouter.push).toHaveBeenCalledWith('/')
+    expect(mockRouter.push).toHaveBeenCalledExactlyOnceWith('/')
   })
 
   it('does not push / on keydown', async () => {
@@ -96,7 +96,7 @@ describe('AppHeader.vue', () => {
     })
 
     await wrapper.trigger('keydown.ctrl.c')
-    expect(mockRouter.push).toHaveBeenCalledWith('/commits')
+    expect(mockRouter.push).toHaveBeenCalledExactlyOnceWith('/commits')
   })
 
   it('pushes /issues on keydown', async () => {
@@ -118,7 +118,7 @@ describe('AppHeader.vue', () => {
     })
 
     await wrapper.trigger('keydown.ctrl.i')
-    expect(mockRouter.push).toHaveBeenCalledWith('/issues')
+    expect(mockRouter.push).toHaveBeenCalledExactlyOnceWith('/issues')
   })
 
   it('pushes /pulls on keydown', async () => {
@@ -140,7 +140,7 @@ describe('AppHeader.vue', () => {
     })
 
     await wrapper.trigger('keydown.ctrl.p')
-    expect(mockRouter.push).toHaveBeenCalledWith('/pulls')
+    expect(mockRouter.push).toHaveBeenCalledExactlyOnceWith('/pulls')
   })
 
   it('pushes /releases on keydown', async () => {
@@ -162,6 +162,6 @@ describe('AppHeader.vue', () => {
     })
 
     await wrapper.trigger('keydown.ctrl.r')
-    expect(mockRouter.push).toHaveBeenCalledWith('/releases')
+    expect(mockRouter.push).toHaveBeenCalledExactlyOnceWith('/releases')
   })
 })

@@ -221,7 +221,7 @@ describe('CommitHistory.vue', () => {
       .then(() => nextTick())
 
     // then: error mock is called
-    expect(loggerErrorMock).toHaveBeenCalledWith(err)
+    expect(loggerErrorMock).toHaveBeenCalledExactlyOnceWith(err)
   })
 
   it('opens commits url (repository name)', async () => {
@@ -247,6 +247,8 @@ describe('CommitHistory.vue', () => {
     await wrapper.find('span.text-strong').trigger('click')
 
     // then: commits url is opened
-    expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi/miru/commits')
+    expect(openUrlMock).toHaveBeenCalledExactlyOnceWith(
+      'https://github.com/ytakahashi/miru/commits'
+    )
   })
 })

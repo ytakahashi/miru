@@ -69,6 +69,6 @@ describe('CommitContent.vue', () => {
     })
 
     await wrapper.find('div.commit-box').trigger('click')
-    expect(openUrlMock).toHaveBeenCalledWith(commitUrl)
+    expect(openUrlMock).toHaveBeenCalledExactlyOnceWith(commitUrl)
   })
 })

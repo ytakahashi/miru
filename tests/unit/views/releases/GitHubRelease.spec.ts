@@ -246,7 +246,7 @@ describe('GitHubRelease.vue', () => {
       .then(() => nextTick())
 
     // then: error mock is called
-    expect(loggerErrorMock).toHaveBeenCalledWith(err)
+    expect(loggerErrorMock).toHaveBeenCalledExactlyOnceWith(err)
   })
 
   it('opens release url (repository name)', async () => {
@@ -272,7 +272,9 @@ describe('GitHubRelease.vue', () => {
     await wrapper.find('span.text-strong').trigger('click')
 
     // then: release url is opened
-    expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi/miru/releases')
+    expect(openUrlMock).toHaveBeenCalledExactlyOnceWith(
+      'https://github.com/ytakahashi/miru/releases'
+    )
   })
 
   it('opens releases url (empty result)', async () => {
@@ -300,6 +302,8 @@ describe('GitHubRelease.vue', () => {
 
     // then: release appears and release url is opened
     await wrapper.find('div.clickable').trigger('click')
-    expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi/miru/releases')
+    expect(openUrlMock).toHaveBeenCalledExactlyOnceWith(
+      'https://github.com/ytakahashi/miru/releases'
+    )
   })
 })
