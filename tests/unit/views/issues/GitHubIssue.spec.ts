@@ -263,7 +263,7 @@ describe('GitHubIssue.vue', () => {
       .then(() => nextTick())
 
     // then: error mock is called
-    expect(loggerErrorMock).toHaveBeenCalledWith(err)
+    expect(loggerErrorMock).toHaveBeenCalledExactlyOnceWith(err)
   })
 
   it('opens issues url (repository name)', async () => {
@@ -288,7 +288,7 @@ describe('GitHubIssue.vue', () => {
     await wrapper.find('span.text-strong').trigger('click')
 
     // then: issue url is opened
-    expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi/miru/issues')
+    expect(openUrlMock).toHaveBeenCalledExactlyOnceWith('https://github.com/ytakahashi/miru/issues')
   })
 
   it('opens issues url (empty result)', async () => {
@@ -315,6 +315,6 @@ describe('GitHubIssue.vue', () => {
 
     // then: issue appears and issues url is opened
     await wrapper.find('div.clickable').trigger('click')
-    expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi/miru/issues')
+    expect(openUrlMock).toHaveBeenCalledExactlyOnceWith('https://github.com/ytakahashi/miru/issues')
   })
 })

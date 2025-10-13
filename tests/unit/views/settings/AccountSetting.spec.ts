@@ -283,7 +283,7 @@ describe('AccountSetting.vue', () => {
       },
     })
     await wrapper.find('span.text-strong').trigger('click')
-    expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi')
+    expect(openUrlMock).toHaveBeenCalledExactlyOnceWith('https://github.com/ytakahashi')
   })
 
   it('can edit access token', async () => {
@@ -314,7 +314,7 @@ describe('AccountSetting.vue', () => {
 
     // when clicking the save button, setAccount method should be called
     await wrapper.find('i.fa-save').trigger('click')
-    expect(setAccountMock).toHaveBeenCalledWith(account)
+    expect(setAccountMock).toHaveBeenCalledExactlyOnceWith(account)
   })
 
   it('can open modal', async () => {

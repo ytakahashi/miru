@@ -299,7 +299,7 @@ describe('GitHubPullRequest.vue', () => {
       .then(() => nextTick())
 
     // then: error mock is called
-    expect(loggerErrorMock).toHaveBeenCalledWith(err)
+    expect(loggerErrorMock).toHaveBeenCalledExactlyOnceWith(err)
   })
 
   it('opens pull requests url (repository name)', async () => {
@@ -324,7 +324,7 @@ describe('GitHubPullRequest.vue', () => {
     await wrapper.find('span.text-strong').trigger('click')
 
     // then: pr url is opened
-    expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi/miru/pulls')
+    expect(openUrlMock).toHaveBeenCalledExactlyOnceWith('https://github.com/ytakahashi/miru/pulls')
   })
 
   it('opens pull requests url (empty result)', async () => {
@@ -351,6 +351,6 @@ describe('GitHubPullRequest.vue', () => {
 
     // then: pr appears and pr url is opened
     await wrapper.find('div.clickable').trigger('click')
-    expect(openUrlMock).toHaveBeenCalledWith('https://github.com/ytakahashi/miru/pulls')
+    expect(openUrlMock).toHaveBeenCalledExactlyOnceWith('https://github.com/ytakahashi/miru/pulls')
   })
 })
