@@ -4,7 +4,9 @@ import { RepositorySetting } from '@/application/domain/model/githubRepository.j
 import { getters, mutations } from '@/store/pullRequests.js'
 
 const MockedPullRequests = vi.fn()
-MockedPullRequests.mockImplementation((url: RepositorySetting): PullRequests => {
+MockedPullRequests.mockImplementation(function MockedPullRequestsImpl(
+  url: RepositorySetting
+): PullRequests {
   return {
     fetchedAt: 1,
     repositoryUrl: url.getUrl(),

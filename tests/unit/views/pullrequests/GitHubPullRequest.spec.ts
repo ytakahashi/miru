@@ -21,13 +21,13 @@ import { nextTick } from 'vue'
 
 // GetPullRequestsUseCase mock
 const MockedGetPullRequestsUseCase = vi.fn()
-MockedGetPullRequestsUseCase.mockImplementation(
-  (cb: () => PullRequests): GetPullRequestsUseCase => {
-    return {
-      execute: async (): Promise<PullRequests> => cb(),
-    }
+MockedGetPullRequestsUseCase.mockImplementation(function MockedGetPullRequestsUseCaseImpl(
+  cb: () => PullRequests
+): GetPullRequestsUseCase {
+  return {
+    execute: async (): Promise<PullRequests> => cb(),
   }
-)
+})
 const createMock = (func: () => GetPullRequestsUseCase): GetPullRequestsUseCaseFactory => {
   return {
     create: (_githubUrl: GitHubUrl, _personalAccessToken: string) => func(),
@@ -47,11 +47,13 @@ vi.mock('@/application/core/logger', () => ({
 // WebBrowserUserCase mock
 const MockedWebBrowserUserCase = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
-  return {
-    openUrl: (url: string) => openUrlMock(url),
+MockedWebBrowserUserCase.mockImplementation(
+  function MockedWebBrowserUserCaseImpl(): WebBrowserUserCase {
+    return {
+      openUrl: (url: string) => openUrlMock(url),
+    }
   }
-})
+)
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 
 // queryOption mock

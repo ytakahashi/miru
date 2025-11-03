@@ -7,11 +7,13 @@ import { vi } from 'vitest'
 
 const MockedWebBrowserUseCase = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUseCase.mockImplementation((): WebBrowserUserCase => {
-  return {
-    openUrl: (url: string) => openUrlMock(url),
+MockedWebBrowserUseCase.mockImplementation(
+  function MockedWebBrowserUseCaseImpl(): WebBrowserUserCase {
+    return {
+      openUrl: (url: string) => openUrlMock(url),
+    }
   }
-})
+)
 const mockedWebBrowserUseCase = new MockedWebBrowserUseCase()
 
 const author = 'ytakahashi'

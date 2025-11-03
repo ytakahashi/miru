@@ -7,11 +7,13 @@ import ReleaseContent from '@/views/releases/ReleaseContent.vue'
 
 const MockedWebBrowserUserCase = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
-  return {
-    openUrl: (url: string) => openUrlMock(url),
+MockedWebBrowserUserCase.mockImplementation(
+  function MockedWebBrowserUserCaseImpl(): WebBrowserUserCase {
+    return {
+      openUrl: (url: string) => openUrlMock(url),
+    }
   }
-})
+)
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 
 const author = 'ytakahashi'
