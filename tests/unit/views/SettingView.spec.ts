@@ -23,7 +23,7 @@ const account = new Account('name', 'https://github.com/ytakahashi', 'avatar', u
 // AccountSettingUseCase mock
 const MockedAccountSettingUseCase = vi.fn()
 const newAccountSettingUseCaseMock = vi.fn()
-MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
+MockedAccountSettingUseCase.mockImplementation(function (): AccountSettingUseCase {
   return {
     setAccount(_account: Account): void {},
     getAccount(): Account {
@@ -44,7 +44,7 @@ const addSettingMock = vi.fn()
 const removeSettingMock = vi.fn()
 const MockedApplicationSettingUseCase = vi.fn()
 MockedApplicationSettingUseCase.mockImplementation(
-  (settings: Array<ApplicationSetting>): ApplicationSettingUseCase => {
+  function (settings: Array<ApplicationSetting>): ApplicationSettingUseCase {
     return {
       hasSetting: (setting: ApplicationSetting) => settings.some(s => s.equals(setting)),
       getSettings: () => settings,
@@ -56,14 +56,14 @@ MockedApplicationSettingUseCase.mockImplementation(
 
 // GitHubAccountUseCase mock
 const MockedGitHubAccountUseCase = vi.fn()
-MockedGitHubAccountUseCase.mockImplementation((): GitHubAccountUseCase => {
+MockedGitHubAccountUseCase.mockImplementation(function (): GitHubAccountUseCase {
   return {
     resolvePersonalAccessToken: async (_personalAccessToken: string) => account,
   }
 })
 
 const MockedGitHubAccountUseCaseFactory = vi.fn()
-MockedGitHubAccountUseCaseFactory.mockImplementation(() => {
+MockedGitHubAccountUseCaseFactory.mockImplementation(function () {
   return {
     newGitHubAccountUseCase: (_githubUrl: GitHubUrl) => new MockedGitHubAccountUseCase(),
   }

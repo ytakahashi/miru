@@ -7,7 +7,7 @@ import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 
 const MockedWebBrowserUserCase = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
+MockedWebBrowserUserCase.mockImplementation(function (): WebBrowserUserCase {
   return {
     openUrl: (url: string) => openUrlMock(url),
   }

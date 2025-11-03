@@ -4,7 +4,7 @@ import { RepositorySetting } from '@/application/domain/model/githubRepository.j
 import { getters, mutations } from '@/store/commits.js'
 
 const MockedCommitHistory = vi.fn()
-MockedCommitHistory.mockImplementation((s: RepositorySetting): CommitHistory => {
+MockedCommitHistory.mockImplementation(function (s: RepositorySetting): CommitHistory {
   return {
     fetchedAt: 1,
     repositoryUrl: s.getUrl(),

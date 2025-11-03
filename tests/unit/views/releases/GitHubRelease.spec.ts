@@ -14,7 +14,7 @@ import { nextTick } from 'vue'
 
 // GetReleasesUseCase mock
 const MockedGetReleasesUseCase = vi.fn()
-MockedGetReleasesUseCase.mockImplementation((cb: () => Releases): GetReleasesUseCase => {
+MockedGetReleasesUseCase.mockImplementation(function (cb: () => Releases): GetReleasesUseCase {
   return {
     execute: async (): Promise<Releases> => cb(),
   }
@@ -38,7 +38,7 @@ vi.mock('@/application/core/logger', () => ({
 // WebBrowserUserCase mock
 const MockedWebBrowserUserCase = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
+MockedWebBrowserUserCase.mockImplementation(function (): WebBrowserUserCase {
   return {
     openUrl: (url: string) => openUrlMock(url),
   }

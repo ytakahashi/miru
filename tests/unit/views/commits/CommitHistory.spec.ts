@@ -20,7 +20,7 @@ import { nextTick } from 'vue'
 // GetCommitHistoryUseCase mock
 const MockedGetCommitHistoryUseCase = vi.fn()
 MockedGetCommitHistoryUseCase.mockImplementation(
-  (cb: () => CommitHistoryModel): GetCommitHistoryUseCase => {
+  function (cb: () => CommitHistoryModel): GetCommitHistoryUseCase {
     return {
       execute: async (): Promise<CommitHistoryModel> => cb(),
     }
@@ -45,7 +45,7 @@ vi.mock('@/application/core/logger', () => ({
 // WebBrowserUserCase mock
 const MockedWebBrowserUserCase = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
+MockedWebBrowserUserCase.mockImplementation(function (): WebBrowserUserCase {
   return {
     openUrl: (url: string) => openUrlMock(url),
   }

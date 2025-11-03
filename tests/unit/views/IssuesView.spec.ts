@@ -26,7 +26,7 @@ const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
 
 const MockedApplicationSettingUseCase = vi.fn()
 MockedApplicationSettingUseCase.mockImplementation(
-  (arr: Array<ApplicationSetting>): ApplicationSettingUseCase => {
+  function (arr: Array<ApplicationSetting>): ApplicationSettingUseCase {
     return {
       hasSetting: (_setting: ApplicationSetting) => true,
       getSettings: () => arr,
@@ -37,7 +37,7 @@ MockedApplicationSettingUseCase.mockImplementation(
 )
 
 const MockedAccountSettingUseCase = vi.fn()
-MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
+MockedAccountSettingUseCase.mockImplementation(function (): AccountSettingUseCase {
   return {
     setAccount(_account: Account): void {},
     getAccount(): Account {
@@ -49,7 +49,7 @@ MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
 
 const MockedRepositorySettingUseCase = vi.fn()
 MockedRepositorySettingUseCase.mockImplementation(
-  (arr: Array<RepositorySetting>): RepositorySettingUseCase => {
+  function (arr: Array<RepositorySetting>): RepositorySettingUseCase {
     return {
       addRepositorySetting: (_s: RepositorySetting) => true,
       deleteRepositorySetting: (_s: RepositorySetting) => {},

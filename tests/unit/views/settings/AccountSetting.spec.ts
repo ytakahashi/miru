@@ -30,7 +30,7 @@ const setting = new ApplicationSetting('foo')
 // WebBrowserUserCase mock
 const MockedWebBrowserUserCase = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation((): WebBrowserUserCase => {
+MockedWebBrowserUserCase.mockImplementation(function (): WebBrowserUserCase {
   return {
     openUrl: (url: string) => openUrlMock(url),
   }
@@ -44,7 +44,7 @@ const setRepositorySettingsMock = vi.fn()
 const deleteSettingMock = vi.fn()
 const setAccountMock = vi.fn()
 const MockedAccountSettingUseCase = vi.fn()
-MockedAccountSettingUseCase.mockImplementation((): AccountSettingUseCase => {
+MockedAccountSettingUseCase.mockImplementation(function (): AccountSettingUseCase {
   return {
     setAccount: (account: Account) => setAccountMock(account),
     getAccount: () => account,
@@ -64,7 +64,7 @@ const createAccountSettingMock = (
 
 const MockedRepositorySettingUseCase = vi.fn()
 MockedRepositorySettingUseCase.mockImplementation(
-  (arr: Array<RepositorySetting>): RepositorySettingUseCase => {
+  function (arr: Array<RepositorySetting>): RepositorySettingUseCase {
     return {
       addRepositorySetting: (_s: RepositorySetting) => addRepositorySettingMock(),
       deleteRepositorySetting: (_s: RepositorySetting) => deleteRepositorySettingMock(),
