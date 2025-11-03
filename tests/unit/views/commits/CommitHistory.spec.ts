@@ -19,13 +19,13 @@ import { nextTick } from 'vue'
 
 // GetCommitHistoryUseCase mock
 const MockedGetCommitHistoryUseCase = vi.fn()
-MockedGetCommitHistoryUseCase.mockImplementation(
-  function (cb: () => CommitHistoryModel): GetCommitHistoryUseCase {
-    return {
-      execute: async (): Promise<CommitHistoryModel> => cb(),
-    }
+MockedGetCommitHistoryUseCase.mockImplementation(function MockedGetCommitHistoryUseCaseImpl(
+  cb: () => CommitHistoryModel
+): GetCommitHistoryUseCase {
+  return {
+    execute: async (): Promise<CommitHistoryModel> => cb(),
   }
-)
+})
 const createMock = (func: () => GetCommitHistoryUseCase): GetCommitHistoryUseCaseFactory => {
   return {
     create: (_githubUrl: GitHubUrl, _personalAccessToken: string) => func(),
@@ -45,11 +45,13 @@ vi.mock('@/application/core/logger', () => ({
 // WebBrowserUserCase mock
 const MockedWebBrowserUserCase = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation(function (): WebBrowserUserCase {
-  return {
-    openUrl: (url: string) => openUrlMock(url),
+MockedWebBrowserUserCase.mockImplementation(
+  function MockedWebBrowserUserCaseImpl(): WebBrowserUserCase {
+    return {
+      openUrl: (url: string) => openUrlMock(url),
+    }
   }
-})
+)
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 
 const githubUrl = GitHubUrl.from('https://github.com')

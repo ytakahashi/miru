@@ -7,11 +7,13 @@ import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 
 const MockedWebBrowserUserCase = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation(function (): WebBrowserUserCase {
-  return {
-    openUrl: (url: string) => openUrlMock(url),
+MockedWebBrowserUserCase.mockImplementation(
+  function MockedWebBrowserUserCaseImpl(): WebBrowserUserCase {
+    return {
+      openUrl: (url: string) => openUrlMock(url),
+    }
   }
-})
+)
 const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
 
 describe('GitHubRepository.vue', () => {

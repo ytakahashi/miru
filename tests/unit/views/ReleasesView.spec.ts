@@ -25,39 +25,41 @@ const githubUrl = GitHubUrl.from('https://github.com')
 const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
 
 const MockedApplicationSettingUseCase = vi.fn()
-MockedApplicationSettingUseCase.mockImplementation(
-  function (arr: Array<ApplicationSetting>): ApplicationSettingUseCase {
-    return {
-      hasSetting: (_setting: ApplicationSetting) => true,
-      getSettings: () => arr,
-      addSetting: (_setting: ApplicationSetting) => {},
-      removeSetting: (_setting: ApplicationSetting) => {},
-    }
-  }
-)
-
-const MockedAccountSettingUseCase = vi.fn()
-MockedAccountSettingUseCase.mockImplementation(function (): AccountSettingUseCase {
+MockedApplicationSettingUseCase.mockImplementation(function MockedApplicationSettingUseCaseImpl(
+  arr: Array<ApplicationSetting>
+): ApplicationSettingUseCase {
   return {
-    setAccount(_account: Account): void {},
-    getAccount(): Account {
-      return account
-    },
-    deleteSetting(): void {},
+    hasSetting: (_setting: ApplicationSetting) => true,
+    getSettings: () => arr,
+    addSetting: (_setting: ApplicationSetting) => {},
+    removeSetting: (_setting: ApplicationSetting) => {},
   }
 })
 
-const MockedRepositorySettingUseCase = vi.fn()
-MockedRepositorySettingUseCase.mockImplementation(
-  function (arr: Array<RepositorySetting>): RepositorySettingUseCase {
+const MockedAccountSettingUseCase = vi.fn()
+MockedAccountSettingUseCase.mockImplementation(
+  function MockedAccountSettingUseCaseImpl(): AccountSettingUseCase {
     return {
-      addRepositorySetting: (_s: RepositorySetting) => true,
-      deleteRepositorySetting: (_s: RepositorySetting) => {},
-      getRepositorySettings: () => arr,
-      setRepositorySettings: (_s: Array<RepositorySetting>) => {},
+      setAccount(_account: Account): void {},
+      getAccount(): Account {
+        return account
+      },
+      deleteSetting(): void {},
     }
   }
 )
+
+const MockedRepositorySettingUseCase = vi.fn()
+MockedRepositorySettingUseCase.mockImplementation(function MockedRepositorySettingUseCaseImpl(
+  arr: Array<RepositorySetting>
+): RepositorySettingUseCase {
+  return {
+    addRepositorySetting: (_s: RepositorySetting) => true,
+    deleteRepositorySetting: (_s: RepositorySetting) => {},
+    getRepositorySettings: () => arr,
+    setRepositorySettings: (_s: Array<RepositorySetting>) => {},
+  }
+})
 const mockedAccountSettingUseCaseFactory: AccountSettingUseCaseFactory = {
   newAccountSettingUseCase: (_setting: ApplicationSetting): AccountSettingUseCase => {
     return new MockedAccountSettingUseCase()

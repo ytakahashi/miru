@@ -4,7 +4,7 @@ import { RepositorySetting } from '@/application/domain/model/githubRepository.j
 import { getters, mutations } from '@/store/issues.js'
 
 const MockedIssues = vi.fn()
-MockedIssues.mockImplementation(function (s: RepositorySetting): Issues {
+MockedIssues.mockImplementation(function MockedIssuesImpl(s: RepositorySetting): Issues {
   return {
     fetchedAt: 1,
     repositoryUrl: s.getUrl(),
