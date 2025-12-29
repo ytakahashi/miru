@@ -37,11 +37,9 @@ describe('GitHubRepositories.vue', () => {
     await wrapper.find('i.fa-edit').trigger('click')
     expect(wrapper.vm.showEditMenu).toBe(true)
     const editStartEvent = wrapper.emitted('editStart')
-    if (editStartEvent === undefined) {
-      expect.unreachable('editStartEvent should not be undefined')
-    }
+    expect(editStartEvent).toBeTruthy()
     expect(editStartEvent).toHaveLength(1)
-    expect(editStartEvent[0]).toEqual([])
+    expect(editStartEvent?.[0]).toEqual([])
 
     expect(wrapper.find('i.fa-edit').exists()).toBe(false)
     expect(wrapper.find('i.fa-save').exists()).toBe(true)
