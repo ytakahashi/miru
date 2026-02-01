@@ -1,6 +1,5 @@
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting'
 import {
   RepositorySettingUseCase,
   RepositorySettingUseCaseFactory,
@@ -16,17 +15,12 @@ import { shallowMount } from '@vue/test-utils'
 import { vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 
-const MockedApplicationSettingUseCase = vi.fn()
-MockedApplicationSettingUseCase.mockImplementation(function MockedApplicationSettingUseCaseImpl(
-  arr: Array<ApplicationSetting>
-): ApplicationSettingUseCase {
-  return {
-    hasSetting: (_setting: ApplicationSetting) => true,
-    getSettings: () => arr,
-    addSetting: (_setting: ApplicationSetting) => {},
-    removeSetting: (_setting: ApplicationSetting) => {},
-  }
-})
+import {
+  createMockAccountSettingUseCaseFactory,
+  createMockApplicationSettingUseCase,
+} from '../helper/mockFactory'
+
+const mockedAccountSettingUseCaseFactory = createMockAccountSettingUseCaseFactory()
 
 const MockedRepositorySettingUseCase = vi.fn()
 MockedRepositorySettingUseCase.mockImplementation(function MockedRepositorySettingUseCaseImpl(
@@ -39,9 +33,6 @@ MockedRepositorySettingUseCase.mockImplementation(function MockedRepositorySetti
     setRepositorySettings: (_s: Array<RepositorySetting>) => {},
   }
 })
-import { createMockAccountSettingUseCaseFactory } from '../helper/mockFactory'
-
-const mockedAccountSettingUseCaseFactory = createMockAccountSettingUseCaseFactory()
 
 const RepositoryFilterMock = defineComponent({
   name: 'RepositoryFilter',
@@ -67,7 +58,7 @@ describe('PullRequestsView.vue', () => {
       global: {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
-          [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([]),
+          [ApplicationSettingUseCaseKey as symbol]: createMockApplicationSettingUseCase([]),
           [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock,
         },
         stubs: {
@@ -90,7 +81,7 @@ describe('PullRequestsView.vue', () => {
       global: {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
-          [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([
+          [ApplicationSettingUseCaseKey as symbol]: createMockApplicationSettingUseCase([
             new ApplicationSetting('foo'),
           ]),
           [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock,
@@ -117,7 +108,7 @@ describe('PullRequestsView.vue', () => {
       global: {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
-          [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([
+          [ApplicationSettingUseCaseKey as symbol]: createMockApplicationSettingUseCase([
             new ApplicationSetting('foo'),
           ]),
           [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock,
@@ -145,7 +136,7 @@ describe('PullRequestsView.vue', () => {
       global: {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
-          [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([
+          [ApplicationSettingUseCaseKey as symbol]: createMockApplicationSettingUseCase([
             new ApplicationSetting('foo'),
           ]),
           [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock,
@@ -174,7 +165,7 @@ describe('PullRequestsView.vue', () => {
       global: {
         provide: {
           [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
-          [ApplicationSettingUseCaseKey as symbol]: new MockedApplicationSettingUseCase([
+          [ApplicationSettingUseCaseKey as symbol]: createMockApplicationSettingUseCase([
             new ApplicationSetting('foo'),
           ]),
           [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock,
