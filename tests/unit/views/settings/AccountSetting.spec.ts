@@ -2,10 +2,6 @@ import { ApplicationSetting } from '@/application/domain/model/application'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import {
-  AccountSettingUseCase,
-  AccountSettingUseCaseFactory,
-} from '@/application/usecase/accountSetting'
-import {
   RepositorySettingUseCase,
   RepositorySettingUseCaseFactory,
 } from '@/application/usecase/repositorySetting'
@@ -22,6 +18,10 @@ import { shallowMount } from '@vue/test-utils'
 import { vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 import { matchedRouteKey } from 'vue-router'
+import {
+  createMockAccountSettingUseCase,
+  createMockAccountSettingUseCaseFactory,
+} from '../../helper/mockFactory'
 
 const url = new GitHubUrl('https://github.com', 'https://api.github.com/graphql')
 const account = new Account('name', 'https://github.com/ytakahashi', 'avatar', url, 'pat')
@@ -45,26 +45,11 @@ const deleteRepositorySettingMock = vi.fn()
 const setRepositorySettingsMock = vi.fn()
 const deleteSettingMock = vi.fn()
 const setAccountMock = vi.fn()
-const MockedAccountSettingUseCase = vi.fn()
-MockedAccountSettingUseCase.mockImplementation(
-  function MockedAccountSettingUseCaseImpl(): AccountSettingUseCase {
-    return {
-      setAccount: (account: Account) => setAccountMock(account),
-      getAccount: () => account,
-      deleteSetting: () => deleteSettingMock(),
-    }
-  }
-)
-const mockedAccountSettingUseCase = new MockedAccountSettingUseCase()
-
-// AccountSettingUseCaseFactory mock
-const createAccountSettingMock = (
-  func: () => AccountSettingUseCase
-): AccountSettingUseCaseFactory => {
-  return {
-    newAccountSettingUseCase: (_setting: ApplicationSetting) => func(),
-  }
-}
+const mockedAccountSettingUseCase = createMockAccountSettingUseCase({
+  setAccount: (account: Account) => setAccountMock(account),
+  getAccount: () => account,
+  deleteSetting: () => deleteSettingMock(),
+})
 
 const MockedRepositorySettingUseCase = vi.fn()
 MockedRepositorySettingUseCase.mockImplementation(function MockedRepositorySettingUseCaseImpl(
@@ -122,8 +107,8 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
-            () => new MockedAccountSettingUseCase()
+          [AccountSettingUseCaseFactoryKey as symbol]: createMockAccountSettingUseCaseFactory(
+            mockedAccountSettingUseCase
           ),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
             () => new MockedRepositorySettingUseCase([])
@@ -148,8 +133,8 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
-            () => new MockedAccountSettingUseCase()
+          [AccountSettingUseCaseFactoryKey as symbol]: createMockAccountSettingUseCaseFactory(
+            mockedAccountSettingUseCase
           ),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
             () => new MockedRepositorySettingUseCase(repos)
@@ -186,8 +171,8 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
-            () => new MockedAccountSettingUseCase()
+          [AccountSettingUseCaseFactoryKey as symbol]: createMockAccountSettingUseCaseFactory(
+            mockedAccountSettingUseCase
           ),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
             () => new MockedRepositorySettingUseCase(repos)
@@ -224,8 +209,8 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
-            () => new MockedAccountSettingUseCase()
+          [AccountSettingUseCaseFactoryKey as symbol]: createMockAccountSettingUseCaseFactory(
+            mockedAccountSettingUseCase
           ),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
             () => new MockedRepositorySettingUseCase(repos)
@@ -273,8 +258,8 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
-            () => new MockedAccountSettingUseCase()
+          [AccountSettingUseCaseFactoryKey as symbol]: createMockAccountSettingUseCaseFactory(
+            mockedAccountSettingUseCase
           ),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
             () => new MockedRepositorySettingUseCase([])
@@ -295,8 +280,8 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
-            () => mockedAccountSettingUseCase
+          [AccountSettingUseCaseFactoryKey as symbol]: createMockAccountSettingUseCaseFactory(
+            mockedAccountSettingUseCase
           ),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
             () => new MockedRepositorySettingUseCase([])
@@ -326,8 +311,8 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
-            () => new MockedAccountSettingUseCase()
+          [AccountSettingUseCaseFactoryKey as symbol]: createMockAccountSettingUseCaseFactory(
+            mockedAccountSettingUseCase
           ),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
             () => new MockedRepositorySettingUseCase([])
@@ -349,8 +334,8 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
-            () => new MockedAccountSettingUseCase()
+          [AccountSettingUseCaseFactoryKey as symbol]: createMockAccountSettingUseCaseFactory(
+            mockedAccountSettingUseCase
           ),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
             () => new MockedRepositorySettingUseCase([])
@@ -378,8 +363,8 @@ describe('AccountSetting.vue', () => {
       global: {
         provide: {
           [matchedRouteKey as symbol]: mockRoute,
-          [AccountSettingUseCaseFactoryKey as symbol]: createAccountSettingMock(
-            () => new MockedAccountSettingUseCase()
+          [AccountSettingUseCaseFactoryKey as symbol]: createMockAccountSettingUseCaseFactory(
+            mockedAccountSettingUseCase
           ),
           [RepositorySettingUseCaseFactoryKey as symbol]: createRepositorySettingMock(
             () => new MockedRepositorySettingUseCase([])
