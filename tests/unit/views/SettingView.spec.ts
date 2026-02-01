@@ -1,11 +1,5 @@
 import { ApplicationSetting } from '@/application/domain/model/application'
-import { Account, GitHubUrl } from '@/application/domain/model/github'
-import {
-  AccountSettingUseCase,
-  AccountSettingUseCaseFactory,
-} from '@/application/usecase/accountSetting'
 import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting'
-import { GitHubAccountUseCase } from '@/application/usecase/githubAccount'
 import {
   AccountSettingUseCaseFactoryKey,
   ApplicationSettingUseCaseKey,
@@ -17,29 +11,13 @@ import { shallowMount } from '@vue/test-utils'
 import { vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 
-const url = new GitHubUrl('https://github.com', 'https://api.github.com/graphql')
-const account = new Account('name', 'https://github.com/ytakahashi', 'avatar', url, 'pat')
-
 // AccountSettingUseCase mock
-const MockedAccountSettingUseCase = vi.fn()
-const newAccountSettingUseCaseMock = vi.fn()
-MockedAccountSettingUseCase.mockImplementation(
-  function MockedAccountSettingUseCaseImpl(): AccountSettingUseCase {
-    return {
-      setAccount(_account: Account): void {},
-      getAccount(): Account {
-        return account
-      },
-      deleteSetting(): void {},
-    }
-  }
-)
-const mockedAccountSettingUseCaseFactory: AccountSettingUseCaseFactory = {
-  newAccountSettingUseCase: (setting: ApplicationSetting): AccountSettingUseCase => {
-    newAccountSettingUseCaseMock(setting)
-    return new MockedAccountSettingUseCase()
-  },
-}
+import {
+  createMockAccountSettingUseCaseFactory,
+  createMockGitHubAccountUseCaseFactory,
+} from '../helper/mockFactory'
+
+const mockedAccountSettingUseCaseFactory = createMockAccountSettingUseCaseFactory()
 
 // ApplicationSettingUseCase mock
 const addSettingMock = vi.fn()
@@ -57,24 +35,7 @@ MockedApplicationSettingUseCase.mockImplementation(function MockedApplicationSet
 })
 
 // GitHubAccountUseCase mock
-const MockedGitHubAccountUseCase = vi.fn()
-MockedGitHubAccountUseCase.mockImplementation(
-  function MockedGitHubAccountUseCaseImpl(): GitHubAccountUseCase {
-    return {
-      resolvePersonalAccessToken: async (_personalAccessToken: string) => account,
-    }
-  }
-)
-
-const MockedGitHubAccountUseCaseFactory = vi.fn()
-MockedGitHubAccountUseCaseFactory.mockImplementation(
-  function MockedGitHubAccountUseCaseFactoryImpl() {
-    return {
-      newGitHubAccountUseCase: (_githubUrl: GitHubUrl) => new MockedGitHubAccountUseCase(),
-    }
-  }
-)
-const mockedGitHubAccountUseCaseFactory = new MockedGitHubAccountUseCaseFactory()
+const mockedGitHubAccountUseCaseFactory = createMockGitHubAccountUseCaseFactory()
 
 // logger mock
 vi.mock('@/application/core/logger', () => ({

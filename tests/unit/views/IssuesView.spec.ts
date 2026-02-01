@@ -1,10 +1,5 @@
 import { ApplicationSetting } from '@/application/domain/model/application'
-import { Account, GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import {
-  AccountSettingUseCase,
-  AccountSettingUseCaseFactory,
-} from '@/application/usecase/accountSetting'
 import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting'
 import {
   RepositorySettingUseCase,
@@ -21,9 +16,6 @@ import { shallowMount } from '@vue/test-utils'
 import { vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 
-const githubUrl = GitHubUrl.from('https://github.com')
-const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
-
 const MockedApplicationSettingUseCase = vi.fn()
 MockedApplicationSettingUseCase.mockImplementation(function MockedApplicationSettingUseCaseImpl(
   arr: Array<ApplicationSetting>
@@ -36,18 +28,9 @@ MockedApplicationSettingUseCase.mockImplementation(function MockedApplicationSet
   }
 })
 
-const MockedAccountSettingUseCase = vi.fn()
-MockedAccountSettingUseCase.mockImplementation(
-  function MockedAccountSettingUseCaseImpl(): AccountSettingUseCase {
-    return {
-      setAccount(_account: Account): void {},
-      getAccount(): Account {
-        return account
-      },
-      deleteSetting(): void {},
-    }
-  }
-)
+import { createMockAccountSettingUseCaseFactory } from '../helper/mockFactory'
+
+const mockedAccountSettingUseCaseFactory = createMockAccountSettingUseCaseFactory()
 
 const MockedRepositorySettingUseCase = vi.fn()
 MockedRepositorySettingUseCase.mockImplementation(function MockedRepositorySettingUseCaseImpl(
@@ -60,11 +43,6 @@ MockedRepositorySettingUseCase.mockImplementation(function MockedRepositorySetti
     setRepositorySettings: (_s: Array<RepositorySetting>) => {},
   }
 })
-const mockedAccountSettingUseCaseFactory: AccountSettingUseCaseFactory = {
-  newAccountSettingUseCase: (_setting: ApplicationSetting): AccountSettingUseCase => {
-    return new MockedAccountSettingUseCase()
-  },
-}
 
 const RepositoryFilterMock = defineComponent({
   name: 'RepositoryFilter',
