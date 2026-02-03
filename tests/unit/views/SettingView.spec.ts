@@ -1,5 +1,4 @@
 import { ApplicationSetting } from '@/application/domain/model/application'
-import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting'
 import {
   AccountSettingUseCaseFactoryKey,
   ApplicationSettingUseCaseKey,
@@ -14,6 +13,7 @@ import { defineComponent, h } from 'vue'
 // AccountSettingUseCase mock
 import {
   createMockAccountSettingUseCaseFactory,
+  createMockApplicationSettingUseCase,
   createMockGitHubAccountUseCaseFactory,
 } from '../helper/mockFactory'
 
@@ -22,17 +22,12 @@ const mockedAccountSettingUseCaseFactory = createMockAccountSettingUseCaseFactor
 // ApplicationSettingUseCase mock
 const addSettingMock = vi.fn()
 const removeSettingMock = vi.fn()
-const MockedApplicationSettingUseCase = vi.fn()
-MockedApplicationSettingUseCase.mockImplementation(function MockedApplicationSettingUseCaseImpl(
-  settings: Array<ApplicationSetting>
-): ApplicationSettingUseCase {
-  return {
-    hasSetting: (setting: ApplicationSetting) => settings.some(s => s.equals(setting)),
-    getSettings: () => settings,
+const createApplicationSettingMock = (settings: Array<ApplicationSetting> = []) => {
+  return createMockApplicationSettingUseCase(settings, {
     addSetting: (_setting: ApplicationSetting) => addSettingMock(),
     removeSetting: (_setting: ApplicationSetting) => removeSettingMock(),
-  }
-})
+  })
+}
 
 // GitHubAccountUseCase mock
 const mockedGitHubAccountUseCaseFactory = createMockGitHubAccountUseCaseFactory()
@@ -55,7 +50,7 @@ describe('SettingView.vue', () => {
   })
 
   it('renders when account is not configured', async () => {
-    const mockedApplicationSettingUseCase = new MockedApplicationSettingUseCase([])
+    const mockedApplicationSettingUseCase = createApplicationSettingMock([])
     const wrapper = shallowMount(SettingView, {
       global: {
         provide: {
@@ -75,7 +70,7 @@ describe('SettingView.vue', () => {
     const applicationSetting2 = new ApplicationSetting('test2')
     const applicationSettings = [applicationSetting1, applicationSetting2]
 
-    const mockedApplicationSettingUseCase = new MockedApplicationSettingUseCase(applicationSettings)
+    const mockedApplicationSettingUseCase = createApplicationSettingMock(applicationSettings)
     const wrapper = shallowMount(SettingView, {
       global: {
         provide: {
@@ -91,7 +86,7 @@ describe('SettingView.vue', () => {
   })
 
   it('shows edit menu', async () => {
-    const mockedApplicationSettingUseCase = new MockedApplicationSettingUseCase([])
+    const mockedApplicationSettingUseCase = createApplicationSettingMock([])
     const wrapper = shallowMount(SettingView, {
       global: {
         provide: {
@@ -119,7 +114,7 @@ describe('SettingView.vue', () => {
   })
 
   it('can add an account', async () => {
-    const mockedApplicationSettingUseCase = new MockedApplicationSettingUseCase([])
+    const mockedApplicationSettingUseCase = createApplicationSettingMock([])
     const wrapper = shallowMount(SettingView, {
       global: {
         provide: {
@@ -155,7 +150,7 @@ describe('SettingView.vue', () => {
     const applicationSetting2 = new ApplicationSetting('test2')
     const applicationSettings = [applicationSetting1, applicationSetting2]
 
-    const mockedApplicationSettingUseCase = new MockedApplicationSettingUseCase(applicationSettings)
+    const mockedApplicationSettingUseCase = createApplicationSettingMock(applicationSettings)
     const wrapper = shallowMount(SettingView, {
       global: {
         provide: {
@@ -181,7 +176,7 @@ describe('SettingView.vue', () => {
   })
 
   it('shows error message when add account button is clicked without input', async () => {
-    const mockedApplicationSettingUseCase = new MockedApplicationSettingUseCase([])
+    const mockedApplicationSettingUseCase = createApplicationSettingMock([])
     const wrapper = shallowMount(SettingView, {
       global: {
         provide: {
@@ -204,7 +199,7 @@ describe('SettingView.vue', () => {
   })
 
   it('shows error message for invalid url', async () => {
-    const mockedApplicationSettingUseCase = new MockedApplicationSettingUseCase([])
+    const mockedApplicationSettingUseCase = createApplicationSettingMock([])
     const wrapper = shallowMount(SettingView, {
       global: {
         provide: {
@@ -232,7 +227,7 @@ describe('SettingView.vue', () => {
   })
 
   it('shows/hides personal access token input', async () => {
-    const mockedApplicationSettingUseCase = new MockedApplicationSettingUseCase([])
+    const mockedApplicationSettingUseCase = createApplicationSettingMock([])
     const wrapper = shallowMount(SettingView, {
       global: {
         provide: {

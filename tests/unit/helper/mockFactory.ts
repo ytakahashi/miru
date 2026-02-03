@@ -8,6 +8,7 @@ import {
   GitHubAccountUseCase,
   GitHubAccountUseCaseFactory,
 } from '@/application/usecase/githubAccount'
+import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting'
 import { vi } from 'vitest'
 
 const defaultGithubUrl = new GitHubUrl('https://github.com', 'https://api.github.com/graphql')
@@ -52,5 +53,18 @@ export const createMockGitHubAccountUseCaseFactory = (
 ): GitHubAccountUseCaseFactory => {
   return {
     newGitHubAccountUseCase: (_githubUrl: GitHubUrl) => mockUseCase,
+  }
+}
+
+export const createMockApplicationSettingUseCase = (
+  settings: Array<ApplicationSetting> = [],
+  overrides: Partial<ApplicationSettingUseCase> = {}
+): ApplicationSettingUseCase => {
+  return {
+    hasSetting: (setting: ApplicationSetting) => settings.some(s => s.equals(setting)),
+    getSettings: () => settings,
+    addSetting: vi.fn(),
+    removeSetting: vi.fn(),
+    ...overrides,
   }
 }
