@@ -1,10 +1,6 @@
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import {
-  RepositorySettingUseCase,
-  RepositorySettingUseCaseFactory,
-} from '@/application/usecase/repositorySetting'
-import {
   AccountSettingUseCaseFactoryKey,
   ApplicationSettingUseCaseKey,
   RepositorySettingUseCaseFactoryKey,
@@ -18,21 +14,11 @@ import { defineComponent, h } from 'vue'
 import {
   createMockAccountSettingUseCaseFactory,
   createMockApplicationSettingUseCase,
+  createMockRepositorySettingUseCaseFactory,
+  createMockRepositorySettingUseCase,
 } from '../helper/mockFactory'
 
 const mockedAccountSettingUseCaseFactory = createMockAccountSettingUseCaseFactory()
-
-const MockedRepositorySettingUseCase = vi.fn()
-MockedRepositorySettingUseCase.mockImplementation(function MockedRepositorySettingUseCaseImpl(
-  arr: Array<RepositorySetting>
-): RepositorySettingUseCase {
-  return {
-    addRepositorySetting: (_s: RepositorySetting) => true,
-    deleteRepositorySetting: (_s: RepositorySetting) => {},
-    getRepositorySettings: () => arr,
-    setRepositorySettings: (_s: Array<RepositorySetting>) => {},
-  }
-})
 
 const RepositoryFilterMock = defineComponent({
   name: 'RepositoryFilter',
@@ -49,10 +35,9 @@ vi.mock('@/application/core/logger', () => ({
 
 describe('PullRequestsView.vue', () => {
   it('renders when account is not configured', async () => {
-    const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
-      newRepositorySettingUseCase: (_setting: ApplicationSetting) =>
-        new MockedRepositorySettingUseCase([]),
-    }
+    const repositorySettingUseCaseFactoryMock = createMockRepositorySettingUseCaseFactory(
+      createMockRepositorySettingUseCase([])
+    )
 
     const wrapper = shallowMount(PullRequestView, {
       global: {
@@ -72,10 +57,9 @@ describe('PullRequestsView.vue', () => {
   })
 
   it('renders when no repositories are configured', async () => {
-    const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
-      newRepositorySettingUseCase: (_setting: ApplicationSetting) =>
-        new MockedRepositorySettingUseCase([]),
-    }
+    const repositorySettingUseCaseFactoryMock = createMockRepositorySettingUseCaseFactory(
+      createMockRepositorySettingUseCase([])
+    )
 
     const wrapper = shallowMount(PullRequestView, {
       global: {
@@ -99,10 +83,9 @@ describe('PullRequestsView.vue', () => {
   it('renders when two repositories are configured', async () => {
     const repository1 = new RepositorySetting('https://github.com/a/b')
     const repository2 = new RepositorySetting('https://github.com/c/d')
-    const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
-      newRepositorySettingUseCase: (_setting: ApplicationSetting) =>
-        new MockedRepositorySettingUseCase([repository1, repository2]),
-    }
+    const repositorySettingUseCaseFactoryMock = createMockRepositorySettingUseCaseFactory(
+      createMockRepositorySettingUseCase([repository1, repository2])
+    )
 
     const wrapper = shallowMount(PullRequestView, {
       global: {
@@ -127,10 +110,9 @@ describe('PullRequestsView.vue', () => {
     const repository1 = new RepositorySetting('https://github.com/a/b')
     const repository2 = new RepositorySetting('https://github.com/c/d')
     repository2.setPullRequestPreference(false)
-    const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
-      newRepositorySettingUseCase: (_setting: ApplicationSetting) =>
-        new MockedRepositorySettingUseCase([repository1, repository2]),
-    }
+    const repositorySettingUseCaseFactoryMock = createMockRepositorySettingUseCaseFactory(
+      createMockRepositorySettingUseCase([repository1, repository2])
+    )
 
     const wrapper = shallowMount(PullRequestView, {
       global: {
@@ -156,10 +138,9 @@ describe('PullRequestsView.vue', () => {
     const repository2 = new RepositorySetting('https://github.com/c/d')
     repository1.setCategory('category1')
     repository2.setCategory('category2')
-    const repositorySettingUseCaseFactoryMock: RepositorySettingUseCaseFactory = {
-      newRepositorySettingUseCase: (_setting: ApplicationSetting) =>
-        new MockedRepositorySettingUseCase([repository1, repository2]),
-    }
+    const repositorySettingUseCaseFactoryMock = createMockRepositorySettingUseCaseFactory(
+      createMockRepositorySettingUseCase([repository1, repository2])
+    )
 
     const wrapper = shallowMount(PullRequestView, {
       global: {
