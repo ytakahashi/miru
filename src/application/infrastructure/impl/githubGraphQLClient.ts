@@ -215,6 +215,15 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                 }
                 viewerDidAuthor
                 state
+                commits(last: 1) {
+                  nodes {
+                    commit {
+                      statusCheckRollup {
+                        state
+                      }
+                    }
+                  }
+                }
               }
             }
           }

@@ -1,5 +1,6 @@
 import { GitHubAccessor, Option } from '@/application/domain/interface/githubAccessor.js'
 import {
+  CheckStatus,
   Commit,
   CommitHistory,
   Issue,
@@ -130,7 +131,10 @@ export class GetPullRequestsUseCaseInteractor implements GetPullRequestsUseCase 
               v.assignees.nodes.some(a => a.isViewer),
               v.reviewRequests.nodes.some(r => r.requestedReviewer?.isViewer),
               v.viewerDidAuthor,
-              v.state
+              v.state,
+              v.commits.nodes.length > 0
+                ? (v.commits.nodes[0].commit.statusCheckRollup?.state as CheckStatus)
+                : ''
             )
         )
       return new PullRequests(setting, prs, v.totalCount)

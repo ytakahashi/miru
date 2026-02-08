@@ -58,7 +58,19 @@
             }
           ]
         },
-        "viewerDidAuthor": false
+        "viewerDidAuthor": false,
+        "state": "OPEN",
+        "commits": {
+          "nodes": [
+            {
+              "commit": {
+                "statusCheckRollup": {
+                  "state": "SUCCESS"
+                }
+              }
+            }
+          ]
+        }
       }
     }
   ]
