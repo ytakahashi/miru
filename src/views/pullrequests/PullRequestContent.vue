@@ -7,6 +7,7 @@
         </span>
       </span>
       <span>
+        <StatusIcon :status="pullRequest.status" />
         <span v-if="pullRequest.isDraft" class="draft-mark">Draft</span>
         <span v-if="pullRequest.state === 'MERGED'" class="merged-mark">
           <i class="far fa-check-circle"></i>Merged
@@ -55,6 +56,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import { Label, PullRequest } from '@/application/domain/model/github'
+import StatusIcon from '@/components/StatusIcon.vue'
 import { inject } from '@/plugins/di/injector'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 
@@ -68,6 +70,9 @@ type LabelStyle = {
 
 export default defineComponent({
   name: 'PullRequestContent',
+  components: {
+    StatusIcon,
+  },
   props: {
     pullRequest: {
       type: PullRequest,

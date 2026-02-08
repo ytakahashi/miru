@@ -1,6 +1,7 @@
 import { Label, PullRequest, PullRequestReviews } from '@/application/domain/model/github'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
+import StatusIcon from '@/components/StatusIcon.vue'
 import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
 import { shallowMount } from '@vue/test-utils'
 import { vi } from 'vitest'
@@ -77,6 +78,7 @@ describe('PullRequestContent.vue', () => {
     expect(tooltips[1].text()).toBe('22+')
     expect(tooltips[1].attributes('data-tooltip')).toBe('2 comments, 20+ reviews')
     expect(wrapper.findAll('span.github-label')).toHaveLength(2)
+    expect(wrapper.findComponent(StatusIcon).exists()).toBe(true)
   })
 
   it('renders pull request (review requested)', async () => {
