@@ -207,6 +207,8 @@ export class PullRequestReviews {
     this.hasRemainedItem = hasRemainedItem
   }
 }
+
+export type CheckStatus = 'SUCCESS' | 'FAILURE' | 'PENDING' | 'ABORTED' | 'IN_PROGRESS' | ''
 export class PullRequest extends BaseContent {
   public readonly issueNumber: number
   public readonly labels: Array<Label>
@@ -221,6 +223,7 @@ export class PullRequest extends BaseContent {
   public readonly isReviewRequested: boolean
   public readonly viewerDidAuthor: boolean
   public readonly state: string
+  public readonly status: CheckStatus
 
   constructor(
     authorName: string,
@@ -240,7 +243,8 @@ export class PullRequest extends BaseContent {
     isAssigned: boolean,
     isReviewRequested: boolean,
     viewerDidAuthor: boolean,
-    state: string
+    state: string,
+    status: CheckStatus = ''
   ) {
     super(authorName, title, url, createdAt, updatedAt)
     this.issueNumber = issueNumber
@@ -257,6 +261,7 @@ export class PullRequest extends BaseContent {
     this.isReviewRequested = isReviewRequested
     this.viewerDidAuthor = viewerDidAuthor
     this.state = state
+    this.status = status
   }
 }
 

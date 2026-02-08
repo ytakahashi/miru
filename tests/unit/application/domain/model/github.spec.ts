@@ -1,4 +1,12 @@
-import { Commit, GitHubUrl, Issue, Issues, Label } from '@/application/domain/model/github.js'
+import {
+  Commit,
+  GitHubUrl,
+  Issue,
+  Issues,
+  Label,
+  PullRequest,
+  PullRequestReviews,
+} from '@/application/domain/model/github.js'
 import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 
 describe('GitHubUrl', () => {
@@ -79,6 +87,46 @@ describe('Issue', () => {
     expect(actual.viewerDidAuthor).toBe(false)
     expect(actual.labels).toHaveLength(0)
     expect(actual.state).toBe('OPEN')
+  })
+})
+
+describe('PullRequest', () => {
+  it('holds parameters', () => {
+    const actual = new PullRequest(
+      'author',
+      'pr title',
+      'pr url',
+      '2020-12-15T21:23:56Z',
+      '2021-01-02T23:44:14Z',
+      123,
+      [],
+      2,
+      3,
+      100,
+      10,
+      1,
+      false,
+      new PullRequestReviews(10, false),
+      false,
+      false,
+      true,
+      'OPEN',
+      'SUCCESS'
+    )
+
+    expect(actual.title).toBe('pr title')
+    expect(actual.url).toBe('pr url')
+    expect(actual.getCreatedRelativeDate()).toMatch(/ago$/)
+    expect(actual.getCreatedLocalDate()).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)
+    expect(actual.getUpdatedRelativeDate()).toMatch(/ago$/)
+    expect(actual.getUpdatedLocalDate()).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)
+    expect(actual.isAssigned).toBe(false)
+    expect(actual.viewerDidAuthor).toBe(true)
+    expect(actual.isDraft).toBe(false)
+    expect(actual.isReviewRequested).toBe(false)
+    expect(actual.labels).toHaveLength(0)
+    expect(actual.state).toBe('OPEN')
+    expect(actual.status).toBe('SUCCESS')
   })
 })
 

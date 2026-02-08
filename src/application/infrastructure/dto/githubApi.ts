@@ -86,6 +86,20 @@ export type ReviewRequestConnection = {
   nodes: ReviewRequest[]
 }
 
+export type StatusCheckRollup = {
+  state: string
+}
+
+export type Commit = {
+  statusCheckRollup?: StatusCheckRollup
+}
+export type CommitEdge = {
+  commit: Commit
+}
+export type CommitConnection = {
+  nodes: CommitEdge[]
+}
+
 export type PullRequest = {
   assignees: UserConnection
   author: GitHubUser
@@ -105,6 +119,7 @@ export type PullRequest = {
   reviewRequests: ReviewRequestConnection
   viewerDidAuthor: boolean
   state: string
+  commits: CommitConnection
 }
 
 export type PullRequestEdge = {

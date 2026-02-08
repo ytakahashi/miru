@@ -106,6 +106,7 @@ describe('GitHubRepositoryUseCaseInteractor.ts', () => {
       expect(actualPullRequest.isAssigned).toBe(false)
       expect(actualPullRequest.isReviewRequested).toBe(true)
       expect(actualPullRequest.viewerDidAuthor).toBe(false)
+      expect(actualPullRequest.status).toBe('SUCCESS')
     })
   })
 
