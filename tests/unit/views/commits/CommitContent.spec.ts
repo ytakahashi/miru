@@ -2,6 +2,7 @@ import { Commit } from '@/application/domain/model/github'
 import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 import CommitContent from '@/views/commits/CommitContent.vue'
+import StatusIcon from '@/components/StatusIcon.vue'
 import { mount } from '@vue/test-utils'
 import { vi } from 'vitest'
 
@@ -32,7 +33,8 @@ describe('CommitContent.vue', () => {
     'ytakahashi',
     '2021-03-13T00:00:00Z',
     'ytakahashi',
-    '2021-03-13T00:00:01Z'
+    '2021-03-13T00:00:01Z',
+    'SUCCESS'
   )
 
   it('renders commit', async () => {
@@ -56,6 +58,7 @@ describe('CommitContent.vue', () => {
 
     expect(wrapper.find('p.commit-message_headline').text()).toBe('commit message')
     expect(wrapper.find('p.commit-message').text()).toBe('')
+    expect(wrapper.findComponent(StatusIcon).exists()).toBe(true)
   })
 
   it('can open url', async () => {
