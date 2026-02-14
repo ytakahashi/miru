@@ -162,6 +162,7 @@ describe('GitHubRepositoryUseCaseInteractor.ts', () => {
       expect(actualCommit0.authoredDate).toBe('2021-03-01T21:12:41Z')
       expect(actualCommit0.committerName).toBe(undefined)
       expect(actualCommit0.committedDate).toBe('2021-03-09T21:12:41Z')
+      expect(actualCommit0.status).toBe('SUCCESS')
     })
   })
 })

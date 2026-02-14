@@ -155,12 +155,14 @@ describe('Commit', () => {
     'ytakahashi',
     '2021-03-13T00:00:00Z',
     'ytakahashi',
-    '2021-03-13T00:00:01Z'
+    '2021-03-13T00:00:01Z',
+    'SUCCESS'
   )
   it('holds parameters and all methods work', () => {
     expect(sut.getAuthoredLocalDate()).not.toBe(undefined)
     expect(sut.getCommittedLocalDate()).not.toBe(undefined)
     expect(sut.getAuthorInformation()).toMatch(/^ytakahashi authored .+ ago$/)
     expect(sut.getCommitInformation()).toMatch(/^ytakahashi committed .+ ago$/)
+    expect(sut.status).toBe('SUCCESS')
   })
 })

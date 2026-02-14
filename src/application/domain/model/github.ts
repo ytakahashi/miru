@@ -275,6 +275,7 @@ export class Commit {
   public readonly authoredDate: string
   public readonly committerName?: string
   public readonly committedDate: string
+  public readonly status: CheckStatus
 
   constructor(
     message: string,
@@ -285,7 +286,8 @@ export class Commit {
     authorName: string | undefined,
     authoredDate: string,
     committerName: string | undefined,
-    committedDate: string
+    committedDate: string,
+    status: CheckStatus = ''
   ) {
     this.message = message
     this.commitUrl = commitUrl
@@ -296,6 +298,7 @@ export class Commit {
     this.authoredDate = authoredDate
     this.committerName = committerName
     this.committedDate = committedDate
+    this.status = status
   }
 
   getAuthoredRelativeDate = (): string => {

@@ -226,7 +226,8 @@ export class GetCommitHistoryUseCaseInteractor implements GetCommitHistoryUseCas
             c.author?.user?.login,
             c.authoredDate,
             c.committer?.user?.login,
-            c.committedDate
+            c.committedDate,
+            (c.statusCheckRollup?.state as CheckStatus) ?? ''
           )
       )
       return new CommitHistory(setting, history, v.nodes.length)

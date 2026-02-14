@@ -363,6 +363,9 @@ export class GitHubGraphQLClient implements GitHubAccessor {
                     }
                     deletions
                     message
+                    statusCheckRollup {
+                      state
+                    }
                   }
                 }
               }

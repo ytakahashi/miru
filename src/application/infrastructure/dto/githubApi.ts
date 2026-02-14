@@ -147,6 +147,7 @@ export type CommitNode = {
   committer?: GitActor
   deletions: number
   message: string
+  statusCheckRollup?: StatusCheckRollup
 }
 
 export type CommitHistoryConnection = {

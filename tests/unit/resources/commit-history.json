@@ -15,7 +15,10 @@
         "user": null
       },
       "deletions": 98,
-      "message": "refactor: separate usecase (#66)"
+      "message": "refactor: separate usecase (#66)",
+      "statusCheckRollup": {
+        "state": "SUCCESS"
+      }
     },
     {
       "additions": 1,
