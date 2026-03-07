@@ -4,9 +4,12 @@
       <span class="tooltip" :data-tooltip="commit.committedDate">
         <i class="fas fa-clock"></i>{{ commit.getCommittedRelativeDate() }}
       </span>
-      <span class="tooltip" :data-tooltip="commitHash">
-        <span>{{ commitHash?.slice(0, 8) }}</span>
-      </span>
+      <div class="commit-hash">
+        <StatusIcon :status="commit.status" />
+        <span class="tooltip" :data-tooltip="commitHash">
+          <span>{{ commitHash?.slice(0, 8) }}</span>
+        </span>
+      </div>
     </div>
     <div>
       <p class="commit-message_headline">{{ commitMessage.firstLine }}</p>
@@ -25,6 +28,7 @@
 
 <script lang="ts">
 import { Commit } from '@/application/domain/model/github'
+import StatusIcon from '@/components/StatusIcon.vue'
 import { inject } from '@/plugins/di/injector'
 import { WebBrowserUserCaseKey } from '@/plugins/di/types'
 import { computed, defineComponent } from 'vue'
@@ -35,6 +39,9 @@ type PropsType = {
 
 export default defineComponent({
   name: 'CommitContent',
+  components: {
+    StatusIcon,
+  },
   props: {
     commit: {
       type: Commit,
@@ -86,6 +93,13 @@ export default defineComponent({
 
 .commit-information {
   @include contents.base-content-description(space-between);
+  @include contents.base-content-description(space-between);
+  align-items: center;
+}
+
+.commit-hash {
+  display: flex;
+  align-items: center;
 }
 
 .commit-description {
