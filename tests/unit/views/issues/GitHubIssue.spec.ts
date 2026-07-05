@@ -60,7 +60,6 @@ mockedQueryOption.issues.mockReturnValue({
 const githubUrl = GitHubUrl.from('https://github.com')
 const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
 const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
-setting.setCategory('category1')
 
 describe('GitHubIssue.vue', () => {
   beforeEach(() => {
@@ -82,7 +81,6 @@ describe('GitHubIssue.vue', () => {
       props: {
         account,
         repositorySetting: setting,
-        fetchTrigger: '',
       },
     })
 
@@ -139,7 +137,6 @@ describe('GitHubIssue.vue', () => {
       props: {
         account,
         repositorySetting: setting,
-        fetchTrigger: '',
       },
     })
 
@@ -164,80 +161,6 @@ describe('GitHubIssue.vue', () => {
     expect(openUrlMock).not.toHaveBeenCalled()
   })
 
-  it('renders when fetchTrigger is updated', async () => {
-    const issue1 = new Issue(
-      'author 1',
-      'issue title 1',
-      'issue url 1',
-      '2020-12-15T21:23:56Z',
-      '2021-01-02T23:44:14Z',
-      123,
-      [],
-      2,
-      3,
-      false,
-      false,
-      'OPEN'
-    )
-    const issue2 = new Issue(
-      'author 2',
-      'issue title 2',
-      'issue url 2',
-      '2020-12-15T21:23:56Z',
-      '2021-01-02T23:44:14Z',
-      124,
-      [],
-      2,
-      3,
-      false,
-      false,
-      'OPEN'
-    )
-    const issues = new Issues(setting, [issue1, issue2], 2)
-    const wrapper = shallowMount(GitHubIssue, {
-      global: {
-        provide: {
-          [GetIssuesUseCaseFactoryKey as symbol]: createMock(
-            () => new MockedGetIssuesUseCase(() => issues)
-          ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
-        },
-      },
-      props: {
-        account,
-        repositorySetting: setting,
-        fetchTrigger: '',
-      },
-    })
-
-    // when: fetchTrigger unmatches
-    await wrapper.setProps({ fetchTrigger: 'categoryX' })
-    await wrapper.vm.$nextTick()
-
-    // then: issues don't appear
-    expect(wrapper.findAllComponents(IssueContent)).toHaveLength(0)
-
-    // when: fetchTrigger matches
-    await wrapper.setProps({ fetchTrigger: 'category1' })
-    await wrapper.vm.$nextTick()
-
-    // then: issues appear
-    expect(wrapper.text()).toContain('ytakahashi/miru')
-    expect(wrapper.text()).not.toContain('There aren’t any open issues.')
-    expect(wrapper.find('.clear-button').exists()).toBe(true)
-    expect(wrapper.findAllComponents(IssueContent)).toHaveLength(2)
-    expect(wrapper.text()).toContain('showing 2 of 2 issues')
-    expect(openUrlMock).not.toHaveBeenCalled()
-
-    // when: click clear button
-    await wrapper.find('.clear-button').trigger('click')
-    await wrapper.vm.$nextTick()
-
-    // then: issues disappear
-    expect(wrapper.findAllComponents(IssueContent)).toHaveLength(0)
-    expect(openUrlMock).not.toHaveBeenCalled()
-  })
-
   it('fails to get issues', async () => {
     const err = new Error('cause')
     const supplier = () => {
@@ -256,7 +179,6 @@ describe('GitHubIssue.vue', () => {
       props: {
         account,
         repositorySetting: setting,
-        fetchTrigger: '',
       },
     })
 
@@ -284,7 +206,6 @@ describe('GitHubIssue.vue', () => {
       props: {
         account,
         repositorySetting: setting,
-        fetchTrigger: '',
       },
     })
 
@@ -309,7 +230,6 @@ describe('GitHubIssue.vue', () => {
       props: {
         account,
         repositorySetting: setting,
-        fetchTrigger: '',
       },
     })
 

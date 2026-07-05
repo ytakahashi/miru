@@ -102,7 +102,7 @@ describe('ReleasesView.vue', () => {
       },
     })
     await wrapper.vm.$nextTick()
-    expect(wrapper.text()).toBe('default')
+    expect(wrapper.text()).toBe('')
     expect(wrapper.findAllComponents(GitHubRelease)).toHaveLength(2)
   })
 
@@ -129,35 +129,7 @@ describe('ReleasesView.vue', () => {
       },
     })
     await wrapper.vm.$nextTick()
-    expect(wrapper.text()).toBe('default')
+    expect(wrapper.text()).toBe('')
     expect(wrapper.findAllComponents(GitHubRelease)).toHaveLength(1)
-  })
-
-  it('renders when two categories are configured', async () => {
-    const repository1 = new RepositorySetting('https://github.com/a/b')
-    const repository2 = new RepositorySetting('https://github.com/c/d')
-    repository1.setCategory('category1')
-    repository2.setCategory('category2')
-    const repositorySettingUseCaseFactoryMock = createMockRepositorySettingUseCaseFactory(
-      createMockRepositorySettingUseCase([repository1, repository2])
-    )
-
-    const wrapper = shallowMount(ReleasesView, {
-      global: {
-        provide: {
-          [AccountSettingUseCaseFactoryKey as symbol]: mockedAccountSettingUseCaseFactory,
-          [ApplicationSettingUseCaseKey as symbol]: createMockApplicationSettingUseCase([
-            new ApplicationSetting('foo'),
-          ]),
-          [RepositorySettingUseCaseFactoryKey as symbol]: repositorySettingUseCaseFactoryMock,
-        },
-        stubs: {
-          RepositoryFilter: RepositoryFilterMock,
-        },
-      },
-    })
-    await wrapper.vm.$nextTick()
-    expect(wrapper.text()).toBe('category1 category2')
-    expect(wrapper.findAllComponents(GitHubRelease)).toHaveLength(2)
   })
 })

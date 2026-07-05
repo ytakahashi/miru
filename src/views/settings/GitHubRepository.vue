@@ -3,19 +3,6 @@
     {{ repositorySetting.displayName() }}
   </span>
 
-  <span :class="editing ? 'clickable' : 'default-cursor'" @click="toggleEditCategory()">
-    ({{ repositorySetting.getCategory() }})
-  </span>
-
-  <div v-if="isEditingCategory" class="block">
-    <input v-model="category" class="category-input" />
-    <button class="add-category-button" @click="updateCategory()">
-      <i class="far fa-save"></i>
-    </button>
-    <button class="cancel-category-edit-button" @click="updateCategory()">
-      <i class="far fa-times-circle"></i>
-    </button>
-  </div>
   <span v-if="editing" class="preference-input-block">
     <span class="preference-input clickable" @click="toggleCommitPreference()">
       <i v-if="!showsCommits" class="fas fa-square"></i>
@@ -75,23 +62,6 @@ export default defineComponent({
       webBrowserUserCase.openUrl(props.repositorySetting.getUrl())
     }
 
-    const isEditingCategory = ref(false)
-    const category = ref(props.repositorySetting.getCategory())
-    const toggleEditCategory = (): void => {
-      if (!props.editing) {
-        return
-      }
-      isEditingCategory.value = !isEditingCategory.value
-    }
-    const updateCategory = (): void => {
-      props.repositorySetting.setCategory(category.value)
-      isEditingCategory.value = false
-    }
-    watch(
-      () => props.editing,
-      () => (isEditingCategory.value = false)
-    )
-
     const showsCommits = ref(props.repositorySetting.showsCommits())
     watch(showsCommits, (next: boolean) => props.repositorySetting.setCommitPreference(next))
     const toggleCommitPreference = (): void => {
@@ -120,10 +90,6 @@ export default defineComponent({
 
     return {
       openRepository,
-      isEditingCategory,
-      category,
-      toggleEditCategory,
-      updateCategory,
       showsCommits,
       toggleCommitPreference,
       showsIssues,
@@ -140,10 +106,6 @@ export default defineComponent({
 <style scoped lang="scss">
 @use '@/assets/app';
 
-.default-cursor {
-  cursor: default;
-}
-
 .preference-input-block {
   display: block;
   margin-bottom: 10px;
@@ -156,44 +118,5 @@ export default defineComponent({
 
 .margin-left {
   margin-left: 5px;
-}
-
-.category-input {
-  @include app.base-input-form();
-  & {
-    width: 25%;
-    margin-right: 3px;
-  }
-}
-
-.add-category-button {
-  @include app.base-button(10px);
-  border-color: var(--main-background-color);
-  & {
-    font-size: 100%;
-    padding-top: 5px;
-    padding-bottom: 10px;
-    padding-left: 5px;
-    padding-right: 0px;
-  }
-  &:hover {
-    color: var(--main-font-color);
-    background-color: var(--main-background-color);
-  }
-}
-
-.cancel-category-edit-button {
-  @include app.base-button(10px);
-  border-color: var(--main-background-color);
-  & {
-    font-size: 100%;
-    padding-top: 5px;
-    padding-bottom: 10px;
-    padding-left: 5px;
-  }
-  &:hover {
-    color: var(--main-font-color);
-    background-color: var(--main-background-color);
-  }
 }
 </style>
