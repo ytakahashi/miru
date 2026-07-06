@@ -2,28 +2,12 @@
   <RepositoryFilter ref="repositoryFilter" />
   <QueryOption :view-type="'issues'" />
   <div v-for="(t, index) in tuples" :key="index">
-    <div v-for="category in t.repositoriesPerCategory.keys()" :key="category" class="category-box">
-      <details open>
-        <summary class="category-list-header">
-          {{ category }}
-          <button type="button" class="fetch-button" @click="fetchAll(category)">
-            <i class="fas fa-sync-alt"></i>
-          </button>
-        </summary>
-        <div class="space"></div>
-        <div
-          v-for="repositorySetting in t.repositoriesPerCategory.get(category)"
-          :key="repositorySetting.getUrl()"
-        >
-          <GitHubIssue
-            v-show="isVisible(repositorySetting)"
-            :account="t.account"
-            :repository-setting="repositorySetting"
-            :fetch-trigger="fetchTrigger"
-          />
-        </div>
-      </details>
-      <hr class="category-list-hr" />
+    <div v-for="repositorySetting in t.repositorySettings" :key="repositorySetting.getUrl()">
+      <GitHubIssue
+        v-show="isVisible(repositorySetting)"
+        :account="t.account"
+        :repository-setting="repositorySetting"
+      />
     </div>
   </div>
   <div v-if="!isAccountConfigured">Account is not configured.</div>
@@ -49,7 +33,7 @@ import GitHubIssue from '@/views/issues/GitHubIssue.vue'
 
 type RepositoryTuple = {
   account: Account
-  repositoriesPerCategory: Map<string, Array<RepositorySetting>>
+  repositorySettings: Array<RepositorySetting>
 }
 
 export default defineComponent({
@@ -71,34 +55,22 @@ export default defineComponent({
     const initAccounts = (): void => {
       const settings = applicationSettingUseCase.getSettings()
       for (const s of settings) {
-        const repositoriesPerCategory: Map<string, Array<RepositorySetting>> = new Map()
-
         const accountSettingUseCase = accountSettingUseCaseFactory.newAccountSettingUseCase(s)
         const repositorySettingUseCase =
           repositorySettingUseCaseFactory.newRepositorySettingUseCase(s)
         const account = accountSettingUseCase.getAccount()
         const repositorySettings = repositorySettingUseCase.getRepositorySettings()
-        for (const repositorySetting of repositorySettings) {
-          if (!repositorySetting.showsIssues()) {
-            continue
-          }
-          const category = repositorySetting.getCategory()
-          if (!repositoriesPerCategory.has(category)) {
-            repositoriesPerCategory.set(category, [])
-          }
-          repositoriesPerCategory.get(category)?.push(repositorySetting)
-        }
         tuples.value.push({
           account,
-          repositoriesPerCategory,
+          repositorySettings: repositorySettings.filter(s => s.showsIssues()),
         })
       }
     }
 
     const total = computed(() =>
       tuples.value
-        .map(v => v.repositoriesPerCategory)
-        .map(v => v.size)
+        .map(v => v.repositorySettings)
+        .map(v => v.length)
         .reduce((a, b) => a + b, 0)
     )
 
@@ -107,18 +79,11 @@ export default defineComponent({
     const isVisible = (repository: RepositorySetting): boolean =>
       (repositoryFilter.value as typeof RepositoryFilter).isVisible(repository)
 
-    const fetchTrigger = ref('')
-    const fetchAll = (category: string): void => {
-      fetchTrigger.value = category
-    }
-
     onMounted(initAccounts)
 
     return {
       repositoryFilter,
       isVisible,
-      fetchTrigger,
-      fetchAll,
       isAccountConfigured,
       total,
       tuples,
@@ -126,20 +91,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped lang="scss">
-@use '@/assets/app';
-@use '@/assets/category';
-
-.fetch-button {
-  @include app.rotate-button(8px);
-  & {
-    padding: 5px 7px;
-    margin-left: 1%;
-  }
-}
-
-.space {
-  margin: 2%;
-}
-</style>

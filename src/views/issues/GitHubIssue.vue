@@ -50,12 +50,11 @@ import { GetIssuesUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/
 import { getters, mutations } from '@/store/issues'
 import { getters as queryOption } from '@/store/queryOption'
 import IssueContent from '@/views/issues/IssueContent.vue'
-import { computed, defineComponent, readonly, ref, watch } from 'vue'
+import { computed, defineComponent, readonly, ref } from 'vue'
 
 type PropsType = {
   account: Account
   repositorySetting: RepositorySetting
-  fetchTrigger: string
 }
 
 export default defineComponent({
@@ -71,10 +70,6 @@ export default defineComponent({
     },
     repositorySetting: {
       type: RepositorySetting,
-      required: true,
-    },
-    fetchTrigger: {
-      type: String,
       required: true,
     },
   },
@@ -125,15 +120,6 @@ export default defineComponent({
       const totalCount = value.totalCount
       return totalCount !== undefined ? `showing ${count} of ${totalCount} issues` : ''
     })
-
-    watch(
-      () => props.fetchTrigger,
-      async (newVal, _) => {
-        if (newVal === props.repositorySetting.getCategory()) {
-          await getIssues().catch(errorHandler)
-        }
-      }
-    )
 
     return {
       clearIssues,
