@@ -7,7 +7,7 @@ import {
   GetReleasesUseCaseFactoryImpl,
   GitHubAccountUseCaseFactoryImpl,
   RepositorySettingUseCaseFactoryImpl,
-} from '@/application/usecase/factory/useCaseFactory.js'
+} from '@/application/composition/useCaseFactory.js'
 import { WebBrowserUserCaseInteractor } from '@/application/usecase/interactor/WebBrowserUserCaseInteractor.js'
 import {
   AccountSettingUseCaseFactoryKey,

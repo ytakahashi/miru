@@ -1,7 +1,7 @@
 import {
   newGitHubAccessor,
   newLocalStorageAccessor,
-} from '@/application/domain/interface/factory.js'
+} from '@/application/composition/adapterFactory.js'
 import { ApplicationSetting } from '@/application/domain/model/application.js'
 import { GitHubUrl } from '@/application/domain/model/github.js'
 import {
@@ -55,7 +55,7 @@ export class ApplicationSettingUseCaseFactoryImpl implements ApplicationSettingU
 
 export class GitHubAccountUseCaseFactoryImpl implements GitHubAccountUseCaseFactory {
   newGitHubAccountUseCase = (githubUrl: GitHubUrl): GitHubAccountUseCase => {
-    return new GitHubAccountUseCaseInteractor(githubUrl)
+    return new GitHubAccountUseCaseInteractor(githubUrl, newGitHubAccessor(githubUrl))
   }
 }
 
