@@ -1,3 +1,5 @@
+import { Logger } from '@/application/domain/interface/logger.js'
+import { WebBrowser } from '@/application/domain/interface/webBrowser.js'
 import { AccountSettingUseCaseFactory } from '@/application/usecase/accountSetting.js'
 import { ApplicationSettingUseCase } from '@/application/usecase/applicationSetting.js'
 import { GitHubAccountUseCaseFactory } from '@/application/usecase/githubAccount.js'
@@ -8,7 +10,6 @@ import {
   GetReleasesUseCaseFactory,
 } from '@/application/usecase/githubRepository.js'
 import { RepositorySettingUseCaseFactory } from '@/application/usecase/repositorySetting.js'
-import { WebBrowserUserCase } from '@/application/usecase/webBrowser.js'
 import { InjectionKey } from 'vue'
 
 export const AccountSettingUseCaseFactoryKey: InjectionKey<AccountSettingUseCaseFactory> = Symbol(
@@ -32,5 +33,5 @@ export const GetReleasesUseCaseFactoryKey: InjectionKey<GetReleasesUseCaseFactor
 )
 export const RepositorySettingUseCaseFactoryKey: InjectionKey<RepositorySettingUseCaseFactory> =
   Symbol('RepositorySettingUseCaseFactory')
-export const WebBrowserUserCaseKey: InjectionKey<WebBrowserUserCase> =
-  Symbol('WebBrowserUserCaseKey')
+export const LoggerKey: InjectionKey<Logger> = Symbol('LoggerKey')
+export const WebBrowserKey: InjectionKey<WebBrowser> = Symbol('WebBrowserKey')

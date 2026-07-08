@@ -8,7 +8,6 @@ import {
 import ReleasesView from '@/views/ReleasesView.vue'
 import GitHubRelease from '@/views/releases/GitHubRelease.vue'
 import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 
 import {
@@ -27,11 +26,6 @@ const RepositoryFilterMock = defineComponent({
   },
   render: () => h('input', {}, ''),
 })
-
-// logger mock
-vi.mock('@/application/core/logger', () => ({
-  logger: vi.fn(),
-}))
 
 describe('ReleasesView.vue', () => {
   it('renders when account is not configured', async () => {

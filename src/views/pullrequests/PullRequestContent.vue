@@ -58,7 +58,7 @@ import { computed, defineComponent } from 'vue'
 import { Label, PullRequest } from '@/application/domain/model/github'
 import StatusIcon from '@/components/StatusIcon.vue'
 import { inject } from '@/plugins/di/injector'
-import { WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { WebBrowserKey } from '@/plugins/di/types'
 
 type PropsType = {
   pullRequest: PullRequest
@@ -80,8 +80,8 @@ export default defineComponent({
     },
   },
   setup(props: PropsType) {
-    const webBrowserUserCase = inject(WebBrowserUserCaseKey)
-    const openPullRequest = (): void => webBrowserUserCase.openUrl(props.pullRequest.url)
+    const webBrowser = inject(WebBrowserKey)
+    const openPullRequest = (): void => webBrowser.openUrl(props.pullRequest.url)
 
     const boxStyle = computed(() => {
       const { pullRequest } = props

@@ -43,7 +43,7 @@
 <script lang="ts">
 import { Issue, Label } from '@/application/domain/model/github'
 import { inject } from '@/plugins/di/injector'
-import { WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { WebBrowserKey } from '@/plugins/di/types'
 import { computed, defineComponent } from 'vue'
 
 type PropsType = {
@@ -64,8 +64,8 @@ export default defineComponent({
     },
   },
   setup(props: PropsType) {
-    const webBrowserUserCase = inject(WebBrowserUserCaseKey)
-    const openIssue = (): void => webBrowserUserCase.openUrl(props.issue.url)
+    const webBrowser = inject(WebBrowserKey)
+    const openIssue = (): void => webBrowser.openUrl(props.issue.url)
 
     const boxStyle = computed(() =>
       props.issue.state === 'OPEN'

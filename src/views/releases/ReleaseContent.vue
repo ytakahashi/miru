@@ -27,7 +27,7 @@
 import { computed, defineComponent } from 'vue'
 import { Release } from '@/application/domain/model/github'
 import { inject } from '@/plugins/di/injector'
-import { WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { WebBrowserKey } from '@/plugins/di/types'
 
 type PropsType = {
   release: Release
@@ -42,8 +42,8 @@ export default defineComponent({
     },
   },
   setup(props: PropsType) {
-    const webBrowserUserCase = inject(WebBrowserUserCaseKey)
-    const openRelease = (): void => webBrowserUserCase.openUrl(props.release.url)
+    const webBrowser = inject(WebBrowserKey)
+    const openRelease = (): void => webBrowser.openUrl(props.release.url)
 
     const boxStyle = computed(() => ({
       'content-box-open': !props.release.isDraft && !props.release.isPrerelease,

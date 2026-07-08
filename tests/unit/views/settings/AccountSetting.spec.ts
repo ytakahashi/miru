@@ -1,12 +1,12 @@
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
+import { WebBrowser } from '@/application/domain/interface/webBrowser'
 import ModalWindow from '@/components/ModalWindow.vue'
 import {
   AccountSettingUseCaseFactoryKey,
   RepositorySettingUseCaseFactoryKey,
-  WebBrowserUserCaseKey,
+  WebBrowserKey,
 } from '@/plugins/di/types'
 import AccountSetting from '@/views/settings/AccountSetting.vue'
 import GitHubRepositories from '@/views/settings/GitHubRepositories.vue'
@@ -25,17 +25,15 @@ const url = new GitHubUrl('https://github.com', 'https://api.github.com/graphql'
 const account = new Account('name', 'https://github.com/ytakahashi', 'avatar', url, 'pat')
 const setting = new ApplicationSetting('foo')
 
-// WebBrowserUserCase mock
-const MockedWebBrowserUserCase = vi.fn()
+// WebBrowser mock
+const MockedWebBrowser = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation(
-  function MockedWebBrowserUserCaseImpl(): WebBrowserUserCase {
-    return {
-      openUrl: (url: string) => openUrlMock(url),
-    }
+MockedWebBrowser.mockImplementation(function MockedWebBrowserImpl(): WebBrowser {
+  return {
+    openUrl: (url: string) => openUrlMock(url),
   }
-)
-const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
+})
+const mockedWebBrowser = new MockedWebBrowser()
 
 // AccountSettingUseCase mock
 const addRepositorySettingMock = vi.fn()
@@ -100,7 +98,7 @@ describe('AccountSetting.vue', () => {
           [RepositorySettingUseCaseFactoryKey as symbol]: createMockRepositorySettingUseCaseFactory(
             createRepositorySettingMock([])
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
       props: {
@@ -126,7 +124,7 @@ describe('AccountSetting.vue', () => {
           [RepositorySettingUseCaseFactoryKey as symbol]: createMockRepositorySettingUseCaseFactory(
             createRepositorySettingMock(repos)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
         stubs: {
           GitHubRepositories: GitHubRepositoriesMock,
@@ -164,7 +162,7 @@ describe('AccountSetting.vue', () => {
           [RepositorySettingUseCaseFactoryKey as symbol]: createMockRepositorySettingUseCaseFactory(
             createRepositorySettingMock(repos)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
         stubs: {
           GitHubRepositories: GitHubRepositoriesMock,
@@ -202,7 +200,7 @@ describe('AccountSetting.vue', () => {
           [RepositorySettingUseCaseFactoryKey as symbol]: createMockRepositorySettingUseCaseFactory(
             createRepositorySettingMock(repos)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
         stubs: {
           GitHubRepositories: GitHubRepositoriesMock,
@@ -251,7 +249,7 @@ describe('AccountSetting.vue', () => {
           [RepositorySettingUseCaseFactoryKey as symbol]: createMockRepositorySettingUseCaseFactory(
             createRepositorySettingMock([])
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
       props: {
@@ -273,7 +271,7 @@ describe('AccountSetting.vue', () => {
           [RepositorySettingUseCaseFactoryKey as symbol]: createMockRepositorySettingUseCaseFactory(
             createRepositorySettingMock([])
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
       props: {
@@ -304,7 +302,7 @@ describe('AccountSetting.vue', () => {
           [RepositorySettingUseCaseFactoryKey as symbol]: createMockRepositorySettingUseCaseFactory(
             createRepositorySettingMock([])
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
       props: {
@@ -327,7 +325,7 @@ describe('AccountSetting.vue', () => {
           [RepositorySettingUseCaseFactoryKey as symbol]: createMockRepositorySettingUseCaseFactory(
             createRepositorySettingMock([])
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
         stubs: {
           ModalWindow: ModalWindowMock,
@@ -356,7 +354,7 @@ describe('AccountSetting.vue', () => {
           [RepositorySettingUseCaseFactoryKey as symbol]: createMockRepositorySettingUseCaseFactory(
             createRepositorySettingMock([])
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
         stubs: {
           ModalWindow: ModalWindowMock,

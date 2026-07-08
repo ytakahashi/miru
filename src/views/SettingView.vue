@@ -39,7 +39,6 @@
 </template>
 
 <script lang="ts">
-import { logger } from '@/application/core/logger'
 import { ApplicationSetting } from '@/application/domain/model/application'
 import { Account, GitHubUrl } from '@/application/domain/model/github'
 import LoadingImage from '@/components/LoadingImage.vue'
@@ -49,6 +48,7 @@ import {
   AccountSettingUseCaseFactoryKey,
   ApplicationSettingUseCaseKey,
   GitHubAccountUseCaseFactoryKey,
+  LoggerKey,
 } from '@/plugins/di/types'
 import AccountSetting from '@/views/settings/AccountSetting.vue'
 import { Ref, defineComponent, onMounted, ref, watch } from 'vue'
@@ -64,6 +64,7 @@ export default defineComponent({
     const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)
     const applicationSettingUseCase = inject(ApplicationSettingUseCaseKey)
     const githubAccountUseCaseFactory = inject(GitHubAccountUseCaseFactoryKey)
+    const logger = inject(LoggerKey)
 
     const githubUrlInput = ref('https://github.com')
     const personalAccessTokenInput = ref('')

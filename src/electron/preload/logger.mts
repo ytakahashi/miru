@@ -1,13 +1,8 @@
 import log from 'electron-log/main.js'
+import { Logger } from '../../application/domain/interface/logger.js'
 
 log.transports.console.level = false
 log.transports.file.level = process.env.npm_lifecycle_event === 'electron:dev' ? 'verbose' : 'info'
-
-export interface Logger {
-  error(e: Error): void
-  info(message: string): void
-  verbose(message: string): void
-}
 
 class LoggerImpl implements Logger {
   error = (e: Error): void => {

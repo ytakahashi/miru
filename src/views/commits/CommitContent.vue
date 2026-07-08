@@ -30,7 +30,7 @@
 import { Commit } from '@/application/domain/model/github'
 import StatusIcon from '@/components/StatusIcon.vue'
 import { inject } from '@/plugins/di/injector'
-import { WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { WebBrowserKey } from '@/plugins/di/types'
 import { computed, defineComponent } from 'vue'
 
 type PropsType = {
@@ -49,8 +49,8 @@ export default defineComponent({
     },
   },
   setup(props: PropsType) {
-    const webBrowserUserCase = inject(WebBrowserUserCaseKey)
-    const openCommit = (): void => webBrowserUserCase.openUrl(props.commit.commitUrl)
+    const webBrowser = inject(WebBrowserKey)
+    const openCommit = (): void => webBrowser.openUrl(props.commit.commitUrl)
 
     const commitMessage = computed(() => {
       const message = props.commit.message

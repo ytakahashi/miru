@@ -4,8 +4,8 @@ import {
   GetReleasesUseCase,
   GetReleasesUseCaseFactory,
 } from '@/application/usecase/githubRepository'
-import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import { GetReleasesUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { WebBrowser } from '@/application/domain/interface/webBrowser'
+import { GetReleasesUseCaseFactoryKey, LoggerKey, WebBrowserKey } from '@/plugins/di/types'
 import GitHubRelease from '@/views/releases/GitHubRelease.vue'
 import ReleaseContent from '@/views/releases/ReleaseContent.vue'
 import { shallowMount } from '@vue/test-utils'
@@ -27,27 +27,23 @@ const createMock = (func: () => GetReleasesUseCase): GetReleasesUseCaseFactory =
   }
 }
 
-// logger mock
+// Logger mock
 const loggerErrorMock = vi.fn()
-vi.mock('@/application/core/logger', () => ({
-  logger: {
-    error: (e: Error) => loggerErrorMock(e),
-    info: (_: string) => {},
-    verbose: (_: string) => {},
-  },
-}))
+const mockedLogger = {
+  error: (e: Error) => loggerErrorMock(e),
+  info: (_: string) => {},
+  verbose: (_: string) => {},
+}
 
-// WebBrowserUserCase mock
-const MockedWebBrowserUserCase = vi.fn()
+// WebBrowser mock
+const MockedWebBrowser = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation(
-  function MockedWebBrowserUserCaseImpl(): WebBrowserUserCase {
-    return {
-      openUrl: (url: string) => openUrlMock(url),
-    }
+MockedWebBrowser.mockImplementation(function MockedWebBrowserImpl(): WebBrowser {
+  return {
+    openUrl: (url: string) => openUrlMock(url),
   }
-)
-const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
+})
+const mockedWebBrowser = new MockedWebBrowser()
 
 const githubUrl = GitHubUrl.from('https://github.com')
 const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
@@ -67,7 +63,8 @@ describe('GitHubRelease.vue', () => {
           [GetReleasesUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetReleasesUseCase(() => releases)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
+          [LoggerKey as symbol]: mockedLogger,
         },
       },
       props: {
@@ -117,7 +114,8 @@ describe('GitHubRelease.vue', () => {
           [GetReleasesUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetReleasesUseCase(() => releases)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
+          [LoggerKey as symbol]: mockedLogger,
         },
       },
       props: {
@@ -161,7 +159,8 @@ describe('GitHubRelease.vue', () => {
           [GetReleasesUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetReleasesUseCase(supplier)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
+          [LoggerKey as symbol]: mockedLogger,
         },
       },
       props: {
@@ -189,7 +188,8 @@ describe('GitHubRelease.vue', () => {
           [GetReleasesUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetReleasesUseCase(() => releases)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
+          [LoggerKey as symbol]: mockedLogger,
         },
       },
       props: {
@@ -216,7 +216,8 @@ describe('GitHubRelease.vue', () => {
           [GetReleasesUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetReleasesUseCase(() => releases)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
+          [LoggerKey as symbol]: mockedLogger,
         },
       },
       props: {

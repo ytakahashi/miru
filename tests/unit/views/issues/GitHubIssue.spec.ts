@@ -1,8 +1,8 @@
 import { Account, GitHubUrl, Issue, Issues } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { GetIssuesUseCase, GetIssuesUseCaseFactory } from '@/application/usecase/githubRepository'
-import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import { GetIssuesUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { WebBrowser } from '@/application/domain/interface/webBrowser'
+import { GetIssuesUseCaseFactoryKey, LoggerKey, WebBrowserKey } from '@/plugins/di/types'
 import { getters as queryOption } from '@/store/queryOption'
 import GitHubIssue from '@/views/issues/GitHubIssue.vue'
 import IssueContent from '@/views/issues/IssueContent.vue'
@@ -25,27 +25,23 @@ const createMock = (func: () => GetIssuesUseCase): GetIssuesUseCaseFactory => {
   }
 }
 
-// logger mock
+// Logger mock
 const loggerErrorMock = vi.fn()
-vi.mock('@/application/core/logger', () => ({
-  logger: {
-    error: (e: Error) => loggerErrorMock(e),
-    info: (_: string) => {},
-    verbose: (_: string) => {},
-  },
-}))
+const mockedLogger = {
+  error: (e: Error) => loggerErrorMock(e),
+  info: (_: string) => {},
+  verbose: (_: string) => {},
+}
 
-// WebBrowserUserCase mock
-const MockedWebBrowserUserCase = vi.fn()
+// WebBrowser mock
+const MockedWebBrowser = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation(
-  function MockedWebBrowserUserCaseImpl(): WebBrowserUserCase {
-    return {
-      openUrl: (url: string) => openUrlMock(url),
-    }
+MockedWebBrowser.mockImplementation(function MockedWebBrowserImpl(): WebBrowser {
+  return {
+    openUrl: (url: string) => openUrlMock(url),
   }
-)
-const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
+})
+const mockedWebBrowser = new MockedWebBrowser()
 
 // queryOption mock
 vi.mock('@/store/queryOption')
@@ -75,7 +71,8 @@ describe('GitHubIssue.vue', () => {
           [GetIssuesUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetIssuesUseCase(() => issues)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
+          [LoggerKey as symbol]: mockedLogger,
         },
       },
       props: {
@@ -131,7 +128,8 @@ describe('GitHubIssue.vue', () => {
           [GetIssuesUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetIssuesUseCase(() => issues)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
+          [LoggerKey as symbol]: mockedLogger,
         },
       },
       props: {
@@ -173,7 +171,8 @@ describe('GitHubIssue.vue', () => {
           [GetIssuesUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetIssuesUseCase(supplier)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
+          [LoggerKey as symbol]: mockedLogger,
         },
       },
       props: {
@@ -200,7 +199,8 @@ describe('GitHubIssue.vue', () => {
           [GetIssuesUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetIssuesUseCase(() => issues)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
+          [LoggerKey as symbol]: mockedLogger,
         },
       },
       props: {
@@ -224,7 +224,8 @@ describe('GitHubIssue.vue', () => {
           [GetIssuesUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetIssuesUseCase(() => issues)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
+          [LoggerKey as symbol]: mockedLogger,
         },
       },
       props: {
