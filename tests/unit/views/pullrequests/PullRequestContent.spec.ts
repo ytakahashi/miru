@@ -1,21 +1,19 @@
 import { Label, PullRequest, PullRequestReviews } from '@/application/domain/model/github'
-import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import { WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { WebBrowser } from '@/application/domain/interface/webBrowser'
+import { WebBrowserKey } from '@/plugins/di/types'
 import StatusIcon from '@/components/StatusIcon.vue'
 import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
 import { shallowMount } from '@vue/test-utils'
 import { vi } from 'vitest'
 
-const MockedWebBrowserUseCase = vi.fn()
+const MockedWebBrowser = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUseCase.mockImplementation(
-  function MockedWebBrowserUseCaseImpl(): WebBrowserUserCase {
-    return {
-      openUrl: (url: string) => openUrlMock(url),
-    }
+MockedWebBrowser.mockImplementation(function MockedWebBrowserImpl(): WebBrowser {
+  return {
+    openUrl: (url: string) => openUrlMock(url),
   }
-)
-const mockedWebBrowserUseCase = new MockedWebBrowserUseCase()
+})
+const mockedWebBrowser = new MockedWebBrowser()
 
 const author = 'ytakahashi'
 const title = 'issue title'
@@ -53,7 +51,7 @@ describe('PullRequestContent.vue', () => {
     const wrapper = shallowMount(PullRequestContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
       props: {
@@ -106,7 +104,7 @@ describe('PullRequestContent.vue', () => {
     const wrapper = shallowMount(PullRequestContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
       props: {
@@ -158,7 +156,7 @@ describe('PullRequestContent.vue', () => {
     const wrapper = shallowMount(PullRequestContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
       props: {
@@ -209,7 +207,7 @@ describe('PullRequestContent.vue', () => {
     const wrapper = shallowMount(PullRequestContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
       props: {
@@ -260,7 +258,7 @@ describe('PullRequestContent.vue', () => {
     const wrapper = shallowMount(PullRequestContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
       props: {
@@ -311,7 +309,7 @@ describe('PullRequestContent.vue', () => {
     const wrapper = shallowMount(PullRequestContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUseCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
       props: {

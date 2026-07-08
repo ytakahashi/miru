@@ -33,12 +33,11 @@
 </template>
 
 <script lang="ts">
-import { logger } from '@/application/core/logger'
 import { Account, CommitHistory, GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
-import { GetCommitHistoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { GetCommitHistoryUseCaseFactoryKey, LoggerKey, WebBrowserKey } from '@/plugins/di/types'
 import { getters, mutations } from '@/store/commits'
 import { getters as queryOption } from '@/store/queryOption'
 import CommitContent from '@/views/commits/CommitContent.vue'
@@ -67,10 +66,11 @@ export default defineComponent({
   },
   setup(props: PropsType) {
     const getCommitHistoryUseCaseFactory = inject(GetCommitHistoryUseCaseFactoryKey)
-    const webBrowserUserCase = inject(WebBrowserUserCaseKey)
+    const webBrowser = inject(WebBrowserKey)
+    const logger = inject(LoggerKey)
 
     const openCommitsUrl = (val: RepositorySetting): void =>
-      webBrowserUserCase.openUrl(`${val.getUrl()}/commits`)
+      webBrowser.openUrl(`${val.getUrl()}/commits`)
 
     const account = readonly(props.account)
     const githubUrl = account.githubUrl as GitHubUrl

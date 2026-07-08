@@ -1,20 +1,18 @@
 import { mount } from '@vue/test-utils'
 import { vi } from 'vitest'
 import GitHubRepository from '@/views/settings/GitHubRepository.vue'
-import { WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { WebBrowserKey } from '@/plugins/di/types'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
-import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
+import { WebBrowser } from '@/application/domain/interface/webBrowser'
 
-const MockedWebBrowserUserCase = vi.fn()
+const MockedWebBrowser = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation(
-  function MockedWebBrowserUserCaseImpl(): WebBrowserUserCase {
-    return {
-      openUrl: (url: string) => openUrlMock(url),
-    }
+MockedWebBrowser.mockImplementation(function MockedWebBrowserImpl(): WebBrowser {
+  return {
+    openUrl: (url: string) => openUrlMock(url),
   }
-)
-const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
+})
+const mockedWebBrowser = new MockedWebBrowser()
 
 describe('GitHubRepository.vue', () => {
   it('renders when not editing', () => {
@@ -26,7 +24,7 @@ describe('GitHubRepository.vue', () => {
       },
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
     })
@@ -43,7 +41,7 @@ describe('GitHubRepository.vue', () => {
       },
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
     })
@@ -64,7 +62,7 @@ describe('GitHubRepository.vue', () => {
       },
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
     })
@@ -104,7 +102,7 @@ describe('GitHubRepository.vue', () => {
       },
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
     })
@@ -144,7 +142,7 @@ describe('GitHubRepository.vue', () => {
       },
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
     })
@@ -183,7 +181,7 @@ describe('GitHubRepository.vue', () => {
       },
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
     })

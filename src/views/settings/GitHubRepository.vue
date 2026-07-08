@@ -34,7 +34,7 @@
 import { defineComponent, ref, watch } from 'vue'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { inject } from '@/plugins/di/injector'
-import { WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { WebBrowserKey } from '@/plugins/di/types'
 
 type PropsType = {
   editing: boolean
@@ -54,12 +54,12 @@ export default defineComponent({
     },
   },
   setup(props: PropsType) {
-    const webBrowserUserCase = inject(WebBrowserUserCaseKey)
+    const webBrowser = inject(WebBrowserKey)
     const openRepository = (): void => {
       if (props.editing) {
         return
       }
-      webBrowserUserCase.openUrl(props.repositorySetting.getUrl())
+      webBrowser.openUrl(props.repositorySetting.getUrl())
     }
 
     const showsCommits = ref(props.repositorySetting.showsCommits())

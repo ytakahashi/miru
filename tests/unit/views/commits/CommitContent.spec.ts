@@ -1,21 +1,19 @@
 import { Commit } from '@/application/domain/model/github'
-import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import { WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { WebBrowser } from '@/application/domain/interface/webBrowser'
+import { WebBrowserKey } from '@/plugins/di/types'
 import CommitContent from '@/views/commits/CommitContent.vue'
 import StatusIcon from '@/components/StatusIcon.vue'
 import { mount } from '@vue/test-utils'
 import { vi } from 'vitest'
 
-const MockedWebBrowserUserCase = vi.fn()
+const MockedWebBrowser = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation(
-  function MockedWebBrowserUserCaseImpl(): WebBrowserUserCase {
-    return {
-      openUrl: (url: string) => openUrlMock(url),
-    }
+MockedWebBrowser.mockImplementation(function MockedWebBrowserImpl(): WebBrowser {
+  return {
+    openUrl: (url: string) => openUrlMock(url),
   }
-)
-const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
+})
+const mockedWebBrowser = new MockedWebBrowser()
 
 describe('CommitContent.vue', () => {
   beforeEach(() => {
@@ -41,7 +39,7 @@ describe('CommitContent.vue', () => {
     const wrapper = mount(CommitContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
       props: {
@@ -65,7 +63,7 @@ describe('CommitContent.vue', () => {
     const wrapper = mount(CommitContent, {
       global: {
         provide: {
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
         },
       },
       props: {

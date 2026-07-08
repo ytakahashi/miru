@@ -45,12 +45,11 @@
 </template>
 
 <script lang="ts">
-import { logger } from '@/application/core/logger'
 import { Account, GitHubUrl, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
-import { GetReleasesUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { GetReleasesUseCaseFactoryKey, LoggerKey, WebBrowserKey } from '@/plugins/di/types'
 import { getters as queryOption } from '@/store/queryOption'
 import { getters, mutations } from '@/store/releases'
 import ReleaseContent from '@/views/releases/ReleaseContent.vue'
@@ -79,10 +78,11 @@ export default defineComponent({
   },
   setup(props: PropsType) {
     const getReleasesUseCaseFactory = inject(GetReleasesUseCaseFactoryKey)
-    const webBrowserUserCase = inject(WebBrowserUserCaseKey)
+    const webBrowser = inject(WebBrowserKey)
+    const logger = inject(LoggerKey)
 
     const openReleaseUrl = (val: RepositorySetting): void =>
-      webBrowserUserCase.openUrl(`${val.getUrl()}/releases`)
+      webBrowser.openUrl(`${val.getUrl()}/releases`)
 
     const account = readonly(props.account)
     const githubUrl = account.githubUrl as GitHubUrl

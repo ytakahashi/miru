@@ -77,7 +77,7 @@ import { inject } from '@/plugins/di/injector'
 import {
   AccountSettingUseCaseFactoryKey,
   RepositorySettingUseCaseFactoryKey,
-  WebBrowserUserCaseKey,
+  WebBrowserKey,
 } from '@/plugins/di/types'
 import GitHubRepositories from '@/views/settings/GitHubRepositories.vue'
 import { PropType, Ref, computed, defineComponent, onMounted, ref, watch } from 'vue'
@@ -105,7 +105,7 @@ export default defineComponent({
   setup(props: PropsType, { emit }) {
     const accountSettingUseCaseFactory = inject(AccountSettingUseCaseFactoryKey)
     const repositorySettingUseCaseFactory = inject(RepositorySettingUseCaseFactoryKey)
-    const webBrowserUserCase = inject(WebBrowserUserCaseKey)
+    const webBrowser = inject(WebBrowserKey)
 
     const accountSettingUseCase = accountSettingUseCaseFactory.newAccountSettingUseCase(
       props.setting
@@ -118,7 +118,7 @@ export default defineComponent({
     const profile = computed(() => `${account.userName}@${account.githubUrl.getDomain()}`)
     const showsPatInput = ref(false)
     const isPatVisible = ref(false)
-    const openProfile = (): void => webBrowserUserCase.openUrl(account.profileUrl)
+    const openProfile = (): void => webBrowser.openUrl(account.profileUrl)
     const updatePersonalAccessToken = (): void => {
       accountSettingUseCase.setAccount(account)
       showsPatInput.value = false

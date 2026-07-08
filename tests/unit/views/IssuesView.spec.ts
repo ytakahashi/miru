@@ -8,7 +8,6 @@ import {
 import IssuesView from '@/views/IssuesView.vue'
 import GitHubIssue from '@/views/issues/GitHubIssue.vue'
 import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 
 import {
@@ -27,11 +26,6 @@ const RepositoryFilterMock = defineComponent({
   },
   render: () => h('input', {}, ''),
 })
-
-// logger mock
-vi.mock('@/application/core/logger', () => ({
-  logger: vi.fn(),
-}))
 
 describe('IssuesView.vue', () => {
   it('renders when account is not configured', async () => {

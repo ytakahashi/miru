@@ -9,8 +9,8 @@ import {
   GetCommitHistoryUseCase,
   GetCommitHistoryUseCaseFactory,
 } from '@/application/usecase/githubRepository'
-import { WebBrowserUserCase } from '@/application/usecase/webBrowser'
-import { GetCommitHistoryUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { WebBrowser } from '@/application/domain/interface/webBrowser'
+import { GetCommitHistoryUseCaseFactoryKey, LoggerKey, WebBrowserKey } from '@/plugins/di/types'
 import CommitContent from '@/views/commits/CommitContent.vue'
 import CommitHistory from '@/views/commits/CommitHistory.vue'
 import { shallowMount } from '@vue/test-utils'
@@ -32,27 +32,23 @@ const createMock = (func: () => GetCommitHistoryUseCase): GetCommitHistoryUseCas
   }
 }
 
-// logger mock
+// Logger mock
 const loggerErrorMock = vi.fn()
-vi.mock('@/application/core/logger', () => ({
-  logger: {
-    error: (e: Error) => loggerErrorMock(e),
-    info: (_: string) => {},
-    verbose: (_: string) => {},
-  },
-}))
+const mockedLogger = {
+  error: (e: Error) => loggerErrorMock(e),
+  info: (_: string) => {},
+  verbose: (_: string) => {},
+}
 
-// WebBrowserUserCase mock
-const MockedWebBrowserUserCase = vi.fn()
+// WebBrowser mock
+const MockedWebBrowser = vi.fn()
 const openUrlMock = vi.fn()
-MockedWebBrowserUserCase.mockImplementation(
-  function MockedWebBrowserUserCaseImpl(): WebBrowserUserCase {
-    return {
-      openUrl: (url: string) => openUrlMock(url),
-    }
+MockedWebBrowser.mockImplementation(function MockedWebBrowserImpl(): WebBrowser {
+  return {
+    openUrl: (url: string) => openUrlMock(url),
   }
-)
-const mockedWebBrowserUserCase = new MockedWebBrowserUserCase()
+})
+const mockedWebBrowser = new MockedWebBrowser()
 
 const githubUrl = GitHubUrl.from('https://github.com')
 const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
@@ -94,7 +90,8 @@ describe('CommitHistory.vue', () => {
           [GetCommitHistoryUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetCommitHistoryUseCase(() => commitHistory)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
+          [LoggerKey as symbol]: mockedLogger,
         },
       },
       props: {
@@ -135,7 +132,8 @@ describe('CommitHistory.vue', () => {
           [GetCommitHistoryUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetCommitHistoryUseCase(supplier)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
+          [LoggerKey as symbol]: mockedLogger,
         },
       },
       props: {
@@ -163,7 +161,8 @@ describe('CommitHistory.vue', () => {
           [GetCommitHistoryUseCaseFactoryKey as symbol]: createMock(
             () => new MockedGetCommitHistoryUseCase(() => commitHistory)
           ),
-          [WebBrowserUserCaseKey as symbol]: mockedWebBrowserUserCase,
+          [WebBrowserKey as symbol]: mockedWebBrowser,
+          [LoggerKey as symbol]: mockedLogger,
         },
       },
       props: {

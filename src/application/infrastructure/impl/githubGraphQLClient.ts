@@ -1,9 +1,9 @@
-import { logger } from '@/application/core/logger.js'
 import {
   GitHubAccessError,
   GitHubAccessor,
   Option,
 } from '@/application/domain/interface/githubAccessor.js'
+import { Logger } from '@/application/domain/interface/logger.js'
 import { GitHubUrl } from '@/application/domain/model/github.js'
 import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 import {
@@ -25,9 +25,11 @@ const makeGitHubAccessError = (e: any): GitHubAccessError =>
 
 export class GitHubGraphQLClient implements GitHubAccessor {
   #graphQLClient: GraphQLClient
+  #logger: Logger
 
-  constructor(gitHubUrl: GitHubUrl) {
+  constructor(gitHubUrl: GitHubUrl, logger: Logger) {
     this.#graphQLClient = new GraphQLClient(gitHubUrl.getApiEndpoint())
+    this.#logger = logger
   }
 
   public getViewer = async (personalAccessToken: string): Promise<Viewer> => {
@@ -119,7 +121,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       sortField: opts?.sortField !== undefined ? opts.sortField : 'UPDATED_AT',
       sortDirection: opts?.sortDirection !== undefined ? opts.sortDirection : 'DESC',
     }
-    logger.verbose(`Issues variable: ${JSON.stringify(variables)}`)
+    this.#logger.verbose(`Issues variable: ${JSON.stringify(variables)}`)
     const takeIssues = (r: Repository): IssueConnection => {
       if (r.repository?.issues) {
         return r.repository.issues
@@ -131,7 +133,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       .request<Repository>(query, variables, requestHeaders)
       .then(takeIssues)
       .catch(e => {
-        logger.error(e)
+        this.#logger.error(e)
         throw makeGitHubAccessError(e)
       })
   }
@@ -239,7 +241,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       sortField: opts?.sortField !== undefined ? opts.sortField : 'UPDATED_AT',
       sortDirection: opts?.sortDirection !== undefined ? opts.sortDirection : 'DESC',
     }
-    logger.verbose(`PullRequests variable: ${JSON.stringify(variables)}`)
+    this.#logger.verbose(`PullRequests variable: ${JSON.stringify(variables)}`)
     const takePullRequests = (r: Repository): PullRequestConnection => {
       if (r.repository?.pullRequests) {
         return r.repository.pullRequests
@@ -251,7 +253,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       .request<Repository>(query, variables, requestHeaders)
       .then(takePullRequests)
       .catch(e => {
-        logger.error(e)
+        this.#logger.error(e)
         throw makeGitHubAccessError(e)
       })
   }
@@ -325,7 +327,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       .request<Repository>(query, variables, requestHeaders)
       .then(takeReleases)
       .catch(e => {
-        logger.error(e)
+        this.#logger.error(e)
         throw makeGitHubAccessError(e)
       })
   }
@@ -391,7 +393,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       .request<Repository>(query, variables, requestHeaders)
       .then(takeCommitHistories)
       .catch(e => {
-        logger.error(e)
+        this.#logger.error(e)
         throw makeGitHubAccessError(e)
       })
   }

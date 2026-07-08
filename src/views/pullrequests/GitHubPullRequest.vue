@@ -45,12 +45,11 @@
 </template>
 
 <script lang="ts">
-import { logger } from '@/application/core/logger'
 import { Account, GitHubUrl, PullRequests } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
 import { inject } from '@/plugins/di/injector'
-import { GetPullRequestsUseCaseFactoryKey, WebBrowserUserCaseKey } from '@/plugins/di/types'
+import { GetPullRequestsUseCaseFactoryKey, LoggerKey, WebBrowserKey } from '@/plugins/di/types'
 import { getters, mutations } from '@/store/pullRequests'
 import { getters as queryOption } from '@/store/queryOption'
 import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
@@ -79,10 +78,11 @@ export default defineComponent({
   },
   setup(props: PropsType) {
     const getPullRequestsUseCaseFactory = inject(GetPullRequestsUseCaseFactoryKey)
-    const webBrowserUserCase = inject(WebBrowserUserCaseKey)
+    const webBrowser = inject(WebBrowserKey)
+    const logger = inject(LoggerKey)
 
     const openPullRequestUrl = (val: RepositorySetting): void =>
-      webBrowserUserCase.openUrl(`${val.getUrl()}/pulls`)
+      webBrowser.openUrl(`${val.getUrl()}/pulls`)
 
     const account = readonly(props.account)
     const githubUrl = account.githubUrl as GitHubUrl

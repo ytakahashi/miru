@@ -1,3 +1,4 @@
+import { newLogger, newWebBrowser } from '@/application/composition/adapterFactory.js'
 import {
   AccountSettingUseCaseFactoryImpl,
   ApplicationSettingUseCaseFactoryImpl,
@@ -8,7 +9,6 @@ import {
   GitHubAccountUseCaseFactoryImpl,
   RepositorySettingUseCaseFactoryImpl,
 } from '@/application/composition/useCaseFactory.js'
-import { WebBrowserUserCaseInteractor } from '@/application/usecase/interactor/WebBrowserUserCaseInteractor.js'
 import {
   AccountSettingUseCaseFactoryKey,
   ApplicationSettingUseCaseKey,
@@ -17,13 +17,15 @@ import {
   GetPullRequestsUseCaseFactoryKey,
   GetReleasesUseCaseFactoryKey,
   GitHubAccountUseCaseFactoryKey,
+  LoggerKey,
   RepositorySettingUseCaseFactoryKey,
-  WebBrowserUserCaseKey,
+  WebBrowserKey,
 } from '@/plugins/di/types.js'
 import { App } from 'vue'
 
 const accountSettingUseCaseFactory = new AccountSettingUseCaseFactoryImpl()
-const webBrowserUserCaseInteractor = new WebBrowserUserCaseInteractor()
+const logger = newLogger()
+const webBrowser = newWebBrowser()
 
 const applicationSettingUseCase =
   new ApplicationSettingUseCaseFactoryImpl().newApplicationSettingUseCase()
@@ -44,7 +46,8 @@ export default {
     app.provide(GetIssuesUseCaseFactoryKey, getIssuesUseCaseFactory)
     app.provide(GetPullRequestsUseCaseFactoryKey, getPullRequestsUseCaseFactory)
     app.provide(GetReleasesUseCaseFactoryKey, getReleasesUseCaseFactory)
-    app.provide(WebBrowserUserCaseKey, webBrowserUserCaseInteractor)
+    app.provide(LoggerKey, logger)
+    app.provide(WebBrowserKey, webBrowser)
     app.provide(RepositorySettingUseCaseFactoryKey, repositorySettingUseCaseFactory)
   },
 }
