@@ -18,6 +18,8 @@ export type Option = {
   sortField?: SortField
   sortDirection?: SortDirection
   states?: QueryState[]
+  /** Position after which to fetch results. undefined means the first page. */
+  after?: string
 }
 
 export interface GitHubAccessor {

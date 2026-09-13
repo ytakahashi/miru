@@ -54,12 +54,18 @@ describe('GitHubRepositoryUseCaseInteractor.ts', () => {
     it('returns issues', async () => {
       const sut = new GetIssuesUseCaseInteractor(mock, 'pat')
       const target = new RepositorySetting('https://github.com/ytakahashi/miru')
-      const actual = await sut.execute(target)
+      const actual = await sut.execute(target, { count: 1, states: ['OPEN'] })
       expect(actual.totalCount).toBe(16)
       expect(actual.results).toHaveLength(1)
       expect(actual.belongsTo('https://github.com/ytakahashi/miru')).toBe(true)
       expect(actual.hasContents()).toBeTruthy()
       expect(actual.fetchedAtDate()).not.toBeUndefined()
+      expect(actual.hasNextPage()).toBe(true)
+      expect(actual.nextPageOption()).toEqual({
+        count: 1,
+        states: ['OPEN'],
+        after: 'issue-cursor',
+      })
 
       const actualIssue = actual.results[0]
       expect(actualIssue.authorName).toBe('ytakahashi')
@@ -80,12 +86,18 @@ describe('GitHubRepositoryUseCaseInteractor.ts', () => {
     it('returns pull requests', async () => {
       const sut = new GetPullRequestsUseCaseInteractor(mock, 'pat')
       const target = new RepositorySetting('https://github.com/ytakahashi/miru')
-      const actual = await sut.execute(target)
+      const actual = await sut.execute(target, { count: 1, states: ['OPEN'] })
       expect(actual.totalCount).toBe(7)
       expect(actual.results).toHaveLength(1)
       expect(actual.belongsTo('https://github.com/ytakahashi/miru')).toBe(true)
       expect(actual.hasContents()).toBeTruthy()
       expect(actual.fetchedAtDate()).not.toBeUndefined()
+      expect(actual.hasNextPage()).toBe(true)
+      expect(actual.nextPageOption()).toEqual({
+        count: 1,
+        states: ['OPEN'],
+        after: 'pull-request-cursor',
+      })
 
       const actualPullRequest = actual.results[0]
       expect(actualPullRequest.issueNumber).toBe(7775)
@@ -114,12 +126,14 @@ describe('GitHubRepositoryUseCaseInteractor.ts', () => {
     it('returns releases', async () => {
       const sut = new GetReleasesUseCaseInteractor(mock, 'pat')
       const target = new RepositorySetting('https://github.com/ytakahashi/miru')
-      const actual = await sut.execute(target)
+      const actual = await sut.execute(target, { count: 2, sortField: 'CREATED_AT' })
       expect(actual.totalCount).toBe(2)
       expect(actual.results).toHaveLength(2)
       expect(actual.belongsTo('https://github.com/ytakahashi/miru')).toBe(true)
       expect(actual.hasContents()).toBe(true)
       expect(actual.fetchedAtDate()).not.toBeUndefined()
+      expect(actual.hasNextPage()).toBe(false)
+      expect(actual.nextPageOption()).toBeUndefined()
 
       const actualRelease0 = actual.results[0]
       expect(actualRelease0.authorName).toBe('github-actions[bot]')
@@ -143,12 +157,14 @@ describe('GitHubRepositoryUseCaseInteractor.ts', () => {
     it('returns releases', async () => {
       const sut = new GetCommitHistoryUseCaseInteractor(mock, 'pat')
       const target = new RepositorySetting('https://github.com/ytakahashi/miru')
-      const actual = await sut.execute(target)
-      expect(actual.totalCount).toBe(3)
+      const actual = await sut.execute(target, { count: 3 })
+      expect(actual.totalCount).toBe(42)
       expect(actual.results).toHaveLength(3)
       expect(actual.belongsTo('https://github.com/ytakahashi/miru')).toBe(true)
       expect(actual.hasContents()).toBe(true)
       expect(actual.fetchedAtDate()).not.toBeUndefined()
+      expect(actual.hasNextPage()).toBe(true)
+      expect(actual.nextPageOption()).toEqual({ count: 3, after: 'commit-cursor' })
 
       const actualCommit0 = actual.results[0]
       expect(actualCommit0.message).toBe('refactor: separate usecase (#66)')
