@@ -61,6 +61,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
         $owner: String!
         $name: String!
         $firstIssueNumber: Int!
+        $after: String
         $state: [IssueState!]
         $sortField: IssueOrderField!
         $sortDirection: OrderDirection!
@@ -68,10 +69,15 @@ export class GitHubGraphQLClient implements GitHubAccessor {
         repository(owner: $owner, name: $name) {
           issues(
             first: $firstIssueNumber
+            after: $after
             states: $state
             orderBy: { field: $sortField, direction: $sortDirection }
           ) {
             totalCount
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
             edges {
               node {
                 assignees(first: 5) {
@@ -117,6 +123,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       owner: setting.getOwner(),
       name: setting.getRepositoryName(),
       firstIssueNumber: opts?.count !== undefined ? opts.count : 10,
+      after: opts?.after ?? null,
       state: opts?.states,
       sortField: opts?.sortField !== undefined ? opts.sortField : 'UPDATED_AT',
       sortDirection: opts?.sortDirection !== undefined ? opts.sortDirection : 'DESC',
@@ -150,18 +157,24 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       query getPRs(
         $owner: String!
         $name: String!
-        $firstIssueNumber: Int!
+        $firstPullRequestNumber: Int!
+        $after: String
         $state: [PullRequestState!]
         $sortField: IssueOrderField!
         $sortDirection: OrderDirection!
       ) {
         repository(owner: $owner, name: $name) {
           pullRequests(
-            first: $firstIssueNumber
+            first: $firstPullRequestNumber
+            after: $after
             states: $state
             orderBy: { field: $sortField, direction: $sortDirection }
           ) {
             totalCount
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
             edges {
               node {
                 assignees(first: 5) {
@@ -236,7 +249,8 @@ export class GitHubGraphQLClient implements GitHubAccessor {
     const variables = {
       owner: setting.getOwner(),
       name: setting.getRepositoryName(),
-      firstIssueNumber: opts?.count !== undefined ? opts.count : 10,
+      firstPullRequestNumber: opts?.count !== undefined ? opts.count : 10,
+      after: opts?.after ?? null,
       state: opts?.states,
       sortField: opts?.sortField !== undefined ? opts.sortField : 'UPDATED_AT',
       sortDirection: opts?.sortDirection !== undefined ? opts.sortDirection : 'DESC',
@@ -271,12 +285,21 @@ export class GitHubGraphQLClient implements GitHubAccessor {
         $owner: String!
         $name: String!
         $firstNumber: Int!
+        $after: String
         $sortField: ReleaseOrderField!
         $sortDirection: OrderDirection!
       ) {
         repository(owner: $owner, name: $name) {
-          releases(first: $firstNumber, orderBy: { field: $sortField, direction: $sortDirection }) {
+          releases(
+            first: $firstNumber
+            after: $after
+            orderBy: { field: $sortField, direction: $sortDirection }
+          ) {
             totalCount
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
             edges {
               node {
                 author {
@@ -313,6 +336,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       owner: setting.getOwner(),
       name: setting.getRepositoryName(),
       firstNumber: opts?.count !== undefined ? opts.count : 3,
+      after: opts?.after ?? null,
       sortField: opts?.sortField !== undefined ? opts.sortField : 'CREATED_AT',
       sortDirection: opts?.sortDirection !== undefined ? opts.sortDirection : 'DESC',
     }
@@ -341,12 +365,17 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       authorization: `Bearer ${personalAccessToken}`,
     }
     const query = gql`
-      query getCommits($owner: String!, $name: String!, $firstNumber: Int!) {
+      query getCommits($owner: String!, $name: String!, $firstNumber: Int!, $after: String) {
         repository(owner: $owner, name: $name) {
           defaultBranchRef {
             target {
               ... on Commit {
-                history(first: $firstNumber) {
+                history(first: $firstNumber, after: $after) {
+                  totalCount
+                  pageInfo {
+                    hasNextPage
+                    endCursor
+                  }
                   nodes {
                     additions
                     author {
@@ -381,6 +410,7 @@ export class GitHubGraphQLClient implements GitHubAccessor {
       owner: setting.getOwner(),
       name: setting.getRepositoryName(),
       firstNumber: opts?.count !== undefined ? opts.count : 3,
+      after: opts?.after ?? null,
     }
     const takeCommitHistories = (r: Repository): CommitHistoryConnection => {
       if (r.repository?.defaultBranchRef?.target?.history) {

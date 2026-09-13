@@ -1,5 +1,9 @@
 {
   "totalCount": 7,
+  "pageInfo": {
+    "hasNextPage": true,
+    "endCursor": "pull-request-cursor"
+  },
   "edges": [
     {
       "node": {

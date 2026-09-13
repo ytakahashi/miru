@@ -1,13 +1,49 @@
 import {
   Commit,
+  CommitHistory,
   GitHubUrl,
   Issue,
   Issues,
   Label,
+  PageInfo,
   PullRequest,
   PullRequestReviews,
+  PullRequests,
+  Release,
+  Releases,
 } from '@/application/domain/model/github.js'
+import type { Option } from '@/application/domain/interface/githubAccessor.js'
 import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
+
+const createIssue = (url: string): Issue =>
+  new Issue('author', 'title', url, '', '', 1, [], 0, 0, false, false, 'OPEN')
+
+const createPullRequest = (url: string): PullRequest =>
+  new PullRequest(
+    'author',
+    'title',
+    url,
+    '',
+    '',
+    1,
+    [],
+    0,
+    0,
+    0,
+    0,
+    0,
+    false,
+    new PullRequestReviews(0, false),
+    false,
+    false,
+    false,
+    'OPEN'
+  )
+
+const createRelease = (url: string): Release =>
+  new Release('author', 'name', url, '', '', false, false, 0)
+
+const createCommit = (url: string): Commit => new Commit('message', url, 0, 0, 0, '', '', '', '')
 
 describe('GitHubUrl', () => {
   it('can initialize (empty)', () => {
@@ -164,5 +200,108 @@ describe('Commit', () => {
     expect(sut.getAuthorInformation()).toMatch(/^ytakahashi authored .+ ago$/)
     expect(sut.getCommitInformation()).toMatch(/^ytakahashi committed .+ ago$/)
     expect(sut.status).toBe('SUCCESS')
+  })
+})
+
+describe('ResultListHolder paging', () => {
+  const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
+
+  it('returns the next page option with a snapshot of the original conditions', () => {
+    const option: Option = {
+      count: 10,
+      sortField: 'UPDATED_AT',
+      sortDirection: 'DESC',
+      states: ['OPEN'],
+      after: 'previous-cursor',
+    }
+    const sut = new Issues(setting, [], 1, new PageInfo(true, 'next-cursor'), option)
+
+    option.count = 20
+    option.states?.push('CLOSED')
+
+    expect(sut.hasNextPage()).toBe(true)
+    expect(sut.nextPageOption()).toEqual({
+      count: 10,
+      sortField: 'UPDATED_AT',
+      sortDirection: 'DESC',
+      states: ['OPEN'],
+      after: 'next-cursor',
+    })
+  })
+
+  it('does not expose a next page without a cursor', () => {
+    const sut = new Issues(setting, [], 1, new PageInfo(true))
+
+    expect(sut.hasNextPage()).toBe(false)
+    expect(sut.nextPageOption()).toBeUndefined()
+  })
+
+  it('concatenates issues and removes duplicate results', () => {
+    const option: Option = { count: 2, states: ['OPEN'] }
+    const current = new Issues(
+      setting,
+      [createIssue('issue-1')],
+      4,
+      new PageInfo(true, 'cursor-1'),
+      option
+    )
+    const next = new Issues(
+      setting,
+      [createIssue('issue-1'), createIssue('issue-2'), createIssue('issue-2')],
+      3,
+      new PageInfo(true, 'cursor-2'),
+      { ...option, after: 'cursor-1' }
+    )
+
+    const actual = current.concat(next)
+
+    expect(actual.results.map(issue => issue.url)).toEqual(['issue-1', 'issue-2'])
+    expect(actual.totalCount).toBe(3)
+    expect(actual.pageInfo.endCursor).toBe('cursor-2')
+    expect(actual.nextPageOption()).toEqual({ ...option, after: 'cursor-2' })
+  })
+
+  it('rejects results from a different repository', () => {
+    const current = new Issues(setting, [], 0)
+    const next = new Issues(new RepositorySetting('https://github.com/facebook/jest'), [], 0)
+
+    expect(() => current.concat(next)).toThrow('different repositories')
+  })
+
+  it('rejects results fetched with different query conditions', () => {
+    const current = new Issues(setting, [], 0, PageInfo.noNextPage, { count: 10 })
+    const next = new Issues(setting, [], 0, PageInfo.noNextPage, { count: 20 })
+
+    expect(() => current.concat(next)).toThrow('different query conditions')
+  })
+
+  it('concatenates pull requests by URL', () => {
+    const current = new PullRequests(setting, [createPullRequest('pull-request-1')])
+    const next = new PullRequests(setting, [createPullRequest('pull-request-2')])
+
+    expect(current.concat(next).results.map(pullRequest => pullRequest.url)).toEqual([
+      'pull-request-1',
+      'pull-request-2',
+    ])
+  })
+
+  it('concatenates releases by URL', () => {
+    const current = new Releases(setting, [createRelease('release-1')])
+    const next = new Releases(setting, [createRelease('release-2')])
+
+    expect(current.concat(next).results.map(release => release.url)).toEqual([
+      'release-1',
+      'release-2',
+    ])
+  })
+
+  it('concatenates commits by commit URL', () => {
+    const current = new CommitHistory(setting, [createCommit('commit-1')])
+    const next = new CommitHistory(setting, [createCommit('commit-2')])
+
+    expect(current.concat(next).results.map(commit => commit.commitUrl)).toEqual([
+      'commit-1',
+      'commit-2',
+    ])
   })
 })

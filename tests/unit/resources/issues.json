@@ -1,5 +1,9 @@
 {
   "totalCount": 16,
+  "pageInfo": {
+    "hasNextPage": true,
+    "endCursor": "issue-cursor"
+  },
   "edges": [
     {
       "node": {

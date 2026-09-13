@@ -1,4 +1,5 @@
 import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
+import type { Option } from '@/application/domain/interface/githubAccessor.js'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime.js'
 import utc from 'dayjs/plugin/utc.js'
@@ -336,17 +337,65 @@ export class Commit {
   }
 }
 
+export class PageInfo {
+  static readonly noNextPage = new PageInfo(false)
+
+  public readonly hasNextPage: boolean
+  public readonly endCursor?: string
+
+  constructor(hasNextPage: boolean, endCursor?: string) {
+    // A cursor is required to advance even if an inconsistent API response says a next page exists.
+    this.hasNextPage = hasNextPage && endCursor !== undefined
+    this.endCursor = endCursor
+  }
+}
+
+const snapshotQueryConditions = (option?: Option): Option | undefined => {
+  if (option === undefined) {
+    return undefined
+  }
+  const { after: _after, states, ...conditions } = option
+  return {
+    ...conditions,
+    ...(states === undefined ? {} : { states: [...states] }),
+  }
+}
+
+const hasSameQueryConditions = (left?: Option, right?: Option): boolean => {
+  const leftStates = left?.states ?? []
+  const rightStates = right?.states ?? []
+  return (
+    left?.count === right?.count &&
+    left?.sortField === right?.sortField &&
+    left?.sortDirection === right?.sortDirection &&
+    leftStates.length === rightStates.length &&
+    leftStates.every((state, index) => state === rightStates[index])
+  )
+}
+
 class ResultListHolder<T> {
   readonly fetchedAt: number
+  public readonly repositorySetting: RepositorySetting
   public readonly repositoryUrl: string
   public readonly results: Array<T>
   public readonly totalCount?: number
+  public readonly pageInfo: PageInfo
+  public readonly option?: Option
 
-  constructor(repositorySetting: RepositorySetting, results: Array<T>, totalCount?: number) {
+  constructor(
+    repositorySetting: RepositorySetting,
+    results: Array<T>,
+    totalCount?: number,
+    pageInfo: PageInfo = PageInfo.noNextPage,
+    option?: Option
+  ) {
     this.fetchedAt = dayjs().unix()
+    this.repositorySetting = repositorySetting
     this.repositoryUrl = repositorySetting.getUrl()
     this.results = results
     this.totalCount = totalCount
+    this.pageInfo = pageInfo
+    this.option = snapshotQueryConditions(option)
   }
 
   fetchedAtDate = (): string => {
@@ -360,12 +409,80 @@ class ResultListHolder<T> {
   hasContents = (): boolean => {
     return this.results.length !== 0
   }
+
+  hasNextPage = (): boolean => {
+    return this.pageInfo.hasNextPage
+  }
+
+  nextPageOption = (): Option | undefined => {
+    if (!this.pageInfo.hasNextPage || this.pageInfo.endCursor === undefined) {
+      return undefined
+    }
+    return { ...this.option, after: this.pageInfo.endCursor }
+  }
+
+  protected mergeResults = (next: ResultListHolder<T>, key: (value: T) => string): Array<T> => {
+    // Cursor pages are only compatible when both their repository and query conditions match.
+    if (this.repositoryUrl !== next.repositoryUrl) {
+      throw new Error('Cannot concatenate results from different repositories.')
+    }
+    if (!hasSameQueryConditions(this.option, next.option)) {
+      throw new Error('Cannot concatenate results fetched with different query conditions.')
+    }
+
+    const known = new Set(this.results.map(key))
+    const merged = [...this.results]
+    for (const value of next.results) {
+      const resultKey = key(value)
+      if (!known.has(resultKey)) {
+        known.add(resultKey)
+        merged.push(value)
+      }
+    }
+    return merged
+  }
 }
 
-export class Issues extends ResultListHolder<Issue> {}
+export class Issues extends ResultListHolder<Issue> {
+  concat = (next: Issues): Issues =>
+    new Issues(
+      this.repositorySetting,
+      this.mergeResults(next, issue => issue.url),
+      next.totalCount,
+      next.pageInfo,
+      next.option
+    )
+}
 
-export class PullRequests extends ResultListHolder<PullRequest> {}
+export class PullRequests extends ResultListHolder<PullRequest> {
+  concat = (next: PullRequests): PullRequests =>
+    new PullRequests(
+      this.repositorySetting,
+      this.mergeResults(next, pullRequest => pullRequest.url),
+      next.totalCount,
+      next.pageInfo,
+      next.option
+    )
+}
 
-export class Releases extends ResultListHolder<Release> {}
+export class Releases extends ResultListHolder<Release> {
+  concat = (next: Releases): Releases =>
+    new Releases(
+      this.repositorySetting,
+      this.mergeResults(next, release => release.url),
+      next.totalCount,
+      next.pageInfo,
+      next.option
+    )
+}
 
-export class CommitHistory extends ResultListHolder<Commit> {}
+export class CommitHistory extends ResultListHolder<Commit> {
+  concat = (next: CommitHistory): CommitHistory =>
+    new CommitHistory(
+      this.repositorySetting,
+      this.mergeResults(next, commit => commit.commitUrl),
+      next.totalCount,
+      next.pageInfo,
+      next.option
+    )
+}

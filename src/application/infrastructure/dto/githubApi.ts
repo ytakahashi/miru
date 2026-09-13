@@ -8,6 +8,11 @@ export type Viewer = {
   viewer: GitHubUser
 }
 
+export type PageInfo = {
+  hasNextPage: boolean
+  endCursor: string | null
+}
+
 export type IssueLabel = {
   name: string
   color: string
@@ -18,7 +23,6 @@ export type IssueLabelNode = {
 }
 
 export type IssueLabelEdge = {
-  cursor?: string
   edges: Array<IssueLabelNode>
 }
 
@@ -52,13 +56,12 @@ export type Issue = {
 }
 
 export type IssueEdge = {
-  cursor?: string
   node: Issue
 }
 
 export type IssueConnection = {
-  cursor?: string
-  totalCount?: number
+  totalCount: number
+  pageInfo: PageInfo
   edges: Array<IssueEdge>
 }
 
@@ -123,13 +126,12 @@ export type PullRequest = {
 }
 
 export type PullRequestEdge = {
-  cursor?: string
   node: PullRequest
 }
 
 export type PullRequestConnection = {
-  cursor?: string
-  totalCount?: number
+  totalCount: number
+  pageInfo: PageInfo
   edges: Array<PullRequestEdge>
 }
 
@@ -151,6 +153,8 @@ export type CommitNode = {
 }
 
 export type CommitHistoryConnection = {
+  totalCount: number
+  pageInfo: PageInfo
   nodes: CommitNode[]
 }
 
@@ -184,13 +188,12 @@ export type Release = {
 }
 
 export type ReleaseEdge = {
-  cursor?: string
   node: Release
 }
 
 export type ReleaseConnection = {
-  cursor?: string
-  totalCount?: number
+  totalCount: number
+  pageInfo: PageInfo
   edges: Array<ReleaseEdge>
 }
 

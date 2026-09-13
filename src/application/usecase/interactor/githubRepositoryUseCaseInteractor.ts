@@ -6,6 +6,7 @@ import {
   Issue,
   Issues,
   Label,
+  PageInfo,
   PullRequest,
   PullRequestReviews,
   PullRequests,
@@ -17,6 +18,7 @@ import { RepositorySetting } from '@/application/domain/model/githubRepository.j
 import {
   CommitHistoryConnection,
   IssueConnection,
+  PageInfo as PageInfoDto,
   PullRequestConnection,
   PullRequestReview,
   PullRequestReviewConnection,
@@ -28,6 +30,9 @@ import {
   GetPullRequestsUseCase,
   GetReleasesUseCase,
 } from '@/application/usecase/githubRepository.js'
+
+const mapPageInfo = (pageInfo: PageInfoDto): PageInfo =>
+  new PageInfo(pageInfo.hasNextPage, pageInfo.endCursor ?? undefined)
 
 export class GetIssuesUseCaseInteractor implements GetIssuesUseCase {
   #githubAccessor: GitHubAccessor
@@ -68,7 +73,7 @@ export class GetIssuesUseCaseInteractor implements GetIssuesUseCase {
               v.stateReason
             )
         )
-      return new Issues(setting, issues, i.totalCount)
+      return new Issues(setting, issues, i.totalCount, mapPageInfo(i.pageInfo), opts)
     }
 
     return this.#githubAccessor
@@ -137,7 +142,7 @@ export class GetPullRequestsUseCaseInteractor implements GetPullRequestsUseCase 
                 : ''
             )
         )
-      return new PullRequests(setting, prs, v.totalCount)
+      return new PullRequests(setting, prs, v.totalCount, mapPageInfo(v.pageInfo), opts)
     }
 
     return this.#githubAccessor
@@ -187,7 +192,7 @@ export class GetReleasesUseCaseInteractor implements GetReleasesUseCase {
                 : new TagReference(v.tag.target.abbreviatedOid, v.tag.target.commitUrl)
             )
         )
-      return new Releases(setting, releases, v.totalCount)
+      return new Releases(setting, releases, v.totalCount, mapPageInfo(v.pageInfo), opts)
     }
 
     return this.#githubAccessor
@@ -230,7 +235,7 @@ export class GetCommitHistoryUseCaseInteractor implements GetCommitHistoryUseCas
             (c.statusCheckRollup?.state as CheckStatus) ?? ''
           )
       )
-      return new CommitHistory(setting, history, v.nodes.length)
+      return new CommitHistory(setting, history, v.totalCount, mapPageInfo(v.pageInfo), opts)
     }
 
     return this.#githubAccessor

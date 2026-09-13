@@ -1,4 +1,9 @@
 {
+  "totalCount": 42,
+  "pageInfo": {
+    "hasNextPage": true,
+    "endCursor": "commit-cursor"
+  },
   "nodes": [
     {
       "additions": 178,
