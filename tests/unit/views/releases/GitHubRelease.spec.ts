@@ -9,7 +9,7 @@ import { GetReleasesUseCaseFactoryKey, LoggerKey, WebBrowserKey } from '@/plugin
 import GitHubRelease from '@/views/releases/GitHubRelease.vue'
 import ReleaseContent from '@/views/releases/ReleaseContent.vue'
 import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
+import { vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
 
 // GetReleasesUseCase mock

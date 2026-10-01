@@ -26,21 +26,21 @@
     "@types/tinycolor2": "1.4.6",
     "@vitejs/plugin-vue": "6.0.6",
     "@vitest/eslint-plugin": "1.6.16",
-    "@vue/eslint-config-prettier": "10.2.0",
     "@vue/eslint-config-typescript": "14.7.0",
     "@vue/test-utils": "2.4.8",
     "concurrently": "9.2.1",
     "electron": "41.10.3",
     "electron-builder": "26.9.0",
     "eslint": "10.2.1",
+    "eslint-config-prettier": "10.1.8",
     "eslint-plugin-vue": "10.9.0",
     "jsdom": "29.0.2",
-    "prettier": "3.8.3",
     "sass": "1.99.0",
     "typescript": "5.9.3",
     "typescript-eslint": "8.62.1",
-    "vite": "8.0.16",
-    "vitest": "5.0.2",
+    "vite": "catalog:",
+    "vite-plus": "catalog:",
+    "vitest": "catalog:",
     "vue-tsc": "3.2.7"
   },
   "license": "MIT",
@@ -54,18 +54,22 @@
   "scripts": {
     "build": "yarn vite:build && yarn ts",
     "electron:build": "yarn build && electron-builder --config electron-builder.json",
-    "electron:dev": "ELECTRON_DISABLE_SECURITY_WARNINGS=true yarn ts && concurrently vite \" electron --trace-warnings .\" \"yarn ts -w\"",
+    "electron:dev": "ELECTRON_DISABLE_SECURITY_WARNINGS=true yarn ts && concurrently \"vp dev\" \" electron --trace-warnings .\" \"yarn ts -w\"",
     "electron:preview": "yarn build && electron .",
     "electron:release": "yarn build && electron-builder --config electron-builder.json --mac dmg --publish onTagOrDraft",
     "eslint": "NODE_ENV=production eslint ./src ./tests",
-    "lint": "yarn run eslint && yarn run prettier",
-    "prettier": "prettier --check src/ tests/",
-    "prettier:fix": "prettier --write src/ tests/",
+    "lint": "yarn run eslint && yarn run fmt",
+    "fmt": "vp fmt --check src/ tests/",
+    "fmt:fix": "vp fmt src/ tests/",
     "rm-dist": "node -e 'fs.rmSync(`dist`, {recursive:true, force:true}); fs.rmSync(`dist_electron`, {recursive:true, force:true})'",
-    "test:unit": "vitest run",
+    "test:unit": "vp test run",
     "ts": "tsc -p tsconfig.build.json",
-    "vite:build": "vue-tsc -p tsconfig.build.json --noEmit && vite build",
-    "vitest": "vitest"
+    "vite:build": "vue-tsc -p tsconfig.build.json --noEmit && vp build",
+    "vitest": "vp test"
   },
-  "type": "module"
+  "type": "module",
+  "resolutions": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.0.0",
+    "vitest": "5.0.1"
+  }
 }

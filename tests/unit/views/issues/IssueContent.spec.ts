@@ -3,7 +3,7 @@ import { WebBrowser } from '@/application/domain/interface/webBrowser'
 import { WebBrowserKey } from '@/plugins/di/types'
 import IssueContent from '@/views/issues/IssueContent.vue'
 import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
+import { vi } from 'vite-plus/test'
 
 const MockedWebBrowser = vi.fn()
 const openUrlMock = vi.fn()

@@ -7,7 +7,7 @@ import { getters as queryOption } from '@/store/queryOption'
 import GitHubIssue from '@/views/issues/GitHubIssue.vue'
 import IssueContent from '@/views/issues/IssueContent.vue'
 import { shallowMount } from '@vue/test-utils'
-import { Mocked, vi } from 'vitest'
+import { Mocked, vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
 
 // GetIssuesUseCase mock

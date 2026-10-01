@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { vi } from 'vitest'
+import { vi } from 'vite-plus/test'
 import GitHubRepository from '@/views/settings/GitHubRepository.vue'
 import { WebBrowserKey } from '@/plugins/di/types'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'

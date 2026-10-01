@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
+import { vi } from 'vite-plus/test'
 import { Release } from '@/application/domain/model/github'
 import { WebBrowser } from '@/application/domain/interface/webBrowser'
 import { WebBrowserKey } from '@/plugins/di/types'

@@ -4,7 +4,7 @@ import { WebBrowserKey } from '@/plugins/di/types'
 import CommitContent from '@/views/commits/CommitContent.vue'
 import StatusIcon from '@/components/StatusIcon.vue'
 import { mount } from '@vue/test-utils'
-import { vi } from 'vitest'
+import { vi } from 'vite-plus/test'
 
 const MockedWebBrowser = vi.fn()
 const openUrlMock = vi.fn()

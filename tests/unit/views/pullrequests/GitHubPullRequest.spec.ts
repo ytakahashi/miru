@@ -16,7 +16,7 @@ import { getters as queryOption } from '@/store/queryOption'
 import GitHubPullRequest from '@/views/pullrequests/GitHubPullRequest.vue'
 import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
 import { shallowMount } from '@vue/test-utils'
-import { Mocked, vi } from 'vitest'
+import { Mocked, vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
 
 // GetPullRequestsUseCase mock

@@ -50,7 +50,7 @@ import GitHubRepository from '@/views/settings/GitHubRepository.vue'
 import { PropType, Ref, defineComponent, ref, watch } from 'vue'
 
 // ref. https://zenn.dev/kazuwombat/articles/f23b47f168f1d0
-const moveIndex = <T,>(original: T[], from: number, to: number): T[] => {
+const moveIndex = <T>(original: T[], from: number, to: number): T[] => {
   const arr = [...original]
   const target = arr[from]
   arr.splice(from, 1)

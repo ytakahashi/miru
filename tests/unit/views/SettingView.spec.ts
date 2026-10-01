@@ -8,7 +8,7 @@ import {
 import SettingView from '@/views/SettingView.vue'
 import AccountSetting from '@/views/settings/AccountSetting.vue'
 import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
+import { vi } from 'vite-plus/test'
 import { defineComponent, h } from 'vue'
 
 // AccountSettingUseCase mock

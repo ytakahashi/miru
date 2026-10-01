@@ -2,7 +2,9 @@ import eslint from '@eslint/js'
 import tseslint from 'typescript-eslint'
 import pluginVue from 'eslint-plugin-vue'
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
-import vueEsPrettierConfig from '@vue/eslint-config-prettier'
+// Formatting is handled by Oxfmt (`vp fmt`), so only disable the conflicting stylistic rules
+// instead of running Prettier through ESLint.
+import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import vitest from '@vitest/eslint-plugin'
 
 export default defineConfigWithVueTs(
@@ -13,7 +15,7 @@ export default defineConfigWithVueTs(
   pluginVue.configs['flat/strongly-recommended'],
   // https://github.com/vuejs/eslint-config-typescript
   vueTsConfigs.recommended,
-  vueEsPrettierConfig,
+  eslintConfigPrettier,
   {
     rules: {
       'no-console': 'warn',
