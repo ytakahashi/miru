@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 import StatusIcon from '@/components/StatusIcon.vue'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'vite-plus/test'
 
 describe('StatusIcon.vue', () => {
   it('renders nothing when status is empty', () => {

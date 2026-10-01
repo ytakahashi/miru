@@ -14,7 +14,7 @@ import { GetCommitHistoryUseCaseFactoryKey, LoggerKey, WebBrowserKey } from '@/p
 import CommitContent from '@/views/commits/CommitContent.vue'
 import CommitHistory from '@/views/commits/CommitHistory.vue'
 import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vitest'
+import { vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
 
 // GetCommitHistoryUseCase mock

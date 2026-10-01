@@ -15,7 +15,7 @@ import {
   RepositorySettingUseCase,
   RepositorySettingUseCaseFactory,
 } from '@/application/usecase/repositorySetting'
-import { vi } from 'vitest'
+import { vi } from 'vite-plus/test'
 
 const defaultGithubUrl = new GitHubUrl('https://github.com', 'https://api.github.com/graphql')
 export const defaultAccount = new Account(
