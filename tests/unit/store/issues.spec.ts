@@ -1,30 +1,14 @@
-import { vi } from 'vite-plus/test'
 import { Issue, Issues } from '@/application/domain/model/github.js'
 import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 import { getters, mutations } from '@/store/issues.js'
-
-const MockedIssues = vi.fn()
-MockedIssues.mockImplementation(function MockedIssuesImpl(s: RepositorySetting): Issues {
-  return {
-    fetchedAt: 1,
-    repositoryUrl: s.getUrl(),
-    results: [],
-    totalCount: 1,
-    fetchedAtDate: () => '',
-    belongsTo: (r: string): boolean => {
-      return s.getUrl() === r
-    },
-    hasContents: (): boolean => true,
-  }
-})
 
 const setting1 = new RepositorySetting('https://github.com/foo/test1')
 const setting2 = new RepositorySetting('https://github.com/foo/test2')
 const setting3 = new RepositorySetting('https://github.com/foo/test3')
 
-const issues1 = new MockedIssues(setting1)
-const issues2 = new MockedIssues(setting2)
-const issues3 = new MockedIssues(setting3)
+const issues1 = new Issues(setting1, [], 1)
+const issues2 = new Issues(setting2, [], 1)
+const issues3 = new Issues(setting3, [], 1)
 const issue = (url: string): Issue =>
   new Issue('author', 'title', url, '', '', 1, [], 0, 0, false, false, 'OPEN')
 
@@ -86,19 +70,20 @@ describe('issue store', () => {
 
       expect(() =>
         mutations.append(new Issues(setting1, [issue('issue-2')], 2, undefined, { count: 20 }))
-      ).toThrow()
+      ).toThrow('Cannot concatenate results fetched with different query conditions.')
 
       expect(getters.of(setting1)).toBe(before)
       expect(getters.of(setting1)?.results.map(result => result.url)).toEqual(['issue-1'])
     })
 
     it('replaces issue', () => {
-      const newIssues1 = new MockedIssues(setting1)
+      const before = getters.of(setting1)
+      const newIssues1 = new Issues(setting1, [], 1)
       mutations.replace(newIssues1)
 
       const actual = getters.of(setting1)
-      expect(actual).not.toStrictEqual(issues1)
-      expect(actual).toStrictEqual(newIssues1)
+      expect(actual).not.toBe(before)
+      expect(actual).toBe(newIssues1)
     })
 
     it('removes issue', () => {

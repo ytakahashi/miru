@@ -1,8 +1,9 @@
-import { reactive } from 'vue'
+import { shallowReactive } from 'vue'
 import { CommitHistory } from '@/application/domain/model/github.js'
 import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 
-const store = reactive<CommitHistory[]>([])
+// Holder instances are replaced as a whole; only array changes need reactivity.
+const store = shallowReactive<CommitHistory[]>([])
 
 export const getters = {
   of(url: RepositorySetting): CommitHistory | undefined {

@@ -1,8 +1,9 @@
-import { reactive } from 'vue'
+import { shallowReactive } from 'vue'
 import { PullRequests } from '@/application/domain/model/github.js'
 import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 
-const store = reactive<Array<PullRequests>>([])
+// Holder instances are replaced as a whole; only array changes need reactivity.
+const store = shallowReactive<Array<PullRequests>>([])
 
 export const getters = {
   of(url: RepositorySetting): PullRequests | undefined {
