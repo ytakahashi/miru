@@ -30,4 +30,8 @@ export const mutations = {
     store.splice(0)
     store.push(...f)
   },
+  append(issues: Issues): void {
+    const current = store.find(s => s.belongsTo(issues.repositoryUrl))
+    mutations.replace(current === undefined ? issues : current.concat(issues))
+  },
 }
