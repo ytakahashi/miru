@@ -1,32 +1,14 @@
-import { vi } from 'vite-plus/test'
 import { PullRequest, PullRequestReviews, PullRequests } from '@/application/domain/model/github.js'
 import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 import { getters, mutations } from '@/store/pullRequests.js'
-
-const MockedPullRequests = vi.fn()
-MockedPullRequests.mockImplementation(function MockedPullRequestsImpl(
-  url: RepositorySetting
-): PullRequests {
-  return {
-    fetchedAt: 1,
-    repositoryUrl: url.getUrl(),
-    results: [],
-    totalCount: 1,
-    fetchedAtDate: () => '',
-    belongsTo: (r: string): boolean => {
-      return url.getUrl() === r
-    },
-    hasContents: (): boolean => true,
-  }
-})
 
 const setting1 = new RepositorySetting('https://github.com/foo/test1')
 const setting2 = new RepositorySetting('https://github.com/foo/test2')
 const setting3 = new RepositorySetting('https://github.com/foo/test3')
 
-const pr1 = new MockedPullRequests(setting1)
-const pr2 = new MockedPullRequests(setting2)
-const pr3 = new MockedPullRequests(setting3)
+const pr1 = new PullRequests(setting1, [], 1)
+const pr2 = new PullRequests(setting2, [], 1)
+const pr3 = new PullRequests(setting3, [], 1)
 const pullRequest = (url: string): PullRequest =>
   new PullRequest(
     'author',
@@ -108,19 +90,20 @@ describe('PullRequests store', () => {
         mutations.append(
           new PullRequests(setting1, [pullRequest('pr-2')], 2, undefined, { count: 20 })
         )
-      ).toThrow()
+      ).toThrow('Cannot concatenate results fetched with different query conditions.')
 
       expect(getters.of(setting1)).toBe(before)
       expect(getters.of(setting1)?.results.map(result => result.url)).toEqual(['pr-1'])
     })
 
     it('replaces pull requests', () => {
-      const newPR1 = new MockedPullRequests(setting1)
+      const before = getters.of(setting1)
+      const newPR1 = new PullRequests(setting1, [], 1)
       mutations.replace(newPR1)
 
       const actual = getters.of(setting1)
-      expect(actual).not.toStrictEqual(pr1)
-      expect(actual).toStrictEqual(newPR1)
+      expect(actual).not.toBe(before)
+      expect(actual).toBe(newPR1)
     })
 
     it('removes PR', () => {
