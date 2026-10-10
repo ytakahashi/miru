@@ -1,30 +1,14 @@
-import { vi } from 'vite-plus/test'
 import { Release, Releases } from '@/application/domain/model/github.js'
 import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 import { getters, mutations } from '@/store/releases.js'
-
-const MockedReleases = vi.fn()
-MockedReleases.mockImplementation(function MockedReleasesImpl(s: RepositorySetting): Releases {
-  return {
-    fetchedAt: 1,
-    repositoryUrl: s.getUrl(),
-    results: [],
-    totalCount: 1,
-    fetchedAtDate: () => '',
-    belongsTo: (r: string): boolean => {
-      return s.getUrl() === r
-    },
-    hasContents: (): boolean => true,
-  }
-})
 
 const setting1 = new RepositorySetting('https://github.com/foo/test1')
 const setting2 = new RepositorySetting('https://github.com/foo/test2')
 const setting3 = new RepositorySetting('https://github.com/foo/test3')
 
-const release1 = new MockedReleases(setting1)
-const release2 = new MockedReleases(setting2)
-const release3 = new MockedReleases(setting3)
+const release1 = new Releases(setting1, [], 1)
+const release2 = new Releases(setting2, [], 1)
+const release3 = new Releases(setting3, [], 1)
 const release = (url: string): Release =>
   new Release('author', 'name', url, '', '', false, false, 0)
 
@@ -88,19 +72,20 @@ describe('releases store', () => {
         mutations.append(
           new Releases(setting1, [release('release-2')], 2, undefined, { count: 20 })
         )
-      ).toThrow()
+      ).toThrow('Cannot concatenate results fetched with different query conditions.')
 
       expect(getters.of(setting1)).toBe(before)
       expect(getters.of(setting1)?.results.map(result => result.url)).toEqual(['release-1'])
     })
 
     it('replaces releases', () => {
-      const newReleases1 = new MockedReleases(setting1)
+      const before = getters.of(setting1)
+      const newReleases1 = new Releases(setting1, [], 1)
       mutations.replace(newReleases1)
 
       const actual = getters.of(setting1)
-      expect(actual).not.toStrictEqual(release1)
-      expect(actual).toStrictEqual(newReleases1)
+      expect(actual).not.toBe(before)
+      expect(actual).toBe(newReleases1)
     })
 
     it('removes release', () => {

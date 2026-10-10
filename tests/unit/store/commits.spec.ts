@@ -1,32 +1,14 @@
-import { vi } from 'vite-plus/test'
 import { Commit, CommitHistory } from '@/application/domain/model/github.js'
 import { RepositorySetting } from '@/application/domain/model/githubRepository.js'
 import { getters, mutations } from '@/store/commits.js'
-
-const MockedCommitHistory = vi.fn()
-MockedCommitHistory.mockImplementation(function MockedCommitHistoryImpl(
-  s: RepositorySetting
-): CommitHistory {
-  return {
-    fetchedAt: 1,
-    repositoryUrl: s.getUrl(),
-    results: [],
-    totalCount: 1,
-    fetchedAtDate: () => '',
-    belongsTo: (r: string): boolean => {
-      return s.getUrl() === r
-    },
-    hasContents: (): boolean => true,
-  }
-})
 
 const setting1 = new RepositorySetting('https://github.com/foo/test1')
 const setting2 = new RepositorySetting('https://github.com/foo/test2')
 const setting3 = new RepositorySetting('https://github.com/foo/test3')
 
-const commit1 = new MockedCommitHistory(setting1)
-const commit2 = new MockedCommitHistory(setting2)
-const commit3 = new MockedCommitHistory(setting3)
+const commit1 = new CommitHistory(setting1, [], 1)
+const commit2 = new CommitHistory(setting2, [], 1)
+const commit3 = new CommitHistory(setting3, [], 1)
 const commit = (url: string): Commit => new Commit('message', url, 0, 0, 0, '', '', '', '')
 
 beforeEach(() => {
@@ -91,19 +73,20 @@ describe('commit history store', () => {
         mutations.append(
           new CommitHistory(setting1, [commit('commit-2')], 2, undefined, { count: 20 })
         )
-      ).toThrow()
+      ).toThrow('Cannot concatenate results fetched with different query conditions.')
 
       expect(getters.of(setting1)).toBe(before)
       expect(getters.of(setting1)?.results.map(result => result.commitUrl)).toEqual(['commit-1'])
     })
 
     it('replaces commit history', () => {
-      const newCommitHistory1 = new MockedCommitHistory(setting1)
+      const before = getters.of(setting1)
+      const newCommitHistory1 = new CommitHistory(setting1, [], 1)
       mutations.replace(newCommitHistory1)
 
       const actual = getters.of(setting1)
-      expect(actual).not.toStrictEqual(commit1)
-      expect(actual).toStrictEqual(newCommitHistory1)
+      expect(actual).not.toBe(before)
+      expect(actual).toBe(newCommitHistory1)
     })
 
     it('removes commit history', () => {

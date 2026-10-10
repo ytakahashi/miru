@@ -63,6 +63,7 @@
     "fmt:fix": "vp fmt src/ tests/",
     "rm-dist": "node -e 'fs.rmSync(`dist`, {recursive:true, force:true}); fs.rmSync(`dist_electron`, {recursive:true, force:true})'",
     "test:unit": "vp test run",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json",
     "ts": "tsc -p tsconfig.build.json",
     "vite:build": "vue-tsc -p tsconfig.build.json --noEmit && vp build",
     "vitest": "vp test"

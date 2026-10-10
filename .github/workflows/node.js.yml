@@ -29,6 +29,7 @@ jobs:
           cache: 'yarn'
       - run: corepack enable
       - run: yarn install --immutable
+      - run: yarn typecheck
       - run: yarn lint
       - run: yarn build
       - run: yarn test:unit
