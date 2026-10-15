@@ -23,8 +23,17 @@
       </div>
     </div>
 
-    <div v-if="total">
-      {{ total }}
+    <div v-if="issues" class="list-footer">
+      <span v-if="total">{{ total }}</span>
+      <button
+        v-if="canLoadMore"
+        type="button"
+        class="load-more-button"
+        :disabled="loadingMore"
+        @click="loadMore().catch(showError)"
+      >
+        {{ loadingMore ? 'Loading…' : 'Load more' }}
+      </button>
     </div>
 
     <div v-if="isFailed">
@@ -103,14 +112,42 @@ export default defineComponent({
           isFailed.value = false
         })
     }
-    const errorHandler = (e: Error): void => {
+    const showError = (e: Error): void => {
       logger.error(e)
       failedMessage.value = e.message
-      loading.value = false
       isFailed.value = true
+    }
+    const errorHandler = (e: Error): void => {
+      showError(e)
+      loading.value = false
     }
     const clearIssues = (): void => mutations.remove(props.repositorySetting)
     const issues = computed(() => getters.of(props.repositorySetting))
+    const loadingMore = ref(false)
+    const canLoadMore = computed(() => issues.value?.hasNextPage() === true)
+    const loadMore = async (): Promise<void> => {
+      const source = issues.value
+      const option = source?.nextPageOption()
+      if (source === undefined || option === undefined || loadingMore.value) {
+        return
+      }
+      loadingMore.value = true
+      try {
+        const next = await getIssuesUseCase.execute(props.repositorySetting, option)
+        // Replaced or removed lists must ignore both results and errors from older requests.
+        if (issues.value !== source) {
+          return
+        }
+        mutations.append(next)
+        isFailed.value = false
+      } catch (error) {
+        if (issues.value === source) {
+          throw error
+        }
+      } finally {
+        loadingMore.value = false
+      }
+    }
     const total = computed(() => {
       const { value } = issues
       if (value === undefined || !value.hasContents()) {
@@ -124,6 +161,7 @@ export default defineComponent({
     return {
       clearIssues,
       errorHandler,
+      showError,
       getIssues,
       queryState,
       isFailed,
@@ -131,6 +169,9 @@ export default defineComponent({
       openIssueUrl,
       issues,
       loading,
+      loadingMore,
+      canLoadMore,
+      loadMore,
       total,
     }
   },
@@ -156,6 +197,26 @@ export default defineComponent({
   @include app.base-button(2px);
   & {
     font-size: 90%;
+  }
+}
+
+.list-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.load-more-button {
+  @include app.base-button(2px);
+  & {
+    align-self: center;
+    padding: 3px 8px;
+  }
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.6;
+    transform: none;
   }
 }
 </style>
