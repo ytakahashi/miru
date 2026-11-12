@@ -27,9 +27,14 @@
       </div>
     </div>
 
-    <div v-if="total">
-      {{ total }}
-    </div>
+    <LoadMoreFooter
+      v-if="pullRequests"
+      :summary="summary"
+      :can-load-more="canLoadMore"
+      :loading="loadingMore"
+      :error-message="loadMoreError"
+      @load-more="loadMore"
+    />
 
     <div v-if="isFailed">
       Failed to list pull requests of
@@ -48,6 +53,8 @@
 import { Account, GitHubUrl, PullRequests } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
+import LoadMoreFooter from '@/components/LoadMoreFooter.vue'
+import { usePagedList } from '@/composables/usePagedList'
 import { inject } from '@/plugins/di/injector'
 import { GetPullRequestsUseCaseFactoryKey, LoggerKey, WebBrowserKey } from '@/plugins/di/types'
 import { getters, mutations } from '@/store/pullRequests'
@@ -64,6 +71,7 @@ export default defineComponent({
   name: 'GitHubPullRequest',
   components: {
     LoadingImage,
+    LoadMoreFooter,
     PullRequestContent,
   },
   props: {
@@ -115,14 +123,12 @@ export default defineComponent({
     }
     const clearPRs = (): void => mutations.remove(props.repositorySetting)
     const pullRequests = computed(() => getters.of(props.repositorySetting))
-    const total = computed(() => {
-      const { value } = pullRequests
-      if (value === undefined || !value.hasContents()) {
-        return ''
-      }
-      const count = value.results.length
-      const totalCount = value.totalCount
-      return totalCount !== undefined ? `showing ${count} of ${totalCount} pull requests` : ''
+    const { summary, canLoadMore, loadingMore, loadMoreError, loadMore } = usePagedList({
+      list: pullRequests,
+      itemName: 'pull requests',
+      fetchPage: option => getPullRequestsUseCase.execute(props.repositorySetting, option),
+      appendPage: mutations.append,
+      logError: e => logger.error(e),
     })
 
     return {
@@ -135,7 +141,11 @@ export default defineComponent({
       openPullRequestUrl,
       pullRequests,
       loading,
-      total,
+      summary,
+      canLoadMore,
+      loadingMore,
+      loadMoreError,
+      loadMore,
     }
   },
 })

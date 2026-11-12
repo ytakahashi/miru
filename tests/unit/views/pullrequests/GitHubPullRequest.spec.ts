@@ -1,6 +1,8 @@
+import type { Option } from '@/application/domain/interface/githubAccessor'
 import {
   Account,
   GitHubUrl,
+  PageInfo,
   PullRequest,
   PullRequestReviews,
   PullRequests,
@@ -12,12 +14,14 @@ import {
 } from '@/application/usecase/githubRepository'
 import { WebBrowser } from '@/application/domain/interface/webBrowser'
 import { GetPullRequestsUseCaseFactoryKey, LoggerKey, WebBrowserKey } from '@/plugins/di/types'
+import { getters, mutations } from '@/store/pullRequests'
 import { getters as queryOption } from '@/store/queryOption'
 import GitHubPullRequest from '@/views/pullrequests/GitHubPullRequest.vue'
 import PullRequestContent from '@/views/pullrequests/PullRequestContent.vue'
-import { shallowMount } from '@vue/test-utils'
+import { enableAutoUnmount, flushPromises, shallowMount } from '@vue/test-utils'
 import { Mocked, vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
+import { clickLoadMore, findLoadMoreFooter } from '../../helper/loadMoreFooter'
 
 // GetPullRequestsUseCase mock
 const MockedGetPullRequestsUseCase = vi.fn()
@@ -55,23 +59,28 @@ const mockedWebBrowser = new MockedWebBrowser()
 // queryOption mock
 vi.mock('@/store/queryOption')
 const mockedQueryOption = queryOption as Mocked<typeof queryOption>
-mockedQueryOption.pullRequests.mockReturnValue({
+const defaultOption: Option = {
   count: 10,
   sortField: 'UPDATED_AT',
   sortDirection: 'DESC',
   states: ['OPEN'],
-})
+}
 
 const githubUrl = GitHubUrl.from('https://github.com')
 const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
 const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
 
-describe('GitHubPullRequest.vue', () => {
-  beforeEach(() => {
-    loggerErrorMock.mockClear()
-    openUrlMock.mockClear()
-  })
+enableAutoUnmount(afterEach)
 
+// The store is a module singleton shared by every test in this file.
+beforeEach(() => {
+  mutations.clear()
+  mockedQueryOption.pullRequests.mockReturnValue(defaultOption)
+  loggerErrorMock.mockClear()
+  openUrlMock.mockClear()
+})
+
+describe('GitHubPullRequest.vue', () => {
   it('renders when open PR does not exist', async () => {
     const pullRequests = new PullRequests(setting, [], 0)
     const wrapper = shallowMount(GitHubPullRequest, {
@@ -166,7 +175,7 @@ describe('GitHubPullRequest.vue', () => {
     expect(wrapper.text()).toContain('ytakahashi/miru')
     expect(wrapper.text()).toMatch(/Last fetched: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/)
     expect(wrapper.text()).not.toContain('There aren’t any open pull requests.')
-    expect(wrapper.text()).toContain('showing 2 of 2 pull requests')
+    expect(findLoadMoreFooter(wrapper).props('summary')).toBe('showing 2 of 2 pull requests')
     expect(wrapper.find('.clear-button').exists()).toBe(true)
     expect(wrapper.findAllComponents(PullRequestContent)).toHaveLength(2)
     expect(openUrlMock).not.toHaveBeenCalled()
@@ -262,5 +271,98 @@ describe('GitHubPullRequest.vue', () => {
     // then: pr appears and pr url is opened
     await wrapper.find('div.clickable').trigger('click')
     expect(openUrlMock).toHaveBeenCalledExactlyOnceWith('https://github.com/ytakahashi/miru/pulls')
+  })
+})
+
+const pullRequest = (url: string): PullRequest =>
+  new PullRequest(
+    'author',
+    url,
+    url,
+    '',
+    '',
+    1,
+    [],
+    0,
+    0,
+    0,
+    0,
+    0,
+    false,
+    new PullRequestReviews(0, false),
+    false,
+    false,
+    false,
+    'OPEN'
+  )
+
+const page = (urls: string[], cursor?: string): PullRequests =>
+  new PullRequests(
+    setting,
+    urls.map(pullRequest),
+    3,
+    new PageInfo(cursor !== undefined, cursor),
+    defaultOption
+  )
+
+const mountList = (execute = vi.fn<GetPullRequestsUseCase['execute']>()) => {
+  const wrapper = shallowMount(GitHubPullRequest, {
+    global: {
+      provide: {
+        [GetPullRequestsUseCaseFactoryKey as symbol]: createMock(() => ({ execute })),
+        [WebBrowserKey as symbol]: mockedWebBrowser,
+        [LoggerKey as symbol]: mockedLogger,
+      },
+    },
+    props: { account, repositorySetting: setting },
+  })
+  return { wrapper, execute }
+}
+
+// Paging behavior itself is covered by usePagedList.spec.ts; these only verify the wiring.
+describe('GitHubPullRequest paging', () => {
+  it('loads the next page with the saved conditions and appends it', async () => {
+    mutations.replace(page(['first'], 'cursor-1'))
+    // The next page must follow the conditions saved with the list, not the current query option.
+    mockedQueryOption.pullRequests.mockReturnValue({ count: 20, states: ['CLOSED'] })
+    const { wrapper, execute } = mountList()
+    execute.mockResolvedValueOnce(page(['second']))
+    expect(findLoadMoreFooter(wrapper).props()).toEqual({
+      summary: 'showing 1 of 3 pull requests',
+      canLoadMore: true,
+      loading: false,
+      errorMessage: '',
+    })
+
+    await clickLoadMore(wrapper)
+
+    expect(execute).toHaveBeenCalledExactlyOnceWith(setting, {
+      ...defaultOption,
+      after: 'cursor-1',
+    })
+    expect(
+      wrapper.findAllComponents(PullRequestContent).map(item => item.props('pullRequest').url)
+    ).toEqual(['first', 'second'])
+    expect(findLoadMoreFooter(wrapper).props()).toEqual({
+      summary: 'showing 2 of 3 pull requests',
+      canLoadMore: false,
+      loading: false,
+      errorMessage: '',
+    })
+  })
+
+  it('shows a Load more failure in the footer, not as a refresh failure', async () => {
+    const source = page(['first'], 'cursor-1')
+    mutations.replace(source)
+    const error = new Error('rate limit')
+    const { wrapper, execute } = mountList()
+    execute.mockRejectedValueOnce(error)
+
+    await clickLoadMore(wrapper)
+
+    expect(getters.of(setting)).toBe(source)
+    expect(findLoadMoreFooter(wrapper).props('errorMessage')).toBe('rate limit')
+    expect(wrapper.text()).not.toContain('Failed to list pull requests')
+    expect(loggerErrorMock).toHaveBeenCalledExactlyOnceWith(error)
   })
 })

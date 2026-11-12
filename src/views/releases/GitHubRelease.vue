@@ -27,9 +27,14 @@
       </div>
     </div>
 
-    <div v-if="total">
-      {{ total }}
-    </div>
+    <LoadMoreFooter
+      v-if="releases"
+      :summary="summary"
+      :can-load-more="canLoadMore"
+      :loading="loadingMore"
+      :error-message="loadMoreError"
+      @load-more="loadMore"
+    />
 
     <div v-if="isFailed">
       Failed to list releases of
@@ -48,6 +53,8 @@
 import { Account, GitHubUrl, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
+import LoadMoreFooter from '@/components/LoadMoreFooter.vue'
+import { usePagedList } from '@/composables/usePagedList'
 import { inject } from '@/plugins/di/injector'
 import { GetReleasesUseCaseFactoryKey, LoggerKey, WebBrowserKey } from '@/plugins/di/types'
 import { getters as queryOption } from '@/store/queryOption'
@@ -64,6 +71,7 @@ export default defineComponent({
   name: 'GitHubRelease',
   components: {
     LoadingImage,
+    LoadMoreFooter,
     ReleaseContent,
   },
   props: {
@@ -113,14 +121,12 @@ export default defineComponent({
     }
     const clearReleases = (): void => mutations.remove(props.repositorySetting)
     const releases = computed(() => getters.of(props.repositorySetting))
-    const total = computed(() => {
-      const { value } = releases
-      if (value === undefined || !value.hasContents()) {
-        return ''
-      }
-      const count = value.results.length
-      const totalCount = value.totalCount
-      return totalCount !== undefined ? `showing ${count} of ${totalCount} releases` : ''
+    const { summary, canLoadMore, loadingMore, loadMoreError, loadMore } = usePagedList({
+      list: releases,
+      itemName: 'releases',
+      fetchPage: option => getReleasesUseCase.execute(props.repositorySetting, option),
+      appendPage: mutations.append,
+      logError: e => logger.error(e),
     })
 
     return {
@@ -132,7 +138,11 @@ export default defineComponent({
       openReleaseUrl,
       releases,
       loading,
-      total,
+      summary,
+      canLoadMore,
+      loadingMore,
+      loadMoreError,
+      loadMore,
     }
   },
 })
