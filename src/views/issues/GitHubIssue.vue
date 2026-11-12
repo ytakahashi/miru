@@ -23,18 +23,14 @@
       </div>
     </div>
 
-    <div v-if="issues" class="list-footer">
-      <span v-if="total">{{ total }}</span>
-      <button
-        v-if="canLoadMore"
-        type="button"
-        class="load-more-button"
-        :disabled="loadingMore"
-        @click="loadMore().catch(showError)"
-      >
-        {{ loadingMore ? 'Loading…' : 'Load more' }}
-      </button>
-    </div>
+    <LoadMoreFooter
+      v-if="issues"
+      :summary="summary"
+      :can-load-more="canLoadMore"
+      :loading="loadingMore"
+      :error-message="loadMoreError"
+      @load-more="loadMore"
+    />
 
     <div v-if="isFailed">
       Failed to list issues of
@@ -53,6 +49,8 @@
 import { Account, GitHubUrl, Issues } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
+import LoadMoreFooter from '@/components/LoadMoreFooter.vue'
+import { usePagedList } from '@/composables/usePagedList'
 import { inject } from '@/plugins/di/injector'
 import { GetIssuesUseCaseFactoryKey, LoggerKey, WebBrowserKey } from '@/plugins/di/types'
 import { getters, mutations } from '@/store/issues'
@@ -70,6 +68,7 @@ export default defineComponent({
   components: {
     IssueContent,
     LoadingImage,
+    LoadMoreFooter,
   },
   props: {
     account: {
@@ -112,56 +111,25 @@ export default defineComponent({
           isFailed.value = false
         })
     }
-    const showError = (e: Error): void => {
+    const errorHandler = (e: Error): void => {
       logger.error(e)
       failedMessage.value = e.message
-      isFailed.value = true
-    }
-    const errorHandler = (e: Error): void => {
-      showError(e)
       loading.value = false
+      isFailed.value = true
     }
     const clearIssues = (): void => mutations.remove(props.repositorySetting)
     const issues = computed(() => getters.of(props.repositorySetting))
-    const loadingMore = ref(false)
-    const canLoadMore = computed(() => issues.value?.hasNextPage() === true)
-    const loadMore = async (): Promise<void> => {
-      const source = issues.value
-      const option = source?.nextPageOption()
-      if (source === undefined || option === undefined || loadingMore.value) {
-        return
-      }
-      loadingMore.value = true
-      try {
-        const next = await getIssuesUseCase.execute(props.repositorySetting, option)
-        // Replaced or removed lists must ignore both results and errors from older requests.
-        if (issues.value !== source) {
-          return
-        }
-        mutations.append(next)
-        isFailed.value = false
-      } catch (error) {
-        if (issues.value === source) {
-          throw error
-        }
-      } finally {
-        loadingMore.value = false
-      }
-    }
-    const total = computed(() => {
-      const { value } = issues
-      if (value === undefined || !value.hasContents()) {
-        return ''
-      }
-      const count = value.results.length
-      const totalCount = value.totalCount
-      return totalCount !== undefined ? `showing ${count} of ${totalCount} issues` : ''
+    const { summary, canLoadMore, loadingMore, loadMoreError, loadMore } = usePagedList({
+      list: issues,
+      itemName: 'issues',
+      fetchPage: option => getIssuesUseCase.execute(props.repositorySetting, option),
+      appendPage: mutations.append,
+      logError: e => logger.error(e),
     })
 
     return {
       clearIssues,
       errorHandler,
-      showError,
       getIssues,
       queryState,
       isFailed,
@@ -169,10 +137,11 @@ export default defineComponent({
       openIssueUrl,
       issues,
       loading,
-      loadingMore,
+      summary,
       canLoadMore,
+      loadingMore,
+      loadMoreError,
       loadMore,
-      total,
     }
   },
 })
@@ -197,26 +166,6 @@ export default defineComponent({
   @include app.base-button(2px);
   & {
     font-size: 90%;
-  }
-}
-
-.list-footer {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.load-more-button {
-  @include app.base-button(2px);
-  & {
-    align-self: center;
-    padding: 3px 8px;
-  }
-
-  &:disabled {
-    cursor: wait;
-    opacity: 0.6;
-    transform: none;
   }
 }
 </style>

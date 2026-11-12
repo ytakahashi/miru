@@ -19,6 +19,15 @@
       </div>
     </div>
 
+    <LoadMoreFooter
+      v-if="commits"
+      :summary="summary"
+      :can-load-more="canLoadMore"
+      :loading="loadingMore"
+      :error-message="loadMoreError"
+      @load-more="loadMore"
+    />
+
     <div v-if="isFailed">
       Failed to list commit history of
       <span class="clickable" @click="openCommitsUrl(repositorySetting)">{{
@@ -36,6 +45,8 @@
 import { Account, CommitHistory, GitHubUrl } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import LoadingImage from '@/components/LoadingImage.vue'
+import LoadMoreFooter from '@/components/LoadMoreFooter.vue'
+import { usePagedList } from '@/composables/usePagedList'
 import { inject } from '@/plugins/di/injector'
 import { GetCommitHistoryUseCaseFactoryKey, LoggerKey, WebBrowserKey } from '@/plugins/di/types'
 import { getters, mutations } from '@/store/commits'
@@ -53,6 +64,7 @@ export default defineComponent({
   components: {
     CommitContent,
     LoadingImage,
+    LoadMoreFooter,
   },
   props: {
     account: {
@@ -101,6 +113,13 @@ export default defineComponent({
     }
     const clearCommits = (): void => mutations.remove(props.repositorySetting)
     const commits = computed(() => getters.of(props.repositorySetting))
+    const { summary, canLoadMore, loadingMore, loadMoreError, loadMore } = usePagedList({
+      list: commits,
+      itemName: 'commits',
+      fetchPage: option => getCommitHistoryUseCase.execute(props.repositorySetting, option),
+      appendPage: mutations.append,
+      logError: e => logger.error(e),
+    })
 
     return {
       clearCommits,
@@ -111,6 +130,11 @@ export default defineComponent({
       openCommitsUrl,
       commits,
       loading,
+      summary,
+      canLoadMore,
+      loadingMore,
+      loadMoreError,
+      loadMore,
     }
   },
 })

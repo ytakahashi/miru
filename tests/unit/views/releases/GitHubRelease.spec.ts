@@ -1,4 +1,5 @@
-import { Account, GitHubUrl, Release, Releases } from '@/application/domain/model/github'
+import type { Option } from '@/application/domain/interface/githubAccessor'
+import { Account, GitHubUrl, PageInfo, Release, Releases } from '@/application/domain/model/github'
 import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import {
   GetReleasesUseCase,
@@ -6,11 +7,14 @@ import {
 } from '@/application/usecase/githubRepository'
 import { WebBrowser } from '@/application/domain/interface/webBrowser'
 import { GetReleasesUseCaseFactoryKey, LoggerKey, WebBrowserKey } from '@/plugins/di/types'
+import { getters, mutations } from '@/store/releases'
+import { getters as queryOption } from '@/store/queryOption'
 import GitHubRelease from '@/views/releases/GitHubRelease.vue'
 import ReleaseContent from '@/views/releases/ReleaseContent.vue'
-import { shallowMount } from '@vue/test-utils'
-import { vi } from 'vite-plus/test'
+import { enableAutoUnmount, flushPromises, shallowMount } from '@vue/test-utils'
+import { Mocked, vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
+import { clickLoadMore, findLoadMoreFooter } from '../../helper/loadMoreFooter'
 
 // GetReleasesUseCase mock
 const MockedGetReleasesUseCase = vi.fn()
@@ -45,16 +49,25 @@ MockedWebBrowser.mockImplementation(function MockedWebBrowserImpl(): WebBrowser 
 })
 const mockedWebBrowser = new MockedWebBrowser()
 
+vi.mock('@/store/queryOption')
+const mockedQueryOption = queryOption as Mocked<typeof queryOption>
+const defaultOption: Option = { count: 3, sortField: 'CREATED_AT', sortDirection: 'DESC' }
+
 const githubUrl = GitHubUrl.from('https://github.com')
 const account = new Account('name', 'profile', 'avatar', githubUrl!, 'pat')
 const setting = new RepositorySetting('https://github.com/ytakahashi/miru')
 
-describe('GitHubRelease.vue', () => {
-  beforeEach(() => {
-    loggerErrorMock.mockClear()
-    openUrlMock.mockClear()
-  })
+enableAutoUnmount(afterEach)
 
+// The store is a module singleton shared by every test in this file.
+beforeEach(() => {
+  mutations.clear()
+  mockedQueryOption.releases.mockReturnValue(defaultOption)
+  loggerErrorMock.mockClear()
+  openUrlMock.mockClear()
+})
+
+describe('GitHubRelease.vue', () => {
   it('renders when release does not exist', async () => {
     const releases = new Releases(setting, [], 0)
     const wrapper = shallowMount(GitHubRelease, {
@@ -135,7 +148,7 @@ describe('GitHubRelease.vue', () => {
     expect(wrapper.text()).not.toContain('There aren’t any open issues.')
     expect(wrapper.find('.clear-button').exists()).toBe(true)
     expect(wrapper.findAllComponents(ReleaseContent)).toHaveLength(2)
-    expect(wrapper.text()).toContain('showing 2 of 2 releases')
+    expect(findLoadMoreFooter(wrapper).props('summary')).toBe('showing 2 of 2 releases')
     expect(openUrlMock).not.toHaveBeenCalled()
 
     // when: click clear button
@@ -236,5 +249,82 @@ describe('GitHubRelease.vue', () => {
     expect(openUrlMock).toHaveBeenCalledExactlyOnceWith(
       'https://github.com/ytakahashi/miru/releases'
     )
+  })
+})
+
+const release = (url: string): Release => new Release('author', url, url, '', '', false, false, 0)
+
+const page = (urls: string[], cursor?: string): Releases =>
+  new Releases(
+    setting,
+    urls.map(release),
+    3,
+    new PageInfo(cursor !== undefined, cursor),
+    defaultOption
+  )
+
+const mountList = (execute = vi.fn<GetReleasesUseCase['execute']>()) => {
+  const wrapper = shallowMount(GitHubRelease, {
+    global: {
+      provide: {
+        [GetReleasesUseCaseFactoryKey as symbol]: createMock(() => ({ execute })),
+        [WebBrowserKey as symbol]: mockedWebBrowser,
+        [LoggerKey as symbol]: mockedLogger,
+      },
+    },
+    props: { account, repositorySetting: setting },
+  })
+  return { wrapper, execute }
+}
+
+// Paging behavior itself is covered by usePagedList.spec.ts; these only verify the wiring.
+describe('GitHubRelease paging', () => {
+  it('loads the next page with the saved conditions and appends it', async () => {
+    mutations.replace(page(['first'], 'cursor-1'))
+    // The next page must follow the conditions saved with the list, not the current query option.
+    mockedQueryOption.releases.mockReturnValue({
+      count: 20,
+      sortField: 'NAME',
+      sortDirection: 'ASC',
+    })
+    const { wrapper, execute } = mountList()
+    execute.mockResolvedValueOnce(page(['second']))
+    expect(findLoadMoreFooter(wrapper).props()).toEqual({
+      summary: 'showing 1 of 3 releases',
+      canLoadMore: true,
+      loading: false,
+      errorMessage: '',
+    })
+
+    await clickLoadMore(wrapper)
+
+    expect(execute).toHaveBeenCalledExactlyOnceWith(setting, {
+      ...defaultOption,
+      after: 'cursor-1',
+    })
+    expect(
+      wrapper.findAllComponents(ReleaseContent).map(item => item.props('release').url)
+    ).toEqual(['first', 'second'])
+    expect(findLoadMoreFooter(wrapper).props()).toEqual({
+      summary: 'showing 2 of 3 releases',
+      canLoadMore: false,
+      loading: false,
+      errorMessage: '',
+    })
+  })
+
+  it('shows a Load more failure in the footer, not as a refresh failure', async () => {
+    const source = page(['first'], 'cursor-1')
+    mutations.replace(source)
+    const error = new Error('rate limit')
+    const { wrapper, execute } = mountList()
+    execute.mockRejectedValueOnce(error)
+
+    await clickLoadMore(wrapper)
+
+    expect(getters.of(setting)).toBe(source)
+    expect(findLoadMoreFooter(wrapper).props('errorMessage')).toBe('rate limit')
+    expect(wrapper.text()).not.toContain('Failed to list releases')
+    expect(loggerErrorMock).toHaveBeenCalledExactlyOnceWith(error)
   })
 })

@@ -3,7 +3,6 @@ import { RepositorySetting } from '@/application/domain/model/githubRepository'
 import { GetIssuesUseCase, GetIssuesUseCaseFactory } from '@/application/usecase/githubRepository'
 import type { Option } from '@/application/domain/interface/githubAccessor'
 import { WebBrowser } from '@/application/domain/interface/webBrowser'
-import LoadingImage from '@/components/LoadingImage.vue'
 import { GetIssuesUseCaseFactoryKey, LoggerKey, WebBrowserKey } from '@/plugins/di/types'
 import { getters, mutations } from '@/store/issues'
 import { getters as queryOption } from '@/store/queryOption'
@@ -12,6 +11,7 @@ import IssueContent from '@/views/issues/IssueContent.vue'
 import { enableAutoUnmount, flushPromises, shallowMount } from '@vue/test-utils'
 import { Mocked, vi } from 'vite-plus/test'
 import { nextTick } from 'vue'
+import { clickLoadMore, findLoadMoreFooter } from '../../helper/loadMoreFooter'
 
 // GetIssuesUseCase mock
 const MockedGetIssuesUseCase = vi.fn()
@@ -155,7 +155,7 @@ describe('GitHubIssue.vue', () => {
     expect(wrapper.text()).not.toContain('There aren’t any open issues.')
     expect(wrapper.find('.clear-button').exists()).toBe(true)
     expect(wrapper.findAllComponents(IssueContent)).toHaveLength(2)
-    expect(wrapper.text()).toContain('showing 2 of 2 issues')
+    expect(findLoadMoreFooter(wrapper).props('summary')).toBe('showing 2 of 2 issues')
     expect(openUrlMock).not.toHaveBeenCalled()
 
     // when: click clear button
@@ -255,8 +255,8 @@ describe('GitHubIssue.vue', () => {
 const issue = (url: string): Issue =>
   new Issue('author', url, url, '', '', 1, [], 0, 0, false, false, 'OPEN')
 
-const page = (urls: string[], cursor?: string, option: Option = defaultOption): Issues =>
-  new Issues(setting, urls.map(issue), 3, new PageInfo(cursor !== undefined, cursor), option)
+const page = (urls: string[], cursor?: string): Issues =>
+  new Issues(setting, urls.map(issue), 3, new PageInfo(cursor !== undefined, cursor), defaultOption)
 
 const mountList = (execute = vi.fn<GetIssuesUseCase['execute']>()) => {
   const wrapper = shallowMount(GitHubIssue, {
@@ -272,46 +272,24 @@ const mountList = (execute = vi.fn<GetIssuesUseCase['execute']>()) => {
   return { wrapper, execute }
 }
 
-// Explicit completion keeps race tests independent of timers and network timing.
-const deferred = () => {
-  let resolve!: (issues: Issues) => void
-  let reject!: (error: Error) => void
-  const promise = new Promise<Issues>((resolvePromise, rejectPromise) => {
-    resolve = resolvePromise
-    reject = rejectPromise
-  })
-  return { promise, resolve, reject }
-}
-
+// Paging behavior itself is covered by usePagedList.spec.ts; these only verify the wiring.
 describe('GitHubIssue paging', () => {
-  it('hides the footer before fetching', () => {
-    const { wrapper } = mountList()
-    expect(wrapper.find('.list-footer').exists()).toBe(false)
-    expect(wrapper.find('.load-more-button').exists()).toBe(false)
-  })
-
-  it.each([
-    ['no next page', new PageInfo(false)],
-    ['no usable cursor', new PageInfo(true)],
-  ])('hides Load more with %s even when totalCount exceeds the item count', (_, pageInfo) => {
-    mutations.replace(new Issues(setting, [issue('first')], 10, pageInfo, defaultOption))
-    const { wrapper } = mountList()
-    expect(wrapper.text()).toContain('showing 1 of 10 issues')
-    expect(wrapper.find('.load-more-button').exists()).toBe(false)
-  })
-
-  it('uses saved conditions, appends pages, and advances the cursor until the last page', async () => {
+  it('loads the next page with the saved conditions and appends it', async () => {
     mutations.replace(page(['first'], 'cursor-1'))
+    // The next page must follow the conditions saved with the list, not the current query option.
     mockedQueryOption.issues.mockReturnValue({ count: 20, states: ['CLOSED'] })
     const { wrapper, execute } = mountList()
-    execute.mockResolvedValueOnce(page(['second'], 'cursor-2'))
-    execute.mockResolvedValueOnce(page(['third']))
+    execute.mockResolvedValueOnce(page(['second']))
+    expect(findLoadMoreFooter(wrapper).props()).toEqual({
+      summary: 'showing 1 of 3 issues',
+      canLoadMore: true,
+      loading: false,
+      errorMessage: '',
+    })
 
-    expect(wrapper.find('.load-more-button').text()).toBe('Load more')
-    await wrapper.find('.load-more-button').trigger('click')
-    await flushPromises()
+    await clickLoadMore(wrapper)
 
-    expect(execute).toHaveBeenNthCalledWith(1, setting, {
+    expect(execute).toHaveBeenCalledExactlyOnceWith(setting, {
       ...defaultOption,
       after: 'cursor-1',
     })
@@ -319,165 +297,26 @@ describe('GitHubIssue paging', () => {
       'first',
       'second',
     ])
-    expect(wrapper.text()).toContain('showing 2 of 3 issues')
-
-    await wrapper.find('.load-more-button').trigger('click')
-    await flushPromises()
-
-    expect(execute).toHaveBeenNthCalledWith(2, setting, {
-      ...defaultOption,
-      after: 'cursor-2',
+    expect(findLoadMoreFooter(wrapper).props()).toEqual({
+      summary: 'showing 2 of 3 issues',
+      canLoadMore: false,
+      loading: false,
+      errorMessage: '',
     })
-    expect(wrapper.findAllComponents(IssueContent)).toHaveLength(3)
-    expect(wrapper.text()).toContain('showing 3 of 3 issues')
-    expect(wrapper.find('.load-more-button').exists()).toBe(false)
   })
 
-  it('disables Load more, guards repeated calls, and leaves the mask hidden while pending', async () => {
-    mutations.replace(page(['first'], 'cursor-1'))
-    const pending = deferred()
-    const { wrapper, execute } = mountList()
-    execute.mockReturnValueOnce(pending.promise)
-
-    await wrapper.find('.load-more-button').trigger('click')
-    expect(wrapper.find('.load-more-button').attributes('disabled')).toBeDefined()
-    expect(wrapper.find('.load-more-button').text()).toBe('Loading…')
-    expect(wrapper.findComponent(LoadingImage).props('loading')).toBe(false)
-    await wrapper.vm.loadMore()
-    expect(execute).toHaveBeenCalledTimes(1)
-
-    pending.resolve(page(['second'], 'cursor-2'))
-    await flushPromises()
-    expect(wrapper.find('.load-more-button').attributes('disabled')).toBeUndefined()
-    expect(wrapper.find('.load-more-button').text()).toBe('Load more')
-  })
-
-  it('ignores calls when no list or next page exists', async () => {
-    const { wrapper, execute } = mountList()
-    await wrapper.vm.loadMore()
-    mutations.replace(page(['first']))
-    await wrapper.vm.loadMore()
-    expect(execute).not.toHaveBeenCalled()
-  })
-
-  it('keeps results and cursor after failure, then clears the error after a successful retry', async () => {
+  it('shows a Load more failure in the footer, not as a refresh failure', async () => {
     const source = page(['first'], 'cursor-1')
     mutations.replace(source)
     const error = new Error('rate limit')
     const { wrapper, execute } = mountList()
-    execute.mockRejectedValueOnce(error).mockResolvedValueOnce(page(['second']))
+    execute.mockRejectedValueOnce(error)
 
-    await wrapper.find('.load-more-button').trigger('click')
-    await flushPromises()
+    await clickLoadMore(wrapper)
 
     expect(getters.of(setting)).toBe(source)
-    expect(wrapper.findAllComponents(IssueContent)).toHaveLength(1)
-    expect(wrapper.text()).toContain('rate limit')
-    expect(loggerErrorMock).toHaveBeenCalledExactlyOnceWith(error)
-    expect(wrapper.find('.load-more-button').attributes('disabled')).toBeUndefined()
-
-    await wrapper.find('.load-more-button').trigger('click')
-    await flushPromises()
-
-    expect(execute).toHaveBeenNthCalledWith(2, setting, { ...defaultOption, after: 'cursor-1' })
-    expect(wrapper.findAllComponents(IssueContent)).toHaveLength(2)
+    expect(findLoadMoreFooter(wrapper).props('errorMessage')).toBe('rate limit')
     expect(wrapper.text()).not.toContain('Failed to list issues')
-  })
-
-  it.each(['replace', 'remove', 'clear'] as const)(
-    'discards a successful response after %s without restoring old results',
-    async action => {
-      mutations.replace(page(['first'], 'cursor-1'))
-      const pending = deferred()
-      const { wrapper, execute } = mountList()
-      execute.mockReturnValueOnce(pending.promise)
-      await wrapper.find('.load-more-button').trigger('click')
-
-      const replacement = page(['replacement'])
-      if (action === 'replace') mutations.replace(replacement)
-      else if (action === 'remove') mutations.remove(setting)
-      else mutations.clear()
-      pending.resolve(page(['stale']))
-      await flushPromises()
-
-      expect(getters.of(setting)).toBe(action === 'replace' ? replacement : undefined)
-      expect(wrapper.text()).not.toContain('Failed to list issues')
-      expect(loggerErrorMock).not.toHaveBeenCalled()
-    }
-  )
-
-  it.each(['replace', 'remove', 'clear'] as const)(
-    'ignores a failed response after %s',
-    async action => {
-      mutations.replace(page(['first'], 'cursor-1'))
-      const pending = deferred()
-      const { wrapper, execute } = mountList()
-      execute.mockReturnValueOnce(pending.promise)
-      await wrapper.find('.load-more-button').trigger('click')
-
-      if (action === 'replace') mutations.replace(page(['replacement'], 'fresh-cursor'))
-      else if (action === 'remove') mutations.remove(setting)
-      else mutations.clear()
-      pending.reject(new Error('stale failure'))
-      await flushPromises()
-
-      expect(wrapper.text()).not.toContain('Failed to list issues')
-      expect(loggerErrorMock).not.toHaveBeenCalled()
-      expect(wrapper.vm.loadingMore).toBe(false)
-    }
-  )
-
-  it('refreshes with current query options and discards the older pending page', async () => {
-    mutations.replace(page(['first'], 'cursor-1'))
-    const pending = deferred()
-    const { wrapper, execute } = mountList()
-    const updatedOption: Option = { count: 20, states: ['CLOSED'] }
-    const refreshed = page(['refreshed'], 'fresh-cursor', updatedOption)
-    execute.mockReturnValueOnce(pending.promise).mockResolvedValueOnce(refreshed)
-    await wrapper.find('.load-more-button').trigger('click')
-
-    mockedQueryOption.issues.mockReturnValue(updatedOption)
-    await wrapper.find('.get-button').trigger('click')
-    await flushPromises()
-    expect(execute).toHaveBeenNthCalledWith(2, setting, updatedOption)
-    expect(getters.of(setting)).toBe(refreshed)
-
-    pending.resolve(page(['stale']))
-    await flushPromises()
-    expect(getters.of(setting)).toBe(refreshed)
-    expect(wrapper.findAllComponents(IssueContent)).toHaveLength(1)
-    expect(wrapper.findComponent(LoadingImage).props('loading')).toBe(false)
-  })
-
-  it('keeps the refresh mask when Load more fails during a refresh', async () => {
-    mutations.replace(page(['first'], 'cursor-1'))
-    const pendingMore = deferred()
-    const pendingRefresh = deferred()
-    const { wrapper, execute } = mountList()
-    execute.mockReturnValueOnce(pendingMore.promise).mockReturnValueOnce(pendingRefresh.promise)
-    await wrapper.find('.load-more-button').trigger('click')
-    await wrapper.find('.get-button').trigger('click')
-
-    const error = new Error('rate limit')
-    pendingMore.reject(error)
-    await flushPromises()
-
-    expect(wrapper.text()).toContain('rate limit')
     expect(loggerErrorMock).toHaveBeenCalledExactlyOnceWith(error)
-    expect(wrapper.findComponent(LoadingImage).props('loading')).toBe(true)
-
-    pendingRefresh.resolve(page(['refreshed']))
-    await flushPromises()
-    expect(wrapper.findComponent(LoadingImage).props('loading')).toBe(false)
-    expect(wrapper.text()).not.toContain('Failed to list issues')
-  })
-
-  it('retains paging after remounting the view', () => {
-    mutations.replace(page(['first'], 'cursor-1'))
-    const { wrapper } = mountList()
-    wrapper.unmount()
-    const remounted = mountList().wrapper
-    expect(remounted.find('.load-more-button').text()).toBe('Load more')
-    expect(remounted.findAllComponents(IssueContent)).toHaveLength(1)
   })
 })
